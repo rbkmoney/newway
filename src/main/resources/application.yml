@@ -1,0 +1,31 @@
+server:
+  port: @server.port@
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    url: @db.url@
+    username: @db.user@
+    password: @db.password@
+    hikari:
+      idle-timeout: 30000
+      maximum-pool-size: 3
+flyway:
+  schemas: nw
+retry-policy:
+  maxAttempts: 10
+bm:
+  processing:
+    url: http://bustermaze:8022/repo
+    polling:
+      delay: 10000
+      retryDelay: 1000
+      maxPoolSize: 1
+  payout:
+    url: http://bustermaze:8022/repo/payout
+    polling:
+      delay: 10000
+      retryDelay: 1000
+      maxPoolSize: 1
+  pollingEnabled: true
+
