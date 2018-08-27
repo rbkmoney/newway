@@ -26,7 +26,6 @@ public class EventStockConfig {
                 .withURI(resource.getURI())
                 .withEventHandler(processingEventStockHandler)
                 .withMaxPoolSize(maxPoolSize)
-                .withPollDelay(pollDelay)
                 .withEventRetryDelay(retryDelay)
                 .withPollDelay(pollDelay)
                 .build();
@@ -44,7 +43,6 @@ public class EventStockConfig {
                 .withURI(resource.getURI())
                 .withEventHandler(payoutEventStockHandler)
                 .withMaxPoolSize(maxPoolSize)
-                .withPollDelay(pollDelay)
                 .withEventRetryDelay(retryDelay)
                 .withPollDelay(pollDelay)
                 .build();

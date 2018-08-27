@@ -7,6 +7,8 @@ import com.rbkmoney.damsel.payout_processing.PayoutChange;
 import com.rbkmoney.eventstock.client.EventAction;
 import com.rbkmoney.eventstock.client.EventHandler;
 import com.rbkmoney.newway.poller.handler.impl.payout.AbstractPayoutHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,8 @@ import java.util.List;
 
 @Component
 public class PayoutEventStockHandler implements EventHandler<StockEvent> {
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private List<AbstractPayoutHandler> payoutHandlers;
@@ -23,12 +27,16 @@ public class PayoutEventStockHandler implements EventHandler<StockEvent> {
         Event payoutEvent = stockEvent.getSourceEvent().getPayoutEvent();
         EventPayload payload = payoutEvent.getPayload();
         List<PayoutChange> changes = payload.getPayoutChanges();
-        changes.forEach(c -> payoutHandlers.forEach(ph -> {
-            if (ph.accept(c)) {
-                ph.handle(c, payoutEvent);
-            }
-        }));
+        try {
+            changes.forEach(c -> payoutHandlers.forEach(ph -> {
+                if (ph.accept(c)) {
+                    ph.handle(c, payoutEvent);
+                }
+            }));
+        } catch (RuntimeException e) {
+            log.error("Error when polling payout event with id={}", payoutEvent.getId(), e);
+            return EventAction.DELAYED_RETRY;
+        }
         return EventAction.CONTINUE;
     }
-
 }
