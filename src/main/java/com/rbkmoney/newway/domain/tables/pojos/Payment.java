@@ -30,7 +30,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payment implements Serializable {
 
-    private static final long serialVersionUID = -482841056;
+    private static final long serialVersionUID = -909457789;
 
     private Long            id;
     private Long            eventId;
@@ -41,6 +41,7 @@ public class Payment implements Serializable {
     private String          partyId;
     private String          shopId;
     private Long            domainRevision;
+    private Long            partyRevision;
     private Paymentstatus   status;
     private String          statusCancelledReason;
     private String          statusCapturedReason;
@@ -87,6 +88,7 @@ public class Payment implements Serializable {
         this.partyId = value.partyId;
         this.shopId = value.shopId;
         this.domainRevision = value.domainRevision;
+        this.partyRevision = value.partyRevision;
         this.status = value.status;
         this.statusCancelledReason = value.statusCancelledReason;
         this.statusCapturedReason = value.statusCapturedReason;
@@ -132,6 +134,7 @@ public class Payment implements Serializable {
         String          partyId,
         String          shopId,
         Long            domainRevision,
+        Long            partyRevision,
         Paymentstatus   status,
         String          statusCancelledReason,
         String          statusCapturedReason,
@@ -175,6 +178,7 @@ public class Payment implements Serializable {
         this.partyId = partyId;
         this.shopId = shopId;
         this.domainRevision = domainRevision;
+        this.partyRevision = partyRevision;
         this.status = status;
         this.statusCancelledReason = statusCancelledReason;
         this.statusCapturedReason = statusCapturedReason;
@@ -280,6 +284,14 @@ public class Payment implements Serializable {
 
     public void setDomainRevision(Long domainRevision) {
         this.domainRevision = domainRevision;
+    }
+
+    public Long getPartyRevision() {
+        return this.partyRevision;
+    }
+
+    public void setPartyRevision(Long partyRevision) {
+        this.partyRevision = partyRevision;
     }
 
     public Paymentstatus getStatus() {
@@ -609,6 +621,12 @@ public class Payment implements Serializable {
         }
         else if (!domainRevision.equals(other.domainRevision))
             return false;
+        if (partyRevision == null) {
+            if (other.partyRevision != null)
+                return false;
+        }
+        else if (!partyRevision.equals(other.partyRevision))
+            return false;
         if (status == null) {
             if (other.status != null)
                 return false;
@@ -823,6 +841,7 @@ public class Payment implements Serializable {
         result = prime * result + ((this.partyId == null) ? 0 : this.partyId.hashCode());
         result = prime * result + ((this.shopId == null) ? 0 : this.shopId.hashCode());
         result = prime * result + ((this.domainRevision == null) ? 0 : this.domainRevision.hashCode());
+        result = prime * result + ((this.partyRevision == null) ? 0 : this.partyRevision.hashCode());
         result = prime * result + ((this.status == null) ? 0 : this.status.hashCode());
         result = prime * result + ((this.statusCancelledReason == null) ? 0 : this.statusCancelledReason.hashCode());
         result = prime * result + ((this.statusCapturedReason == null) ? 0 : this.statusCapturedReason.hashCode());
@@ -872,6 +891,7 @@ public class Payment implements Serializable {
         sb.append(", ").append(partyId);
         sb.append(", ").append(shopId);
         sb.append(", ").append(domainRevision);
+        sb.append(", ").append(partyRevision);
         sb.append(", ").append(status);
         sb.append(", ").append(statusCancelledReason);
         sb.append(", ").append(statusCapturedReason);

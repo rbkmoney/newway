@@ -17,6 +17,8 @@ import com.rbkmoney.newway.util.ShopUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Component
@@ -35,6 +37,7 @@ public class ShopAccountCreatedHandler extends AbstractPartyManagementHandler {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event) {
         long eventId = event.getId();
         change.getClaimCreated().getStatus().getAccepted().getEffects().stream()

@@ -67,6 +67,7 @@ CREATE TABLE nw.payment (
   party_id                           CHARACTER VARYING           NOT NULL,
   shop_id                            CHARACTER VARYING           NOT NULL,
   domain_revision                    BIGINT                      NOT NULL,
+  party_revision                     BIGINT,
   status                             nw.PaymentStatus            NOT NULL,
   status_cancelled_reason            CHARACTER VARYING,
   status_captured_reason             CHARACTER VARYING,

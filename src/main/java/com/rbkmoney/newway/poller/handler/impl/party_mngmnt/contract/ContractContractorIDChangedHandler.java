@@ -19,6 +19,8 @@ import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractPartyManagem
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -43,6 +45,7 @@ public class ContractContractorIDChangedHandler extends AbstractPartyManagementH
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event) {
         long eventId = event.getId();
         change.getClaimCreated().getStatus().getAccepted().getEffects().stream()

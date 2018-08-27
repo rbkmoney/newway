@@ -19,6 +19,8 @@ import com.rbkmoney.newway.util.CashFlowUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -42,6 +44,7 @@ public class InvoicePaymentCashFlowChangedHandler extends AbstractInvoicingHandl
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(InvoiceChange change, Event event) {
         InvoicePaymentChange invoicePaymentChange = change.getInvoicePaymentChange();
         String invoiceId = event.getSource().getInvoiceId();
@@ -52,6 +55,7 @@ public class InvoicePaymentCashFlowChangedHandler extends AbstractInvoicingHandl
             throw new NotFoundException(String.format("Payment not found, invoiceId='%s', paymentId='%s'",
                     invoiceId, paymentId));
         }
+        paymentSource.setId(null);
         paymentSource.setEventId(event.getId());
         paymentSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         paymentDao.update(invoiceId, paymentId);

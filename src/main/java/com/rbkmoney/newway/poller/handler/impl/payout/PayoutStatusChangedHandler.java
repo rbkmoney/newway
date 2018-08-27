@@ -17,6 +17,8 @@ import com.rbkmoney.newway.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -40,6 +42,7 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PayoutChange change, Event event) {
         long eventId = event.getId();
         PayoutStatusChanged payoutStatusChanged = change.getPayoutStatusChanged();

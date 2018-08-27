@@ -16,6 +16,8 @@ import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractPartyManagem
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -37,6 +39,7 @@ public class PartyCreatedHandler extends AbstractPartyManagementHandler {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event) {
         long eventId = event.getId();
         PartyCreated partyCreated = change.getPartyCreated();

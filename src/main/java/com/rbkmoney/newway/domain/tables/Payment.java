@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payment extends TableImpl<PaymentRecord> {
 
-    private static final long serialVersionUID = -1512605995;
+    private static final long serialVersionUID = -84017681;
 
     /**
      * The reference instance of <code>nw.payment</code>
@@ -100,6 +100,11 @@ public class Payment extends TableImpl<PaymentRecord> {
      * The column <code>nw.payment.domain_revision</code>.
      */
     public final TableField<PaymentRecord, Long> DOMAIN_REVISION = createField("domain_revision", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>nw.payment.party_revision</code>.
+     */
+    public final TableField<PaymentRecord, Long> PARTY_REVISION = createField("party_revision", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>nw.payment.status</code>.

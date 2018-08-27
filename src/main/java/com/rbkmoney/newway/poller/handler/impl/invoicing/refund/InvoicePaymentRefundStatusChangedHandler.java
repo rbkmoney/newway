@@ -24,6 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -50,6 +52,7 @@ public class InvoicePaymentRefundStatusChangedHandler extends AbstractInvoicingH
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(InvoiceChange invoiceChange, Event event) {
         long eventId = event.getId();
         String invoiceId = event.getSource().getInvoiceId();

@@ -16,6 +16,8 @@ import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractPartyManagem
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class ShopPayoutSheduleChangedHandler extends AbstractPartyManagementHandler {
@@ -33,6 +35,7 @@ public class ShopPayoutSheduleChangedHandler extends AbstractPartyManagementHand
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event) {
         long eventId = event.getId();
         change.getClaimCreated().getStatus().getAccepted().getEffects().stream()

@@ -20,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,10 +43,11 @@ public class InvoiceCreatedHandler extends AbstractInvoicingHandler {
     public InvoiceCreatedHandler(InvoiceDao invoiceDao, InvoiceCartDao invoiceCartDao) {
         this.invoiceDao = invoiceDao;
         this.invoiceCartDao = invoiceCartDao;
-        this.filter = new PathConditionFilter(new PathConditionRule("invoice", new IsNullCondition().not()));
+        this.filter = new PathConditionFilter(new PathConditionRule("invoice_created", new IsNullCondition().not()));
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(InvoiceChange invoiceChange, Event event) throws DaoException {
         Invoice invoice = invoiceChange.getInvoiceCreated().getInvoice();
         long eventId = event.getId();

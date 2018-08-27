@@ -17,10 +17,7 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
 import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
 import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
-import com.rbkmoney.newway.domain.enums.Payertype;
-import com.rbkmoney.newway.domain.enums.Paymentchangetype;
-import com.rbkmoney.newway.domain.enums.Paymentstatus;
-import com.rbkmoney.newway.domain.enums.Paymenttooltype;
+import com.rbkmoney.newway.domain.enums.*;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
@@ -31,6 +28,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -60,6 +59,7 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(InvoiceChange invoiceChange, Event event) {
         InvoicePaymentStarted invoicePaymentStarted = invoiceChange
                 .getInvoicePaymentChange()
@@ -88,6 +88,9 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
         payment.setPartyId(invoice.getPartyId());
         payment.setShopId(invoice.getShopId());
         payment.setDomainRevision(invoicePayment.getDomainRevision());
+        if (invoicePayment.isSetPartyRevision()) {
+            payment.setPartyRevision(invoicePayment.getPartyRevision());
+        }
         Paymentstatus status = TypeUtil.toEnumField(invoicePayment.getStatus().getSetField().getFieldName(), Paymentstatus.class);
         if (status == null) {
             throw new IllegalArgumentException("Illegal payment status: " + invoicePayment.getStatus());
@@ -124,7 +127,15 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
             fillPaymentTool(payment, customer.getPaymentTool());
             fillContactInfo(payment, customer.getContactInfo());
         }
-
+        Paymentflowtype paymentflowtype = TypeUtil.toEnumField(invoicePayment.getFlow().getSetField().getFieldName(), Paymentflowtype.class);
+        if (paymentflowtype == null) {
+            throw new IllegalArgumentException("Illegal payment flow type: " + invoicePayment.getPayer());
+        }
+        payment.setPaymentFlowType(paymentflowtype);
+        if (invoicePayment.getFlow().isSetHold()) {
+            payment.setPaymentFlowHeldUntil(TypeUtil.stringToLocalDateTime(invoicePayment.getFlow().getHold().getHeldUntil()));
+            payment.setPaymentFlowOnHoldExpiration(invoicePayment.getFlow().getHold().getOnHoldExpiration().name());
+        }
         if (invoicePaymentStarted.isSetRoute()) {
             payment.setRouteProviderId(invoicePaymentStarted.getRoute().getProvider().getId());
             payment.setRouteTerminalId(invoicePaymentStarted.getRoute().getTerminal().getId());
@@ -151,7 +162,9 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
             payment.setPayerBankCardPaymentSystem(paymentTool.getBankCard().getPaymentSystem().name());
             payment.setPayerBankCardBin(paymentTool.getBankCard().getBin());
             payment.setPayerBankCardMaskedPan(paymentTool.getBankCard().getMaskedPan());
-            payment.setPayerBankCardTokenProvider(paymentTool.getBankCard().getTokenProvider().name());
+            if (paymentTool.getBankCard().isSetTokenProvider()) {
+                payment.setPayerBankCardTokenProvider(paymentTool.getBankCard().getTokenProvider().name());
+            }
         } else if (paymentTool.isSetPaymentTerminal()) {
             payment.setPayerPaymentTerminalType(paymentTool.getPaymentTerminal().getTerminalType().name());
         } else if (paymentTool.isSetDigitalWallet()) {
