@@ -57,7 +57,7 @@ public class PartyCreatedHandler extends AbstractPartyManagementHandler {
         party.setBlockingUnblockedSince(partyCreatedAt);
         party.setSuspension(Suspension.active);
         party.setSuspensionActiveSince(partyCreatedAt);
-        party.setRevision(1L);
+        party.setRevision(0L);
         party.setRevisionChangedAt(partyCreatedAt);
         partyDao.save(party);
         log.info("Party has been saved, eventId={}, partyId={}", eventId, partyId);
