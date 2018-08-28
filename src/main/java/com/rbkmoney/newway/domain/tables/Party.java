@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Party extends TableImpl<PartyRecord> {
 
-    private static final long serialVersionUID = -1694050587;
+    private static final long serialVersionUID = 458135774;
 
     /**
      * The reference instance of <code>nw.party</code>
@@ -146,7 +146,7 @@ public class Party extends TableImpl<PartyRecord> {
     /**
      * The column <code>nw.party.wtime</code>.
      */
-    public final TableField<PartyRecord, LocalDateTime> WTIME = createField("wtime", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<PartyRecord, LocalDateTime> WTIME = createField("wtime", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("timezone('utc'::text, now())", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>nw.party.current</code>.

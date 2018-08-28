@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Adjustment extends TableImpl<AdjustmentRecord> {
 
-    private static final long serialVersionUID = 2019195339;
+    private static final long serialVersionUID = 825415316;
 
     /**
      * The reference instance of <code>nw.adjustment</code>
@@ -125,7 +125,7 @@ public class Adjustment extends TableImpl<AdjustmentRecord> {
     /**
      * The column <code>nw.adjustment.wtime</code>.
      */
-    public final TableField<AdjustmentRecord, LocalDateTime> WTIME = createField("wtime", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<AdjustmentRecord, LocalDateTime> WTIME = createField("wtime", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("timezone('utc'::text, now())", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>nw.adjustment.current</code>.

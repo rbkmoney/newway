@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Invoice extends TableImpl<InvoiceRecord> {
 
-    private static final long serialVersionUID = -1483288930;
+    private static final long serialVersionUID = -1021857917;
 
     /**
      * The reference instance of <code>nw.invoice</code>
@@ -145,7 +145,7 @@ public class Invoice extends TableImpl<InvoiceRecord> {
     /**
      * The column <code>nw.invoice.wtime</code>.
      */
-    public final TableField<InvoiceRecord, LocalDateTime> WTIME = createField("wtime", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<InvoiceRecord, LocalDateTime> WTIME = createField("wtime", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("timezone('utc'::text, now())", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>nw.invoice.current</code>.

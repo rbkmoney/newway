@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Contractor extends TableImpl<ContractorRecord> {
 
-    private static final long serialVersionUID = 1769957979;
+    private static final long serialVersionUID = 1923765556;
 
     /**
      * The reference instance of <code>nw.contractor</code>
@@ -217,7 +217,7 @@ public class Contractor extends TableImpl<ContractorRecord> {
     /**
      * The column <code>nw.contractor.wtime</code>.
      */
-    public final TableField<ContractorRecord, LocalDateTime> WTIME = createField("wtime", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
+    public final TableField<ContractorRecord, LocalDateTime> WTIME = createField("wtime", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false).defaultValue(org.jooq.impl.DSL.field("timezone('utc'::text, now())", org.jooq.impl.SQLDataType.LOCALDATETIME)), this, "");
 
     /**
      * The column <code>nw.contractor.current</code>.

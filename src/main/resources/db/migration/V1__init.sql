@@ -23,7 +23,7 @@ CREATE TABLE nw.invoice(
   currency_code            CHARACTER VARYING NOT NULL,
   context                  BYTEA,
   template_id              CHARACTER VARYING,
-  wtime                    TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  wtime                    TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() at time zone 'utc'),
   current                  BOOLEAN NOT NULL DEFAULT TRUE,
   CONSTRAINT invoice_pkey PRIMARY KEY (id)
 );
@@ -99,7 +99,7 @@ CREATE TABLE nw.payment (
   risk_score                         nw.risk_score,
   route_provider_id                  INT,
   route_terminal_id                  INT,
-  wtime                              TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  wtime                              TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() at time zone 'utc'),
   current                            BOOLEAN NOT NULL DEFAULT TRUE,
   CONSTRAINT payment_pkey PRIMARY KEY (id)
 );
@@ -156,7 +156,7 @@ CREATE TABLE nw.refund (
   amount                             BIGINT,
   currency_code                      CHARACTER VARYING,
   reason                             CHARACTER VARYING,
-  wtime                              TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  wtime                              TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() at time zone 'utc'),
   current                            BOOLEAN NOT NULL DEFAULT TRUE,
   CONSTRAINT refund_pkey PRIMARY KEY (id)
 );
@@ -187,7 +187,7 @@ CREATE TABLE nw.adjustment (
   status_captured_at                 TIMESTAMP WITHOUT TIME ZONE,
   status_cancelled_at                TIMESTAMP WITHOUT TIME ZONE,
   reason                             CHARACTER VARYING           NOT NULL,
-  wtime                              TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  wtime                              TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() at time zone 'utc'),
   current                            BOOLEAN NOT NULL DEFAULT TRUE,
   CONSTRAINT adjustment_pkey PRIMARY KEY (id)
 );
@@ -225,7 +225,7 @@ CREATE TABLE nw.party(
   revision_changed_at                TIMESTAMP WITHOUT TIME ZONE,
   party_meta_set_ns                  CHARACTER VARYING,
   party_meta_set_data_json           CHARACTER VARYING,
-  wtime                              TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  wtime                              TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() at time zone 'utc'),
   current                            BOOLEAN NOT NULL DEFAULT TRUE,
   CONSTRAINT party_pkey PRIMARY KEY (id)
 );
@@ -266,7 +266,7 @@ CREATE TABLE nw.contract(
   report_act_signer_doc_power_of_attorney_legal_agreement_id CHARACTER VARYING,
   report_act_signer_doc_power_of_attorney_valid_until        TIMESTAMP WITHOUT TIME ZONE,
   contractor_id                                              CHARACTER VARYING,
-  wtime                                                      TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  wtime                                                      TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() at time zone 'utc'),
   current                                                    BOOLEAN NOT NULL DEFAULT TRUE,
   CONSTRAINT contract_pkey PRIMARY KEY (id)
 );
@@ -355,7 +355,7 @@ CREATE TABLE nw.contractor(
   russian_private_entity_middle_name              CHARACTER VARYING,
   russian_private_entity_phone_number             CHARACTER VARYING,
   russian_private_entity_email                    CHARACTER VARYING,
-  wtime                                           TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  wtime                                           TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() at time zone 'utc'),
   current                                         BOOLEAN NOT NULL DEFAULT TRUE,
   CONSTRAINT contractor_pkey PRIMARY KEY (id)
 );
@@ -393,7 +393,7 @@ CREATE TABLE nw.shop(
   contract_id                                     CHARACTER VARYING           NOT NULL,
   payout_tool_id                                  CHARACTER VARYING,
   payout_schedule_id                              INT,
-  wtime                                           TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  wtime                                           TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() at time zone 'utc'),
   current                                         BOOLEAN NOT NULL DEFAULT TRUE,
   CONSTRAINT shop_pkey PRIMARY KEY (id)
 );
@@ -459,7 +459,7 @@ CREATE TABLE nw.payout(
   type_account_legal_agreement_valid_until                   TIMESTAMP WITHOUT TIME ZONE,
   initiator_id                                               CHARACTER VARYING           NOT NULL,
   initiator_type                                             nw.user_type                NOT NULL,
-  wtime                                                      TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
+  wtime                                                      TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() at time zone 'utc'),
   current                                                    BOOLEAN NOT NULL DEFAULT TRUE,
   CONSTRAINT payout_pkey PRIMARY KEY (id)
 );
