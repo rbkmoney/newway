@@ -54,7 +54,7 @@ public class PayoutDaoImpl extends AbstractGenericDao implements PayoutDao {
     }
 
     @Override
-    public void update(String payoutId) throws DaoException {
+    public void updateNotCurrent(String payoutId) throws DaoException {
         Query query = getDslContext().update(PAYOUT).set(PAYOUT.CURRENT, false)
                 .where(PAYOUT.PAYOUT_ID.eq(payoutId).and(PAYOUT.CURRENT));
         executeOne(query);

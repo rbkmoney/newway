@@ -48,7 +48,7 @@ public class RefundDaoImpl extends AbstractGenericDao implements RefundDao {
     }
 
     @Override
-    public void update(String invoiceId, String paymentId, String refundId) throws DaoException {
+    public void updateNotCurrent(String invoiceId, String paymentId, String refundId) throws DaoException {
         Query query = getDslContext().update(REFUND).set(REFUND.CURRENT, false)
                 .where(REFUND.INVOICE_ID.eq(invoiceId)
                         .and(REFUND.PAYMENT_ID.eq(paymentId)

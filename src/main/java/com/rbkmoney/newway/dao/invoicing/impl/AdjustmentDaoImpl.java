@@ -48,7 +48,7 @@ public class AdjustmentDaoImpl extends AbstractGenericDao implements AdjustmentD
     }
 
     @Override
-    public void update(String invoiceId, String paymentId, String adjustmentId) throws DaoException {
+    public void updateNotCurrent(String invoiceId, String paymentId, String adjustmentId) throws DaoException {
         Query query = getDslContext().update(ADJUSTMENT).set(ADJUSTMENT.CURRENT, false)
                 .where(ADJUSTMENT.INVOICE_ID.eq(invoiceId)
                         .and(ADJUSTMENT.PAYMENT_ID.eq(paymentId)

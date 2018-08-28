@@ -4,8 +4,8 @@
 package com.rbkmoney.newway.domain.tables.pojos;
 
 
-import com.rbkmoney.newway.domain.enums.Contractstatus;
-import com.rbkmoney.newway.domain.enums.Representativedocument;
+import com.rbkmoney.newway.domain.enums.ContractStatus;
+import com.rbkmoney.newway.domain.enums.RepresentativeDocument;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -26,7 +26,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Contract implements Serializable {
 
-    private static final long serialVersionUID = 892803761;
+    private static final long serialVersionUID = 1026713137;
 
     private Long                   id;
     private Long                   eventId;
@@ -37,7 +37,7 @@ public class Contract implements Serializable {
     private LocalDateTime          createdAt;
     private LocalDateTime          validSince;
     private LocalDateTime          validUntil;
-    private Contractstatus         status;
+    private ContractStatus         status;
     private LocalDateTime          statusTerminatedAt;
     private Integer                termsId;
     private LocalDateTime          legalAgreementSignedAt;
@@ -46,7 +46,7 @@ public class Contract implements Serializable {
     private Integer                reportActScheduleId;
     private String                 reportActSignerPosition;
     private String                 reportActSignerFullName;
-    private Representativedocument reportActSignerDocument;
+    private RepresentativeDocument reportActSignerDocument;
     private LocalDateTime          reportActSignerDocPowerOfAttorneySignedAt;
     private String                 reportActSignerDocPowerOfAttorneyLegalAgreementId;
     private LocalDateTime          reportActSignerDocPowerOfAttorneyValidUntil;
@@ -94,7 +94,7 @@ public class Contract implements Serializable {
         LocalDateTime          createdAt,
         LocalDateTime          validSince,
         LocalDateTime          validUntil,
-        Contractstatus         status,
+        ContractStatus         status,
         LocalDateTime          statusTerminatedAt,
         Integer                termsId,
         LocalDateTime          legalAgreementSignedAt,
@@ -103,7 +103,7 @@ public class Contract implements Serializable {
         Integer                reportActScheduleId,
         String                 reportActSignerPosition,
         String                 reportActSignerFullName,
-        Representativedocument reportActSignerDocument,
+        RepresentativeDocument reportActSignerDocument,
         LocalDateTime          reportActSignerDocPowerOfAttorneySignedAt,
         String                 reportActSignerDocPowerOfAttorneyLegalAgreementId,
         LocalDateTime          reportActSignerDocPowerOfAttorneyValidUntil,
@@ -210,11 +210,11 @@ public class Contract implements Serializable {
         this.validUntil = validUntil;
     }
 
-    public Contractstatus getStatus() {
+    public ContractStatus getStatus() {
         return this.status;
     }
 
-    public void setStatus(Contractstatus status) {
+    public void setStatus(ContractStatus status) {
         this.status = status;
     }
 
@@ -282,11 +282,11 @@ public class Contract implements Serializable {
         this.reportActSignerFullName = reportActSignerFullName;
     }
 
-    public Representativedocument getReportActSignerDocument() {
+    public RepresentativeDocument getReportActSignerDocument() {
         return this.reportActSignerDocument;
     }
 
-    public void setReportActSignerDocument(Representativedocument reportActSignerDocument) {
+    public void setReportActSignerDocument(RepresentativeDocument reportActSignerDocument) {
         this.reportActSignerDocument = reportActSignerDocument;
     }
 

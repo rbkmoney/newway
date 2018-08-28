@@ -10,7 +10,7 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
 import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
-import com.rbkmoney.newway.domain.enums.Paymentchangetype;
+import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.NotFoundException;
@@ -49,18 +49,19 @@ public class InvoicePaymentCashFlowChangedHandler extends AbstractInvoicingHandl
         InvoicePaymentChange invoicePaymentChange = change.getInvoicePaymentChange();
         String invoiceId = event.getSource().getInvoiceId();
         String paymentId = invoicePaymentChange.getId();
-        log.info("Start handling payemnt cashflow change, eventId='{}', invoiceId='{}', paymentId='{}'", event.getId(), invoiceId, paymentId);
+        log.info("Start handling payment cashflow change, eventId='{}', invoiceId='{}', paymentId='{}'", event.getId(), invoiceId, paymentId);
         Payment paymentSource = paymentDao.get(invoiceId, paymentId);
         if (paymentSource == null) {
             throw new NotFoundException(String.format("Payment not found, invoiceId='%s', paymentId='%s'",
                     invoiceId, paymentId));
         }
         paymentSource.setId(null);
+        paymentSource.setWtime(null);
         paymentSource.setEventId(event.getId());
         paymentSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        paymentDao.update(invoiceId, paymentId);
+        paymentDao.updateNotCurrent(invoiceId, paymentId);
         long pmntId = paymentDao.save(paymentSource);
-        List<CashFlow> cashFlows = CashFlowUtil.convertCashFlows(invoicePaymentChange.getPayload().getInvoicePaymentCashFlowChanged().getCashFlow(), pmntId, Paymentchangetype.payment);
+        List<CashFlow> cashFlows = CashFlowUtil.convertCashFlows(invoicePaymentChange.getPayload().getInvoicePaymentCashFlowChanged().getCashFlow(), pmntId, PaymentChangeType.payment);
         cashFlowDao.save(cashFlows);
         log.info("Payment cashflow has been saved, eventId='{}', invoiceId='{}', paymentId='{}'", event.getId(), invoiceId, paymentId);
     }

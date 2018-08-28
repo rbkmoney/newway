@@ -6,7 +6,7 @@ package com.rbkmoney.newway.domain.tables;
 
 import com.rbkmoney.newway.domain.Keys;
 import com.rbkmoney.newway.domain.Nw;
-import com.rbkmoney.newway.domain.enums.Adjustmentstatus;
+import com.rbkmoney.newway.domain.enums.AdjustmentStatus;
 import com.rbkmoney.newway.domain.tables.records.AdjustmentRecord;
 
 import java.time.LocalDateTime;
@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Adjustment extends TableImpl<AdjustmentRecord> {
 
-    private static final long serialVersionUID = 305192427;
+    private static final long serialVersionUID = 2019195339;
 
     /**
      * The reference instance of <code>nw.adjustment</code>
@@ -105,7 +105,7 @@ public class Adjustment extends TableImpl<AdjustmentRecord> {
     /**
      * The column <code>nw.adjustment.status</code>.
      */
-    public final TableField<AdjustmentRecord, Adjustmentstatus> STATUS = createField("status", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Adjustmentstatus.class), this, "");
+    public final TableField<AdjustmentRecord, AdjustmentStatus> STATUS = createField("status", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.AdjustmentStatus.class), this, "");
 
     /**
      * The column <code>nw.adjustment.status_captured_at</code>.

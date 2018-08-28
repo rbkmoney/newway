@@ -21,7 +21,7 @@ public class ContractorDaoImplTest extends AbstractIntegrationTest {
         contractorDao.save(contractor);
         Contractor contractorGet = contractorDao.get(contractor.getContractorId());
         assertEquals(contractor, contractorGet);
-        contractorDao.update(contractor.getContractorId());
+        contractorDao.updateNotCurrent(contractor.getContractorId());
         assertNull(contractorDao.get(contractor.getContractorId()));
     }
 }

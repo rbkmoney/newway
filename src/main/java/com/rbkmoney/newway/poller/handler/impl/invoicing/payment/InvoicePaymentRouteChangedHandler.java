@@ -11,7 +11,7 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
 import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
-import com.rbkmoney.newway.domain.enums.Paymentchangetype;
+import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.NotFoundException;
@@ -60,13 +60,14 @@ public class InvoicePaymentRouteChangedHandler extends AbstractInvoicingHandler 
         }
         Long paymentSourceId = paymentSource.getId();
         paymentSource.setId(null);
+        paymentSource.setWtime(null);
         paymentSource.setEventId(event.getId());
         paymentSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         paymentSource.setRouteProviderId(paymentRoute.getProvider().getId());
         paymentSource.setRouteTerminalId(paymentRoute.getTerminal().getId());
-        paymentDao.update(invoiceId, paymentId);
+        paymentDao.updateNotCurrent(invoiceId, paymentId);
         long pmntId = paymentDao.save(paymentSource);
-        List<CashFlow> cashFlows = cashFlowDao.getByObjId(paymentSourceId, Paymentchangetype.payment);
+        List<CashFlow> cashFlows = cashFlowDao.getByObjId(paymentSourceId, PaymentChangeType.payment);
         cashFlows.forEach(pcf -> {
             pcf.setId(null);
             pcf.setObjId(pmntId);

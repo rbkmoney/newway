@@ -4,7 +4,7 @@
 package com.rbkmoney.newway.domain.tables.pojos;
 
 
-import com.rbkmoney.newway.domain.enums.Payouttoolinfo;
+import com.rbkmoney.newway.domain.enums.PayoutToolInfo;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -25,14 +25,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PayoutTool implements Serializable {
 
-    private static final long serialVersionUID = -1978953453;
+    private static final long serialVersionUID = 1158521299;
 
     private Long           id;
     private Long           cntrctId;
     private String         payoutToolId;
     private LocalDateTime  createdAt;
     private String         currencyCode;
-    private Payouttoolinfo payoutToolInfo;
+    private PayoutToolInfo payoutToolInfo;
     private String         payoutToolInfoRussianBankAccount;
     private String         payoutToolInfoRussianBankName;
     private String         payoutToolInfoRussianBankPostAccount;
@@ -71,7 +71,7 @@ public class PayoutTool implements Serializable {
         String         payoutToolId,
         LocalDateTime  createdAt,
         String         currencyCode,
-        Payouttoolinfo payoutToolInfo,
+        PayoutToolInfo payoutToolInfo,
         String         payoutToolInfoRussianBankAccount,
         String         payoutToolInfoRussianBankName,
         String         payoutToolInfoRussianBankPostAccount,
@@ -141,11 +141,11 @@ public class PayoutTool implements Serializable {
         this.currencyCode = currencyCode;
     }
 
-    public Payouttoolinfo getPayoutToolInfo() {
+    public PayoutToolInfo getPayoutToolInfo() {
         return this.payoutToolInfo;
     }
 
-    public void setPayoutToolInfo(Payouttoolinfo payoutToolInfo) {
+    public void setPayoutToolInfo(PayoutToolInfo payoutToolInfo) {
         this.payoutToolInfo = payoutToolInfo;
     }
 

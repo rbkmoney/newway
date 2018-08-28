@@ -4,11 +4,11 @@
 package com.rbkmoney.newway.domain.tables.pojos;
 
 
-import com.rbkmoney.newway.domain.enums.Payertype;
-import com.rbkmoney.newway.domain.enums.Paymentflowtype;
-import com.rbkmoney.newway.domain.enums.Paymentstatus;
-import com.rbkmoney.newway.domain.enums.Paymenttooltype;
-import com.rbkmoney.newway.domain.enums.Riskscore;
+import com.rbkmoney.newway.domain.enums.PayerType;
+import com.rbkmoney.newway.domain.enums.PaymentFlowType;
+import com.rbkmoney.newway.domain.enums.PaymentStatus;
+import com.rbkmoney.newway.domain.enums.PaymentToolType;
+import com.rbkmoney.newway.domain.enums.RiskScore;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -30,7 +30,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payment implements Serializable {
 
-    private static final long serialVersionUID = -909457789;
+    private static final long serialVersionUID = -1965756637;
 
     private Long            id;
     private Long            eventId;
@@ -42,14 +42,14 @@ public class Payment implements Serializable {
     private String          shopId;
     private Long            domainRevision;
     private Long            partyRevision;
-    private Paymentstatus   status;
+    private PaymentStatus   status;
     private String          statusCancelledReason;
     private String          statusCapturedReason;
     private String          statusFailedFailure;
     private Long            amount;
     private String          currencyCode;
-    private Payertype       payerType;
-    private Paymenttooltype payerPaymentToolType;
+    private PayerType       payerType;
+    private PaymentToolType payerPaymentToolType;
     private String          payerBankCardToken;
     private String          payerBankCardPaymentSystem;
     private String          payerBankCardBin;
@@ -67,10 +67,10 @@ public class Payment implements Serializable {
     private String          payerCustomerBindingId;
     private String          payerCustomerRecPaymentToolId;
     private byte[]          context;
-    private Paymentflowtype paymentFlowType;
+    private PaymentFlowType paymentFlowType;
     private String          paymentFlowOnHoldExpiration;
     private LocalDateTime   paymentFlowHeldUntil;
-    private Riskscore       riskScore;
+    private RiskScore       riskScore;
     private Integer         routeProviderId;
     private Integer         routeTerminalId;
     private LocalDateTime   wtime;
@@ -135,14 +135,14 @@ public class Payment implements Serializable {
         String          shopId,
         Long            domainRevision,
         Long            partyRevision,
-        Paymentstatus   status,
+        PaymentStatus   status,
         String          statusCancelledReason,
         String          statusCapturedReason,
         String          statusFailedFailure,
         Long            amount,
         String          currencyCode,
-        Payertype       payerType,
-        Paymenttooltype payerPaymentToolType,
+        PayerType       payerType,
+        PaymentToolType payerPaymentToolType,
         String          payerBankCardToken,
         String          payerBankCardPaymentSystem,
         String          payerBankCardBin,
@@ -160,10 +160,10 @@ public class Payment implements Serializable {
         String          payerCustomerBindingId,
         String          payerCustomerRecPaymentToolId,
         byte[]          context,
-        Paymentflowtype paymentFlowType,
+        PaymentFlowType paymentFlowType,
         String          paymentFlowOnHoldExpiration,
         LocalDateTime   paymentFlowHeldUntil,
-        Riskscore       riskScore,
+        RiskScore       riskScore,
         Integer         routeProviderId,
         Integer         routeTerminalId,
         LocalDateTime   wtime,
@@ -294,11 +294,11 @@ public class Payment implements Serializable {
         this.partyRevision = partyRevision;
     }
 
-    public Paymentstatus getStatus() {
+    public PaymentStatus getStatus() {
         return this.status;
     }
 
-    public void setStatus(Paymentstatus status) {
+    public void setStatus(PaymentStatus status) {
         this.status = status;
     }
 
@@ -342,19 +342,19 @@ public class Payment implements Serializable {
         this.currencyCode = currencyCode;
     }
 
-    public Payertype getPayerType() {
+    public PayerType getPayerType() {
         return this.payerType;
     }
 
-    public void setPayerType(Payertype payerType) {
+    public void setPayerType(PayerType payerType) {
         this.payerType = payerType;
     }
 
-    public Paymenttooltype getPayerPaymentToolType() {
+    public PaymentToolType getPayerPaymentToolType() {
         return this.payerPaymentToolType;
     }
 
-    public void setPayerPaymentToolType(Paymenttooltype payerPaymentToolType) {
+    public void setPayerPaymentToolType(PaymentToolType payerPaymentToolType) {
         this.payerPaymentToolType = payerPaymentToolType;
     }
 
@@ -494,11 +494,11 @@ public class Payment implements Serializable {
         this.context = context;
     }
 
-    public Paymentflowtype getPaymentFlowType() {
+    public PaymentFlowType getPaymentFlowType() {
         return this.paymentFlowType;
     }
 
-    public void setPaymentFlowType(Paymentflowtype paymentFlowType) {
+    public void setPaymentFlowType(PaymentFlowType paymentFlowType) {
         this.paymentFlowType = paymentFlowType;
     }
 
@@ -518,11 +518,11 @@ public class Payment implements Serializable {
         this.paymentFlowHeldUntil = paymentFlowHeldUntil;
     }
 
-    public Riskscore getRiskScore() {
+    public RiskScore getRiskScore() {
         return this.riskScore;
     }
 
-    public void setRiskScore(Riskscore riskScore) {
+    public void setRiskScore(RiskScore riskScore) {
         this.riskScore = riskScore;
     }
 

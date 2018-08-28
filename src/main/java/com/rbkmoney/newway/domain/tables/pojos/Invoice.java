@@ -4,7 +4,7 @@
 package com.rbkmoney.newway.domain.tables.pojos;
 
 
-import com.rbkmoney.newway.domain.enums.Invoicestatus;
+import com.rbkmoney.newway.domain.enums.InvoiceStatus;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -26,7 +26,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Invoice implements Serializable {
 
-    private static final long serialVersionUID = 1890278354;
+    private static final long serialVersionUID = 189542386;
 
     private Long          id;
     private Long          eventId;
@@ -36,7 +36,7 @@ public class Invoice implements Serializable {
     private String        shopId;
     private Long          partyRevision;
     private LocalDateTime createdAt;
-    private Invoicestatus status;
+    private InvoiceStatus status;
     private String        statusCancelledDetails;
     private String        statusFulfilledDetails;
     private String        detailsProduct;
@@ -83,7 +83,7 @@ public class Invoice implements Serializable {
         String        shopId,
         Long          partyRevision,
         LocalDateTime createdAt,
-        Invoicestatus status,
+        InvoiceStatus status,
         String        statusCancelledDetails,
         String        statusFulfilledDetails,
         String        detailsProduct,
@@ -182,11 +182,11 @@ public class Invoice implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public Invoicestatus getStatus() {
+    public InvoiceStatus getStatus() {
         return this.status;
     }
 
-    public void setStatus(Invoicestatus status) {
+    public void setStatus(InvoiceStatus status) {
         this.status = status;
     }
 

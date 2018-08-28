@@ -11,7 +11,7 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.party.iface.ContractAdjustmentDao;
 import com.rbkmoney.newway.dao.party.iface.ContractDao;
 import com.rbkmoney.newway.dao.party.iface.PayoutToolDao;
-import com.rbkmoney.newway.domain.enums.Contractstatus;
+import com.rbkmoney.newway.domain.enums.ContractStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Contract;
 import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractPartyManagementHandler;
 import com.rbkmoney.newway.util.ContractUtil;
@@ -69,7 +69,7 @@ public class ContractCreatedHandler extends AbstractPartyManagementHandler {
             if (contractCreated.isSetValidUntil()) {
                 contract.setValidUntil(TypeUtil.stringToLocalDateTime(contractCreated.getValidUntil()));
             }
-            Contractstatus status = TypeUtil.toEnumField(contractCreated.getStatus().getSetField().getFieldName(), Contractstatus.class);
+            ContractStatus status = TypeUtil.toEnumField(contractCreated.getStatus().getSetField().getFieldName(), ContractStatus.class);
             if (status == null) {
                 throw new IllegalArgumentException("Illegal contract status: "+contractCreated.getStatus());
             }

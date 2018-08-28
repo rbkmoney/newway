@@ -4,9 +4,9 @@
 package com.rbkmoney.newway.domain.tables.pojos;
 
 
-import com.rbkmoney.newway.domain.enums.Adjustmentcashflowtype;
-import com.rbkmoney.newway.domain.enums.Cashflowaccount;
-import com.rbkmoney.newway.domain.enums.Paymentchangetype;
+import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
+import com.rbkmoney.newway.domain.enums.CashFlowAccount;
+import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 
 import java.io.Serializable;
 
@@ -26,16 +26,16 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CashFlow implements Serializable {
 
-    private static final long serialVersionUID = 2015911549;
+    private static final long serialVersionUID = 1304823197;
 
     private Long                   id;
     private Long                   objId;
-    private Paymentchangetype      objType;
-    private Adjustmentcashflowtype adjFlowType;
-    private Cashflowaccount        sourceAccountType;
+    private PaymentChangeType      objType;
+    private AdjustmentCashFlowType adjFlowType;
+    private CashFlowAccount        sourceAccountType;
     private String                 sourceAccountTypeValue;
     private Long                   sourceAccountId;
-    private Cashflowaccount        destinationAccountType;
+    private CashFlowAccount        destinationAccountType;
     private String                 destinationAccountTypeValue;
     private Long                   destinationAccountId;
     private Long                   amount;
@@ -63,12 +63,12 @@ public class CashFlow implements Serializable {
     public CashFlow(
         Long                   id,
         Long                   objId,
-        Paymentchangetype      objType,
-        Adjustmentcashflowtype adjFlowType,
-        Cashflowaccount        sourceAccountType,
+        PaymentChangeType      objType,
+        AdjustmentCashFlowType adjFlowType,
+        CashFlowAccount        sourceAccountType,
         String                 sourceAccountTypeValue,
         Long                   sourceAccountId,
-        Cashflowaccount        destinationAccountType,
+        CashFlowAccount        destinationAccountType,
         String                 destinationAccountTypeValue,
         Long                   destinationAccountId,
         Long                   amount,
@@ -106,27 +106,27 @@ public class CashFlow implements Serializable {
         this.objId = objId;
     }
 
-    public Paymentchangetype getObjType() {
+    public PaymentChangeType getObjType() {
         return this.objType;
     }
 
-    public void setObjType(Paymentchangetype objType) {
+    public void setObjType(PaymentChangeType objType) {
         this.objType = objType;
     }
 
-    public Adjustmentcashflowtype getAdjFlowType() {
+    public AdjustmentCashFlowType getAdjFlowType() {
         return this.adjFlowType;
     }
 
-    public void setAdjFlowType(Adjustmentcashflowtype adjFlowType) {
+    public void setAdjFlowType(AdjustmentCashFlowType adjFlowType) {
         this.adjFlowType = adjFlowType;
     }
 
-    public Cashflowaccount getSourceAccountType() {
+    public CashFlowAccount getSourceAccountType() {
         return this.sourceAccountType;
     }
 
-    public void setSourceAccountType(Cashflowaccount sourceAccountType) {
+    public void setSourceAccountType(CashFlowAccount sourceAccountType) {
         this.sourceAccountType = sourceAccountType;
     }
 
@@ -146,11 +146,11 @@ public class CashFlow implements Serializable {
         this.sourceAccountId = sourceAccountId;
     }
 
-    public Cashflowaccount getDestinationAccountType() {
+    public CashFlowAccount getDestinationAccountType() {
         return this.destinationAccountType;
     }
 
-    public void setDestinationAccountType(Cashflowaccount destinationAccountType) {
+    public void setDestinationAccountType(CashFlowAccount destinationAccountType) {
         this.destinationAccountType = destinationAccountType;
     }
 

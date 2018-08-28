@@ -6,8 +6,8 @@ package com.rbkmoney.newway.domain.tables;
 
 import com.rbkmoney.newway.domain.Keys;
 import com.rbkmoney.newway.domain.Nw;
-import com.rbkmoney.newway.domain.enums.Contractstatus;
-import com.rbkmoney.newway.domain.enums.Representativedocument;
+import com.rbkmoney.newway.domain.enums.ContractStatus;
+import com.rbkmoney.newway.domain.enums.RepresentativeDocument;
 import com.rbkmoney.newway.domain.tables.records.ContractRecord;
 
 import java.time.LocalDateTime;
@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Contract extends TableImpl<ContractRecord> {
 
-    private static final long serialVersionUID = 1587651656;
+    private static final long serialVersionUID = -441277304;
 
     /**
      * The reference instance of <code>nw.contract</code>
@@ -101,7 +101,7 @@ public class Contract extends TableImpl<ContractRecord> {
     /**
      * The column <code>nw.contract.status</code>.
      */
-    public final TableField<ContractRecord, Contractstatus> STATUS = createField("status", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Contractstatus.class), this, "");
+    public final TableField<ContractRecord, ContractStatus> STATUS = createField("status", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.ContractStatus.class), this, "");
 
     /**
      * The column <code>nw.contract.status_terminated_at</code>.
@@ -146,7 +146,7 @@ public class Contract extends TableImpl<ContractRecord> {
     /**
      * The column <code>nw.contract.report_act_signer_document</code>.
      */
-    public final TableField<ContractRecord, Representativedocument> REPORT_ACT_SIGNER_DOCUMENT = createField("report_act_signer_document", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Representativedocument.class), this, "");
+    public final TableField<ContractRecord, RepresentativeDocument> REPORT_ACT_SIGNER_DOCUMENT = createField("report_act_signer_document", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.RepresentativeDocument.class), this, "");
 
     /**
      * The column <code>nw.contract.report_act_signer_doc_power_of_attorney_signed_at</code>.

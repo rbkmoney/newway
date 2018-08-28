@@ -6,7 +6,7 @@ package com.rbkmoney.newway.domain.tables;
 
 import com.rbkmoney.newway.domain.Keys;
 import com.rbkmoney.newway.domain.Nw;
-import com.rbkmoney.newway.domain.enums.Invoicestatus;
+import com.rbkmoney.newway.domain.enums.InvoiceStatus;
 import com.rbkmoney.newway.domain.tables.records.InvoiceRecord;
 
 import java.time.LocalDateTime;
@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Invoice extends TableImpl<InvoiceRecord> {
 
-    private static final long serialVersionUID = 1600395966;
+    private static final long serialVersionUID = -1483288930;
 
     /**
      * The reference instance of <code>nw.invoice</code>
@@ -95,7 +95,7 @@ public class Invoice extends TableImpl<InvoiceRecord> {
     /**
      * The column <code>nw.invoice.status</code>.
      */
-    public final TableField<InvoiceRecord, Invoicestatus> STATUS = createField("status", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Invoicestatus.class), this, "");
+    public final TableField<InvoiceRecord, InvoiceStatus> STATUS = createField("status", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.InvoiceStatus.class), this, "");
 
     /**
      * The column <code>nw.invoice.status_cancelled_details</code>.

@@ -4,7 +4,7 @@
 package com.rbkmoney.newway.domain.tables.pojos;
 
 
-import com.rbkmoney.newway.domain.enums.Refundstatus;
+import com.rbkmoney.newway.domain.enums.RefundStatus;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Refund implements Serializable {
 
-    private static final long serialVersionUID = -994247039;
+    private static final long serialVersionUID = -426654111;
 
     private Long          id;
     private Long          eventId;
@@ -37,7 +37,7 @@ public class Refund implements Serializable {
     private String        partyId;
     private String        shopId;
     private LocalDateTime createdAt;
-    private Refundstatus  status;
+    private RefundStatus  status;
     private String        statusFailedFailure;
     private Long          amount;
     private String        currencyCode;
@@ -78,7 +78,7 @@ public class Refund implements Serializable {
         String        partyId,
         String        shopId,
         LocalDateTime createdAt,
-        Refundstatus  status,
+        RefundStatus  status,
         String        statusFailedFailure,
         Long          amount,
         String        currencyCode,
@@ -185,11 +185,11 @@ public class Refund implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public Refundstatus getStatus() {
+    public RefundStatus getStatus() {
         return this.status;
     }
 
-    public void setStatus(Refundstatus status) {
+    public void setStatus(RefundStatus status) {
         this.status = status;
     }
 

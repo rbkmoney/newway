@@ -4,11 +4,11 @@
 package com.rbkmoney.newway.domain.tables.records;
 
 
-import com.rbkmoney.newway.domain.enums.Payertype;
-import com.rbkmoney.newway.domain.enums.Paymentflowtype;
-import com.rbkmoney.newway.domain.enums.Paymentstatus;
-import com.rbkmoney.newway.domain.enums.Paymenttooltype;
-import com.rbkmoney.newway.domain.enums.Riskscore;
+import com.rbkmoney.newway.domain.enums.PayerType;
+import com.rbkmoney.newway.domain.enums.PaymentFlowType;
+import com.rbkmoney.newway.domain.enums.PaymentStatus;
+import com.rbkmoney.newway.domain.enums.PaymentToolType;
+import com.rbkmoney.newway.domain.enums.RiskScore;
 import com.rbkmoney.newway.domain.tables.Payment;
 
 import java.time.LocalDateTime;
@@ -32,7 +32,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
 
-    private static final long serialVersionUID = 1887313670;
+    private static final long serialVersionUID = 345543654;
 
     /**
      * Setter for <code>nw.payment.id</code>.
@@ -177,15 +177,15 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
     /**
      * Setter for <code>nw.payment.status</code>.
      */
-    public void setStatus(Paymentstatus value) {
+    public void setStatus(PaymentStatus value) {
         set(10, value);
     }
 
     /**
      * Getter for <code>nw.payment.status</code>.
      */
-    public Paymentstatus getStatus() {
-        return (Paymentstatus) get(10);
+    public PaymentStatus getStatus() {
+        return (PaymentStatus) get(10);
     }
 
     /**
@@ -261,29 +261,29 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
     /**
      * Setter for <code>nw.payment.payer_type</code>.
      */
-    public void setPayerType(Payertype value) {
+    public void setPayerType(PayerType value) {
         set(16, value);
     }
 
     /**
      * Getter for <code>nw.payment.payer_type</code>.
      */
-    public Payertype getPayerType() {
-        return (Payertype) get(16);
+    public PayerType getPayerType() {
+        return (PayerType) get(16);
     }
 
     /**
      * Setter for <code>nw.payment.payer_payment_tool_type</code>.
      */
-    public void setPayerPaymentToolType(Paymenttooltype value) {
+    public void setPayerPaymentToolType(PaymentToolType value) {
         set(17, value);
     }
 
     /**
      * Getter for <code>nw.payment.payer_payment_tool_type</code>.
      */
-    public Paymenttooltype getPayerPaymentToolType() {
-        return (Paymenttooltype) get(17);
+    public PaymentToolType getPayerPaymentToolType() {
+        return (PaymentToolType) get(17);
     }
 
     /**
@@ -527,15 +527,15 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
     /**
      * Setter for <code>nw.payment.payment_flow_type</code>.
      */
-    public void setPaymentFlowType(Paymentflowtype value) {
+    public void setPaymentFlowType(PaymentFlowType value) {
         set(35, value);
     }
 
     /**
      * Getter for <code>nw.payment.payment_flow_type</code>.
      */
-    public Paymentflowtype getPaymentFlowType() {
-        return (Paymentflowtype) get(35);
+    public PaymentFlowType getPaymentFlowType() {
+        return (PaymentFlowType) get(35);
     }
 
     /**
@@ -569,15 +569,15 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
     /**
      * Setter for <code>nw.payment.risk_score</code>.
      */
-    public void setRiskScore(Riskscore value) {
+    public void setRiskScore(RiskScore value) {
         set(38, value);
     }
 
     /**
      * Getter for <code>nw.payment.risk_score</code>.
      */
-    public Riskscore getRiskScore() {
-        return (Riskscore) get(38);
+    public RiskScore getRiskScore() {
+        return (RiskScore) get(38);
     }
 
     /**
@@ -662,7 +662,7 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
     /**
      * Create a detached, initialised PaymentRecord
      */
-    public PaymentRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String paymentId, LocalDateTime createdAt, String invoiceId, String partyId, String shopId, Long domainRevision, Long partyRevision, Paymentstatus status, String statusCancelledReason, String statusCapturedReason, String statusFailedFailure, Long amount, String currencyCode, Payertype payerType, Paymenttooltype payerPaymentToolType, String payerBankCardToken, String payerBankCardPaymentSystem, String payerBankCardBin, String payerBankCardMaskedPan, String payerBankCardTokenProvider, String payerPaymentTerminalType, String payerDigitalWalletProvider, String payerDigitalWalletId, String payerPaymentSessionId, String payerIpAddress, String payerFingerprint, String payerPhoneNumber, String payerEmail, String payerCustomerId, String payerCustomerBindingId, String payerCustomerRecPaymentToolId, byte[] context, Paymentflowtype paymentFlowType, String paymentFlowOnHoldExpiration, LocalDateTime paymentFlowHeldUntil, Riskscore riskScore, Integer routeProviderId, Integer routeTerminalId, LocalDateTime wtime, Boolean current) {
+    public PaymentRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String paymentId, LocalDateTime createdAt, String invoiceId, String partyId, String shopId, Long domainRevision, Long partyRevision, PaymentStatus status, String statusCancelledReason, String statusCapturedReason, String statusFailedFailure, Long amount, String currencyCode, PayerType payerType, PaymentToolType payerPaymentToolType, String payerBankCardToken, String payerBankCardPaymentSystem, String payerBankCardBin, String payerBankCardMaskedPan, String payerBankCardTokenProvider, String payerPaymentTerminalType, String payerDigitalWalletProvider, String payerDigitalWalletId, String payerPaymentSessionId, String payerIpAddress, String payerFingerprint, String payerPhoneNumber, String payerEmail, String payerCustomerId, String payerCustomerBindingId, String payerCustomerRecPaymentToolId, byte[] context, PaymentFlowType paymentFlowType, String paymentFlowOnHoldExpiration, LocalDateTime paymentFlowHeldUntil, RiskScore riskScore, Integer routeProviderId, Integer routeTerminalId, LocalDateTime wtime, Boolean current) {
         super(Payment.PAYMENT);
 
         set(0, id);

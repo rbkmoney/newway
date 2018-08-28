@@ -24,6 +24,7 @@ import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.handler.impl.invoicing.AbstractInvoicingHandler;
 import com.rbkmoney.newway.util.CashFlowUtil;
+import com.rbkmoney.newway.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,7 +92,7 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
         if (invoicePayment.isSetPartyRevision()) {
             payment.setPartyRevision(invoicePayment.getPartyRevision());
         }
-        Paymentstatus status = TypeUtil.toEnumField(invoicePayment.getStatus().getSetField().getFieldName(), Paymentstatus.class);
+        PaymentStatus status = TypeUtil.toEnumField(invoicePayment.getStatus().getSetField().getFieldName(), PaymentStatus.class);
         if (status == null) {
             throw new IllegalArgumentException("Illegal payment status: " + invoicePayment.getStatus());
         }
@@ -101,15 +102,11 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
         } else if (invoicePayment.getStatus().isSetCaptured()) {
             payment.setStatusCapturedReason(invoicePayment.getStatus().getCaptured().getReason());
         } else if (invoicePayment.getStatus().isSetFailed()) {
-            try {
-                payment.setStatusFailedFailure(objectMapper.writeValueAsString(invoicePayment.getStatus().getFailed()));
-            } catch (JsonProcessingException e) {
-                e.printStackTrace(); //TODO think about it
-            }
+            payment.setStatusFailedFailure(JsonUtil.toJsonString(invoicePayment.getStatus().getFailed()));
         }
         payment.setAmount(invoicePayment.getCost().getAmount());
         payment.setCurrencyCode(invoicePayment.getCost().getCurrency().getSymbolicCode());
-        Payertype payerType = TypeUtil.toEnumField(invoicePayment.getPayer().getSetField().getFieldName(), Payertype.class);
+        PayerType payerType = TypeUtil.toEnumField(invoicePayment.getPayer().getSetField().getFieldName(), PayerType.class);
         if (payerType == null) {
             throw new IllegalArgumentException("Illegal payer type: " + invoicePayment.getPayer());
         }
@@ -127,11 +124,11 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
             fillPaymentTool(payment, customer.getPaymentTool());
             fillContactInfo(payment, customer.getContactInfo());
         }
-        Paymentflowtype paymentflowtype = TypeUtil.toEnumField(invoicePayment.getFlow().getSetField().getFieldName(), Paymentflowtype.class);
-        if (paymentflowtype == null) {
+        PaymentFlowType paymentFlowType = TypeUtil.toEnumField(invoicePayment.getFlow().getSetField().getFieldName(), PaymentFlowType.class);
+        if (paymentFlowType == null) {
             throw new IllegalArgumentException("Illegal payment flow type: " + invoicePayment.getPayer());
         }
-        payment.setPaymentFlowType(paymentflowtype);
+        payment.setPaymentFlowType(paymentFlowType);
         if (invoicePayment.getFlow().isSetHold()) {
             payment.setPaymentFlowHeldUntil(TypeUtil.stringToLocalDateTime(invoicePayment.getFlow().getHold().getHeldUntil()));
             payment.setPaymentFlowOnHoldExpiration(invoicePayment.getFlow().getHold().getOnHoldExpiration().name());
@@ -143,7 +140,7 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
         long pmntId = paymentDao.save(payment);
 
         if (invoicePaymentStarted.isSetCashFlow()) {
-            List<CashFlow> cashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentStarted.getCashFlow(), pmntId, Paymentchangetype.payment);
+            List<CashFlow> cashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentStarted.getCashFlow(), pmntId, PaymentChangeType.payment);
             cashFlowDao.save(cashFlowList);
         }
 
@@ -156,7 +153,7 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
     }
 
     private void fillPaymentTool(Payment payment, PaymentTool paymentTool) {
-        payment.setPayerPaymentToolType(TypeUtil.toEnumField(paymentTool.getSetField().getFieldName(), Paymenttooltype.class));
+        payment.setPayerPaymentToolType(TypeUtil.toEnumField(paymentTool.getSetField().getFieldName(), PaymentToolType.class));
         if (paymentTool.isSetBankCard()) {
             payment.setPayerBankCardToken(paymentTool.getBankCard().getToken());
             payment.setPayerBankCardPaymentSystem(paymentTool.getBankCard().getPaymentSystem().name());

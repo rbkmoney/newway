@@ -21,7 +21,7 @@ public class PayoutDaoImplTest  extends AbstractIntegrationTest {
         PayoutDao.save(payout);
         Payout payoutGet = PayoutDao.get(payout.getPayoutId());
         assertEquals(payout, payoutGet);
-        PayoutDao.update(payout.getPayoutId());
+        PayoutDao.updateNotCurrent(payout.getPayoutId());
         assertNull(PayoutDao.get(payout.getPayoutId()));
         assertEquals(PayoutDao.getLastEventId(), payout.getEventId());
     }

@@ -21,7 +21,7 @@ public class InvoiceDaoImplTest extends AbstractIntegrationTest {
         Long invId = invoiceDao.save(invoice);
         Invoice invoiceGet = invoiceDao.get(invoice.getInvoiceId());
         assertEquals(invoice, invoiceGet);
-        invoiceDao.update(invoice.getInvoiceId());
+        invoiceDao.updateNotCurrent(invoice.getInvoiceId());
         assertEquals(invoiceDao.getLastEventId(), invoice.getEventId());
     }
 }

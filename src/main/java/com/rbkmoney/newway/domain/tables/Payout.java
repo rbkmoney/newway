@@ -6,11 +6,11 @@ package com.rbkmoney.newway.domain.tables;
 
 import com.rbkmoney.newway.domain.Keys;
 import com.rbkmoney.newway.domain.Nw;
-import com.rbkmoney.newway.domain.enums.Payoutaccounttype;
-import com.rbkmoney.newway.domain.enums.Payoutpaidstatusdetails;
-import com.rbkmoney.newway.domain.enums.Payoutstatus;
-import com.rbkmoney.newway.domain.enums.Payouttype;
-import com.rbkmoney.newway.domain.enums.Usertype;
+import com.rbkmoney.newway.domain.enums.PayoutAccountType;
+import com.rbkmoney.newway.domain.enums.PayoutPaidStatusDetails;
+import com.rbkmoney.newway.domain.enums.PayoutStatus;
+import com.rbkmoney.newway.domain.enums.PayoutType;
+import com.rbkmoney.newway.domain.enums.UserType;
 import com.rbkmoney.newway.domain.tables.records.PayoutRecord;
 
 import java.time.LocalDateTime;
@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payout extends TableImpl<PayoutRecord> {
 
-    private static final long serialVersionUID = -369751764;
+    private static final long serialVersionUID = 1391130092;
 
     /**
      * The reference instance of <code>nw.payout</code>
@@ -99,12 +99,12 @@ public class Payout extends TableImpl<PayoutRecord> {
     /**
      * The column <code>nw.payout.status</code>.
      */
-    public final TableField<PayoutRecord, Payoutstatus> STATUS = createField("status", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Payoutstatus.class), this, "");
+    public final TableField<PayoutRecord, PayoutStatus> STATUS = createField("status", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.PayoutStatus.class), this, "");
 
     /**
      * The column <code>nw.payout.status_paid_details</code>.
      */
-    public final TableField<PayoutRecord, Payoutpaidstatusdetails> STATUS_PAID_DETAILS = createField("status_paid_details", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Payoutpaidstatusdetails.class), this, "");
+    public final TableField<PayoutRecord, PayoutPaidStatusDetails> STATUS_PAID_DETAILS = createField("status_paid_details", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.PayoutPaidStatusDetails.class), this, "");
 
     /**
      * The column <code>nw.payout.status_paid_details_card_provider_name</code>.
@@ -124,7 +124,7 @@ public class Payout extends TableImpl<PayoutRecord> {
     /**
      * The column <code>nw.payout.status_cancelled_user_info_type</code>.
      */
-    public final TableField<PayoutRecord, Usertype> STATUS_CANCELLED_USER_INFO_TYPE = createField("status_cancelled_user_info_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Usertype.class), this, "");
+    public final TableField<PayoutRecord, UserType> STATUS_CANCELLED_USER_INFO_TYPE = createField("status_cancelled_user_info_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.UserType.class), this, "");
 
     /**
      * The column <code>nw.payout.status_cancelled_details</code>.
@@ -139,12 +139,12 @@ public class Payout extends TableImpl<PayoutRecord> {
     /**
      * The column <code>nw.payout.status_confirmed_user_info_type</code>.
      */
-    public final TableField<PayoutRecord, Usertype> STATUS_CONFIRMED_USER_INFO_TYPE = createField("status_confirmed_user_info_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Usertype.class), this, "");
+    public final TableField<PayoutRecord, UserType> STATUS_CONFIRMED_USER_INFO_TYPE = createField("status_confirmed_user_info_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.UserType.class), this, "");
 
     /**
      * The column <code>nw.payout.type</code>.
      */
-    public final TableField<PayoutRecord, Payouttype> TYPE = createField("type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Payouttype.class), this, "");
+    public final TableField<PayoutRecord, PayoutType> TYPE = createField("type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.PayoutType.class), this, "");
 
     /**
      * The column <code>nw.payout.type_card_token</code>.
@@ -174,7 +174,7 @@ public class Payout extends TableImpl<PayoutRecord> {
     /**
      * The column <code>nw.payout.type_account_type</code>.
      */
-    public final TableField<PayoutRecord, Payoutaccounttype> TYPE_ACCOUNT_TYPE = createField("type_account_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Payoutaccounttype.class), this, "");
+    public final TableField<PayoutRecord, PayoutAccountType> TYPE_ACCOUNT_TYPE = createField("type_account_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.PayoutAccountType.class), this, "");
 
     /**
      * The column <code>nw.payout.type_account_russian_account</code>.
@@ -284,7 +284,7 @@ public class Payout extends TableImpl<PayoutRecord> {
     /**
      * The column <code>nw.payout.initiator_type</code>.
      */
-    public final TableField<PayoutRecord, Usertype> INITIATOR_TYPE = createField("initiator_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Usertype.class), this, "");
+    public final TableField<PayoutRecord, UserType> INITIATOR_TYPE = createField("initiator_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.UserType.class), this, "");
 
     /**
      * The column <code>nw.payout.wtime</code>.

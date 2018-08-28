@@ -59,7 +59,7 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
     }
 
     @Override
-    public void update(String invoiceId) throws DaoException {
+    public void updateNotCurrent(String invoiceId) throws DaoException {
         Query query = getDslContext().update(INVOICE).set(INVOICE.CURRENT, false)
                 .where(INVOICE.INVOICE_ID.eq(invoiceId).and(INVOICE.CURRENT));
         executeOne(query);

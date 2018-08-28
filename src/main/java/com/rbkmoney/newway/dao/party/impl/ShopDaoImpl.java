@@ -43,7 +43,7 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     }
 
     @Override
-    public void update(String shopId) throws DaoException {
+    public void updateNotCurrent(String shopId) throws DaoException {
         Query query = getDslContext().update(SHOP).set(SHOP.CURRENT, false)
                 .where(SHOP.SHOP_ID.eq(shopId).and(SHOP.CURRENT));
         executeOne(query);

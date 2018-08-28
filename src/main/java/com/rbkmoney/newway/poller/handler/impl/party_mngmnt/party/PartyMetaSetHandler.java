@@ -1,7 +1,5 @@
 package com.rbkmoney.newway.poller.handler.impl.party_mngmnt.party;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.PartyMetaSet;
@@ -14,6 +12,7 @@ import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractPartyManagementHandler;
+import com.rbkmoney.newway.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -26,8 +25,6 @@ public class PartyMetaSetHandler extends AbstractPartyManagementHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final PartyDao partyDao;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final Filter filter;
 
@@ -50,15 +47,12 @@ public class PartyMetaSetHandler extends AbstractPartyManagementHandler {
             throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
         }
         partySource.setId(null);
+        partySource.setWtime(null);
         partySource.setEventId(eventId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         partySource.setPartyMetaSetNs(partyMetaSet.getNs());
-        try {
-            partySource.setPartyMetaSetDataJson(objectMapper.writeValueAsString(partyMetaSet.getData()));
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e); //TODO
-        }
-        partyDao.update(partyId);
+        partySource.setPartyMetaSetDataJson(JsonUtil.toJsonString(partyMetaSet.getData()));
+        partyDao.updateNotCurrent(partyId);
         partyDao.save(partySource);
         log.info("Party metaset has been saved, eventId={}, partyId={}", eventId, partyId);
     }

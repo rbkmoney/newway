@@ -12,8 +12,8 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.invoicing.iface.AdjustmentDao;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
-import com.rbkmoney.newway.domain.enums.Adjustmentcashflowtype;
-import com.rbkmoney.newway.domain.enums.Adjustmentstatus;
+import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
+import com.rbkmoney.newway.domain.enums.AdjustmentStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Adjustment;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.exception.NotFoundException;
@@ -67,9 +67,10 @@ public class InvoicePaymentAdjustmentStatusChangedHandler extends AbstractInvoic
         }
         Long adjustmentSourceId = adjustmentSource.getId();
         adjustmentSource.setId(null);
+        adjustmentSource.setWtime(null);
         adjustmentSource.setEventId(eventId);
         adjustmentSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        Adjustmentstatus status = TypeUtil.toEnumField(invoicePaymentAdjustmentStatus.getSetField().getFieldName(), Adjustmentstatus.class);
+        AdjustmentStatus status = TypeUtil.toEnumField(invoicePaymentAdjustmentStatus.getSetField().getFieldName(), AdjustmentStatus.class);
         if (status == null) {
             throw new IllegalArgumentException("Illegal adjustment status: " + invoicePaymentAdjustmentStatus);
         }
@@ -81,15 +82,15 @@ public class InvoicePaymentAdjustmentStatusChangedHandler extends AbstractInvoic
             adjustmentSource.setStatusCapturedAt(null);
             adjustmentSource.setStatusCancelledAt(TypeUtil.stringToLocalDateTime(invoicePaymentAdjustmentStatus.getCancelled().getAt()));
         }
-        adjustmentDao.update(invoiceId, paymentId, adjustmentId);
+        adjustmentDao.updateNotCurrent(invoiceId, paymentId, adjustmentId);
         long adjId = adjustmentDao.save(adjustmentSource);
-        List<CashFlow> newCashFlows = cashFlowDao.getForAdjustments(adjustmentSourceId, Adjustmentcashflowtype.new_cash_flow);
+        List<CashFlow> newCashFlows = cashFlowDao.getForAdjustments(adjustmentSourceId, AdjustmentCashFlowType.new_cash_flow);
         newCashFlows.forEach(pcf -> {
             pcf.setId(null);
             pcf.setObjId(adjId);
         });
         cashFlowDao.save(newCashFlows);
-        List<CashFlow> oldCashFlows = cashFlowDao.getForAdjustments(adjustmentSourceId, Adjustmentcashflowtype.old_cash_flow_inverse);
+        List<CashFlow> oldCashFlows = cashFlowDao.getForAdjustments(adjustmentSourceId, AdjustmentCashFlowType.old_cash_flow_inverse);
         oldCashFlows.forEach(pcf -> {
             pcf.setId(null);
             pcf.setObjId(adjId);

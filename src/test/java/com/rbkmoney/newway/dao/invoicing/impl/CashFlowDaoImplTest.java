@@ -2,7 +2,7 @@ package com.rbkmoney.newway.dao.invoicing.impl;
 
 import com.rbkmoney.newway.AbstractIntegrationTest;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
-import com.rbkmoney.newway.domain.enums.Paymentchangetype;
+import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +23,10 @@ public class CashFlowDaoImplTest extends AbstractIntegrationTest {
         List<CashFlow> cashFlowList = randomListOf(10, CashFlow.class);
         cashFlowList.forEach(cf -> {
             cf.setObjId(123L);
-            cf.setObjType(Paymentchangetype.payment);
+            cf.setObjType(PaymentChangeType.payment);
         });
         cashFlowDao.save(cashFlowList);
-        List<CashFlow> byObjId = cashFlowDao.getByObjId(123L, Paymentchangetype.payment);
+        List<CashFlow> byObjId = cashFlowDao.getByObjId(123L, PaymentChangeType.payment);
         assertEquals(new HashSet(byObjId), new HashSet(byObjId));
     }
 }

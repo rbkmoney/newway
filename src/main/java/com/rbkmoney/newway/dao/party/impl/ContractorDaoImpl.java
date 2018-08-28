@@ -43,7 +43,7 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     }
 
     @Override
-    public void update(String contractId) throws DaoException {
+    public void updateNotCurrent(String contractId) throws DaoException {
         Query query = getDslContext().update(CONTRACTOR).set(CONTRACTOR.CURRENT, false)
                 .where(CONTRACTOR.CONTRACTOR_ID.eq(contractId).and(CONTRACTOR.CURRENT));
         executeOne(query);

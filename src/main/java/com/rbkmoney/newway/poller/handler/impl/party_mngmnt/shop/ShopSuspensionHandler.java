@@ -46,6 +46,7 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
             throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
         }
         shopSource.setId(null);
+        shopSource.setWtime(null);
         shopSource.setEventId(eventId);
         shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         com.rbkmoney.newway.domain.enums.Suspension suspensionType = TypeUtil.toEnumField(suspension.getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.Suspension.class);
@@ -60,7 +61,7 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
             shopSource.setSuspensionActiveSince(null);
             shopSource.setSuspensionSuspendedSince(TypeUtil.stringToLocalDateTime(suspension.getSuspended().getSince()));
         }
-        shopDao.update(shopId);
+        shopDao.updateNotCurrent(shopId);
         shopDao.save(shopSource);
         log.info("Shop suspension has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
     }

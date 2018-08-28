@@ -63,10 +63,11 @@ public class ContractLegalAgreementBoundHandler extends AbstractPartyManagementH
             }
             Long contractSourceId = contractSource.getId();
             contractSource.setId(null);
+            contractSource.setWtime(null);
             contractSource.setEventId(eventId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             ContractUtil.fillContractLegalAgreementFields(contractSource, legalAgreementBound);
-            contractDao.update(contractId);
+            contractDao.updateNotCurrent(contractId);
             long cntrctId = contractDao.save(contractSource);
 
             List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);

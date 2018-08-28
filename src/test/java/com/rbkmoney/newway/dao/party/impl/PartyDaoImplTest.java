@@ -21,7 +21,7 @@ public class PartyDaoImplTest extends AbstractIntegrationTest {
         partyDao.save(party);
         Party partyGet = partyDao.get(party.getPartyId());
         assertEquals(party, partyGet);
-        partyDao.update(party.getPartyId());
+        partyDao.updateNotCurrent(party.getPartyId());
         assertNull(partyDao.get(party.getPartyId()));
         assertEquals(partyDao.getLastEventId(), party.getEventId());
     }

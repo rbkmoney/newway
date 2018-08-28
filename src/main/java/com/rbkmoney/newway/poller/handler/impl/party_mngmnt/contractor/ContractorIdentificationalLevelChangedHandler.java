@@ -51,10 +51,11 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractParty
                 throw new NotFoundException(String.format("Contractor not found, contractorId='%s'", contractorId));
             }
             contractorSource.setId(null);
+            contractorSource.setWtime(null);
             contractorSource.setEventId(eventId);
             contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractorSource.setIdentificationalLevel(identificationLevelChanged.name());
-            contractorDao.update(contractorId);
+            contractorDao.updateNotCurrent(contractorId);
             contractorDao.save(contractorSource);
             log.info("Contract identificational level has been saved, eventId={}, contractorId={}", eventId, contractorId);
         });

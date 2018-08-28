@@ -46,6 +46,7 @@ public class PartyBlockingHandler extends AbstractPartyManagementHandler {
             throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
         }
         partySource.setId(null);
+        partySource.setWtime(null);
         partySource.setEventId(eventId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         com.rbkmoney.newway.domain.enums.Blocking blocking = TypeUtil.toEnumField(partyBlocking.getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.Blocking.class);
@@ -64,7 +65,7 @@ public class PartyBlockingHandler extends AbstractPartyManagementHandler {
             partySource.setBlockingBlockedReason(partyBlocking.getBlocked().getReason());
             partySource.setBlockingBlockedSince(TypeUtil.stringToLocalDateTime(partyBlocking.getBlocked().getSince()));
         }
-        partyDao.update(partyId);
+        partyDao.updateNotCurrent(partyId);
         partyDao.save(partySource);
         log.info("Party blocking has been saved, eventId={}, partyId={}", eventId, partyId);
     }

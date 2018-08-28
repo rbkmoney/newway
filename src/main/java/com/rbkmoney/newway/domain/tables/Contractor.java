@@ -6,9 +6,9 @@ package com.rbkmoney.newway.domain.tables;
 
 import com.rbkmoney.newway.domain.Keys;
 import com.rbkmoney.newway.domain.Nw;
-import com.rbkmoney.newway.domain.enums.Contractortype;
-import com.rbkmoney.newway.domain.enums.Legalentity;
-import com.rbkmoney.newway.domain.enums.Privateentity;
+import com.rbkmoney.newway.domain.enums.ContractorType;
+import com.rbkmoney.newway.domain.enums.LegalEntity;
+import com.rbkmoney.newway.domain.enums.PrivateEntity;
 import com.rbkmoney.newway.domain.tables.records.ContractorRecord;
 
 import java.time.LocalDateTime;
@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Contractor extends TableImpl<ContractorRecord> {
 
-    private static final long serialVersionUID = 906862139;
+    private static final long serialVersionUID = 1769957979;
 
     /**
      * The reference instance of <code>nw.contractor</code>
@@ -82,7 +82,7 @@ public class Contractor extends TableImpl<ContractorRecord> {
     /**
      * The column <code>nw.contractor.type</code>.
      */
-    public final TableField<ContractorRecord, Contractortype> TYPE = createField("type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Contractortype.class), this, "");
+    public final TableField<ContractorRecord, ContractorType> TYPE = createField("type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.ContractorType.class), this, "");
 
     /**
      * The column <code>nw.contractor.identificational_level</code>.
@@ -97,7 +97,7 @@ public class Contractor extends TableImpl<ContractorRecord> {
     /**
      * The column <code>nw.contractor.legal_entity</code>.
      */
-    public final TableField<ContractorRecord, Legalentity> LEGAL_ENTITY = createField("legal_entity", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Legalentity.class), this, "");
+    public final TableField<ContractorRecord, LegalEntity> LEGAL_ENTITY = createField("legal_entity", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.LegalEntity.class), this, "");
 
     /**
      * The column <code>nw.contractor.russian_legal_entity_registered_name</code>.
@@ -187,7 +187,7 @@ public class Contractor extends TableImpl<ContractorRecord> {
     /**
      * The column <code>nw.contractor.private_entity</code>.
      */
-    public final TableField<ContractorRecord, Privateentity> PRIVATE_ENTITY = createField("private_entity", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Privateentity.class), this, "");
+    public final TableField<ContractorRecord, PrivateEntity> PRIVATE_ENTITY = createField("private_entity", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.PrivateEntity.class), this, "");
 
     /**
      * The column <code>nw.contractor.russian_private_entity_first_name</code>.

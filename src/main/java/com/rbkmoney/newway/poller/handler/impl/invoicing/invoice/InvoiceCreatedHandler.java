@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.handler.impl.invoicing.invoice;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rbkmoney.damsel.domain.Invoice;
 import com.rbkmoney.damsel.payment_processing.Event;
@@ -12,10 +13,11 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.invoicing.iface.InvoiceCartDao;
 import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
-import com.rbkmoney.newway.domain.enums.Invoicestatus;
+import com.rbkmoney.newway.domain.enums.InvoiceStatus;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.poller.handler.impl.invoicing.AbstractInvoicingHandler;
+import com.rbkmoney.newway.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -63,7 +66,7 @@ public class InvoiceCreatedHandler extends AbstractInvoicingHandler {
         invoiceRecord.setShopId(invoice.getShopId());
         invoiceRecord.setPartyRevision(invoice.getPartyRevision());
         invoiceRecord.setCreatedAt(TypeUtil.stringToLocalDateTime(invoice.getCreatedAt()));
-        Invoicestatus status = TypeUtil.toEnumField(invoice.getStatus().getSetField().getFieldName(), Invoicestatus.class);
+        InvoiceStatus status = TypeUtil.toEnumField(invoice.getStatus().getSetField().getFieldName(), InvoiceStatus.class);
         if (status == null) {
             throw new IllegalArgumentException("Illegal invoice status: " + invoice.getStatus());
         }
@@ -90,10 +93,12 @@ public class InvoiceCreatedHandler extends AbstractInvoicingHandler {
                 ic.setQuantity(il.getQuantity());
                 ic.setAmount(il.getPrice().getAmount());
                 ic.setCurrencyCode(il.getPrice().getCurrency().getSymbolicCode());
+                Map<String, JsonNode> jsonNodeMap = il.getMetadata().entrySet().stream()
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> JsonUtil.toJsonNode(e.getValue())));
                 try {
-                    ic.setMetadataJson(objectMapper.writeValueAsString(il.getMetadata())); //TODO check
+                    ic.setMetadataJson(objectMapper.writeValueAsString(jsonNodeMap));
                 } catch (JsonProcessingException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException("Couldn't convert map to json string: " + jsonNodeMap, e);
                 }
                 return ic;
             }).collect(Collectors.toList());

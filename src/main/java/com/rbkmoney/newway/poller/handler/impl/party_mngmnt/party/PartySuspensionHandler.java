@@ -46,6 +46,7 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
             throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
         }
         partySource.setId(null);
+        partySource.setWtime(null);
         partySource.setEventId(eventId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         com.rbkmoney.newway.domain.enums.Suspension suspension = TypeUtil.toEnumField(partySuspension.getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.Suspension.class);
@@ -60,7 +61,7 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
             partySource.setSuspensionActiveSince(null);
             partySource.setSuspensionSuspendedSince(TypeUtil.stringToLocalDateTime(partySuspension.getSuspended().getSince()));
         }
-        partyDao.update(partyId);
+        partyDao.updateNotCurrent(partyId);
         partyDao.save(partySource);
         log.info("Party suspension has been saved, eventId={}, partyId={}", eventId, partyId);
     }

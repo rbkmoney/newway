@@ -4,9 +4,9 @@
 package com.rbkmoney.newway.domain.tables.pojos;
 
 
-import com.rbkmoney.newway.domain.enums.Contractortype;
-import com.rbkmoney.newway.domain.enums.Legalentity;
-import com.rbkmoney.newway.domain.enums.Privateentity;
+import com.rbkmoney.newway.domain.enums.ContractorType;
+import com.rbkmoney.newway.domain.enums.LegalEntity;
+import com.rbkmoney.newway.domain.enums.PrivateEntity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -27,17 +27,17 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Contractor implements Serializable {
 
-    private static final long serialVersionUID = 1313262204;
+    private static final long serialVersionUID = -278483620;
 
     private Long           id;
     private Long           eventId;
     private LocalDateTime  eventCreatedAt;
     private String         partyId;
     private String         contractorId;
-    private Contractortype type;
+    private ContractorType type;
     private String         identificationalLevel;
     private String         registeredUserEmail;
-    private Legalentity    legalEntity;
+    private LegalEntity    legalEntity;
     private String         russianLegalEntityRegisteredName;
     private String         russianLegalEntityRegisteredNumber;
     private String         russianLegalEntityInn;
@@ -55,7 +55,7 @@ public class Contractor implements Serializable {
     private String         internationalLegalEntityRegisteredAddress;
     private String         internationalLegalEntityActualAddress;
     private String         internationalLegalEntityRegisteredNumber;
-    private Privateentity  privateEntity;
+    private PrivateEntity  privateEntity;
     private String         russianPrivateEntityFirstName;
     private String         russianPrivateEntitySecondName;
     private String         russianPrivateEntityMiddleName;
@@ -109,10 +109,10 @@ public class Contractor implements Serializable {
         LocalDateTime  eventCreatedAt,
         String         partyId,
         String         contractorId,
-        Contractortype type,
+        ContractorType type,
         String         identificationalLevel,
         String         registeredUserEmail,
-        Legalentity    legalEntity,
+        LegalEntity    legalEntity,
         String         russianLegalEntityRegisteredName,
         String         russianLegalEntityRegisteredNumber,
         String         russianLegalEntityInn,
@@ -130,7 +130,7 @@ public class Contractor implements Serializable {
         String         internationalLegalEntityRegisteredAddress,
         String         internationalLegalEntityActualAddress,
         String         internationalLegalEntityRegisteredNumber,
-        Privateentity  privateEntity,
+        PrivateEntity  privateEntity,
         String         russianPrivateEntityFirstName,
         String         russianPrivateEntitySecondName,
         String         russianPrivateEntityMiddleName,
@@ -215,11 +215,11 @@ public class Contractor implements Serializable {
         this.contractorId = contractorId;
     }
 
-    public Contractortype getType() {
+    public ContractorType getType() {
         return this.type;
     }
 
-    public void setType(Contractortype type) {
+    public void setType(ContractorType type) {
         this.type = type;
     }
 
@@ -239,11 +239,11 @@ public class Contractor implements Serializable {
         this.registeredUserEmail = registeredUserEmail;
     }
 
-    public Legalentity getLegalEntity() {
+    public LegalEntity getLegalEntity() {
         return this.legalEntity;
     }
 
-    public void setLegalEntity(Legalentity legalEntity) {
+    public void setLegalEntity(LegalEntity legalEntity) {
         this.legalEntity = legalEntity;
     }
 
@@ -383,11 +383,11 @@ public class Contractor implements Serializable {
         this.internationalLegalEntityRegisteredNumber = internationalLegalEntityRegisteredNumber;
     }
 
-    public Privateentity getPrivateEntity() {
+    public PrivateEntity getPrivateEntity() {
         return this.privateEntity;
     }
 
-    public void setPrivateEntity(Privateentity privateEntity) {
+    public void setPrivateEntity(PrivateEntity privateEntity) {
         this.privateEntity = privateEntity;
     }
 

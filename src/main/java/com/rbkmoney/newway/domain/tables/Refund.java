@@ -6,7 +6,7 @@ package com.rbkmoney.newway.domain.tables;
 
 import com.rbkmoney.newway.domain.Keys;
 import com.rbkmoney.newway.domain.Nw;
-import com.rbkmoney.newway.domain.enums.Refundstatus;
+import com.rbkmoney.newway.domain.enums.RefundStatus;
 import com.rbkmoney.newway.domain.tables.records.RefundRecord;
 
 import java.time.LocalDateTime;
@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Refund extends TableImpl<RefundRecord> {
 
-    private static final long serialVersionUID = -830881922;
+    private static final long serialVersionUID = -272283746;
 
     /**
      * The reference instance of <code>nw.refund</code>
@@ -105,7 +105,7 @@ public class Refund extends TableImpl<RefundRecord> {
     /**
      * The column <code>nw.refund.status</code>.
      */
-    public final TableField<RefundRecord, Refundstatus> STATUS = createField("status", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Refundstatus.class), this, "");
+    public final TableField<RefundRecord, RefundStatus> STATUS = createField("status", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.RefundStatus.class), this, "");
 
     /**
      * The column <code>nw.refund.status_failed_failure</code>.

@@ -7,5 +7,5 @@ import com.rbkmoney.newway.exception.DaoException;
 public interface ContractDao extends GenericDao {
     Long save(Contract contract) throws DaoException;
     Contract get(String contractId) throws DaoException;
-    void update(String contractId) throws DaoException;
+    void updateNotCurrent(String contractId) throws DaoException;
 }

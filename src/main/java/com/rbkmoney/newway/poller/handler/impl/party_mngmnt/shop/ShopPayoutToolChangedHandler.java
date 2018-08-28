@@ -50,10 +50,11 @@ public class ShopPayoutToolChangedHandler extends AbstractPartyManagementHandler
                 throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
             }
             shopSource.setId(null);
+            shopSource.setWtime(null);
             shopSource.setEventId(eventId);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             shopSource.setPayoutToolId(payoutToolChanged);
-            shopDao.update(shopId);
+            shopDao.updateNotCurrent(shopId);
             shopDao.save(shopSource);
             log.info("Shop payoutToolChanged has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
         });

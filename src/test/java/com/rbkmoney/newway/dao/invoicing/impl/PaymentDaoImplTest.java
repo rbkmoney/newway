@@ -21,7 +21,7 @@ public class PaymentDaoImplTest extends AbstractIntegrationTest {
         paymentDao.save(payment);
         Payment paymentGet = paymentDao.get(payment.getInvoiceId(), payment.getPaymentId());
         assertEquals(payment, paymentGet);
-        paymentDao.update(payment.getInvoiceId(), payment.getPaymentId());
+        paymentDao.updateNotCurrent(payment.getInvoiceId(), payment.getPaymentId());
         assertNull(paymentDao.get(payment.getInvoiceId(), payment.getPaymentId()));
     }
 }

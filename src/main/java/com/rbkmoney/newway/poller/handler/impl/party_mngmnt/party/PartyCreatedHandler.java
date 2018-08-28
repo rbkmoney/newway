@@ -50,14 +50,15 @@ public class PartyCreatedHandler extends AbstractPartyManagementHandler {
         party.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         party.setPartyId(partyId);
         party.setContactInfoEmail(partyCreated.getContactInfo().getEmail());
-        party.setCreatedAt(TypeUtil.stringToLocalDateTime(partyCreated.getCreatedAt()));
+        LocalDateTime partyCreatedAt = TypeUtil.stringToLocalDateTime(partyCreated.getCreatedAt());
+        party.setCreatedAt(partyCreatedAt);
         party.setBlocking(Blocking.unblocked);
         party.setBlockingUnblockedReason("");
-        party.setBlockingUnblockedSince(LocalDateTime.now(ZoneOffset.UTC));
+        party.setBlockingUnblockedSince(partyCreatedAt);
         party.setSuspension(Suspension.active);
-        party.setSuspensionActiveSince(LocalDateTime.now(ZoneOffset.UTC));
-        party.setRevision(0L);
-        party.setRevisionChangedAt(LocalDateTime.now(ZoneOffset.UTC));
+        party.setSuspensionActiveSince(partyCreatedAt);
+        party.setRevision(1L);
+        party.setRevisionChangedAt(partyCreatedAt);
         partyDao.save(party);
         log.info("Party has been saved, eventId={}, partyId={}", eventId, partyId);
     }

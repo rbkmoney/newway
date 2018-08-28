@@ -10,7 +10,6 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.invoicing.iface.InvoiceCartDao;
 import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
-import com.rbkmoney.newway.domain.enums.Invoicestatus;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.exception.NotFoundException;
@@ -57,9 +56,10 @@ public class InvoiceStatusChangedHandler extends AbstractInvoicingHandler {
 
         Long invoiceSourceId = invoiceSource.getId();
         invoiceSource.setId(null);
+        invoiceSource.setWtime(null);
         invoiceSource.setEventId(eventId);
         invoiceSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        Invoicestatus status = TypeUtil.toEnumField(invoiceStatus.getSetField().getFieldName(), Invoicestatus.class);
+        com.rbkmoney.newway.domain.enums.InvoiceStatus status = TypeUtil.toEnumField(invoiceStatus.getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.InvoiceStatus.class);
         if (status == null) {
             throw new IllegalArgumentException("Illegal invoice status: " + invoiceStatus);
         }
@@ -72,7 +72,7 @@ public class InvoiceStatusChangedHandler extends AbstractInvoicingHandler {
             invoiceSource.setStatusFulfilledDetails(invoiceStatus.getFulfilled().getDetails());
         }
 
-        invoiceDao.update(invoiceSource.getInvoiceId());
+        invoiceDao.updateNotCurrent(invoiceSource.getInvoiceId());
         long invId = invoiceDao.save(invoiceSource);
         List<InvoiceCart> invoiceCartList = invoiceCartDao.getByInvId(invoiceSourceId);
         invoiceCartList.forEach(ic -> {

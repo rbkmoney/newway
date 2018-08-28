@@ -2,7 +2,7 @@ CREATE SCHEMA IF NOT EXISTS nw;
 
 -- invoices --
 
-CREATE TYPE nw.InvoiceStatus AS ENUM('unpaid', 'paid', 'cancelled', 'fulfilled');
+CREATE TYPE nw.invoice_status AS ENUM('unpaid', 'paid', 'cancelled', 'fulfilled');
 
 CREATE TABLE nw.invoice(
   id                       BIGSERIAL NOT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE nw.invoice(
   shop_id                  CHARACTER VARYING NOT NULL,
   party_revision           BIGINT,
   created_at               TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-  status                   nw.InvoiceStatus NOT NULL,
+  status                   nw.invoice_status NOT NULL,
   status_cancelled_details CHARACTER VARYING,
   status_fulfilled_details CHARACTER VARYING,
   details_product          CHARACTER VARYING NOT NULL,
@@ -51,11 +51,11 @@ CREATE INDEX invoice_cart_inv_id on nw.invoice_cart(inv_id);
 
 -- payments --
 
-CREATE TYPE nw.PaymentStatus AS ENUM ('pending', 'processed', 'captured', 'cancelled', 'refunded', 'failed');
-CREATE TYPE nw.PayerType AS ENUM('payment_resource', 'customer');
-CREATE TYPE nw.PaymentToolType AS ENUM('bank_card', 'payment_terminal', 'digital_wallet');
-CREATE TYPE nw.PaymentFlowType AS ENUM('instant', 'hold');
-CREATE TYPE nw.RiskScore AS ENUM('low', 'high', 'fatal');
+CREATE TYPE nw.payment_status AS ENUM ('pending', 'processed', 'captured', 'cancelled', 'refunded', 'failed');
+CREATE TYPE nw.payer_type AS ENUM('payment_resource', 'customer');
+CREATE TYPE nw.payment_tool_type AS ENUM('bank_card', 'payment_terminal', 'digital_wallet');
+CREATE TYPE nw.payment_flow_type AS ENUM('instant', 'hold');
+CREATE TYPE nw.risk_score AS ENUM('low', 'high', 'fatal');
 
 CREATE TABLE nw.payment (
   id                                 BIGSERIAL                   NOT NULL,
@@ -68,14 +68,14 @@ CREATE TABLE nw.payment (
   shop_id                            CHARACTER VARYING           NOT NULL,
   domain_revision                    BIGINT                      NOT NULL,
   party_revision                     BIGINT,
-  status                             nw.PaymentStatus            NOT NULL,
+  status                             nw.payment_status           NOT NULL,
   status_cancelled_reason            CHARACTER VARYING,
   status_captured_reason             CHARACTER VARYING,
   status_failed_failure              CHARACTER VARYING,
   amount                             BIGINT                      NOT NULL,
   currency_code                      CHARACTER VARYING           NOT NULL,
-  payer_type                         nw.PayerType                NOT NULL,
-  payer_payment_tool_type            nw.PaymentToolType          NOT NULL,
+  payer_type                         nw.payer_type               NOT NULL,
+  payer_payment_tool_type            nw.payment_tool_type        NOT NULL,
   payer_bank_card_token              CHARACTER VARYING,
   payer_bank_card_payment_system     CHARACTER VARYING,
   payer_bank_card_bin                CHARACTER VARYING,
@@ -93,10 +93,10 @@ CREATE TABLE nw.payment (
   payer_customer_binding_id          CHARACTER VARYING,
   payer_customer_rec_payment_tool_id CHARACTER VARYING,
   context                            BYTEA,
-  payment_flow_type                  nw.PaymentFlowType          NOT NULL,
+  payment_flow_type                  nw.payment_flow_type        NOT NULL,
   payment_flow_on_hold_expiration    CHARACTER VARYING,
   payment_flow_held_until            TIMESTAMP WITHOUT TIME ZONE,
-  risk_score                         nw.RiskScore,
+  risk_score                         nw.risk_score,
   route_provider_id                  INT,
   route_terminal_id                  INT,
   wtime                              TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
@@ -111,21 +111,21 @@ CREATE INDEX payment_party_id on nw.payment(party_id);
 CREATE INDEX payment_status on nw.payment(status);
 CREATE INDEX payment_created_at on nw.payment(created_at);
 
-CREATE TYPE nw.CashFlowAccount AS ENUM ('merchant', 'provider', 'system', 'external', 'wallet');
+CREATE TYPE nw.cash_flow_account AS ENUM ('merchant', 'provider', 'system', 'external', 'wallet');
 
-CREATE TYPE nw.PaymentChangeType AS ENUM ('payment', 'refund', 'adjustment', 'payout');
+CREATE TYPE nw.payment_change_type AS ENUM ('payment', 'refund', 'adjustment', 'payout');
 
-CREATE TYPE nw.AdjustmentCashFlowType AS ENUM ('new_cash_flow', 'old_cash_flow_inverse');
+CREATE TYPE nw.adjustment_cash_flow_type AS ENUM ('new_cash_flow', 'old_cash_flow_inverse');
 
 CREATE TABLE nw.cash_flow(
   id                                 BIGSERIAL                   NOT NULL,
   obj_id                             BIGINT                      NOT NULL,
-  obj_type                           nw.PaymentChangeType        NOT NULL,
-  adj_flow_type                      nw.AdjustmentCashFlowType,
-  source_account_type                nw.CashFlowAccount          NOT NULL,
+  obj_type                           nw.payment_change_type      NOT NULL,
+  adj_flow_type                      nw.adjustment_cash_flow_type,
+  source_account_type                nw.cash_flow_account        NOT NULL,
   source_account_type_value          CHARACTER VARYING           NOT NULL,
   source_account_id                  BIGINT                      NOT NULL,
-  destination_account_type           nw.CashFlowAccount          NOT NULL,
+  destination_account_type           nw.cash_flow_account        NOT NULL,
   destination_account_type_value     CHARACTER VARYING           NOT NULL,
   destination_account_id             BIGINT                      NOT NULL,
   amount                             BIGINT                      NOT NULL,
@@ -138,7 +138,7 @@ CREATE INDEX cash_flow_idx on nw.cash_flow(obj_id, obj_type);
 
 -- refunds --
 
-CREATE TYPE nw.RefundStatus AS ENUM ('pending', 'succeeded', 'failed');
+CREATE TYPE nw.refund_status AS ENUM ('pending', 'succeeded', 'failed');
 
 CREATE TABLE nw.refund (
   id                                 BIGSERIAL                   NOT NULL,
@@ -151,7 +151,7 @@ CREATE TABLE nw.refund (
   party_id                           CHARACTER VARYING           NOT NULL,
   shop_id                            CHARACTER VARYING           NOT NULL,
   created_at                         TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-  status                             nw.RefundStatus             NOT NULL,
+  status                             nw.refund_status            NOT NULL,
   status_failed_failure              CHARACTER VARYING,
   amount                             BIGINT,
   currency_code                      CHARACTER VARYING,
@@ -170,7 +170,7 @@ CREATE INDEX refund_created_at on nw.refund(created_at);
 
 -- adjustments --
 
-CREATE TYPE nw.AdjustmentStatus AS ENUM ('pending', 'captured', 'cancelled');
+CREATE TYPE nw.adjustment_status AS ENUM ('pending', 'captured', 'cancelled');
 
 CREATE TABLE nw.adjustment (
   id                                 BIGSERIAL                   NOT NULL,
@@ -183,7 +183,7 @@ CREATE TABLE nw.adjustment (
   party_id                           CHARACTER VARYING           NOT NULL,
   shop_id                            CHARACTER VARYING           NOT NULL,
   created_at                         TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-  status                             nw.AdjustmentStatus         NOT NULL,
+  status                             nw.adjustment_status        NOT NULL,
   status_captured_at                 TIMESTAMP WITHOUT TIME ZONE,
   status_cancelled_at                TIMESTAMP WITHOUT TIME ZONE,
   reason                             CHARACTER VARYING           NOT NULL,
@@ -203,8 +203,8 @@ CREATE INDEX adjustment_created_at on nw.adjustment(created_at);
 -- party_mngmnt --
 -----------
 
-CREATE TYPE nw.Blocking AS ENUM ('unblocked', 'blocked');
-CREATE TYPE nw.Suspension AS ENUM ('active', 'suspended');
+CREATE TYPE nw.blocking AS ENUM ('unblocked', 'blocked');
+CREATE TYPE nw.suspension AS ENUM ('active', 'suspended');
 
 CREATE TABLE nw.party(
   id                                 BIGSERIAL                   NOT NULL,
@@ -213,12 +213,12 @@ CREATE TABLE nw.party(
   party_id                           CHARACTER VARYING           NOT NULL,
   contact_info_email                 CHARACTER VARYING           NOT NULL,
   created_at                         TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-  blocking                           nw.Blocking                 NOT NULL,
+  blocking                           nw.blocking                 NOT NULL,
   blocking_unblocked_reason          CHARACTER VARYING,
   blocking_unblocked_since           TIMESTAMP WITHOUT TIME ZONE,
   blocking_blocked_reason            CHARACTER VARYING,
   blocking_blocked_since             TIMESTAMP WITHOUT TIME ZONE,
-  suspension                         nw.Suspension               NOT NULL,
+  suspension                         nw.suspension               NOT NULL,
   suspension_active_since            TIMESTAMP WITHOUT TIME ZONE,
   suspension_suspended_since         TIMESTAMP WITHOUT TIME ZONE,
   revision                           BIGINT                      NOT NULL,
@@ -239,8 +239,8 @@ CREATE INDEX party_contact_info_email on nw.party(contact_info_email);
 
 -- contract --
 
-CREATE TYPE nw.ContractStatus AS ENUM ('active', 'terminated', 'expired');
-CREATE TYPE nw.RepresentativeDocument AS ENUM ('articles_of_association', 'power_of_attorney', 'expired');
+CREATE TYPE nw.contract_status AS ENUM ('active', 'terminated', 'expired');
+CREATE TYPE nw.representative_document AS ENUM ('articles_of_association', 'power_of_attorney', 'expired');
 
 CREATE TABLE nw.contract(
   id                                                         BIGSERIAL                   NOT NULL,
@@ -252,7 +252,7 @@ CREATE TABLE nw.contract(
   created_at                                                 TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   valid_since                                                TIMESTAMP WITHOUT TIME ZONE,
   valid_until                                                TIMESTAMP WITHOUT TIME ZONE,
-  status                                                     nw.ContractStatus           NOT NULL,
+  status                                                     nw.contract_status          NOT NULL,
   status_terminated_at                                       TIMESTAMP WITHOUT TIME ZONE,
   terms_id                                                   INT                         NOT NULL,
   legal_agreement_signed_at                                  TIMESTAMP WITHOUT TIME ZONE,
@@ -261,7 +261,7 @@ CREATE TABLE nw.contract(
   report_act_schedule_id                                     INT,
   report_act_signer_position                                 CHARACTER VARYING,
   report_act_signer_full_name                                CHARACTER VARYING,
-  report_act_signer_document                                 nw.RepresentativeDocument,
+  report_act_signer_document                                 nw.representative_document,
   report_act_signer_doc_power_of_attorney_signed_at          TIMESTAMP WITHOUT TIME ZONE,
   report_act_signer_doc_power_of_attorney_legal_agreement_id CHARACTER VARYING,
   report_act_signer_doc_power_of_attorney_valid_until        TIMESTAMP WITHOUT TIME ZONE,
@@ -291,7 +291,7 @@ CREATE TABLE nw.contract_adjustment(
 
 CREATE INDEX contract_adjustment_idx on nw.contract_adjustment(cntrct_id);
 
-CREATE TYPE nw.PayoutToolInfo AS ENUM ('russian_bank_account', 'international_bank_account');
+CREATE TYPE nw.payout_tool_info AS ENUM ('russian_bank_account', 'international_bank_account');
 
 CREATE TABLE nw.payout_tool(
   id                                                 BIGSERIAL                   NOT NULL,
@@ -299,7 +299,7 @@ CREATE TABLE nw.payout_tool(
   payout_tool_id                                     CHARACTER VARYING           NOT NULL,
   created_at                                         TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   currency_code                                      CHARACTER VARYING           NOT NULL,
-  payout_tool_info                                   nw.PayoutToolInfo           NOT NULL,
+  payout_tool_info                                   nw.payout_tool_info         NOT NULL,
   payout_tool_info_russian_bank_account              CHARACTER VARYING,
   payout_tool_info_russian_bank_name                 CHARACTER VARYING,
   payout_tool_info_russian_bank_post_account         CHARACTER VARYING,
@@ -318,9 +318,9 @@ CREATE INDEX payout_tool_idx on nw.payout_tool(cntrct_id);
 
 -- contractor --
 
-CREATE TYPE nw.ContractorType AS ENUM ('registered_user', 'legal_entity', 'private_entity');
-CREATE TYPE nw.LegalEntity AS ENUM ('russian_legal_entity', 'international_legal_entity');
-CREATE TYPE nw.PrivateEntity AS ENUM ('russian_private_entity');
+CREATE TYPE nw.contractor_type AS ENUM ('registered_user', 'legal_entity', 'private_entity');
+CREATE TYPE nw.legal_entity AS ENUM ('russian_legal_entity', 'international_legal_entity');
+CREATE TYPE nw.private_entity AS ENUM ('russian_private_entity');
 
 CREATE TABLE nw.contractor(
   id                                              BIGSERIAL                   NOT NULL,
@@ -328,10 +328,10 @@ CREATE TABLE nw.contractor(
   event_created_at                                TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   party_id                                        CHARACTER VARYING           NOT NULL,
   contractor_id                                   CHARACTER VARYING           NOT NULL,
-  type                                            nw.ContractorType           NOT NULL,
+  type                                            nw.contractor_type          NOT NULL,
   identificational_level                          CHARACTER VARYING,
   registered_user_email                           CHARACTER VARYING,
-  legal_entity                                    nw.LegalEntity,
+  legal_entity                                    nw.legal_entity,
   russian_legal_entity_registered_name            CHARACTER VARYING,
   russian_legal_entity_registered_number          CHARACTER VARYING,
   russian_legal_entity_inn                        CHARACTER VARYING,
@@ -349,7 +349,7 @@ CREATE TABLE nw.contractor(
   international_legal_entity_registered_address   CHARACTER VARYING,
   international_legal_entity_actual_address       CHARACTER VARYING,
   international_legal_entity_registered_number    CHARACTER VARYING,
-  private_entity                                  nw.PrivateEntity,
+  private_entity                                  nw.private_entity,
   russian_private_entity_first_name               CHARACTER VARYING,
   russian_private_entity_second_name              CHARACTER VARYING,
   russian_private_entity_middle_name              CHARACTER VARYING,
@@ -374,12 +374,12 @@ CREATE TABLE nw.shop(
   party_id                                        CHARACTER VARYING           NOT NULL,
   shop_id                                         CHARACTER VARYING           NOT NULL,
   created_at                                      TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-  blocking                                        nw.Blocking                 NOT NULL,
+  blocking                                        nw.blocking                 NOT NULL,
   blocking_unblocked_reason                       CHARACTER VARYING,
   blocking_unblocked_since                        TIMESTAMP WITHOUT TIME ZONE,
   blocking_blocked_reason                         CHARACTER VARYING,
   blocking_blocked_since                          TIMESTAMP WITHOUT TIME ZONE,
-  suspension                                      nw.Suspension               NOT NULL,
+  suspension                                      nw.suspension               NOT NULL,
   suspension_active_since                         TIMESTAMP WITHOUT TIME ZONE,
   suspension_suspended_since                      TIMESTAMP WITHOUT TIME ZONE,
   details_name                                    CHARACTER VARYING           NOT NULL,
@@ -406,11 +406,11 @@ CREATE INDEX shop_created_at on nw.shop(created_at);
 
 -- payout --
 
-CREATE TYPE nw.PayoutStatus AS ENUM ('unpaid', 'paid', 'cancelled', 'confirmed');
-CREATE TYPE nw.PayoutPaidStatusDetails AS ENUM ('card_details', 'account_details');
-CREATE TYPE nw.UserType AS ENUM ('internal_user', 'external_user', 'service_user');
-CREATE TYPE nw.PayoutType AS ENUM ('bank_card', 'bank_account');
-CREATE TYPE nw.PayoutAccountType AS ENUM ('russian_payout_account', 'international_payout_account');
+CREATE TYPE nw.payout_status AS ENUM ('unpaid', 'paid', 'cancelled', 'confirmed');
+CREATE TYPE nw.payout_paid_status_details AS ENUM ('card_details', 'account_details');
+CREATE TYPE nw.user_type AS ENUM ('internal_user', 'external_user', 'service_user');
+CREATE TYPE nw.payout_type AS ENUM ('bank_card', 'bank_account');
+CREATE TYPE nw.payout_account_type AS ENUM ('russian_payout_account', 'international_payout_account');
 
 CREATE TABLE nw.payout(
   id                                                         BIGSERIAL                   NOT NULL,
@@ -421,22 +421,22 @@ CREATE TABLE nw.payout(
   shop_id                                                    CHARACTER VARYING           NOT NULL,
   contract_id                                                CHARACTER VARYING           NOT NULL,
   created_at                                                 TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-  status                                                     nw.PayoutStatus             NOT NULL,
-  status_paid_details                                        nw.PayoutPaidStatusDetails,
+  status                                                     nw.payout_status            NOT NULL,
+  status_paid_details                                        nw.payout_paid_status_details,
   status_paid_details_card_provider_name                     CHARACTER VARYING,
   status_paid_details_card_provider_transaction_id           CHARACTER VARYING,
   status_cancelled_user_info_id                              CHARACTER VARYING,
-  status_cancelled_user_info_type                            nw.UserType,
+  status_cancelled_user_info_type                            nw.user_type,
   status_cancelled_details                                   CHARACTER VARYING,
   status_confirmed_user_info_id                              CHARACTER VARYING,
-  status_confirmed_user_info_type                            nw.UserType,
-  type                                                       nw.PayoutType               NOT NULL,
+  status_confirmed_user_info_type                            nw.user_type,
+  type                                                       nw.payout_type              NOT NULL,
   type_card_token                                            CHARACTER VARYING,
   type_card_payment_system                                   CHARACTER VARYING,
   type_card_bin                                              CHARACTER VARYING,
   type_card_masked_pan                                       CHARACTER VARYING,
   type_card_token_provider                                   CHARACTER VARYING,
-  type_account_type                                          nw.PayoutAccountType,
+  type_account_type                                          nw.payout_account_type,
   type_account_russian_account                               CHARACTER VARYING,
   type_account_russian_bank_name                             CHARACTER VARYING,
   type_account_russian_bank_post_account                     CHARACTER VARYING,
@@ -458,7 +458,7 @@ CREATE TABLE nw.payout(
   type_account_legal_agreement_id                            CHARACTER VARYING,
   type_account_legal_agreement_valid_until                   TIMESTAMP WITHOUT TIME ZONE,
   initiator_id                                               CHARACTER VARYING           NOT NULL,
-  initiator_type                                             nw.UserType                 NOT NULL,
+  initiator_type                                             nw.user_type                NOT NULL,
   wtime                                                      TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT now(),
   current                                                    BOOLEAN NOT NULL DEFAULT TRUE,
   CONSTRAINT payout_pkey PRIMARY KEY (id)

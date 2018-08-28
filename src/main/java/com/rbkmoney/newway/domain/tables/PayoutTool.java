@@ -6,7 +6,7 @@ package com.rbkmoney.newway.domain.tables;
 
 import com.rbkmoney.newway.domain.Keys;
 import com.rbkmoney.newway.domain.Nw;
-import com.rbkmoney.newway.domain.enums.Payouttoolinfo;
+import com.rbkmoney.newway.domain.enums.PayoutToolInfo;
 import com.rbkmoney.newway.domain.tables.records.PayoutToolRecord;
 
 import java.time.LocalDateTime;
@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PayoutTool extends TableImpl<PayoutToolRecord> {
 
-    private static final long serialVersionUID = 1022247712;
+    private static final long serialVersionUID = -10173600;
 
     /**
      * The reference instance of <code>nw.payout_tool</code>
@@ -81,7 +81,7 @@ public class PayoutTool extends TableImpl<PayoutToolRecord> {
     /**
      * The column <code>nw.payout_tool.payout_tool_info</code>.
      */
-    public final TableField<PayoutToolRecord, Payouttoolinfo> PAYOUT_TOOL_INFO = createField("payout_tool_info", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Payouttoolinfo.class), this, "");
+    public final TableField<PayoutToolRecord, PayoutToolInfo> PAYOUT_TOOL_INFO = createField("payout_tool_info", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.PayoutToolInfo.class), this, "");
 
     /**
      * The column <code>nw.payout_tool.payout_tool_info_russian_bank_account</code>.

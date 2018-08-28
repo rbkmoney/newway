@@ -21,7 +21,7 @@ public class ShopDaoImplTest extends AbstractIntegrationTest {
         shopDao.save(shop);
         Shop shopGet = shopDao.get(shop.getShopId());
         assertEquals(shop, shopGet);
-        shopDao.update(shop.getShopId());
+        shopDao.updateNotCurrent(shop.getShopId());
         assertNull(shopDao.get(shop.getShopId()));
     }
 }

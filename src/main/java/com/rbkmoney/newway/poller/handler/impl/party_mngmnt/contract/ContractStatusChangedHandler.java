@@ -12,7 +12,6 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.party.iface.ContractAdjustmentDao;
 import com.rbkmoney.newway.dao.party.iface.ContractDao;
 import com.rbkmoney.newway.dao.party.iface.PayoutToolDao;
-import com.rbkmoney.newway.domain.enums.Contractstatus;
 import com.rbkmoney.newway.domain.tables.pojos.Contract;
 import com.rbkmoney.newway.domain.tables.pojos.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.pojos.PayoutTool;
@@ -63,9 +62,10 @@ public class ContractStatusChangedHandler extends AbstractPartyManagementHandler
             }
             Long contractSourceId = contractSource.getId();
             contractSource.setId(null);
+            contractSource.setWtime(null);
             contractSource.setEventId(eventId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-            Contractstatus status = TypeUtil.toEnumField(statusChanged.getSetField().getFieldName(), Contractstatus.class);
+            com.rbkmoney.newway.domain.enums.ContractStatus status = TypeUtil.toEnumField(statusChanged.getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.ContractStatus.class);
             if (status == null) {
                 throw new IllegalArgumentException("Illegal contract status: " + statusChanged);
             }
@@ -73,7 +73,7 @@ public class ContractStatusChangedHandler extends AbstractPartyManagementHandler
             if (statusChanged.isSetTerminated()) {
                 contractSource.setStatusTerminatedAt(TypeUtil.stringToLocalDateTime(statusChanged.getTerminated().getTerminatedAt()));
             }
-            contractDao.update(contractId);
+            contractDao.updateNotCurrent(contractId);
             long cntrctId = contractDao.save(contractSource);
 
             List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);

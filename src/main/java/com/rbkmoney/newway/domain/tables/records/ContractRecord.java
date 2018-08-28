@@ -4,8 +4,8 @@
 package com.rbkmoney.newway.domain.tables.records;
 
 
-import com.rbkmoney.newway.domain.enums.Contractstatus;
-import com.rbkmoney.newway.domain.enums.Representativedocument;
+import com.rbkmoney.newway.domain.enums.ContractStatus;
+import com.rbkmoney.newway.domain.enums.RepresentativeDocument;
 import com.rbkmoney.newway.domain.tables.Contract;
 
 import java.time.LocalDateTime;
@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ContractRecord extends UpdatableRecordImpl<ContractRecord> {
 
-    private static final long serialVersionUID = -1306341990;
+    private static final long serialVersionUID = -1754258086;
 
     /**
      * Setter for <code>nw.contract.id</code>.
@@ -160,15 +160,15 @@ public class ContractRecord extends UpdatableRecordImpl<ContractRecord> {
     /**
      * Setter for <code>nw.contract.status</code>.
      */
-    public void setStatus(Contractstatus value) {
+    public void setStatus(ContractStatus value) {
         set(9, value);
     }
 
     /**
      * Getter for <code>nw.contract.status</code>.
      */
-    public Contractstatus getStatus() {
-        return (Contractstatus) get(9);
+    public ContractStatus getStatus() {
+        return (ContractStatus) get(9);
     }
 
     /**
@@ -286,15 +286,15 @@ public class ContractRecord extends UpdatableRecordImpl<ContractRecord> {
     /**
      * Setter for <code>nw.contract.report_act_signer_document</code>.
      */
-    public void setReportActSignerDocument(Representativedocument value) {
+    public void setReportActSignerDocument(RepresentativeDocument value) {
         set(18, value);
     }
 
     /**
      * Getter for <code>nw.contract.report_act_signer_document</code>.
      */
-    public Representativedocument getReportActSignerDocument() {
-        return (Representativedocument) get(18);
+    public RepresentativeDocument getReportActSignerDocument() {
+        return (RepresentativeDocument) get(18);
     }
 
     /**
@@ -407,7 +407,7 @@ public class ContractRecord extends UpdatableRecordImpl<ContractRecord> {
     /**
      * Create a detached, initialised ContractRecord
      */
-    public ContractRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String contractId, String partyId, Integer paymentInstitutionId, LocalDateTime createdAt, LocalDateTime validSince, LocalDateTime validUntil, Contractstatus status, LocalDateTime statusTerminatedAt, Integer termsId, LocalDateTime legalAgreementSignedAt, String legalAgreementId, LocalDateTime legalAgreementValidUntil, Integer reportActScheduleId, String reportActSignerPosition, String reportActSignerFullName, Representativedocument reportActSignerDocument, LocalDateTime reportActSignerDocPowerOfAttorneySignedAt, String reportActSignerDocPowerOfAttorneyLegalAgreementId, LocalDateTime reportActSignerDocPowerOfAttorneyValidUntil, String contractorId, LocalDateTime wtime, Boolean current) {
+    public ContractRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String contractId, String partyId, Integer paymentInstitutionId, LocalDateTime createdAt, LocalDateTime validSince, LocalDateTime validUntil, ContractStatus status, LocalDateTime statusTerminatedAt, Integer termsId, LocalDateTime legalAgreementSignedAt, String legalAgreementId, LocalDateTime legalAgreementValidUntil, Integer reportActScheduleId, String reportActSignerPosition, String reportActSignerFullName, RepresentativeDocument reportActSignerDocument, LocalDateTime reportActSignerDocPowerOfAttorneySignedAt, String reportActSignerDocPowerOfAttorneyLegalAgreementId, LocalDateTime reportActSignerDocPowerOfAttorneyValidUntil, String contractorId, LocalDateTime wtime, Boolean current) {
         super(Contract.CONTRACT);
 
         set(0, id);

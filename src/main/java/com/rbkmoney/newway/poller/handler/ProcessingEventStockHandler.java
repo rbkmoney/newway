@@ -10,6 +10,8 @@ import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractPartyManagem
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class ProcessingEventStockHandler implements EventHandler<StockEvent> {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public EventAction handle(StockEvent stockEvent, String subsKey) {
         Event processingEvent = stockEvent.getSourceEvent().getProcessingEvent();
         EventPayload payload = processingEvent.getPayload();

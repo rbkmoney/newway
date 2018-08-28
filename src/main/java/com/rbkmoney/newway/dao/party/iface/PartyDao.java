@@ -8,5 +8,5 @@ public interface PartyDao extends GenericDao {
     Long getLastEventId() throws DaoException;
     Long save(Party party) throws DaoException;
     Party get(String partyId) throws DaoException;
-    void update(String partyId) throws DaoException;
+    void updateNotCurrent(String partyId) throws DaoException;
 }

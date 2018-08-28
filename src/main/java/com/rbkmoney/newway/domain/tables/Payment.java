@@ -6,11 +6,11 @@ package com.rbkmoney.newway.domain.tables;
 
 import com.rbkmoney.newway.domain.Keys;
 import com.rbkmoney.newway.domain.Nw;
-import com.rbkmoney.newway.domain.enums.Payertype;
-import com.rbkmoney.newway.domain.enums.Paymentflowtype;
-import com.rbkmoney.newway.domain.enums.Paymentstatus;
-import com.rbkmoney.newway.domain.enums.Paymenttooltype;
-import com.rbkmoney.newway.domain.enums.Riskscore;
+import com.rbkmoney.newway.domain.enums.PayerType;
+import com.rbkmoney.newway.domain.enums.PaymentFlowType;
+import com.rbkmoney.newway.domain.enums.PaymentStatus;
+import com.rbkmoney.newway.domain.enums.PaymentToolType;
+import com.rbkmoney.newway.domain.enums.RiskScore;
 import com.rbkmoney.newway.domain.tables.records.PaymentRecord;
 
 import java.time.LocalDateTime;
@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payment extends TableImpl<PaymentRecord> {
 
-    private static final long serialVersionUID = -84017681;
+    private static final long serialVersionUID = 1159617615;
 
     /**
      * The reference instance of <code>nw.payment</code>
@@ -109,7 +109,7 @@ public class Payment extends TableImpl<PaymentRecord> {
     /**
      * The column <code>nw.payment.status</code>.
      */
-    public final TableField<PaymentRecord, Paymentstatus> STATUS = createField("status", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Paymentstatus.class), this, "");
+    public final TableField<PaymentRecord, PaymentStatus> STATUS = createField("status", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.PaymentStatus.class), this, "");
 
     /**
      * The column <code>nw.payment.status_cancelled_reason</code>.
@@ -139,12 +139,12 @@ public class Payment extends TableImpl<PaymentRecord> {
     /**
      * The column <code>nw.payment.payer_type</code>.
      */
-    public final TableField<PaymentRecord, Payertype> PAYER_TYPE = createField("payer_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Payertype.class), this, "");
+    public final TableField<PaymentRecord, PayerType> PAYER_TYPE = createField("payer_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.PayerType.class), this, "");
 
     /**
      * The column <code>nw.payment.payer_payment_tool_type</code>.
      */
-    public final TableField<PaymentRecord, Paymenttooltype> PAYER_PAYMENT_TOOL_TYPE = createField("payer_payment_tool_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Paymenttooltype.class), this, "");
+    public final TableField<PaymentRecord, PaymentToolType> PAYER_PAYMENT_TOOL_TYPE = createField("payer_payment_tool_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.PaymentToolType.class), this, "");
 
     /**
      * The column <code>nw.payment.payer_bank_card_token</code>.
@@ -234,7 +234,7 @@ public class Payment extends TableImpl<PaymentRecord> {
     /**
      * The column <code>nw.payment.payment_flow_type</code>.
      */
-    public final TableField<PaymentRecord, Paymentflowtype> PAYMENT_FLOW_TYPE = createField("payment_flow_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Paymentflowtype.class), this, "");
+    public final TableField<PaymentRecord, PaymentFlowType> PAYMENT_FLOW_TYPE = createField("payment_flow_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.PaymentFlowType.class), this, "");
 
     /**
      * The column <code>nw.payment.payment_flow_on_hold_expiration</code>.
@@ -249,7 +249,7 @@ public class Payment extends TableImpl<PaymentRecord> {
     /**
      * The column <code>nw.payment.risk_score</code>.
      */
-    public final TableField<PaymentRecord, Riskscore> RISK_SCORE = createField("risk_score", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Riskscore.class), this, "");
+    public final TableField<PaymentRecord, RiskScore> RISK_SCORE = createField("risk_score", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.RiskScore.class), this, "");
 
     /**
      * The column <code>nw.payment.route_provider_id</code>.

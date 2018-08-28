@@ -20,14 +20,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class ShopPayoutSheduleChangedHandler extends AbstractPartyManagementHandler {
+public class ShopPayoutScheduleChangedHandler extends AbstractPartyManagementHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final ShopDao shopDao;
     private final Filter filter;
 
-    public ShopPayoutSheduleChangedHandler(ShopDao shopDao) {
+    public ShopPayoutScheduleChangedHandler(ShopDao shopDao) {
         this.shopDao = shopDao;
         this.filter = new PathConditionFilter(new PathConditionRule(
                 "claim_created.status.accepted",
@@ -50,12 +50,15 @@ public class ShopPayoutSheduleChangedHandler extends AbstractPartyManagementHand
                 throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
             }
             shopSource.setId(null);
+            shopSource.setWtime(null);
             shopSource.setEventId(eventId);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             if (payoutScheduleChanged.isSetSchedule()) {
                 shopSource.setPayoutScheduleId(payoutScheduleChanged.getSchedule().getId());
+            } else {
+                shopSource.setPayoutScheduleId(null);
             }
-            shopDao.update(shopId);
+            shopDao.updateNotCurrent(shopId);
             shopDao.save(shopSource);
             log.info("Shop payoutScheduleChanged has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
         });

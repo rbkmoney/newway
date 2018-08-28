@@ -12,5 +12,5 @@ public interface PayoutDao extends GenericDao {
 
     Payout get(String payoutId) throws DaoException;
 
-    void update(String payoutId) throws DaoException;
+    void updateNotCurrent(String payoutId) throws DaoException;
 }

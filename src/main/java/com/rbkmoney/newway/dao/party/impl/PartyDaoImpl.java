@@ -55,7 +55,7 @@ public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
     }
 
     @Override
-    public void update(String partyId) throws DaoException {
+    public void updateNotCurrent(String partyId) throws DaoException {
         Query query = getDslContext().update(PARTY).set(PARTY.CURRENT, false)
                 .where(PARTY.PARTY_ID.eq(partyId).and(PARTY.CURRENT));
         executeOne(query);

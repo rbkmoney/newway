@@ -51,6 +51,7 @@ public class ShopLocationChangedHandler extends AbstractPartyManagementHandler {
                 throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
             }
             shopSource.setId(null);
+            shopSource.setWtime(null);
             shopSource.setEventId(eventId);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             if (locationChanged.isSetUrl()) {
@@ -58,7 +59,7 @@ public class ShopLocationChangedHandler extends AbstractPartyManagementHandler {
             } else {
                 throw new IllegalArgumentException("Illegal shop location " + locationChanged);
             }
-            shopDao.update(shopId);
+            shopDao.updateNotCurrent(shopId);
             shopDao.save(shopSource);
             log.info("Shop locationChanged has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
         });

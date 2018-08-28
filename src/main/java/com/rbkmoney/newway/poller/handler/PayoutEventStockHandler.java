@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class PayoutEventStockHandler implements EventHandler<StockEvent> {
     private List<AbstractPayoutHandler> payoutHandlers;
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public EventAction handle(StockEvent stockEvent, String subsKey) {
         Event payoutEvent = stockEvent.getSourceEvent().getPayoutEvent();
         EventPayload payload = payoutEvent.getPayload();

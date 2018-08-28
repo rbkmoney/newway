@@ -2,8 +2,8 @@ package com.rbkmoney.newway.util;
 
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.geck.common.util.TypeUtil;
-import com.rbkmoney.newway.domain.enums.Payouttoolinfo;
-import com.rbkmoney.newway.domain.enums.Representativedocument;
+import com.rbkmoney.newway.domain.enums.PayoutToolInfo;
+import com.rbkmoney.newway.domain.enums.RepresentativeDocument;
 import com.rbkmoney.newway.domain.tables.pojos.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.pojos.PayoutTool;
 
@@ -40,11 +40,11 @@ public class ContractUtil {
         payoutTool.setPayoutToolId(pt.getId());
         payoutTool.setCreatedAt(TypeUtil.stringToLocalDateTime(pt.getCreatedAt()));
         payoutTool.setCurrencyCode(pt.getCurrency().getSymbolicCode());
-        Payouttoolinfo payouttoolinfo = TypeUtil.toEnumField(pt.getPayoutToolInfo().getSetField().getFieldName(), Payouttoolinfo.class);
-        if (payouttoolinfo == null) {
+        PayoutToolInfo payoutToolInfo = TypeUtil.toEnumField(pt.getPayoutToolInfo().getSetField().getFieldName(), PayoutToolInfo.class);
+        if (payoutToolInfo == null) {
             throw new IllegalArgumentException("Illegal payout tool info: " + pt.getPayoutToolInfo());
         }
-        payoutTool.setPayoutToolInfo(payouttoolinfo);
+        payoutTool.setPayoutToolInfo(payoutToolInfo);
         if (pt.getPayoutToolInfo().isSetRussianBankAccount()) {
             RussianBankAccount russianBankAccount = pt.getPayoutToolInfo().getRussianBankAccount();
             payoutTool.setPayoutToolInfoRussianBankAccount(russianBankAccount.getAccount());
@@ -75,8 +75,8 @@ public class ContractUtil {
         contract.setReportActScheduleId(serviceAcceptanceActPreferences.getSchedule().getId());
         contract.setReportActSignerPosition(serviceAcceptanceActPreferences.getSigner().getPosition());
         contract.setReportActSignerFullName(serviceAcceptanceActPreferences.getSigner().getFullName());
-        RepresentativeDocument representativeDocument = serviceAcceptanceActPreferences.getSigner().getDocument();
-        Representativedocument reportActSignerDocument = TypeUtil.toEnumField(representativeDocument.getSetField().getFieldName(), Representativedocument.class);
+        com.rbkmoney.damsel.domain.RepresentativeDocument representativeDocument = serviceAcceptanceActPreferences.getSigner().getDocument();
+        RepresentativeDocument reportActSignerDocument = TypeUtil.toEnumField(representativeDocument.getSetField().getFieldName(), RepresentativeDocument.class);
         if (reportActSignerDocument == null) {
             throw new IllegalArgumentException("Illegal representative document: " + representativeDocument);
         }

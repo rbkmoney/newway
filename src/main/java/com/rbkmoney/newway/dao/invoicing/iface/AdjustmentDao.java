@@ -10,6 +10,6 @@ public interface AdjustmentDao extends GenericDao {
 
     Adjustment get(String invoiceId, String paymentId, String adjustmentId) throws DaoException;
 
-    void update(String invoiceId, String paymentId, String adjustmentId) throws DaoException;
+    void updateNotCurrent(String invoiceId, String paymentId, String adjustmentId) throws DaoException;
 
 }

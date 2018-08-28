@@ -6,9 +6,9 @@ package com.rbkmoney.newway.domain.tables;
 
 import com.rbkmoney.newway.domain.Keys;
 import com.rbkmoney.newway.domain.Nw;
-import com.rbkmoney.newway.domain.enums.Adjustmentcashflowtype;
-import com.rbkmoney.newway.domain.enums.Cashflowaccount;
-import com.rbkmoney.newway.domain.enums.Paymentchangetype;
+import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
+import com.rbkmoney.newway.domain.enums.CashFlowAccount;
+import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.records.CashFlowRecord;
 
 import java.util.Arrays;
@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CashFlow extends TableImpl<CashFlowRecord> {
 
-    private static final long serialVersionUID = -1910466688;
+    private static final long serialVersionUID = -243601440;
 
     /**
      * The reference instance of <code>nw.cash_flow</code>
@@ -66,17 +66,17 @@ public class CashFlow extends TableImpl<CashFlowRecord> {
     /**
      * The column <code>nw.cash_flow.obj_type</code>.
      */
-    public final TableField<CashFlowRecord, Paymentchangetype> OBJ_TYPE = createField("obj_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Paymentchangetype.class), this, "");
+    public final TableField<CashFlowRecord, PaymentChangeType> OBJ_TYPE = createField("obj_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.PaymentChangeType.class), this, "");
 
     /**
      * The column <code>nw.cash_flow.adj_flow_type</code>.
      */
-    public final TableField<CashFlowRecord, Adjustmentcashflowtype> ADJ_FLOW_TYPE = createField("adj_flow_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Adjustmentcashflowtype.class), this, "");
+    public final TableField<CashFlowRecord, AdjustmentCashFlowType> ADJ_FLOW_TYPE = createField("adj_flow_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType.class), this, "");
 
     /**
      * The column <code>nw.cash_flow.source_account_type</code>.
      */
-    public final TableField<CashFlowRecord, Cashflowaccount> SOURCE_ACCOUNT_TYPE = createField("source_account_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Cashflowaccount.class), this, "");
+    public final TableField<CashFlowRecord, CashFlowAccount> SOURCE_ACCOUNT_TYPE = createField("source_account_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.CashFlowAccount.class), this, "");
 
     /**
      * The column <code>nw.cash_flow.source_account_type_value</code>.
@@ -91,7 +91,7 @@ public class CashFlow extends TableImpl<CashFlowRecord> {
     /**
      * The column <code>nw.cash_flow.destination_account_type</code>.
      */
-    public final TableField<CashFlowRecord, Cashflowaccount> DESTINATION_ACCOUNT_TYPE = createField("destination_account_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.Cashflowaccount.class), this, "");
+    public final TableField<CashFlowRecord, CashFlowAccount> DESTINATION_ACCOUNT_TYPE = createField("destination_account_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.CashFlowAccount.class), this, "");
 
     /**
      * The column <code>nw.cash_flow.destination_account_type_value</code>.

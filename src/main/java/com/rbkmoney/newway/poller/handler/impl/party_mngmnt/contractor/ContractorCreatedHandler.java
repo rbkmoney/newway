@@ -13,9 +13,9 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.party.iface.ContractorDao;
-import com.rbkmoney.newway.domain.enums.Contractortype;
-import com.rbkmoney.newway.domain.enums.Legalentity;
-import com.rbkmoney.newway.domain.enums.Privateentity;
+import com.rbkmoney.newway.domain.enums.ContractorType;
+import com.rbkmoney.newway.domain.enums.LegalEntity;
+import com.rbkmoney.newway.domain.enums.PrivateEntity;
 import com.rbkmoney.newway.domain.tables.pojos.Contractor;
 import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractPartyManagementHandler;
 import org.slf4j.Logger;
@@ -58,15 +58,15 @@ public class ContractorCreatedHandler extends AbstractPartyManagementHandler {
             contractor.setPartyId(partyId);
             contractor.setContractorId(contractorId);
             contractor.setIdentificationalLevel(partyContractor.getStatus().name());
-            Contractortype contractortype = TypeUtil.toEnumField(contractorCreated.getSetField().getFieldName(), Contractortype.class);
-            if (contractortype == null) {
+            ContractorType contractorType = TypeUtil.toEnumField(contractorCreated.getSetField().getFieldName(), ContractorType.class);
+            if (contractorType == null) {
                 throw new IllegalArgumentException("Illegal contractorType: " + contractorCreated);
             }
-            contractor.setType(contractortype);
+            contractor.setType(contractorType);
             if (contractorCreated.isSetRegisteredUser()) {
                 contractor.setRegisteredUserEmail(contractorCreated.getRegisteredUser().getEmail());
             } else if (contractorCreated.isSetLegalEntity()) {
-                Legalentity legalEntity = TypeUtil.toEnumField(contractorCreated.getLegalEntity().getSetField().getFieldName(), Legalentity.class);
+                LegalEntity legalEntity = TypeUtil.toEnumField(contractorCreated.getLegalEntity().getSetField().getFieldName(), LegalEntity.class);
                 if (legalEntity == null) {
                     throw new IllegalArgumentException("Unknown legal entity: " + contractor.getLegalEntity());
                 }
@@ -94,10 +94,11 @@ public class ContractorCreatedHandler extends AbstractPartyManagementHandler {
                     contractor.setInternationalLegalEntityRegisteredNumber(internationalLegalEntity.getRegisteredNumber());
                 }
             } else if (contractorCreated.isSetPrivateEntity()) {
-                Privateentity privateEntity = TypeUtil.toEnumField(contractorCreated.getPrivateEntity().getSetField().getFieldName(), Privateentity.class);
+                PrivateEntity privateEntity = TypeUtil.toEnumField(contractorCreated.getPrivateEntity().getSetField().getFieldName(), PrivateEntity.class);
                 if (privateEntity == null) {
                     throw new IllegalArgumentException("Illegal private entity: " + contractor.getPrivateEntity());
                 }
+                contractor.setPrivateEntity(privateEntity);
                 if (contractorCreated.getPrivateEntity().isSetRussianPrivateEntity()) {
                     RussianPrivateEntity russianPrivateEntity = contractorCreated.getPrivateEntity().getRussianPrivateEntity();
                     contractor.setRussianPrivateEntityFirstName(russianPrivateEntity.getFirstName());

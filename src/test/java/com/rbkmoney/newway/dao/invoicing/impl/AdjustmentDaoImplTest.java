@@ -20,7 +20,7 @@ public class AdjustmentDaoImplTest extends AbstractIntegrationTest {
         adjustment.setCurrent(true);
         adjustmentDao.save(adjustment);
         assertEquals(adjustment.getPartyId(), adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()).getPartyId());
-        adjustmentDao.update(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId());
+        adjustmentDao.updateNotCurrent(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId());
         assertNull(adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()));
     }
 }

@@ -51,11 +51,12 @@ public class ShopDetailsChangedHandler extends AbstractPartyManagementHandler {
                 throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
             }
             shopSource.setId(null);
+            shopSource.setWtime(null);
             shopSource.setEventId(eventId);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             shopSource.setDetailsName(detailsChanged.getName());
             shopSource.setDetailsDescription(detailsChanged.getDescription());
-            shopDao.update(shopId);
+            shopDao.updateNotCurrent(shopId);
             shopDao.save(shopSource);
             log.info("Shop detailsChanged has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
         });

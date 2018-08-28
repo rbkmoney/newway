@@ -3,17 +3,17 @@ package com.rbkmoney.newway.util;
 import com.rbkmoney.damsel.domain.FinalCashFlowAccount;
 import com.rbkmoney.damsel.domain.FinalCashFlowPosting;
 import com.rbkmoney.geck.common.util.TypeUtil;
-import com.rbkmoney.newway.domain.enums.Adjustmentcashflowtype;
-import com.rbkmoney.newway.domain.enums.Cashflowaccount;
-import com.rbkmoney.newway.domain.enums.Paymentchangetype;
+import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
+import com.rbkmoney.newway.domain.enums.CashFlowAccount;
+import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class CashFlowUtil {
-    public static Cashflowaccount getCashFlowAccountType(FinalCashFlowAccount cfa) {
-        Cashflowaccount sourceAccountType = TypeUtil.toEnumField(cfa.getAccountType().getSetField().getFieldName(), Cashflowaccount.class);
+    public static CashFlowAccount getCashFlowAccountType(FinalCashFlowAccount cfa) {
+        CashFlowAccount sourceAccountType = TypeUtil.toEnumField(cfa.getAccountType().getSetField().getFieldName(), CashFlowAccount.class);
         if (sourceAccountType == null) {
             throw new IllegalArgumentException("Illegal cash flow account type: " + cfa.getAccountType());
         }
@@ -36,11 +36,11 @@ public class CashFlowUtil {
         }
     }
 
-    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, long objId, Paymentchangetype paymentchangetype) {
+    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, long objId, PaymentChangeType paymentchangetype) {
         return convertCashFlows(cashFlowPostings, objId, paymentchangetype, null);
     }
 
-    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, long objId, Paymentchangetype paymentchangetype, Adjustmentcashflowtype adjustmentcashflowtype) {
+    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, long objId, PaymentChangeType paymentchangetype, AdjustmentCashFlowType adjustmentcashflowtype) {
         return cashFlowPostings.stream().map(cf -> {
             CashFlow pcf = new CashFlow();
             pcf.setObjId(objId);

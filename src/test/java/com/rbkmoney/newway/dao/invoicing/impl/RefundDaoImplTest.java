@@ -21,7 +21,7 @@ public class RefundDaoImplTest extends AbstractIntegrationTest {
         refundDao.save(refund);
         Refund refundGet = refundDao.get(refund.getInvoiceId(), refund.getPaymentId(), refund.getRefundId());
         assertEquals(refund, refundGet);
-        refundDao.update(refund.getInvoiceId(), refund.getPaymentId(), refund.getRefundId());
+        refundDao.updateNotCurrent(refund.getInvoiceId(), refund.getPaymentId(), refund.getRefundId());
         assertNull(refundDao.get(refund.getInvoiceId(), refund.getPaymentId(), refund.getRefundId()));
     }
 }

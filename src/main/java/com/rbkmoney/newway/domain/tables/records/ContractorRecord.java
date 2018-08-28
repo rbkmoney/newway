@@ -4,9 +4,9 @@
 package com.rbkmoney.newway.domain.tables.records;
 
 
-import com.rbkmoney.newway.domain.enums.Contractortype;
-import com.rbkmoney.newway.domain.enums.Legalentity;
-import com.rbkmoney.newway.domain.enums.Privateentity;
+import com.rbkmoney.newway.domain.enums.ContractorType;
+import com.rbkmoney.newway.domain.enums.LegalEntity;
+import com.rbkmoney.newway.domain.enums.PrivateEntity;
 import com.rbkmoney.newway.domain.tables.Contractor;
 
 import java.time.LocalDateTime;
@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ContractorRecord extends UpdatableRecordImpl<ContractorRecord> {
 
-    private static final long serialVersionUID = 37665465;
+    private static final long serialVersionUID = -349308071;
 
     /**
      * Setter for <code>nw.contractor.id</code>.
@@ -105,15 +105,15 @@ public class ContractorRecord extends UpdatableRecordImpl<ContractorRecord> {
     /**
      * Setter for <code>nw.contractor.type</code>.
      */
-    public void setType(Contractortype value) {
+    public void setType(ContractorType value) {
         set(5, value);
     }
 
     /**
      * Getter for <code>nw.contractor.type</code>.
      */
-    public Contractortype getType() {
-        return (Contractortype) get(5);
+    public ContractorType getType() {
+        return (ContractorType) get(5);
     }
 
     /**
@@ -147,15 +147,15 @@ public class ContractorRecord extends UpdatableRecordImpl<ContractorRecord> {
     /**
      * Setter for <code>nw.contractor.legal_entity</code>.
      */
-    public void setLegalEntity(Legalentity value) {
+    public void setLegalEntity(LegalEntity value) {
         set(8, value);
     }
 
     /**
      * Getter for <code>nw.contractor.legal_entity</code>.
      */
-    public Legalentity getLegalEntity() {
-        return (Legalentity) get(8);
+    public LegalEntity getLegalEntity() {
+        return (LegalEntity) get(8);
     }
 
     /**
@@ -399,15 +399,15 @@ public class ContractorRecord extends UpdatableRecordImpl<ContractorRecord> {
     /**
      * Setter for <code>nw.contractor.private_entity</code>.
      */
-    public void setPrivateEntity(Privateentity value) {
+    public void setPrivateEntity(PrivateEntity value) {
         set(26, value);
     }
 
     /**
      * Getter for <code>nw.contractor.private_entity</code>.
      */
-    public Privateentity getPrivateEntity() {
-        return (Privateentity) get(26);
+    public PrivateEntity getPrivateEntity() {
+        return (PrivateEntity) get(26);
     }
 
     /**
@@ -534,7 +534,7 @@ public class ContractorRecord extends UpdatableRecordImpl<ContractorRecord> {
     /**
      * Create a detached, initialised ContractorRecord
      */
-    public ContractorRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String partyId, String contractorId, Contractortype type, String identificationalLevel, String registeredUserEmail, Legalentity legalEntity, String russianLegalEntityRegisteredName, String russianLegalEntityRegisteredNumber, String russianLegalEntityInn, String russianLegalEntityActualAddress, String russianLegalEntityPostAddress, String russianLegalEntityRepresentativePosition, String russianLegalEntityRepresentativeFullName, String russianLegalEntityRepresentativeDocument, String russianLegalEntityRussianBankAccount, String russianLegalEntityRussianBankName, String russianLegalEntityRussianBankPostAccount, String russianLegalEntityRussianBankBik, String internationalLegalEntityLegalName, String internationalLegalEntityTradingName, String internationalLegalEntityRegisteredAddress, String internationalLegalEntityActualAddress, String internationalLegalEntityRegisteredNumber, Privateentity privateEntity, String russianPrivateEntityFirstName, String russianPrivateEntitySecondName, String russianPrivateEntityMiddleName, String russianPrivateEntityPhoneNumber, String russianPrivateEntityEmail, LocalDateTime wtime, Boolean current) {
+    public ContractorRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String partyId, String contractorId, ContractorType type, String identificationalLevel, String registeredUserEmail, LegalEntity legalEntity, String russianLegalEntityRegisteredName, String russianLegalEntityRegisteredNumber, String russianLegalEntityInn, String russianLegalEntityActualAddress, String russianLegalEntityPostAddress, String russianLegalEntityRepresentativePosition, String russianLegalEntityRepresentativeFullName, String russianLegalEntityRepresentativeDocument, String russianLegalEntityRussianBankAccount, String russianLegalEntityRussianBankName, String russianLegalEntityRussianBankPostAccount, String russianLegalEntityRussianBankBik, String internationalLegalEntityLegalName, String internationalLegalEntityTradingName, String internationalLegalEntityRegisteredAddress, String internationalLegalEntityActualAddress, String internationalLegalEntityRegisteredNumber, PrivateEntity privateEntity, String russianPrivateEntityFirstName, String russianPrivateEntitySecondName, String russianPrivateEntityMiddleName, String russianPrivateEntityPhoneNumber, String russianPrivateEntityEmail, LocalDateTime wtime, Boolean current) {
         super(Contractor.CONTRACTOR);
 
         set(0, id);

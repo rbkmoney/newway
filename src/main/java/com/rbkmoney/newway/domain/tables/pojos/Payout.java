@@ -4,11 +4,11 @@
 package com.rbkmoney.newway.domain.tables.pojos;
 
 
-import com.rbkmoney.newway.domain.enums.Payoutaccounttype;
-import com.rbkmoney.newway.domain.enums.Payoutpaidstatusdetails;
-import com.rbkmoney.newway.domain.enums.Payoutstatus;
-import com.rbkmoney.newway.domain.enums.Payouttype;
-import com.rbkmoney.newway.domain.enums.Usertype;
+import com.rbkmoney.newway.domain.enums.PayoutAccountType;
+import com.rbkmoney.newway.domain.enums.PayoutPaidStatusDetails;
+import com.rbkmoney.newway.domain.enums.PayoutStatus;
+import com.rbkmoney.newway.domain.enums.PayoutType;
+import com.rbkmoney.newway.domain.enums.UserType;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -29,7 +29,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payout implements Serializable {
 
-    private static final long serialVersionUID = 8004680;
+    private static final long serialVersionUID = -158095608;
 
     private Long                    id;
     private Long                    eventId;
@@ -39,22 +39,22 @@ public class Payout implements Serializable {
     private String                  shopId;
     private String                  contractId;
     private LocalDateTime           createdAt;
-    private Payoutstatus            status;
-    private Payoutpaidstatusdetails statusPaidDetails;
+    private PayoutStatus            status;
+    private PayoutPaidStatusDetails statusPaidDetails;
     private String                  statusPaidDetailsCardProviderName;
     private String                  statusPaidDetailsCardProviderTransactionId;
     private String                  statusCancelledUserInfoId;
-    private Usertype                statusCancelledUserInfoType;
+    private UserType                statusCancelledUserInfoType;
     private String                  statusCancelledDetails;
     private String                  statusConfirmedUserInfoId;
-    private Usertype                statusConfirmedUserInfoType;
-    private Payouttype              type;
+    private UserType                statusConfirmedUserInfoType;
+    private PayoutType              type;
     private String                  typeCardToken;
     private String                  typeCardPaymentSystem;
     private String                  typeCardBin;
     private String                  typeCardMaskedPan;
     private String                  typeCardTokenProvider;
-    private Payoutaccounttype       typeAccountType;
+    private PayoutAccountType       typeAccountType;
     private String                  typeAccountRussianAccount;
     private String                  typeAccountRussianBankName;
     private String                  typeAccountRussianBankPostAccount;
@@ -76,7 +76,7 @@ public class Payout implements Serializable {
     private String                  typeAccountLegalAgreementId;
     private LocalDateTime           typeAccountLegalAgreementValidUntil;
     private String                  initiatorId;
-    private Usertype                initiatorType;
+    private UserType                initiatorType;
     private LocalDateTime           wtime;
     private Boolean                 current;
 
@@ -142,22 +142,22 @@ public class Payout implements Serializable {
         String                  shopId,
         String                  contractId,
         LocalDateTime           createdAt,
-        Payoutstatus            status,
-        Payoutpaidstatusdetails statusPaidDetails,
+        PayoutStatus            status,
+        PayoutPaidStatusDetails statusPaidDetails,
         String                  statusPaidDetailsCardProviderName,
         String                  statusPaidDetailsCardProviderTransactionId,
         String                  statusCancelledUserInfoId,
-        Usertype                statusCancelledUserInfoType,
+        UserType                statusCancelledUserInfoType,
         String                  statusCancelledDetails,
         String                  statusConfirmedUserInfoId,
-        Usertype                statusConfirmedUserInfoType,
-        Payouttype              type,
+        UserType                statusConfirmedUserInfoType,
+        PayoutType              type,
         String                  typeCardToken,
         String                  typeCardPaymentSystem,
         String                  typeCardBin,
         String                  typeCardMaskedPan,
         String                  typeCardTokenProvider,
-        Payoutaccounttype       typeAccountType,
+        PayoutAccountType       typeAccountType,
         String                  typeAccountRussianAccount,
         String                  typeAccountRussianBankName,
         String                  typeAccountRussianBankPostAccount,
@@ -179,7 +179,7 @@ public class Payout implements Serializable {
         String                  typeAccountLegalAgreementId,
         LocalDateTime           typeAccountLegalAgreementValidUntil,
         String                  initiatorId,
-        Usertype                initiatorType,
+        UserType                initiatorType,
         LocalDateTime           wtime,
         Boolean                 current
     ) {
@@ -297,19 +297,19 @@ public class Payout implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public Payoutstatus getStatus() {
+    public PayoutStatus getStatus() {
         return this.status;
     }
 
-    public void setStatus(Payoutstatus status) {
+    public void setStatus(PayoutStatus status) {
         this.status = status;
     }
 
-    public Payoutpaidstatusdetails getStatusPaidDetails() {
+    public PayoutPaidStatusDetails getStatusPaidDetails() {
         return this.statusPaidDetails;
     }
 
-    public void setStatusPaidDetails(Payoutpaidstatusdetails statusPaidDetails) {
+    public void setStatusPaidDetails(PayoutPaidStatusDetails statusPaidDetails) {
         this.statusPaidDetails = statusPaidDetails;
     }
 
@@ -337,11 +337,11 @@ public class Payout implements Serializable {
         this.statusCancelledUserInfoId = statusCancelledUserInfoId;
     }
 
-    public Usertype getStatusCancelledUserInfoType() {
+    public UserType getStatusCancelledUserInfoType() {
         return this.statusCancelledUserInfoType;
     }
 
-    public void setStatusCancelledUserInfoType(Usertype statusCancelledUserInfoType) {
+    public void setStatusCancelledUserInfoType(UserType statusCancelledUserInfoType) {
         this.statusCancelledUserInfoType = statusCancelledUserInfoType;
     }
 
@@ -361,19 +361,19 @@ public class Payout implements Serializable {
         this.statusConfirmedUserInfoId = statusConfirmedUserInfoId;
     }
 
-    public Usertype getStatusConfirmedUserInfoType() {
+    public UserType getStatusConfirmedUserInfoType() {
         return this.statusConfirmedUserInfoType;
     }
 
-    public void setStatusConfirmedUserInfoType(Usertype statusConfirmedUserInfoType) {
+    public void setStatusConfirmedUserInfoType(UserType statusConfirmedUserInfoType) {
         this.statusConfirmedUserInfoType = statusConfirmedUserInfoType;
     }
 
-    public Payouttype getType() {
+    public PayoutType getType() {
         return this.type;
     }
 
-    public void setType(Payouttype type) {
+    public void setType(PayoutType type) {
         this.type = type;
     }
 
@@ -417,11 +417,11 @@ public class Payout implements Serializable {
         this.typeCardTokenProvider = typeCardTokenProvider;
     }
 
-    public Payoutaccounttype getTypeAccountType() {
+    public PayoutAccountType getTypeAccountType() {
         return this.typeAccountType;
     }
 
-    public void setTypeAccountType(Payoutaccounttype typeAccountType) {
+    public void setTypeAccountType(PayoutAccountType typeAccountType) {
         this.typeAccountType = typeAccountType;
     }
 
@@ -593,11 +593,11 @@ public class Payout implements Serializable {
         this.initiatorId = initiatorId;
     }
 
-    public Usertype getInitiatorType() {
+    public UserType getInitiatorType() {
         return this.initiatorType;
     }
 
-    public void setInitiatorType(Usertype initiatorType) {
+    public void setInitiatorType(UserType initiatorType) {
         this.initiatorType = initiatorType;
     }
 

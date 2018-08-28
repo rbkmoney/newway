@@ -4,7 +4,7 @@
 package com.rbkmoney.newway.domain.tables.pojos;
 
 
-import com.rbkmoney.newway.domain.enums.Adjustmentstatus;
+import com.rbkmoney.newway.domain.enums.AdjustmentStatus;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Adjustment implements Serializable {
 
-    private static final long serialVersionUID = -77312749;
+    private static final long serialVersionUID = 1271956723;
 
     private Long             id;
     private Long             eventId;
@@ -37,7 +37,7 @@ public class Adjustment implements Serializable {
     private String           partyId;
     private String           shopId;
     private LocalDateTime    createdAt;
-    private Adjustmentstatus status;
+    private AdjustmentStatus status;
     private LocalDateTime    statusCapturedAt;
     private LocalDateTime    statusCancelledAt;
     private String           reason;
@@ -76,7 +76,7 @@ public class Adjustment implements Serializable {
         String           partyId,
         String           shopId,
         LocalDateTime    createdAt,
-        Adjustmentstatus status,
+        AdjustmentStatus status,
         LocalDateTime    statusCapturedAt,
         LocalDateTime    statusCancelledAt,
         String           reason,
@@ -181,11 +181,11 @@ public class Adjustment implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public Adjustmentstatus getStatus() {
+    public AdjustmentStatus getStatus() {
         return this.status;
     }
 
-    public void setStatus(Adjustmentstatus status) {
+    public void setStatus(AdjustmentStatus status) {
         this.status = status;
     }
 

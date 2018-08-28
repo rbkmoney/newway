@@ -1,6 +1,5 @@
 package com.rbkmoney.newway.poller.handler.impl.party_mngmnt.party;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.PartyRevisionChanged;
@@ -26,8 +25,6 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
 
     private final PartyDao partyDao;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     private final Filter filter;
 
     public PartyRevisionChangedHandler(PartyDao partyDao) {
@@ -49,12 +46,13 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
             throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
         }
         partySource.setId(null);
+        partySource.setWtime(null);
         partySource.setEventId(eventId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         partySource.setRevision(partyRevisionChanged.getRevision());
         partySource.setRevisionChangedAt(TypeUtil.stringToLocalDateTime(partyRevisionChanged.getTimestamp()));
-        partyDao.update(partyId);
-        partyDao.save(partySource); //TODO adjustments, payout tools
+        partyDao.updateNotCurrent(partyId);
+        partyDao.save(partySource);
         log.info("Party revision changed has been saved, eventId={}, partyId={}", eventId, partyId);
     }
 

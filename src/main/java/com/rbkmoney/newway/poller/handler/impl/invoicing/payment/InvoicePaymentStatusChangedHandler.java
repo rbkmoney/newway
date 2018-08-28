@@ -1,7 +1,5 @@
 package com.rbkmoney.newway.poller.handler.impl.invoicing.payment;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rbkmoney.damsel.domain.InvoicePaymentStatus;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
@@ -12,12 +10,13 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
 import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
-import com.rbkmoney.newway.domain.enums.Paymentchangetype;
-import com.rbkmoney.newway.domain.enums.Paymentstatus;
+import com.rbkmoney.newway.domain.enums.PaymentChangeType;
+import com.rbkmoney.newway.domain.enums.PaymentStatus;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.handler.impl.invoicing.AbstractInvoicingHandler;
+import com.rbkmoney.newway.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +34,6 @@ public class InvoicePaymentStatusChangedHandler extends AbstractInvoicingHandler
     private final PaymentDao paymentDao;
 
     private final CashFlowDao cashFlowDao;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final Filter filter;
 
@@ -64,9 +61,10 @@ public class InvoicePaymentStatusChangedHandler extends AbstractInvoicingHandler
         }
         Long paymentSourceId = paymentSource.getId();
         paymentSource.setId(null);
+        paymentSource.setWtime(null);
         paymentSource.setEventId(eventId);
         paymentSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        Paymentstatus status = TypeUtil.toEnumField(invoicePaymentStatus.getSetField().getFieldName(), Paymentstatus.class);
+        PaymentStatus status = TypeUtil.toEnumField(invoicePaymentStatus.getSetField().getFieldName(), PaymentStatus.class);
         if (status == null) {
             throw new IllegalArgumentException("Illegal payment status: " + invoicePaymentStatus);
         }
@@ -82,16 +80,12 @@ public class InvoicePaymentStatusChangedHandler extends AbstractInvoicingHandler
         } else if (invoicePaymentStatus.isSetFailed()) {
             paymentSource.setStatusCancelledReason(null);
             paymentSource.setStatusCapturedReason(null);
-            try {
-                paymentSource.setStatusFailedFailure(objectMapper.writeValueAsString(invoicePaymentStatus.getFailed()));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+            paymentSource.setStatusFailedFailure(JsonUtil.toJsonString(invoicePaymentStatus.getFailed()));
         }
 
-        paymentDao.update(invoiceId, paymentId);
+        paymentDao.updateNotCurrent(invoiceId, paymentId);
         long pmntId = paymentDao.save(paymentSource);
-        List<CashFlow> cashFlows = cashFlowDao.getByObjId(paymentSourceId, Paymentchangetype.payment);
+        List<CashFlow> cashFlows = cashFlowDao.getByObjId(paymentSourceId, PaymentChangeType.payment);
         cashFlows.forEach(pcf -> {
             pcf.setId(null);
             pcf.setObjId(pmntId);

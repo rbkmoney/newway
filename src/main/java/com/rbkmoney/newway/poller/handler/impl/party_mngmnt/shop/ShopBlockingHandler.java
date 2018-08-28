@@ -47,6 +47,7 @@ public class ShopBlockingHandler extends AbstractPartyManagementHandler {
             throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
         }
         shopSource.setId(null);
+        shopSource.setWtime(null);
         shopSource.setEventId(eventId);
         shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         com.rbkmoney.newway.domain.enums.Blocking blockingType = TypeUtil.toEnumField(blocking.getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.Blocking.class);
@@ -65,7 +66,7 @@ public class ShopBlockingHandler extends AbstractPartyManagementHandler {
             shopSource.setBlockingBlockedReason(blocking.getBlocked().getReason());
             shopSource.setBlockingBlockedSince(TypeUtil.stringToLocalDateTime(blocking.getBlocked().getSince()));
         }
-        shopDao.update(shopId);
+        shopDao.updateNotCurrent(shopId);
         shopDao.save(shopSource);
         log.info("Shop blocking has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
     }

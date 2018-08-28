@@ -4,11 +4,11 @@
 package com.rbkmoney.newway.domain.tables.records;
 
 
-import com.rbkmoney.newway.domain.enums.Payoutaccounttype;
-import com.rbkmoney.newway.domain.enums.Payoutpaidstatusdetails;
-import com.rbkmoney.newway.domain.enums.Payoutstatus;
-import com.rbkmoney.newway.domain.enums.Payouttype;
-import com.rbkmoney.newway.domain.enums.Usertype;
+import com.rbkmoney.newway.domain.enums.PayoutAccountType;
+import com.rbkmoney.newway.domain.enums.PayoutPaidStatusDetails;
+import com.rbkmoney.newway.domain.enums.PayoutStatus;
+import com.rbkmoney.newway.domain.enums.PayoutType;
+import com.rbkmoney.newway.domain.enums.UserType;
 import com.rbkmoney.newway.domain.tables.Payout;
 
 import java.time.LocalDateTime;
@@ -32,7 +32,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PayoutRecord extends UpdatableRecordImpl<PayoutRecord> {
 
-    private static final long serialVersionUID = -1198093872;
+    private static final long serialVersionUID = 654083472;
 
     /**
      * Setter for <code>nw.payout.id</code>.
@@ -149,29 +149,29 @@ public class PayoutRecord extends UpdatableRecordImpl<PayoutRecord> {
     /**
      * Setter for <code>nw.payout.status</code>.
      */
-    public void setStatus(Payoutstatus value) {
+    public void setStatus(PayoutStatus value) {
         set(8, value);
     }
 
     /**
      * Getter for <code>nw.payout.status</code>.
      */
-    public Payoutstatus getStatus() {
-        return (Payoutstatus) get(8);
+    public PayoutStatus getStatus() {
+        return (PayoutStatus) get(8);
     }
 
     /**
      * Setter for <code>nw.payout.status_paid_details</code>.
      */
-    public void setStatusPaidDetails(Payoutpaidstatusdetails value) {
+    public void setStatusPaidDetails(PayoutPaidStatusDetails value) {
         set(9, value);
     }
 
     /**
      * Getter for <code>nw.payout.status_paid_details</code>.
      */
-    public Payoutpaidstatusdetails getStatusPaidDetails() {
-        return (Payoutpaidstatusdetails) get(9);
+    public PayoutPaidStatusDetails getStatusPaidDetails() {
+        return (PayoutPaidStatusDetails) get(9);
     }
 
     /**
@@ -219,15 +219,15 @@ public class PayoutRecord extends UpdatableRecordImpl<PayoutRecord> {
     /**
      * Setter for <code>nw.payout.status_cancelled_user_info_type</code>.
      */
-    public void setStatusCancelledUserInfoType(Usertype value) {
+    public void setStatusCancelledUserInfoType(UserType value) {
         set(13, value);
     }
 
     /**
      * Getter for <code>nw.payout.status_cancelled_user_info_type</code>.
      */
-    public Usertype getStatusCancelledUserInfoType() {
-        return (Usertype) get(13);
+    public UserType getStatusCancelledUserInfoType() {
+        return (UserType) get(13);
     }
 
     /**
@@ -261,29 +261,29 @@ public class PayoutRecord extends UpdatableRecordImpl<PayoutRecord> {
     /**
      * Setter for <code>nw.payout.status_confirmed_user_info_type</code>.
      */
-    public void setStatusConfirmedUserInfoType(Usertype value) {
+    public void setStatusConfirmedUserInfoType(UserType value) {
         set(16, value);
     }
 
     /**
      * Getter for <code>nw.payout.status_confirmed_user_info_type</code>.
      */
-    public Usertype getStatusConfirmedUserInfoType() {
-        return (Usertype) get(16);
+    public UserType getStatusConfirmedUserInfoType() {
+        return (UserType) get(16);
     }
 
     /**
      * Setter for <code>nw.payout.type</code>.
      */
-    public void setType(Payouttype value) {
+    public void setType(PayoutType value) {
         set(17, value);
     }
 
     /**
      * Getter for <code>nw.payout.type</code>.
      */
-    public Payouttype getType() {
-        return (Payouttype) get(17);
+    public PayoutType getType() {
+        return (PayoutType) get(17);
     }
 
     /**
@@ -359,15 +359,15 @@ public class PayoutRecord extends UpdatableRecordImpl<PayoutRecord> {
     /**
      * Setter for <code>nw.payout.type_account_type</code>.
      */
-    public void setTypeAccountType(Payoutaccounttype value) {
+    public void setTypeAccountType(PayoutAccountType value) {
         set(23, value);
     }
 
     /**
      * Getter for <code>nw.payout.type_account_type</code>.
      */
-    public Payoutaccounttype getTypeAccountType() {
-        return (Payoutaccounttype) get(23);
+    public PayoutAccountType getTypeAccountType() {
+        return (PayoutAccountType) get(23);
     }
 
     /**
@@ -667,15 +667,15 @@ public class PayoutRecord extends UpdatableRecordImpl<PayoutRecord> {
     /**
      * Setter for <code>nw.payout.initiator_type</code>.
      */
-    public void setInitiatorType(Usertype value) {
+    public void setInitiatorType(UserType value) {
         set(45, value);
     }
 
     /**
      * Getter for <code>nw.payout.initiator_type</code>.
      */
-    public Usertype getInitiatorType() {
-        return (Usertype) get(45);
+    public UserType getInitiatorType() {
+        return (UserType) get(45);
     }
 
     /**
@@ -732,7 +732,7 @@ public class PayoutRecord extends UpdatableRecordImpl<PayoutRecord> {
     /**
      * Create a detached, initialised PayoutRecord
      */
-    public PayoutRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String payoutId, String partyId, String shopId, String contractId, LocalDateTime createdAt, Payoutstatus status, Payoutpaidstatusdetails statusPaidDetails, String statusPaidDetailsCardProviderName, String statusPaidDetailsCardProviderTransactionId, String statusCancelledUserInfoId, Usertype statusCancelledUserInfoType, String statusCancelledDetails, String statusConfirmedUserInfoId, Usertype statusConfirmedUserInfoType, Payouttype type, String typeCardToken, String typeCardPaymentSystem, String typeCardBin, String typeCardMaskedPan, String typeCardTokenProvider, Payoutaccounttype typeAccountType, String typeAccountRussianAccount, String typeAccountRussianBankName, String typeAccountRussianBankPostAccount, String typeAccountRussianBankBik, String typeAccountRussianInn, String typeAccountInternationalAccountHolder, String typeAccountInternationalBankName, String typeAccountInternationalBankAddress, String typeAccountInternationalIban, String typeAccountInternationalBic, String typeAccountInternationalLocalBankCode, String typeAccountInternationalLegalEntityLegalName, String typeAccountInternationalLegalEntityTradingName, String typeAccountInternationalLegalEntityRegisteredAddress, String typeAccountInternationalLegalEntityActualAddress, String typeAccountInternationalLegalEntityRegisteredNumber, String typeAccountPurpose, LocalDateTime typeAccountLegalAgreementSignedAt, String typeAccountLegalAgreementId, LocalDateTime typeAccountLegalAgreementValidUntil, String initiatorId, Usertype initiatorType, LocalDateTime wtime, Boolean current) {
+    public PayoutRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String payoutId, String partyId, String shopId, String contractId, LocalDateTime createdAt, PayoutStatus status, PayoutPaidStatusDetails statusPaidDetails, String statusPaidDetailsCardProviderName, String statusPaidDetailsCardProviderTransactionId, String statusCancelledUserInfoId, UserType statusCancelledUserInfoType, String statusCancelledDetails, String statusConfirmedUserInfoId, UserType statusConfirmedUserInfoType, PayoutType type, String typeCardToken, String typeCardPaymentSystem, String typeCardBin, String typeCardMaskedPan, String typeCardTokenProvider, PayoutAccountType typeAccountType, String typeAccountRussianAccount, String typeAccountRussianBankName, String typeAccountRussianBankPostAccount, String typeAccountRussianBankBik, String typeAccountRussianInn, String typeAccountInternationalAccountHolder, String typeAccountInternationalBankName, String typeAccountInternationalBankAddress, String typeAccountInternationalIban, String typeAccountInternationalBic, String typeAccountInternationalLocalBankCode, String typeAccountInternationalLegalEntityLegalName, String typeAccountInternationalLegalEntityTradingName, String typeAccountInternationalLegalEntityRegisteredAddress, String typeAccountInternationalLegalEntityActualAddress, String typeAccountInternationalLegalEntityRegisteredNumber, String typeAccountPurpose, LocalDateTime typeAccountLegalAgreementSignedAt, String typeAccountLegalAgreementId, LocalDateTime typeAccountLegalAgreementValidUntil, String initiatorId, UserType initiatorType, LocalDateTime wtime, Boolean current) {
         super(Payout.PAYOUT);
 
         set(0, id);

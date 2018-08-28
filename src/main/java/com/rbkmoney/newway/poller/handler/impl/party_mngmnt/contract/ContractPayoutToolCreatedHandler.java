@@ -63,9 +63,10 @@ public class ContractPayoutToolCreatedHandler extends AbstractPartyManagementHan
             }
             Long contractSourceId = contractSource.getId();
             contractSource.setId(null);
+            contractSource.setWtime(null);
             contractSource.setEventId(eventId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-            contractDao.update(contractId);
+            contractDao.updateNotCurrent(contractId);
             long cntrctId = contractDao.save(contractSource);
 
             List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);

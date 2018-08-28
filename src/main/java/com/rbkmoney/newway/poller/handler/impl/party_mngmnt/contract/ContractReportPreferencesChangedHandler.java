@@ -63,10 +63,11 @@ public class ContractReportPreferencesChangedHandler extends AbstractPartyManage
             }
             Long contractSourceId = contractSource.getId();
             contractSource.setId(null);
+            contractSource.setWtime(null);
             contractSource.setEventId(eventId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             ContractUtil.fillReportPreferences(contractSource, reportPreferencesChanged.getServiceAcceptanceActPreferences());
-            contractDao.update(contractId);
+            contractDao.updateNotCurrent(contractId);
             long cntrctId = contractDao.save(contractSource);
 
             List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);

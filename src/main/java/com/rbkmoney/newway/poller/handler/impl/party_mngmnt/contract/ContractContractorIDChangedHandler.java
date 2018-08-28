@@ -61,10 +61,11 @@ public class ContractContractorIDChangedHandler extends AbstractPartyManagementH
             }
             Long contractSourceId = contractSource.getId();
             contractSource.setId(null);
+            contractSource.setWtime(null);
             contractSource.setEventId(eventId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractSource.setContractorId(contractorChanged);
-            contractDao.update(contractId);
+            contractDao.updateNotCurrent(contractId);
             long cntrctId = contractDao.save(contractSource);
 
             List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);

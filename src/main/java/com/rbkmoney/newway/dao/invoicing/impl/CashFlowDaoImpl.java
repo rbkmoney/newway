@@ -3,8 +3,8 @@ package com.rbkmoney.newway.dao.invoicing.impl;
 import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
 import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
-import com.rbkmoney.newway.domain.enums.Adjustmentcashflowtype;
-import com.rbkmoney.newway.domain.enums.Paymentchangetype;
+import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
+import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.records.CashFlowRecord;
 import com.rbkmoney.newway.exception.DaoException;
@@ -38,16 +38,16 @@ public class CashFlowDaoImpl extends AbstractGenericDao implements CashFlowDao {
     }
 
     @Override
-    public List<CashFlow> getByObjId(Long objId, Paymentchangetype paymentchangetype) throws DaoException {
+    public List<CashFlow> getByObjId(Long objId, PaymentChangeType paymentChangeType) throws DaoException {
         Query query = getDslContext().selectFrom(CASH_FLOW)
-                .where(CASH_FLOW.OBJ_ID.eq(objId).and(CASH_FLOW.OBJ_TYPE.eq(paymentchangetype)));
+                .where(CASH_FLOW.OBJ_ID.eq(objId).and(CASH_FLOW.OBJ_TYPE.eq(paymentChangeType)));
         return fetch(query, cashFlowRowMapper);
     }
 
     @Override
-    public List<CashFlow> getForAdjustments(Long adjId, Adjustmentcashflowtype adjustmentcashflowtype) throws DaoException {
+    public List<CashFlow> getForAdjustments(Long adjId, AdjustmentCashFlowType adjustmentCashFlowType) throws DaoException {
         Query query = getDslContext().selectFrom(CASH_FLOW)
-                .where(CASH_FLOW.OBJ_ID.eq(adjId).and(CASH_FLOW.OBJ_TYPE.eq(Paymentchangetype.adjustment)).and(CASH_FLOW.ADJ_FLOW_TYPE.eq(adjustmentcashflowtype)));
+                .where(CASH_FLOW.OBJ_ID.eq(adjId).and(CASH_FLOW.OBJ_TYPE.eq(PaymentChangeType.adjustment)).and(CASH_FLOW.ADJ_FLOW_TYPE.eq(adjustmentCashFlowType)));
         return fetch(query, cashFlowRowMapper);
     }
 }
