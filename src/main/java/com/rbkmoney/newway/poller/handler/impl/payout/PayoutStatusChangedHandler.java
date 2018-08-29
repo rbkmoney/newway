@@ -104,6 +104,7 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
             }
             payoutSource.setStatusConfirmedUserInfoType(statusCondirmedUserInfoType);
         }
+        payoutDao.updateNotCurrent(payoutSource.getPayoutId());
         long pytId = payoutDao.save(payoutSource);
 
         List<PayoutSummary> payoutSummaries = payoutSummaryDao.getByPytId(payoutSourceId);
