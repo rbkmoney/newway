@@ -25,21 +25,25 @@ public class PayoutEventStockHandler implements EventHandler<StockEvent> {
     private List<AbstractPayoutHandler> payoutHandlers;
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
     public EventAction handle(StockEvent stockEvent, String subsKey) {
         Event payoutEvent = stockEvent.getSourceEvent().getPayoutEvent();
         EventPayload payload = payoutEvent.getPayload();
         List<PayoutChange> changes = payload.getPayoutChanges();
         try {
-            changes.forEach(c -> payoutHandlers.forEach(ph -> {
-                if (ph.accept(c)) {
-                    ph.handle(c, payoutEvent);
-                }
-            }));
+            handleEvents(payoutEvent, changes);
         } catch (RuntimeException e) {
             log.error("Error when polling payout event with id={}", payoutEvent.getId(), e);
             return EventAction.DELAYED_RETRY;
         }
         return EventAction.CONTINUE;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void handleEvents(Event payoutEvent, List<PayoutChange> changes) {
+        changes.forEach(c -> payoutHandlers.forEach(ph -> {
+            if (ph.accept(c)) {
+                ph.handle(c, payoutEvent);
+            }
+        }));
     }
 }

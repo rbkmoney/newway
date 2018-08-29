@@ -29,32 +29,36 @@ public class ProcessingEventStockHandler implements EventHandler<StockEvent> {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
     public EventAction handle(StockEvent stockEvent, String subsKey) {
         Event processingEvent = stockEvent.getSourceEvent().getProcessingEvent();
         EventPayload payload = processingEvent.getPayload();
 
         try {
-            if (payload.isSetInvoiceChanges()) {
-                payload.getInvoiceChanges().forEach(cc -> {
-                    invoicingHandlers.forEach(ih -> {
-                        if (ih.accept(cc)) {
-                            ih.handle(cc, processingEvent);
-                        }
-                    });
-                });
-            } else if (payload.isSetPartyChanges()) {
-                payload.getPartyChanges().forEach(cc -> partyManagementHandlers.forEach(ph -> {
-                    if (ph.accept(cc)) {
-                        ph.handle(cc, processingEvent);
-                    }
-                }));
-            }
+            handleEvents(processingEvent, payload);
         } catch (RuntimeException e) {
             log.error("Error when polling processing event with id={}", processingEvent.getId(), e);
             return EventAction.DELAYED_RETRY;
         }
         return EventAction.CONTINUE;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void handleEvents(Event processingEvent, EventPayload payload) {
+        if (payload.isSetInvoiceChanges()) {
+            payload.getInvoiceChanges().forEach(cc -> {
+                invoicingHandlers.forEach(ih -> {
+                    if (ih.accept(cc)) {
+                        ih.handle(cc, processingEvent);
+                    }
+                });
+            });
+        } else if (payload.isSetPartyChanges()) {
+            payload.getPartyChanges().forEach(cc -> partyManagementHandlers.forEach(ph -> {
+                if (ph.accept(cc)) {
+                    ph.handle(cc, processingEvent);
+                }
+            }));
+        }
     }
 
 }
