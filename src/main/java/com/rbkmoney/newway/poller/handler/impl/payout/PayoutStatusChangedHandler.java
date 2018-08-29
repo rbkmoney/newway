@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.handler.impl.payout;
 
 import com.rbkmoney.damsel.payout_processing.*;
+import com.rbkmoney.damsel.proxy_provider.SleepIntent;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
