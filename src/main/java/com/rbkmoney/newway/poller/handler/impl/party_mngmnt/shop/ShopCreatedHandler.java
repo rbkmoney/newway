@@ -1,16 +1,13 @@
 package com.rbkmoney.newway.poller.handler.impl.party_mngmnt.shop;
 
 import com.rbkmoney.damsel.domain.Shop;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.ShopEffectUnit;
 import com.rbkmoney.geck.common.util.TypeUtil;
-import com.rbkmoney.geck.filter.Filter;
-import com.rbkmoney.geck.filter.PathConditionFilter;
-import com.rbkmoney.geck.filter.condition.IsNullCondition;
-import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.party.iface.ShopDao;
-import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractPartyManagementHandler;
+import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractClaimChangedHandler;
 import com.rbkmoney.newway.util.ShopUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,32 +16,27 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class ShopCreatedHandler extends AbstractPartyManagementHandler {
+public class ShopCreatedHandler extends AbstractClaimChangedHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final ShopDao shopDao;
 
-    private final Filter filter;
-
     public ShopCreatedHandler(ShopDao shopDao) {
         this.shopDao = shopDao;
-        this.filter = new PathConditionFilter(new PathConditionRule(
-                "claim_created.status.accepted",
-                new IsNullCondition().not()));
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event) {
-        long eventId = event.getId();
-        change.getClaimCreated().getStatus().getAccepted().getEffects().stream()
+        getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetCreated()).forEach(e -> {
+            long eventId = event.getId();
             ShopEffectUnit shopEffect = e.getShopEffect();
             Shop shopCreated = shopEffect.getEffect().getCreated();
             String shopId = shopEffect.getShopId();
             String partyId = event.getSource().getPartyId();
-            log.info("Start shop created handling, eventId={}, partyId={}, shopId={}", eventId, shopId);
+            log.info("Start shop created handling, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
             com.rbkmoney.newway.domain.tables.pojos.Shop shop = new com.rbkmoney.newway.domain.tables.pojos.Shop();
             shop.setEventId(eventId);
             shop.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
@@ -73,6 +65,8 @@ public class ShopCreatedHandler extends AbstractPartyManagementHandler {
             } else if (shopCreated.getSuspension().isSetSuspended()) {
                 shop.setSuspensionSuspendedSince(TypeUtil.stringToLocalDateTime(shopCreated.getSuspension().getSuspended().getSince()));
             }
+            shop.setDetailsName(shopCreated.getDetails().getName());
+            shop.setDetailsDescription(shopCreated.getDetails().getDescription());
             if (shopCreated.getLocation().isSetUrl()) {
                 shop.setLocationUrl(shopCreated.getLocation().getUrl());
             } else {
@@ -88,13 +82,7 @@ public class ShopCreatedHandler extends AbstractPartyManagementHandler {
                 shop.setPayoutScheduleId(shopCreated.getPayoutSchedule().getId());
             }
             shopDao.save(shop);
-            log.info("Shop has been saved, eventId={}, shopId={}", eventId, shopId);
+            log.info("Shop has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
         });
-    }
-
-
-    @Override
-    public Filter<PartyChange> getFilter() {
-        return filter;
     }
 }

@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 @Component
 public class PartyCreatedHandler extends AbstractPartyManagementHandler {
