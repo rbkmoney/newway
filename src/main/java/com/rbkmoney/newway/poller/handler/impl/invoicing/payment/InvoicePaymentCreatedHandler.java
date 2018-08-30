@@ -1,6 +1,5 @@
 package com.rbkmoney.newway.poller.handler.impl.invoicing.payment;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rbkmoney.damsel.domain.ContactInfo;
 import com.rbkmoney.damsel.domain.CustomerPayer;

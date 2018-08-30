@@ -4,16 +4,12 @@ import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.geck.common.util.TypeUtil;
-import com.rbkmoney.geck.filter.Filter;
-import com.rbkmoney.geck.filter.PathConditionFilter;
-import com.rbkmoney.geck.filter.condition.IsNullCondition;
-import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.party.iface.ContractAdjustmentDao;
 import com.rbkmoney.newway.dao.party.iface.ContractDao;
 import com.rbkmoney.newway.dao.party.iface.PayoutToolDao;
 import com.rbkmoney.newway.domain.enums.ContractStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Contract;
-import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractPartyManagementHandler;
+import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractClaimChangedHandler;
 import com.rbkmoney.newway.util.ContractUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Component
-public class ContractCreatedHandler extends AbstractPartyManagementHandler {
+public class ContractCreatedHandler extends AbstractClaimChangedHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -32,22 +28,17 @@ public class ContractCreatedHandler extends AbstractPartyManagementHandler {
     private final ContractAdjustmentDao contractAdjustmentDao;
     private final PayoutToolDao payoutToolDao;
 
-    private final Filter filter;
-
     public ContractCreatedHandler(ContractDao contractDao, ContractAdjustmentDao contractAdjustmentDao, PayoutToolDao payoutToolDao) {
         this.contractDao = contractDao;
         this.contractAdjustmentDao = contractAdjustmentDao;
         this.payoutToolDao = payoutToolDao;
-        this.filter = new PathConditionFilter(new PathConditionRule(
-                "claim_created.status.accepted",
-                new IsNullCondition().not()));
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event) {
         long eventId = event.getId();
-        change.getClaimCreated().getStatus().getAccepted().getEffects().stream()
+        getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetCreated()).forEach(e -> {
             ContractEffectUnit contractEffectUnit = e.getContractEffect();
             com.rbkmoney.damsel.domain.Contract contractCreated = contractEffectUnit.getEffect().getCreated();
@@ -95,12 +86,5 @@ public class ContractCreatedHandler extends AbstractPartyManagementHandler {
 
             log.info("Contract has been saved, eventId={}, contractId={}", eventId, contractId);
         });
-    }
-
-
-
-    @Override
-    public Filter<PartyChange> getFilter() {
-        return filter;
     }
 }
