@@ -286,25 +286,25 @@ public class CashFlowAggregateFunctionTest extends AbstractIntegrationTest {
 
         cashFlowDao.save(cashFlows);
 
-        assertEquals(cashFlowPaymentAmount.getAmount(), jdbcTemplate.queryForObject("SELECT SUM(nw.get_payment_amount(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowPaymentFee.getAmount(), jdbcTemplate.queryForObject("SELECT SUM(nw.get_payment_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowPaymentExternalIncomeFee.getAmount() + cashFlowPaymentExternalOutcomeFee.getAmount(), (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_payment_external_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowPaymentProviderFee.getAmount(), jdbcTemplate.queryForObject("SELECT SUM(nw.get_payment_provider_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowPaymentGuaranteeDeposit.getAmount(), jdbcTemplate.queryForObject("SELECT SUM(nw.get_payment_guarantee_deposit(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPaymentAmount.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payment_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPaymentFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPaymentExternalIncomeFee.getAmount() + cashFlowPaymentExternalOutcomeFee.getAmount(), (long) jdbcTemplate.queryForObject("SELECT nw.get_payment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPaymentProviderFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPaymentGuaranteeDeposit.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payment_guarantee_deposit(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
 
-        assertEquals(cashFlowRefundAmount.getAmount(), jdbcTemplate.queryForObject("SELECT SUM(nw.get_refund_amount(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowRefundFee.getAmount(), jdbcTemplate.queryForObject("SELECT SUM(nw.get_refund_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowRefundExternalIncomeFee.getAmount() + cashFlowRefundExternalOutcomeFee.getAmount(), (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_refund_external_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowRefundProviderFee.getAmount(), jdbcTemplate.queryForObject("SELECT SUM(nw.get_refund_provider_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowRefundAmount.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_refund_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowRefundFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_refund_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowRefundExternalIncomeFee.getAmount() + cashFlowRefundExternalOutcomeFee.getAmount(), (long) jdbcTemplate.queryForObject("SELECT nw.get_refund_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowRefundProviderFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_refund_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
 
-        assertEquals(cashFlowPayoutAmount.getAmount(), jdbcTemplate.queryForObject("SELECT SUM(nw.get_payout_amount(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowPayoutFixedFee.getAmount(), jdbcTemplate.queryForObject("SELECT SUM(nw.get_payout_fixed_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowPayoutFee.getAmount(), jdbcTemplate.queryForObject("SELECT SUM(nw.get_payout_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPayoutAmount.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payout_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPayoutFixedFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payout_fixed_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPayoutFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payout_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
 
-        assertEquals(cashFlowAdjustmentAmount.getAmount(), jdbcTemplate.queryForObject("SELECT SUM(nw.get_adjustment_amount(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowAdjustmentFee.getAmount(), jdbcTemplate.queryForObject("SELECT SUM(nw.get_adjustment_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowAdjustmentExternalIncomeFee.getAmount() + cashFlowAdjustmentExternalOutcomeFee.getAmount(), (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_adjustment_external_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowAdjustmentProviderFee.getAmount(), jdbcTemplate.queryForObject("SELECT SUM(nw.get_adjustment_provider_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowAdjustmentAmount.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_adjustment_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowAdjustmentFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_adjustment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowAdjustmentExternalIncomeFee.getAmount() + cashFlowAdjustmentExternalOutcomeFee.getAmount(), (long) jdbcTemplate.queryForObject("SELECT nw.get_adjustment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowAdjustmentProviderFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_adjustment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
     }
 
     @Test
@@ -313,25 +313,25 @@ public class CashFlowAggregateFunctionTest extends AbstractIntegrationTest {
         notCashFlow.setObjId(1L);
         cashFlowDao.save(Collections.singletonList(notCashFlow));
 
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_payment_amount(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_payment_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_payment_external_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_payment_provider_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_payment_guarantee_deposit(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payment_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payment_guarantee_deposit(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
 
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_refund_amount(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_refund_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_refund_external_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_refund_provider_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_refund_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_refund_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_refund_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_refund_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
 
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_payout_amount(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_payout_fixed_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_payout_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payout_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payout_fixed_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payout_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
 
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_adjustment_amount(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_adjustment_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_adjustment_external_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT SUM(nw.get_adjustment_provider_fee(nw.cash_flow.*)) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_adjustment_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_adjustment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_adjustment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_adjustment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
     }
 
 }

@@ -1,6 +1,7 @@
 create function nw.get_cashflow_sum(_cash_flow nw.cash_flow, obj_type nw.payment_change_type, source_account_type nw.cash_flow_account, source_account_type_values varchar[], destination_account_type nw.cash_flow_account, destination_account_type_values varchar[])
 returns bigint
 language plpgsql
+immutable
 as $$
 begin
   return (
@@ -21,14 +22,25 @@ begin
 end;
 $$;
 
-create function nw.get_payment_amount(cash_flow nw.cash_flow)
+create function nw.cashflow_sum_finalfunc(amounts bigint[])
 returns bigint
+immutable
+strict
 language plpgsql
 as $$
 begin
-  return (
+  return (select sum(amount_values) from unnest($1) as amount_values);
+end;
+$$;
+
+create function nw.get_payment_amount_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
+language plpgsql
+as $$
+begin
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'payment'::nw.payment_change_type,
       'provider'::nw.cash_flow_account,
       '{"settlement"}',
@@ -39,14 +51,21 @@ begin
 end;
 $$;
 
-create function nw.get_payment_fee(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_payment_amount(nw.cash_flow)
+(
+  sfunc     = nw.get_payment_amount_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+create function nw.get_payment_fee_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'payment'::nw.payment_change_type,
       'merchant'::nw.cash_flow_account,
       '{"settlement"}',
@@ -57,14 +76,21 @@ begin
 end;
 $$;
 
-create function nw.get_payment_external_fee(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_payment_fee(nw.cash_flow)
+(
+  sfunc     = nw.get_payment_fee_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+create function nw.get_payment_external_fee_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'payment'::nw.payment_change_type,
       'system'::nw.cash_flow_account,
       '{"settlement"}',
@@ -75,14 +101,21 @@ begin
 end;
 $$;
 
-create function nw.get_payment_provider_fee(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_payment_external_fee(nw.cash_flow)
+(
+  sfunc     = nw.get_payment_external_fee_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+create function nw.get_payment_provider_fee_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'payment'::nw.payment_change_type,
       'system'::nw.cash_flow_account,
       '{"settlement"}',
@@ -93,14 +126,21 @@ begin
 end;
 $$;
 
-create function nw.get_payment_guarantee_deposit(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_payment_provider_fee(nw.cash_flow)
+(
+  sfunc     = nw.get_payment_provider_fee_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+create function nw.get_payment_guarantee_deposit_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'payment'::nw.payment_change_type,
       'merchant'::nw.cash_flow_account,
       '{"settlement"}',
@@ -111,14 +151,21 @@ begin
 end;
 $$;
 
-create function nw.get_refund_amount(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_payment_guarantee_deposit(nw.cash_flow)
+(
+  sfunc     = nw.get_payment_guarantee_deposit_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+create function nw.get_refund_amount_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'refund'::nw.payment_change_type,
       'merchant'::nw.cash_flow_account,
       '{"settlement"}',
@@ -129,14 +176,21 @@ begin
 end;
 $$;
 
-create function nw.get_refund_fee(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_refund_amount(nw.cash_flow)
+(
+  sfunc     = nw.get_refund_amount_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+create function nw.get_refund_fee_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'refund'::nw.payment_change_type,
       'merchant'::nw.cash_flow_account,
       '{"settlement"}',
@@ -147,14 +201,21 @@ begin
 end;
 $$;
 
-create function nw.get_refund_external_fee(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_refund_fee(nw.cash_flow)
+(
+  sfunc     = nw.get_refund_fee_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+create function nw.get_refund_external_fee_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'refund'::nw.payment_change_type,
       'system'::nw.cash_flow_account,
       '{"settlement"}',
@@ -165,14 +226,21 @@ begin
 end;
 $$;
 
-create function nw.get_refund_provider_fee(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_refund_external_fee(nw.cash_flow)
+(
+  sfunc     = nw.get_refund_external_fee_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+create function nw.get_refund_provider_fee_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'refund'::nw.payment_change_type,
       'system'::nw.cash_flow_account,
       '{"settlement"}',
@@ -183,14 +251,21 @@ begin
 end;
 $$;
 
-create function nw.get_payout_amount(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_refund_provider_fee(nw.cash_flow)
+(
+  sfunc     = nw.get_refund_provider_fee_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+create function nw.get_payout_amount_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'payout'::nw.payment_change_type,
       'merchant'::nw.cash_flow_account,
       '{"settlement"}',
@@ -201,14 +276,21 @@ begin
 end;
 $$;
 
-create function nw.get_payout_fee(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_payout_amount(nw.cash_flow)
+(
+  sfunc     = nw.get_payout_amount_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+create function nw.get_payout_fee_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'payout'::nw.payment_change_type,
       'merchant'::nw.cash_flow_account,
       '{"settlement"}',
@@ -219,14 +301,22 @@ begin
 end;
 $$;
 
-create function nw.get_payout_fixed_fee(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_payout_fee(nw.cash_flow)
+(
+  sfunc     = nw.get_payout_fee_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+
+create function nw.get_payout_fixed_fee_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'payout'::nw.payment_change_type,
       'merchant'::nw.cash_flow_account,
       '{"payout"}',
@@ -237,14 +327,21 @@ begin
 end;
 $$;
 
-create function nw.get_adjustment_amount(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_payout_fixed_fee(nw.cash_flow)
+(
+  sfunc     = nw.get_payout_fixed_fee_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+create function nw.get_adjustment_amount_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'adjustment'::nw.payment_change_type,
       'provider'::nw.cash_flow_account,
       '{"settlement"}',
@@ -255,14 +352,21 @@ begin
 end;
 $$;
 
-create function nw.get_adjustment_fee(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_adjustment_amount(nw.cash_flow)
+(
+  sfunc     = nw.get_adjustment_amount_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+create function nw.get_adjustment_fee_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'adjustment'::nw.payment_change_type,
       'merchant'::nw.cash_flow_account,
       '{"settlement"}',
@@ -273,14 +377,21 @@ begin
 end;
 $$;
 
-create function nw.get_adjustment_external_fee(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_adjustment_fee(nw.cash_flow)
+(
+  sfunc     = nw.get_adjustment_fee_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+create function nw.get_adjustment_external_fee_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'adjustment'::nw.payment_change_type,
       'system'::nw.cash_flow_account,
       '{"settlement"}',
@@ -291,14 +402,21 @@ begin
 end;
 $$;
 
-create function nw.get_adjustment_provider_fee(cash_flow nw.cash_flow)
-returns bigint
+create aggregate nw.get_adjustment_external_fee(nw.cash_flow)
+(
+  sfunc     = nw.get_adjustment_external_fee_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
+
+create function nw.get_adjustment_provider_fee_sfunc(amounts bigint[], cash_flow nw.cash_flow)
+returns bigint[]
 language plpgsql
 as $$
 begin
-  return (
+  return $1 || (
     nw.get_cashflow_sum(
-      $1,
+      $2,
       'adjustment'::nw.payment_change_type,
       'system'::nw.cash_flow_account,
       '{"settlement"}',
@@ -308,4 +426,11 @@ begin
   );
 end;
 $$;
+
+create aggregate nw.get_adjustment_provider_fee(nw.cash_flow)
+(
+  sfunc     = nw.get_adjustment_provider_fee_sfunc,
+  stype     = bigint[],
+  finalfunc = cashflow_sum_finalfunc
+);
 
