@@ -41,7 +41,7 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
         String shopId = change.getShopSuspension().getShopId();
         String partyId = event.getSource().getPartyId();
         log.info("Start shop suspension handling, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
-        Shop shopSource = shopDao.get(shopId);
+        Shop shopSource = shopDao.get(partyId, shopId);
         if (shopSource == null) {
             throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
         }
@@ -61,7 +61,7 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
             shopSource.setSuspensionActiveSince(null);
             shopSource.setSuspensionSuspendedSince(TypeUtil.stringToLocalDateTime(suspension.getSuspended().getSince()));
         }
-        shopDao.updateNotCurrent(shopId);
+        shopDao.updateNotCurrent(partyId, shopId);
         shopDao.save(shopSource);
         log.info("Shop suspension has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
     }

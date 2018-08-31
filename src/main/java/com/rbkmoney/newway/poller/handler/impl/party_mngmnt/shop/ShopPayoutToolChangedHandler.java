@@ -37,7 +37,7 @@ public class ShopPayoutToolChangedHandler extends AbstractClaimChangedHandler {
             String shopId = shopEffect.getShopId();
             String partyId = event.getSource().getPartyId();
             log.info("Start shop payoutToolChanged handling, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
-            Shop shopSource = shopDao.get(shopId);
+            Shop shopSource = shopDao.get(partyId, shopId);
             if (shopSource == null) {
                 throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
             }
@@ -46,7 +46,7 @@ public class ShopPayoutToolChangedHandler extends AbstractClaimChangedHandler {
             shopSource.setEventId(eventId);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             shopSource.setPayoutToolId(payoutToolChanged);
-            shopDao.updateNotCurrent(shopId);
+            shopDao.updateNotCurrent(partyId, shopId);
             shopDao.save(shopSource);
             log.info("Shop payoutToolChanged has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
         });

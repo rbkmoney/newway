@@ -48,7 +48,7 @@ public class ContractReportPreferencesChangedHandler extends AbstractClaimChange
             String contractId = contractEffectUnit.getContractId();
             String partyId = event.getSource().getPartyId();
             log.info("Start contract report preferences changed handling, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
-            Contract contractSource = contractDao.get(contractId);
+            Contract contractSource = contractDao.get(partyId, contractId);
             if (contractSource == null) {
                 throw new NotFoundException(String.format("Contract not found, contractId='%s'", contractId));
             }
@@ -58,7 +58,7 @@ public class ContractReportPreferencesChangedHandler extends AbstractClaimChange
             contractSource.setEventId(eventId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             ContractUtil.fillReportPreferences(contractSource, reportPreferencesChanged.getServiceAcceptanceActPreferences());
-            contractDao.updateNotCurrent(contractId);
+            contractDao.updateNotCurrent(partyId, contractId);
             long cntrctId = contractDao.save(contractSource);
 
             List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);

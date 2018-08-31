@@ -2,8 +2,9 @@ package com.rbkmoney.newway.config;
 
 import com.rbkmoney.eventstock.client.EventPublisher;
 import com.rbkmoney.eventstock.client.poll.PollingEventPublisherBuilder;
+import com.rbkmoney.newway.poller.handler.InvoicingEventStockHandler;
 import com.rbkmoney.newway.poller.handler.PayoutEventStockHandler;
-import com.rbkmoney.newway.poller.handler.ProcessingEventStockHandler;
+import com.rbkmoney.newway.poller.handler.PartyManagementEventStockHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +16,8 @@ import java.io.IOException;
 public class EventStockConfig {
 
     @Bean
-    public EventPublisher processingEventPublisher(
-            ProcessingEventStockHandler processingEventStockHandler,
+    public EventPublisher partyManagementEventPublisher(
+            PartyManagementEventStockHandler partyManagementEventStockHandler,
             @Value("${bm.processing.url}") Resource resource,
             @Value("${bm.processing.polling.delay}") int pollDelay,
             @Value("${bm.processing.polling.retryDelay}") int retryDelay,
@@ -24,7 +25,24 @@ public class EventStockConfig {
     ) throws IOException {
         return new PollingEventPublisherBuilder()
                 .withURI(resource.getURI())
-                .withEventHandler(processingEventStockHandler)
+                .withEventHandler(partyManagementEventStockHandler)
+                .withMaxPoolSize(maxPoolSize)
+                .withEventRetryDelay(retryDelay)
+                .withPollDelay(pollDelay)
+                .build();
+    }
+
+    @Bean
+    public EventPublisher invoicingEventPublisher(
+            InvoicingEventStockHandler invoicingEventStockHandler,
+            @Value("${bm.processing.url}") Resource resource,
+            @Value("${bm.processing.polling.delay}") int pollDelay,
+            @Value("${bm.processing.polling.retryDelay}") int retryDelay,
+            @Value("${bm.processing.polling.maxPoolSize}") int maxPoolSize
+    ) throws IOException {
+        return new PollingEventPublisherBuilder()
+                .withURI(resource.getURI())
+                .withEventHandler(invoicingEventStockHandler)
                 .withMaxPoolSize(maxPoolSize)
                 .withEventRetryDelay(retryDelay)
                 .withPollDelay(pollDelay)

@@ -42,7 +42,7 @@ public class ShopBlockingHandler extends AbstractPartyManagementHandler {
         String shopId = change.getShopBlocking().getShopId();
         String partyId = event.getSource().getPartyId();
         log.info("Start shop blocking handling, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
-        Shop shopSource = shopDao.get(shopId);
+        Shop shopSource = shopDao.get(partyId, shopId);
         if (shopSource == null) {
             throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
         }
@@ -66,7 +66,7 @@ public class ShopBlockingHandler extends AbstractPartyManagementHandler {
             shopSource.setBlockingBlockedReason(blocking.getBlocked().getReason());
             shopSource.setBlockingBlockedSince(TypeUtil.stringToLocalDateTime(blocking.getBlocked().getSince()));
         }
-        shopDao.updateNotCurrent(shopId);
+        shopDao.updateNotCurrent(partyId, shopId);
         shopDao.save(shopSource);
         log.info("Shop blocking has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
     }

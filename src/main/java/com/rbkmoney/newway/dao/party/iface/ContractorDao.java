@@ -6,6 +6,6 @@ import com.rbkmoney.newway.exception.DaoException;
 
 public interface ContractorDao extends GenericDao {
     Long save(Contractor contractor) throws DaoException;
-    Contractor get(String contractorId) throws DaoException;
-    void updateNotCurrent(String contractorId) throws DaoException;
+    Contractor get(String partyId, String contractorId) throws DaoException;
+    void updateNotCurrent(String partyId, String contractorId) throws DaoException;
 }

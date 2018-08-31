@@ -48,7 +48,7 @@ public class ContractLegalAgreementBoundHandler extends AbstractClaimChangedHand
             String contractId = contractEffectUnit.getContractId();
             String partyId = event.getSource().getPartyId();
             log.info("Start contract legal agreement bound handling, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
-            Contract contractSource = contractDao.get(contractId);
+            Contract contractSource = contractDao.get(partyId, contractId);
             if (contractSource == null) {
                 throw new NotFoundException(String.format("Contract not found, contractId='%s'", contractId));
             }
@@ -58,7 +58,7 @@ public class ContractLegalAgreementBoundHandler extends AbstractClaimChangedHand
             contractSource.setEventId(eventId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             ContractUtil.fillContractLegalAgreementFields(contractSource, legalAgreementBound);
-            contractDao.updateNotCurrent(contractId);
+            contractDao.updateNotCurrent(partyId, contractId);
             long cntrctId = contractDao.save(contractSource);
 
             List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);

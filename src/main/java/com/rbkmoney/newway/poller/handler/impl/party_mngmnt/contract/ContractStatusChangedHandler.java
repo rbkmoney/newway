@@ -47,7 +47,7 @@ public class ContractStatusChangedHandler extends AbstractClaimChangedHandler {
             String contractId = contractEffectUnit.getContractId();
             String partyId = event.getSource().getPartyId();
             log.info("Start contractSource status changed handling, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
-            Contract contractSource = contractDao.get(contractId);
+            Contract contractSource = contractDao.get(partyId, contractId);
             if (contractSource == null) {
                 throw new NotFoundException(String.format("Contract not found, contractId='%s'", contractId));
             }
@@ -64,7 +64,7 @@ public class ContractStatusChangedHandler extends AbstractClaimChangedHandler {
             if (statusChanged.isSetTerminated()) {
                 contractSource.setStatusTerminatedAt(TypeUtil.stringToLocalDateTime(statusChanged.getTerminated().getTerminatedAt()));
             }
-            contractDao.updateNotCurrent(contractId);
+            contractDao.updateNotCurrent(partyId, contractId);
             long cntrctId = contractDao.save(contractSource);
 
             List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);

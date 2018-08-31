@@ -5,8 +5,9 @@ import com.rbkmoney.eventstock.client.EventConstraint;
 import com.rbkmoney.eventstock.client.EventPublisher;
 import com.rbkmoney.eventstock.client.SubscriberConfig;
 import com.rbkmoney.eventstock.client.poll.EventFlowFilter;
+import com.rbkmoney.newway.service.InvoicingService;
 import com.rbkmoney.newway.service.PayoutService;
-import com.rbkmoney.newway.service.ProcessingService;
+import com.rbkmoney.newway.service.PartyManagementService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -16,30 +17,37 @@ import java.util.Optional;
 
 @Component
 public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
-    private final EventPublisher processingEventPublisher;
+    private final EventPublisher partyManagementEventPublisher;
+    private final EventPublisher invoicingEventPublisher;
     private final EventPublisher payoutEventPublisher;
 
-    private final ProcessingService processingService;
+    private final PartyManagementService partyManagementService;
+    private final InvoicingService invoicingService;
     private final PayoutService payoutService;
 
     @Value("${bm.pollingEnabled}")
     private boolean pollingEnabled;
 
-    public OnStart(EventPublisher processingEventPublisher,
+    public OnStart(EventPublisher partyManagementEventPublisher,
+                   EventPublisher invoicingEventPublisher,
                    EventPublisher payoutEventPublisher,
-                   ProcessingService processingService,
+                   PartyManagementService partyManagementService,
+                   InvoicingService invoicingService,
                    PayoutService payoutService) {
-        this.processingEventPublisher = processingEventPublisher;
+        this.partyManagementEventPublisher = partyManagementEventPublisher;
+        this.invoicingEventPublisher = invoicingEventPublisher;
         this.payoutEventPublisher = payoutEventPublisher;
 
-        this.processingService = processingService;
+        this.partyManagementService = partyManagementService;
+        this.invoicingService = invoicingService;
         this.payoutService = payoutService;
     }
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         if (pollingEnabled) {
-            processingEventPublisher.subscribe(buildSubscriberConfig(processingService.getLastEventId()));
+            partyManagementEventPublisher.subscribe(buildSubscriberConfig(partyManagementService.getLastEventId()));
+            invoicingEventPublisher.subscribe(buildSubscriberConfig(invoicingService.getLastEventId()));
             payoutEventPublisher.subscribe(buildSubscriberConfig(payoutService.getLastEventId()));
         }
     }

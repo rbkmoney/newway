@@ -19,9 +19,9 @@ public class ContractDaoImplTest extends AbstractIntegrationTest {
         Contract contract = random(Contract.class);
         contract.setCurrent(true);
         contractDao.save(contract);
-        Contract contractGet = contractDao.get(contract.getContractId());
+        Contract contractGet = contractDao.get(contract.getPartyId(), contract.getContractId());
         assertEquals(contract, contractGet);
-        contractDao.updateNotCurrent(contract.getContractId());
-        assertNull(contractDao.get(contract.getContractId()));
+        contractDao.updateNotCurrent(contract.getPartyId(), contract.getContractId());
+        assertNull(contractDao.get(contract.getPartyId(), contract.getContractId()));
     }
 }
