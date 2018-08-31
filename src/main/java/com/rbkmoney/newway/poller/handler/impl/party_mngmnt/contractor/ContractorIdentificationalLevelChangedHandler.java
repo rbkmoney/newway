@@ -37,7 +37,7 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
             String contractorId = contractorEffect.getId();
             String partyId = event.getSource().getPartyId();
             log.info("Start identificational level changed handling, eventId={}, partyId={}, contractorId={}", eventId, partyId, contractorId);
-            Contractor contractorSource = contractorDao.get(contractorId);
+            Contractor contractorSource = contractorDao.get(partyId, contractorId);
             if (contractorSource == null) {
                 throw new NotFoundException(String.format("Contractor not found, contractorId='%s'", contractorId));
             }
@@ -46,7 +46,7 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
             contractorSource.setEventId(eventId);
             contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractorSource.setIdentificationalLevel(identificationLevelChanged.name());
-            contractorDao.updateNotCurrent(contractorId);
+            contractorDao.updateNotCurrent(partyId, contractorId);
             contractorDao.save(contractorSource);
             log.info("Contract identificational level has been saved, eventId={}, contractorId={}", eventId, contractorId);
         });

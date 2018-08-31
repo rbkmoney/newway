@@ -6,6 +6,6 @@ import com.rbkmoney.newway.exception.DaoException;
 
 public interface ShopDao extends GenericDao {
     Long save(Shop shop) throws DaoException;
-    Shop get(String shopId) throws DaoException;
-    void updateNotCurrent(String shopId) throws DaoException;
+    Shop get(String partyId, String shopId) throws DaoException;
+    void updateNotCurrent(String partyId, String shopId) throws DaoException;
 }

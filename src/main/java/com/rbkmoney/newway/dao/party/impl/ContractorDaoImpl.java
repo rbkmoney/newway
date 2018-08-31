@@ -35,17 +35,17 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     }
 
     @Override
-    public Contractor get(String contractorId) throws DaoException {
+    public Contractor get(String partyId, String contractorId) throws DaoException {
         Query query = getDslContext().selectFrom(CONTRACTOR)
-                .where(CONTRACTOR.CONTRACTOR_ID.eq(contractorId).and(CONTRACTOR.CURRENT));
+                .where(CONTRACTOR.PARTY_ID.eq(partyId).and(CONTRACTOR.CONTRACTOR_ID.eq(contractorId)).and(CONTRACTOR.CURRENT));
 
         return fetchOne(query, contractorRowMapper);
     }
 
     @Override
-    public void updateNotCurrent(String contractId) throws DaoException {
+    public void updateNotCurrent(String partyId, String contractId) throws DaoException {
         Query query = getDslContext().update(CONTRACTOR).set(CONTRACTOR.CURRENT, false)
-                .where(CONTRACTOR.CONTRACTOR_ID.eq(contractId).and(CONTRACTOR.CURRENT));
+                .where(CONTRACTOR.PARTY_ID.eq(partyId).and(CONTRACTOR.CONTRACTOR_ID.eq(contractId)).and(CONTRACTOR.CURRENT));
         executeOne(query);
     }
 }

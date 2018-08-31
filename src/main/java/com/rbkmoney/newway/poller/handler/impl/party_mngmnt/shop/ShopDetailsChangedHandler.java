@@ -38,7 +38,7 @@ public class ShopDetailsChangedHandler extends AbstractClaimChangedHandler {
             String shopId = shopEffect.getShopId();
             String partyId = event.getSource().getPartyId();
             log.info("Start shop detailsChanged handling, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
-            Shop shopSource = shopDao.get(shopId);
+            Shop shopSource = shopDao.get(partyId, shopId);
             if (shopSource == null) {
                 throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
             }
@@ -48,7 +48,7 @@ public class ShopDetailsChangedHandler extends AbstractClaimChangedHandler {
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             shopSource.setDetailsName(detailsChanged.getName());
             shopSource.setDetailsDescription(detailsChanged.getDescription());
-            shopDao.updateNotCurrent(shopId);
+            shopDao.updateNotCurrent(partyId, shopId);
             shopDao.save(shopSource);
             log.info("Shop detailsChanged has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
         });

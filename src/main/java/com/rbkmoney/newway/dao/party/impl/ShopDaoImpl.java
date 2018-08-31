@@ -35,17 +35,17 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     }
 
     @Override
-    public Shop get(String shopId) throws DaoException {
+    public Shop get(String partyId, String shopId) throws DaoException {
         Query query = getDslContext().selectFrom(SHOP)
-                .where(SHOP.SHOP_ID.eq(shopId).and(SHOP.CURRENT));
+                .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.SHOP_ID.eq(shopId)).and(SHOP.CURRENT));
 
         return fetchOne(query, shopRowMapper);
     }
 
     @Override
-    public void updateNotCurrent(String shopId) throws DaoException {
+    public void updateNotCurrent(String partyId, String shopId) throws DaoException {
         Query query = getDslContext().update(SHOP).set(SHOP.CURRENT, false)
-                .where(SHOP.SHOP_ID.eq(shopId).and(SHOP.CURRENT));
+                .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.SHOP_ID.eq(shopId)).and(SHOP.CURRENT));
         executeOne(query);
     }
 }

@@ -38,7 +38,7 @@ public class ShopLocationChangedHandler extends AbstractClaimChangedHandler {
             String shopId = shopEffect.getShopId();
             String partyId = event.getSource().getPartyId();
             log.info("Start shop locationChanged handling, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
-            Shop shopSource = shopDao.get(shopId);
+            Shop shopSource = shopDao.get(partyId, shopId);
             if (shopSource == null) {
                 throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
             }
@@ -51,7 +51,7 @@ public class ShopLocationChangedHandler extends AbstractClaimChangedHandler {
             } else {
                 throw new IllegalArgumentException("Illegal shop location " + locationChanged);
             }
-            shopDao.updateNotCurrent(shopId);
+            shopDao.updateNotCurrent(partyId, shopId);
             shopDao.save(shopSource);
             log.info("Shop locationChanged has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
         });
