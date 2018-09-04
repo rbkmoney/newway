@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Shop extends TableImpl<ShopRecord> {
 
-    private static final long serialVersionUID = 301888690;
+    private static final long serialVersionUID = -27984820;
 
     /**
      * The reference instance of <code>nw.shop</code>
@@ -187,6 +187,11 @@ public class Shop extends TableImpl<ShopRecord> {
      * The column <code>nw.shop.current</code>.
      */
     public final TableField<ShopRecord, Boolean> CURRENT = createField("current", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>nw.shop.revision</code>.
+     */
+    public final TableField<ShopRecord, Long> REVISION = createField("revision", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * Create a <code>nw.shop</code> table reference

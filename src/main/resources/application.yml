@@ -21,6 +21,7 @@ bm:
       delay: 10000
       retryDelay: 1000
       maxPoolSize: 1
+      maxQuerySize: 300
   payout:
     url: http://bustermaze:8022/repo/payout
     polling:

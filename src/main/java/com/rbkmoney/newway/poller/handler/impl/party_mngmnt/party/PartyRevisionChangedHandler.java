@@ -8,8 +8,10 @@ import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
-import com.rbkmoney.newway.dao.party.iface.PartyDao;
+import com.rbkmoney.newway.dao.party.iface.*;
+import com.rbkmoney.newway.domain.tables.pojos.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
+import com.rbkmoney.newway.domain.tables.pojos.PayoutTool;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractPartyManagementHandler;
 import org.slf4j.Logger;
@@ -18,17 +20,29 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Component
 public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final PartyDao partyDao;
+    private final ContractDao contractDao;
+    private final ContractAdjustmentDao contractAdjustmentDao;
+    private final PayoutToolDao payoutToolDao;
+    private final ContractorDao contractorDao;
+    private final ShopDao shopDao;
 
     private final Filter filter;
 
-    public PartyRevisionChangedHandler(PartyDao partyDao) {
+    public PartyRevisionChangedHandler(PartyDao partyDao, ContractDao contractDao, ContractAdjustmentDao contractAdjustmentDao, PayoutToolDao payoutToolDao, ContractorDao contractorDao, ShopDao shopDao) {
         this.partyDao = partyDao;
+        this.contractDao = contractDao;
+        this.contractAdjustmentDao = contractAdjustmentDao;
+        this.payoutToolDao = payoutToolDao;
+        this.contractorDao = contractorDao;
+        this.shopDao = shopDao;
         this.filter = new PathConditionFilter(new PathConditionRule(
                 "revision_changed",
                 new IsNullCondition().not()));
@@ -49,11 +63,72 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
         partySource.setWtime(null);
         partySource.setEventId(eventId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        partySource.setRevision(partyRevisionChanged.getRevision());
+        long revision = partyRevisionChanged.getRevision();
+        partySource.setRevision(revision);
         partySource.setRevisionChangedAt(TypeUtil.stringToLocalDateTime(partyRevisionChanged.getTimestamp()));
         partyDao.updateNotCurrent(partyId);
         partyDao.save(partySource);
+        updateContractorsRevision(event, partyId, revision);
+        updateContractsRevision(event, partyId, revision);
+        updateShopsRevision(event, partyId, revision);
         log.info("Party revision changed has been saved, eventId={}, partyId={}", eventId, partyId);
+    }
+
+    private void updateShopsRevision(Event event, String partyId, long revision) {
+        shopDao.getByPartyId(partyId).forEach(shopSource -> {
+            String shopId = shopSource.getShopId();
+            shopSource.setId(null);
+            shopSource.setWtime(null);
+            shopSource.setEventId(event.getId());
+            shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+            shopSource.setRevision(revision);
+            shopDao.updateNotCurrent(partyId, shopId);
+            shopDao.save(shopSource);
+            log.info("Shop revision has been saved, eventId={}, partyId={}, shopId={}", event.getId(), partyId, shopId);
+        });
+    }
+
+    private void updateContractorsRevision(Event event, String partyId, long revision) {
+        contractorDao.getByPartyId(partyId).forEach(contractorSource -> {
+            String contractorId = contractorSource.getContractorId();
+            contractorSource.setId(null);
+            contractorSource.setWtime(null);
+            contractorSource.setEventId(event.getId());
+            contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+            contractorSource.setRevision(revision);
+            contractorDao.updateNotCurrent(partyId, contractorId);
+            contractorDao.save(contractorSource);
+            log.info("Contractor revision has been saved, eventId={}, partyId={}, contractorId={}", event.getId(), partyId, contractorId);
+        });
+    }
+
+    private void updateContractsRevision(Event event, String partyId, long revision) {
+        contractDao.getByPartyId(partyId).forEach(contractSource -> {
+            Long contractSourceId = contractSource.getId();
+            String contractId = contractSource.getContractId();
+            contractSource.setId(null);
+            contractSource.setWtime(null);
+            contractSource.setEventId(event.getId());
+            contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+            contractSource.setRevision(revision);
+            contractDao.updateNotCurrent(partyId, contractId);
+            long cntrctId = contractDao.save(contractSource);
+
+            List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);
+            adjustments.forEach(a -> {
+                a.setId(null);
+                a.setCntrctId(cntrctId);
+            });
+            contractAdjustmentDao.save(adjustments);
+
+            List<PayoutTool> payoutTools = payoutToolDao.getByCntrctId(contractSourceId);
+            payoutTools.forEach(pt -> {
+                pt.setId(null);
+                pt.setCntrctId(cntrctId);
+            });
+            payoutToolDao.save(payoutTools);
+            log.info("Contract revision has been saved, eventId={}, partyId={}, contractId={}", event.getId(), partyId, contractId);
+        });
     }
 
     @Override

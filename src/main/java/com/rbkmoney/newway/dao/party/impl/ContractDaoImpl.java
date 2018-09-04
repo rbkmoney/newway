@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
+import java.util.List;
+
 import static com.rbkmoney.newway.domain.Tables.CONTRACT;
 
 @Component
@@ -47,5 +49,12 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
         Query query = getDslContext().update(CONTRACT).set(CONTRACT.CURRENT, false)
                 .where(CONTRACT.PARTY_ID.eq(partyId).and(CONTRACT.CONTRACT_ID.eq(contractId)).and(CONTRACT.CURRENT));
         executeOne(query);
+    }
+
+    @Override
+    public List<Contract> getByPartyId(String partyId) {
+        Query query = getDslContext().selectFrom(CONTRACT)
+                .where(CONTRACT.PARTY_ID.eq(partyId).and(CONTRACT.CURRENT));
+        return fetch(query, contractRowMapper);
     }
 }

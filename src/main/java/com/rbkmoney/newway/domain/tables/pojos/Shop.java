@@ -26,7 +26,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Shop implements Serializable {
 
-    private static final long serialVersionUID = 1604187250;
+    private static final long serialVersionUID = 1108378929;
 
     private Long          id;
     private Long          eventId;
@@ -55,6 +55,7 @@ public class Shop implements Serializable {
     private Integer       payoutScheduleId;
     private LocalDateTime wtime;
     private Boolean       current;
+    private Long          revision;
 
     public Shop() {}
 
@@ -86,6 +87,7 @@ public class Shop implements Serializable {
         this.payoutScheduleId = value.payoutScheduleId;
         this.wtime = value.wtime;
         this.current = value.current;
+        this.revision = value.revision;
     }
 
     public Shop(
@@ -115,7 +117,8 @@ public class Shop implements Serializable {
         String        payoutToolId,
         Integer       payoutScheduleId,
         LocalDateTime wtime,
-        Boolean       current
+        Boolean       current,
+        Long          revision
     ) {
         this.id = id;
         this.eventId = eventId;
@@ -144,6 +147,7 @@ public class Shop implements Serializable {
         this.payoutScheduleId = payoutScheduleId;
         this.wtime = wtime;
         this.current = current;
+        this.revision = revision;
     }
 
     public Long getId() {
@@ -362,6 +366,14 @@ public class Shop implements Serializable {
         this.current = current;
     }
 
+    public Long getRevision() {
+        return this.revision;
+    }
+
+    public void setRevision(Long revision) {
+        this.revision = revision;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -533,6 +545,12 @@ public class Shop implements Serializable {
         }
         else if (!current.equals(other.current))
             return false;
+        if (revision == null) {
+            if (other.revision != null)
+                return false;
+        }
+        else if (!revision.equals(other.revision))
+            return false;
         return true;
     }
 
@@ -567,6 +585,7 @@ public class Shop implements Serializable {
         result = prime * result + ((this.payoutScheduleId == null) ? 0 : this.payoutScheduleId.hashCode());
         result = prime * result + ((this.wtime == null) ? 0 : this.wtime.hashCode());
         result = prime * result + ((this.current == null) ? 0 : this.current.hashCode());
+        result = prime * result + ((this.revision == null) ? 0 : this.revision.hashCode());
         return result;
     }
 
@@ -601,6 +620,7 @@ public class Shop implements Serializable {
         sb.append(", ").append(payoutScheduleId);
         sb.append(", ").append(wtime);
         sb.append(", ").append(current);
+        sb.append(", ").append(revision);
 
         sb.append(")");
         return sb.toString();

@@ -26,7 +26,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Contract implements Serializable {
 
-    private static final long serialVersionUID = 1026713137;
+    private static final long serialVersionUID = 1798043522;
 
     private Long                   id;
     private Long                   eventId;
@@ -53,6 +53,7 @@ public class Contract implements Serializable {
     private String                 contractorId;
     private LocalDateTime          wtime;
     private Boolean                current;
+    private Long                   revision;
 
     public Contract() {}
 
@@ -82,6 +83,7 @@ public class Contract implements Serializable {
         this.contractorId = value.contractorId;
         this.wtime = value.wtime;
         this.current = value.current;
+        this.revision = value.revision;
     }
 
     public Contract(
@@ -109,7 +111,8 @@ public class Contract implements Serializable {
         LocalDateTime          reportActSignerDocPowerOfAttorneyValidUntil,
         String                 contractorId,
         LocalDateTime          wtime,
-        Boolean                current
+        Boolean                current,
+        Long                   revision
     ) {
         this.id = id;
         this.eventId = eventId;
@@ -136,6 +139,7 @@ public class Contract implements Serializable {
         this.contractorId = contractorId;
         this.wtime = wtime;
         this.current = current;
+        this.revision = revision;
     }
 
     public Long getId() {
@@ -338,6 +342,14 @@ public class Contract implements Serializable {
         this.current = current;
     }
 
+    public Long getRevision() {
+        return this.revision;
+    }
+
+    public void setRevision(Long revision) {
+        this.revision = revision;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -497,6 +509,12 @@ public class Contract implements Serializable {
         }
         else if (!current.equals(other.current))
             return false;
+        if (revision == null) {
+            if (other.revision != null)
+                return false;
+        }
+        else if (!revision.equals(other.revision))
+            return false;
         return true;
     }
 
@@ -529,6 +547,7 @@ public class Contract implements Serializable {
         result = prime * result + ((this.contractorId == null) ? 0 : this.contractorId.hashCode());
         result = prime * result + ((this.wtime == null) ? 0 : this.wtime.hashCode());
         result = prime * result + ((this.current == null) ? 0 : this.current.hashCode());
+        result = prime * result + ((this.revision == null) ? 0 : this.revision.hashCode());
         return result;
     }
 
@@ -561,6 +580,7 @@ public class Contract implements Serializable {
         sb.append(", ").append(contractorId);
         sb.append(", ").append(wtime);
         sb.append(", ").append(current);
+        sb.append(", ").append(revision);
 
         sb.append(")");
         return sb.toString();

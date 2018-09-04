@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ContractorRecord extends UpdatableRecordImpl<ContractorRecord> {
 
-    private static final long serialVersionUID = -349308071;
+    private static final long serialVersionUID = -1866866361;
 
     /**
      * Setter for <code>nw.contractor.id</code>.
@@ -508,6 +508,20 @@ public class ContractorRecord extends UpdatableRecordImpl<ContractorRecord> {
         return (Boolean) get(33);
     }
 
+    /**
+     * Setter for <code>nw.contractor.revision</code>.
+     */
+    public void setRevision(Long value) {
+        set(34, value);
+    }
+
+    /**
+     * Getter for <code>nw.contractor.revision</code>.
+     */
+    public Long getRevision() {
+        return (Long) get(34);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -534,7 +548,7 @@ public class ContractorRecord extends UpdatableRecordImpl<ContractorRecord> {
     /**
      * Create a detached, initialised ContractorRecord
      */
-    public ContractorRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String partyId, String contractorId, ContractorType type, String identificationalLevel, String registeredUserEmail, LegalEntity legalEntity, String russianLegalEntityRegisteredName, String russianLegalEntityRegisteredNumber, String russianLegalEntityInn, String russianLegalEntityActualAddress, String russianLegalEntityPostAddress, String russianLegalEntityRepresentativePosition, String russianLegalEntityRepresentativeFullName, String russianLegalEntityRepresentativeDocument, String russianLegalEntityRussianBankAccount, String russianLegalEntityRussianBankName, String russianLegalEntityRussianBankPostAccount, String russianLegalEntityRussianBankBik, String internationalLegalEntityLegalName, String internationalLegalEntityTradingName, String internationalLegalEntityRegisteredAddress, String internationalLegalEntityActualAddress, String internationalLegalEntityRegisteredNumber, PrivateEntity privateEntity, String russianPrivateEntityFirstName, String russianPrivateEntitySecondName, String russianPrivateEntityMiddleName, String russianPrivateEntityPhoneNumber, String russianPrivateEntityEmail, LocalDateTime wtime, Boolean current) {
+    public ContractorRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String partyId, String contractorId, ContractorType type, String identificationalLevel, String registeredUserEmail, LegalEntity legalEntity, String russianLegalEntityRegisteredName, String russianLegalEntityRegisteredNumber, String russianLegalEntityInn, String russianLegalEntityActualAddress, String russianLegalEntityPostAddress, String russianLegalEntityRepresentativePosition, String russianLegalEntityRepresentativeFullName, String russianLegalEntityRepresentativeDocument, String russianLegalEntityRussianBankAccount, String russianLegalEntityRussianBankName, String russianLegalEntityRussianBankPostAccount, String russianLegalEntityRussianBankBik, String internationalLegalEntityLegalName, String internationalLegalEntityTradingName, String internationalLegalEntityRegisteredAddress, String internationalLegalEntityActualAddress, String internationalLegalEntityRegisteredNumber, PrivateEntity privateEntity, String russianPrivateEntityFirstName, String russianPrivateEntitySecondName, String russianPrivateEntityMiddleName, String russianPrivateEntityPhoneNumber, String russianPrivateEntityEmail, LocalDateTime wtime, Boolean current, Long revision) {
         super(Contractor.CONTRACTOR);
 
         set(0, id);
@@ -571,5 +585,6 @@ public class ContractorRecord extends UpdatableRecordImpl<ContractorRecord> {
         set(31, russianPrivateEntityEmail);
         set(32, wtime);
         set(33, current);
+        set(34, revision);
     }
 }

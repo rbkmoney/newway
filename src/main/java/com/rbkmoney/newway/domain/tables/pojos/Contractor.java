@@ -27,7 +27,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Contractor implements Serializable {
 
-    private static final long serialVersionUID = -278483620;
+    private static final long serialVersionUID = -1208394577;
 
     private Long           id;
     private Long           eventId;
@@ -63,6 +63,7 @@ public class Contractor implements Serializable {
     private String         russianPrivateEntityEmail;
     private LocalDateTime  wtime;
     private Boolean        current;
+    private Long           revision;
 
     public Contractor() {}
 
@@ -101,6 +102,7 @@ public class Contractor implements Serializable {
         this.russianPrivateEntityEmail = value.russianPrivateEntityEmail;
         this.wtime = value.wtime;
         this.current = value.current;
+        this.revision = value.revision;
     }
 
     public Contractor(
@@ -137,7 +139,8 @@ public class Contractor implements Serializable {
         String         russianPrivateEntityPhoneNumber,
         String         russianPrivateEntityEmail,
         LocalDateTime  wtime,
-        Boolean        current
+        Boolean        current,
+        Long           revision
     ) {
         this.id = id;
         this.eventId = eventId;
@@ -173,6 +176,7 @@ public class Contractor implements Serializable {
         this.russianPrivateEntityEmail = russianPrivateEntityEmail;
         this.wtime = wtime;
         this.current = current;
+        this.revision = revision;
     }
 
     public Long getId() {
@@ -447,6 +451,14 @@ public class Contractor implements Serializable {
         this.current = current;
     }
 
+    public Long getRevision() {
+        return this.revision;
+    }
+
+    public void setRevision(Long revision) {
+        this.revision = revision;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -660,6 +672,12 @@ public class Contractor implements Serializable {
         }
         else if (!current.equals(other.current))
             return false;
+        if (revision == null) {
+            if (other.revision != null)
+                return false;
+        }
+        else if (!revision.equals(other.revision))
+            return false;
         return true;
     }
 
@@ -701,6 +719,7 @@ public class Contractor implements Serializable {
         result = prime * result + ((this.russianPrivateEntityEmail == null) ? 0 : this.russianPrivateEntityEmail.hashCode());
         result = prime * result + ((this.wtime == null) ? 0 : this.wtime.hashCode());
         result = prime * result + ((this.current == null) ? 0 : this.current.hashCode());
+        result = prime * result + ((this.revision == null) ? 0 : this.revision.hashCode());
         return result;
     }
 
@@ -742,6 +761,7 @@ public class Contractor implements Serializable {
         sb.append(", ").append(russianPrivateEntityEmail);
         sb.append(", ").append(wtime);
         sb.append(", ").append(current);
+        sb.append(", ").append(revision);
 
         sb.append(")");
         return sb.toString();

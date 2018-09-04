@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Contract extends TableImpl<ContractRecord> {
 
-    private static final long serialVersionUID = 658945461;
+    private static final long serialVersionUID = 1380300695;
 
     /**
      * The reference instance of <code>nw.contract</code>
@@ -177,6 +177,11 @@ public class Contract extends TableImpl<ContractRecord> {
      * The column <code>nw.contract.current</code>.
      */
     public final TableField<ContractRecord, Boolean> CURRENT = createField("current", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>nw.contract.revision</code>.
+     */
+    public final TableField<ContractRecord, Long> REVISION = createField("revision", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * Create a <code>nw.contract</code> table reference

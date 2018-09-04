@@ -1,12 +1,14 @@
 package com.rbkmoney.newway.poller.handler.impl.party_mngmnt.shop;
 
 import com.rbkmoney.damsel.domain.Shop;
-import com.rbkmoney.damsel.payment_processing.ClaimEffect;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.ShopEffectUnit;
 import com.rbkmoney.geck.common.util.TypeUtil;
+import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.dao.party.iface.ShopDao;
+import com.rbkmoney.newway.domain.tables.pojos.Party;
+import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractClaimChangedHandler;
 import com.rbkmoney.newway.util.ShopUtil;
 import org.slf4j.Logger;
@@ -21,9 +23,11 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final ShopDao shopDao;
+    private final PartyDao partyDao;
 
-    public ShopCreatedHandler(ShopDao shopDao) {
+    public ShopCreatedHandler(ShopDao shopDao, PartyDao partyDao) {
         this.shopDao = shopDao;
+        this.partyDao = partyDao;
     }
 
     @Override
@@ -40,6 +44,11 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
             com.rbkmoney.newway.domain.tables.pojos.Shop shop = new com.rbkmoney.newway.domain.tables.pojos.Shop();
             shop.setEventId(eventId);
             shop.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+            Party partySource = partyDao.get(partyId);
+            if (partySource == null) {
+                throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
+            }
+            shop.setRevision(partySource.getRevision());
             shop.setShopId(shopId);
             shop.setPartyId(partyId);
             shop.setCreatedAt(TypeUtil.stringToLocalDateTime(shopCreated.getCreatedAt()));
