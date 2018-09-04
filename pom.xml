@@ -209,7 +209,7 @@
                         <database>
                             <name>org.jooq.util.postgres.PostgresDatabase</name>
                             <includes>.*</includes>
-                            <excludes>schema_version</excludes>
+                            <excludes>schema_version|.*func|get_adjustment.*|get_cashflow.*|get_payment.*|get_payout.*|get_refund.*</excludes>
                             <inputSchema>${db.schema}</inputSchema>
                         </database>
                         <target>
