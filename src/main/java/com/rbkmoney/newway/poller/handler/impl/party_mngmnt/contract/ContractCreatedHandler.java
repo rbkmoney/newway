@@ -6,9 +6,12 @@ import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.dao.party.iface.ContractAdjustmentDao;
 import com.rbkmoney.newway.dao.party.iface.ContractDao;
+import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.dao.party.iface.PayoutToolDao;
 import com.rbkmoney.newway.domain.enums.ContractStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Contract;
+import com.rbkmoney.newway.domain.tables.pojos.Party;
+import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractClaimChangedHandler;
 import com.rbkmoney.newway.util.ContractUtil;
 import org.slf4j.Logger;
@@ -25,11 +28,13 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final ContractDao contractDao;
+    private final PartyDao partyDao;
     private final ContractAdjustmentDao contractAdjustmentDao;
     private final PayoutToolDao payoutToolDao;
 
-    public ContractCreatedHandler(ContractDao contractDao, ContractAdjustmentDao contractAdjustmentDao, PayoutToolDao payoutToolDao) {
+    public ContractCreatedHandler(ContractDao contractDao, PartyDao partyDao, ContractAdjustmentDao contractAdjustmentDao, PayoutToolDao payoutToolDao) {
         this.contractDao = contractDao;
+        this.partyDao = partyDao;
         this.contractAdjustmentDao = contractAdjustmentDao;
         this.payoutToolDao = payoutToolDao;
     }
@@ -48,6 +53,11 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             Contract contract = new Contract();
             contract.setEventId(eventId);
             contract.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+            Party partySource = partyDao.get(partyId);
+            if (partySource == null) {
+                throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
+            }
+            contract.setRevision(partySource.getRevision());
             contract.setContractId(contractId);
             contract.setPartyId(partyId);
             if (contractCreated.isSetPaymentInstitution()) {

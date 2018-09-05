@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
 
-    private static final long serialVersionUID = -658750893;
+    private static final long serialVersionUID = 459902909;
 
     /**
      * Setter for <code>nw.shop.id</code>.
@@ -409,6 +409,20 @@ public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
         return (Boolean) get(26);
     }
 
+    /**
+     * Setter for <code>nw.shop.revision</code>.
+     */
+    public void setRevision(Long value) {
+        set(27, value);
+    }
+
+    /**
+     * Getter for <code>nw.shop.revision</code>.
+     */
+    public Long getRevision() {
+        return (Long) get(27);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -435,7 +449,7 @@ public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
     /**
      * Create a detached, initialised ShopRecord
      */
-    public ShopRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String partyId, String shopId, LocalDateTime createdAt, Blocking blocking, String blockingUnblockedReason, LocalDateTime blockingUnblockedSince, String blockingBlockedReason, LocalDateTime blockingBlockedSince, Suspension suspension, LocalDateTime suspensionActiveSince, LocalDateTime suspensionSuspendedSince, String detailsName, String detailsDescription, String locationUrl, Integer categoryId, String accountCurrencyCode, Long accountSettlement, Long accountGuarantee, Long accountPayout, String contractId, String payoutToolId, Integer payoutScheduleId, LocalDateTime wtime, Boolean current) {
+    public ShopRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String partyId, String shopId, LocalDateTime createdAt, Blocking blocking, String blockingUnblockedReason, LocalDateTime blockingUnblockedSince, String blockingBlockedReason, LocalDateTime blockingBlockedSince, Suspension suspension, LocalDateTime suspensionActiveSince, LocalDateTime suspensionSuspendedSince, String detailsName, String detailsDescription, String locationUrl, Integer categoryId, String accountCurrencyCode, Long accountSettlement, Long accountGuarantee, Long accountPayout, String contractId, String payoutToolId, Integer payoutScheduleId, LocalDateTime wtime, Boolean current, Long revision) {
         super(Shop.SHOP);
 
         set(0, id);
@@ -465,5 +479,6 @@ public class ShopRecord extends UpdatableRecordImpl<ShopRecord> {
         set(24, payoutScheduleId);
         set(25, wtime);
         set(26, current);
+        set(27, revision);
     }
 }

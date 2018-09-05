@@ -29,7 +29,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ContractRecord extends UpdatableRecordImpl<ContractRecord> {
 
-    private static final long serialVersionUID = -1754258086;
+    private static final long serialVersionUID = 655783420;
 
     /**
      * Setter for <code>nw.contract.id</code>.
@@ -381,6 +381,20 @@ public class ContractRecord extends UpdatableRecordImpl<ContractRecord> {
         return (Boolean) get(24);
     }
 
+    /**
+     * Setter for <code>nw.contract.revision</code>.
+     */
+    public void setRevision(Long value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>nw.contract.revision</code>.
+     */
+    public Long getRevision() {
+        return (Long) get(25);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -407,7 +421,7 @@ public class ContractRecord extends UpdatableRecordImpl<ContractRecord> {
     /**
      * Create a detached, initialised ContractRecord
      */
-    public ContractRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String contractId, String partyId, Integer paymentInstitutionId, LocalDateTime createdAt, LocalDateTime validSince, LocalDateTime validUntil, ContractStatus status, LocalDateTime statusTerminatedAt, Integer termsId, LocalDateTime legalAgreementSignedAt, String legalAgreementId, LocalDateTime legalAgreementValidUntil, Integer reportActScheduleId, String reportActSignerPosition, String reportActSignerFullName, RepresentativeDocument reportActSignerDocument, LocalDateTime reportActSignerDocPowerOfAttorneySignedAt, String reportActSignerDocPowerOfAttorneyLegalAgreementId, LocalDateTime reportActSignerDocPowerOfAttorneyValidUntil, String contractorId, LocalDateTime wtime, Boolean current) {
+    public ContractRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String contractId, String partyId, Integer paymentInstitutionId, LocalDateTime createdAt, LocalDateTime validSince, LocalDateTime validUntil, ContractStatus status, LocalDateTime statusTerminatedAt, Integer termsId, LocalDateTime legalAgreementSignedAt, String legalAgreementId, LocalDateTime legalAgreementValidUntil, Integer reportActScheduleId, String reportActSignerPosition, String reportActSignerFullName, RepresentativeDocument reportActSignerDocument, LocalDateTime reportActSignerDocPowerOfAttorneySignedAt, String reportActSignerDocPowerOfAttorneyLegalAgreementId, LocalDateTime reportActSignerDocPowerOfAttorneyValidUntil, String contractorId, LocalDateTime wtime, Boolean current, Long revision) {
         super(Contract.CONTRACT);
 
         set(0, id);
@@ -435,5 +449,6 @@ public class ContractRecord extends UpdatableRecordImpl<ContractRecord> {
         set(22, contractorId);
         set(23, wtime);
         set(24, current);
+        set(25, revision);
     }
 }

@@ -21,7 +21,8 @@ public class EventStockConfig {
             @Value("${bm.processing.url}") Resource resource,
             @Value("${bm.processing.polling.delay}") int pollDelay,
             @Value("${bm.processing.polling.retryDelay}") int retryDelay,
-            @Value("${bm.processing.polling.maxPoolSize}") int maxPoolSize
+            @Value("${bm.processing.polling.maxPoolSize}") int maxPoolSize,
+            @Value("${bm.processing.polling.maxQuerySize}") int maxQuerySize
     ) throws IOException {
         return new PollingEventPublisherBuilder()
                 .withURI(resource.getURI())
@@ -29,6 +30,7 @@ public class EventStockConfig {
                 .withMaxPoolSize(maxPoolSize)
                 .withEventRetryDelay(retryDelay)
                 .withPollDelay(pollDelay)
+                .withMaxQuerySize(maxQuerySize)
                 .build();
     }
 
@@ -38,7 +40,8 @@ public class EventStockConfig {
             @Value("${bm.processing.url}") Resource resource,
             @Value("${bm.processing.polling.delay}") int pollDelay,
             @Value("${bm.processing.polling.retryDelay}") int retryDelay,
-            @Value("${bm.processing.polling.maxPoolSize}") int maxPoolSize
+            @Value("${bm.processing.polling.maxPoolSize}") int maxPoolSize,
+            @Value("${bm.processing.polling.maxQuerySize}") int maxQuerySize
     ) throws IOException {
         return new PollingEventPublisherBuilder()
                 .withURI(resource.getURI())
@@ -46,6 +49,7 @@ public class EventStockConfig {
                 .withMaxPoolSize(maxPoolSize)
                 .withEventRetryDelay(retryDelay)
                 .withPollDelay(pollDelay)
+                .withMaxQuerySize(maxQuerySize)
                 .build();
     }
 

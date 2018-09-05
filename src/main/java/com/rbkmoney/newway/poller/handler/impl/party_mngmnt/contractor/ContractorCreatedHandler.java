@@ -9,10 +9,13 @@ import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.dao.party.iface.ContractorDao;
+import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.domain.enums.ContractorType;
 import com.rbkmoney.newway.domain.enums.LegalEntity;
 import com.rbkmoney.newway.domain.enums.PrivateEntity;
 import com.rbkmoney.newway.domain.tables.pojos.Contractor;
+import com.rbkmoney.newway.domain.tables.pojos.Party;
+import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.handler.impl.party_mngmnt.AbstractClaimChangedHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +29,11 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final ContractorDao contractorDao;
+    private final PartyDao partyDao;
 
-    public ContractorCreatedHandler(ContractorDao contractorDao) {
+    public ContractorCreatedHandler(ContractorDao contractorDao, PartyDao partyDao) {
         this.contractorDao = contractorDao;
+        this.partyDao = partyDao;
     }
 
     @Override
@@ -46,6 +51,11 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
             Contractor contractor = new Contractor();
             contractor.setEventId(eventId);
             contractor.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+            Party partySource = partyDao.get(partyId);
+            if (partySource == null) {
+                throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
+            }
+            contractor.setRevision(partySource.getRevision());
             contractor.setPartyId(partyId);
             contractor.setContractorId(contractorId);
             contractor.setIdentificationalLevel(partyContractor.getStatus().name());

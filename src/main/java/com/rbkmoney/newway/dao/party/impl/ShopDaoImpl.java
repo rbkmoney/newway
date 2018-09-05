@@ -13,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
+import java.util.List;
+
 import static com.rbkmoney.newway.domain.Tables.SHOP;
 
 @Component
@@ -47,5 +49,13 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
         Query query = getDslContext().update(SHOP).set(SHOP.CURRENT, false)
                 .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.SHOP_ID.eq(shopId)).and(SHOP.CURRENT));
         executeOne(query);
+    }
+
+
+    @Override
+    public List<Shop> getByPartyId(String partyId) {
+        Query query = getDslContext().selectFrom(SHOP)
+                .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.CURRENT));
+        return fetch(query, shopRowMapper);
     }
 }
