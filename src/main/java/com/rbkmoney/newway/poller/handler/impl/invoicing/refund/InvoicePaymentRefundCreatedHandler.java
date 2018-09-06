@@ -2,6 +2,7 @@ package com.rbkmoney.newway.poller.handler.impl.invoicing.refund;
 
 import com.rbkmoney.damsel.domain.InvoicePaymentRefund;
 import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -87,11 +88,7 @@ public class InvoicePaymentRefundCreatedHandler extends AbstractInvoicingHandler
         refund.setPartyId(payment.getPartyId());
         refund.setShopId(payment.getShopId());
         refund.setCreatedAt(TypeUtil.stringToLocalDateTime(invoicePaymentRefund.getCreatedAt()));
-        RefundStatus status = TypeUtil.toEnumField(invoicePaymentRefund.getStatus().getSetField().getFieldName(), RefundStatus.class);
-        if (status == null) {
-            throw new IllegalArgumentException("Illegal refund status: " + invoicePaymentRefund.getStatus());
-        }
-        refund.setStatus(status);
+        refund.setStatus(TBaseUtil.unionFieldToEnum(invoicePaymentRefund.getStatus(), RefundStatus.class));
         if (invoicePaymentRefund.getStatus().isSetFailed()) {
             refund.setStatusFailedFailure(JsonUtil.toJsonString(invoicePaymentRefund.getStatus().getFailed()));
         }

@@ -5,6 +5,7 @@ import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentAdjustmentChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentChange;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -85,11 +86,7 @@ public class InvoicePaymentAdjustmentCreatedHandler extends AbstractInvoicingHan
         adjustment.setPartyId(payment.getPartyId());
         adjustment.setShopId(payment.getShopId());
         adjustment.setCreatedAt(TypeUtil.stringToLocalDateTime(invoicePaymentAdjustment.getCreatedAt()));
-        AdjustmentStatus status = TypeUtil.toEnumField(invoicePaymentAdjustment.getStatus().getSetField().getFieldName(), AdjustmentStatus.class);
-        if (status == null) {
-            throw new IllegalArgumentException("Illegal adjustment status: " + invoicePaymentAdjustment.getStatus());
-        }
-        adjustment.setStatus(status);
+        adjustment.setStatus(TBaseUtil.unionFieldToEnum(invoicePaymentAdjustment.getStatus(), AdjustmentStatus.class));
         if (invoicePaymentAdjustment.getStatus().isSetCaptured()) {
             adjustment.setStatusCapturedAt(TypeUtil.stringToLocalDateTime(invoicePaymentAdjustment.getStatus().getCaptured().getAt()));
         } else if (invoicePaymentAdjustment.getStatus().isSetCancelled()) {

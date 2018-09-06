@@ -4,6 +4,7 @@ import com.rbkmoney.damsel.domain.ContractStatus;
 import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.dao.party.iface.ContractAdjustmentDao;
 import com.rbkmoney.newway.dao.party.iface.ContractDao;
@@ -56,11 +57,7 @@ public class ContractStatusChangedHandler extends AbstractClaimChangedHandler {
             contractSource.setWtime(null);
             contractSource.setEventId(eventId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-            com.rbkmoney.newway.domain.enums.ContractStatus status = TypeUtil.toEnumField(statusChanged.getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.ContractStatus.class);
-            if (status == null) {
-                throw new IllegalArgumentException("Illegal contract status: " + statusChanged);
-            }
-            contractSource.setStatus(status);
+            contractSource.setStatus(TBaseUtil.unionFieldToEnum(statusChanged, com.rbkmoney.newway.domain.enums.ContractStatus.class));
             if (statusChanged.isSetTerminated()) {
                 contractSource.setStatusTerminatedAt(TypeUtil.stringToLocalDateTime(statusChanged.getTerminated().getTerminatedAt()));
             }

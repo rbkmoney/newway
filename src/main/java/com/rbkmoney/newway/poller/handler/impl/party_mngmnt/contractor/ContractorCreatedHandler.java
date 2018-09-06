@@ -7,6 +7,7 @@ import com.rbkmoney.damsel.domain.RussianPrivateEntity;
 import com.rbkmoney.damsel.payment_processing.ContractorEffectUnit;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.dao.party.iface.ContractorDao;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
@@ -59,18 +60,12 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
             contractor.setPartyId(partyId);
             contractor.setContractorId(contractorId);
             contractor.setIdentificationalLevel(partyContractor.getStatus().name());
-            ContractorType contractorType = TypeUtil.toEnumField(contractorCreated.getSetField().getFieldName(), ContractorType.class);
-            if (contractorType == null) {
-                throw new IllegalArgumentException("Illegal contractorType: " + contractorCreated);
-            }
+            ContractorType contractorType = TBaseUtil.unionFieldToEnum(contractorCreated, ContractorType.class);
             contractor.setType(contractorType);
             if (contractorCreated.isSetRegisteredUser()) {
                 contractor.setRegisteredUserEmail(contractorCreated.getRegisteredUser().getEmail());
             } else if (contractorCreated.isSetLegalEntity()) {
-                LegalEntity legalEntity = TypeUtil.toEnumField(contractorCreated.getLegalEntity().getSetField().getFieldName(), LegalEntity.class);
-                if (legalEntity == null) {
-                    throw new IllegalArgumentException("Unknown legal entity: " + contractor.getLegalEntity());
-                }
+                LegalEntity legalEntity = TBaseUtil.unionFieldToEnum(contractorCreated.getLegalEntity(), LegalEntity.class);
                 contractor.setLegalEntity(legalEntity);
                 if (contractorCreated.getLegalEntity().isSetRussianLegalEntity()) {
                     RussianLegalEntity russianLegalEntity = contractorCreated.getLegalEntity().getRussianLegalEntity();
@@ -95,11 +90,7 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
                     contractor.setInternationalLegalEntityRegisteredNumber(internationalLegalEntity.getRegisteredNumber());
                 }
             } else if (contractorCreated.isSetPrivateEntity()) {
-                PrivateEntity privateEntity = TypeUtil.toEnumField(contractorCreated.getPrivateEntity().getSetField().getFieldName(), PrivateEntity.class);
-                if (privateEntity == null) {
-                    throw new IllegalArgumentException("Illegal private entity: " + contractor.getPrivateEntity());
-                }
-                contractor.setPrivateEntity(privateEntity);
+                contractor.setPrivateEntity(TBaseUtil.unionFieldToEnum(contractorCreated.getPrivateEntity(), PrivateEntity.class));
                 if (contractorCreated.getPrivateEntity().isSetRussianPrivateEntity()) {
                     RussianPrivateEntity russianPrivateEntity = contractorCreated.getPrivateEntity().getRussianPrivateEntity();
                     contractor.setRussianPrivateEntityFirstName(russianPrivateEntity.getFirstName());

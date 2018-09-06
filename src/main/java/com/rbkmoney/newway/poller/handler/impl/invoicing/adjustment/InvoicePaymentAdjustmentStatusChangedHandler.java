@@ -5,6 +5,7 @@ import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentAdjustmentChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentChange;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -70,11 +71,7 @@ public class InvoicePaymentAdjustmentStatusChangedHandler extends AbstractInvoic
         adjustmentSource.setWtime(null);
         adjustmentSource.setEventId(eventId);
         adjustmentSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        AdjustmentStatus status = TypeUtil.toEnumField(invoicePaymentAdjustmentStatus.getSetField().getFieldName(), AdjustmentStatus.class);
-        if (status == null) {
-            throw new IllegalArgumentException("Illegal adjustment status: " + invoicePaymentAdjustmentStatus);
-        }
-        adjustmentSource.setStatus(status);
+        adjustmentSource.setStatus(TBaseUtil.unionFieldToEnum(invoicePaymentAdjustmentStatus, AdjustmentStatus.class));
         if (invoicePaymentAdjustmentStatus.isSetCaptured()) {
             adjustmentSource.setStatusCapturedAt(TypeUtil.stringToLocalDateTime(invoicePaymentAdjustmentStatus.getCaptured().getAt()));
             adjustmentSource.setStatusCancelledAt(null);

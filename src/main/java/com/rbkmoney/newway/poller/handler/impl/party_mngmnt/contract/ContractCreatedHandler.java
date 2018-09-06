@@ -3,6 +3,7 @@ package com.rbkmoney.newway.poller.handler.impl.party_mngmnt.contract;
 import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.dao.party.iface.ContractAdjustmentDao;
 import com.rbkmoney.newway.dao.party.iface.ContractDao;
@@ -70,11 +71,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             if (contractCreated.isSetValidUntil()) {
                 contract.setValidUntil(TypeUtil.stringToLocalDateTime(contractCreated.getValidUntil()));
             }
-            ContractStatus status = TypeUtil.toEnumField(contractCreated.getStatus().getSetField().getFieldName(), ContractStatus.class);
-            if (status == null) {
-                throw new IllegalArgumentException("Illegal contract status: "+contractCreated.getStatus());
-            }
-            contract.setStatus(status);
+            contract.setStatus(TBaseUtil.unionFieldToEnum(contractCreated.getStatus(), ContractStatus.class));
             if (contractCreated.getStatus().isSetTerminated()) {
                 contract.setStatusTerminatedAt(TypeUtil.stringToLocalDateTime(contractCreated.getStatus().getTerminated().getTerminatedAt()));
             }

@@ -8,6 +8,7 @@ import com.rbkmoney.damsel.domain.RecurrentTokenSource;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentStarted;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -89,11 +90,7 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
         if (invoicePayment.isSetPartyRevision()) {
             payment.setPartyRevision(invoicePayment.getPartyRevision());
         }
-        PaymentStatus status = TypeUtil.toEnumField(invoicePayment.getStatus().getSetField().getFieldName(), PaymentStatus.class);
-        if (status == null) {
-            throw new IllegalArgumentException("Illegal payment status: " + invoicePayment.getStatus());
-        }
-        payment.setStatus(status);
+        payment.setStatus(TBaseUtil.unionFieldToEnum(invoicePayment.getStatus(), PaymentStatus.class));
         if (invoicePayment.getStatus().isSetCancelled()) {
             payment.setStatusCancelledReason(invoicePayment.getStatus().getCancelled().getReason());
         } else if (invoicePayment.getStatus().isSetCaptured()) {
@@ -103,11 +100,7 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
         }
         payment.setAmount(invoicePayment.getCost().getAmount());
         payment.setCurrencyCode(invoicePayment.getCost().getCurrency().getSymbolicCode());
-        PayerType payerType = TypeUtil.toEnumField(invoicePayment.getPayer().getSetField().getFieldName(), PayerType.class);
-        if (payerType == null) {
-            throw new IllegalArgumentException("Illegal payer type: " + invoicePayment.getPayer());
-        }
-        payment.setPayerType(payerType);
+        payment.setPayerType(TBaseUtil.unionFieldToEnum(invoicePayment.getPayer(), PayerType.class));
         if (invoicePayment.getPayer().isSetPaymentResource()) {
             PaymentTool paymentTool = invoicePayment.getPayer().getPaymentResource().getResource().getPaymentTool();
             fillPaymentTool(payment, paymentTool);
@@ -121,11 +114,7 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
             fillPaymentTool(payment, customer.getPaymentTool());
             fillContactInfo(payment, customer.getContactInfo());
         }
-        PaymentFlowType paymentFlowType = TypeUtil.toEnumField(invoicePayment.getFlow().getSetField().getFieldName(), PaymentFlowType.class);
-        if (paymentFlowType == null) {
-            throw new IllegalArgumentException("Illegal payment flow type: " + invoicePayment.getPayer());
-        }
-        payment.setPaymentFlowType(paymentFlowType);
+        payment.setPaymentFlowType(TBaseUtil.unionFieldToEnum(invoicePayment.getFlow(), PaymentFlowType.class));
         if (invoicePayment.getFlow().isSetHold()) {
             payment.setPaymentFlowHeldUntil(TypeUtil.stringToLocalDateTime(invoicePayment.getFlow().getHold().getHeldUntil()));
             payment.setPaymentFlowOnHoldExpiration(invoicePayment.getFlow().getHold().getOnHoldExpiration().name());
@@ -139,11 +128,7 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
         }
         if (invoicePayment.isSetRecurrentIntention()) {
             RecurrentTokenSource recurrentTokenSource = invoicePayment.getRecurrentIntention().getTokenSource();
-            com.rbkmoney.newway.domain.enums.RecurrentTokenSource recurrentIntentionTokenSource = TypeUtil.toEnumField(recurrentTokenSource.getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.RecurrentTokenSource.class);
-            if (recurrentIntentionTokenSource == null) {
-                throw new IllegalArgumentException("Illegal recurrent intention token source: " + recurrentTokenSource);
-            }
-            payment.setRecurrentIntentionTokenSource(recurrentIntentionTokenSource);
+            payment.setRecurrentIntentionTokenSource(TBaseUtil.unionFieldToEnum(recurrentTokenSource, com.rbkmoney.newway.domain.enums.RecurrentTokenSource.class));
             if (recurrentTokenSource.isSetPayment()) {
                 payment.setRecurrentIntentionTokenSourceInvoiceId(recurrentTokenSource.getPayment().getInvoiceId());
                 payment.setRecurrentIntentionTokenSourcePaymentId(recurrentTokenSource.getPayment().getPaymentId());
@@ -166,7 +151,7 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
     }
 
     private void fillPaymentTool(Payment payment, PaymentTool paymentTool) {
-        payment.setPayerPaymentToolType(TypeUtil.toEnumField(paymentTool.getSetField().getFieldName(), PaymentToolType.class));
+        payment.setPayerPaymentToolType(TBaseUtil.unionFieldToEnum(paymentTool, PaymentToolType.class));
         if (paymentTool.isSetBankCard()) {
             payment.setPayerBankCardToken(paymentTool.getBankCard().getToken());
             payment.setPayerBankCardPaymentSystem(paymentTool.getBankCard().getPaymentSystem().name());

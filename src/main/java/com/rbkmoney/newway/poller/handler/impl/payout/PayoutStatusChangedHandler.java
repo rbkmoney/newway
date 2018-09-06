@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.handler.impl.payout;
 
 import com.rbkmoney.damsel.payout_processing.*;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -57,18 +58,10 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
         payoutSource.setWtime(null);
         payoutSource.setEventId(eventId);
         payoutSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        com.rbkmoney.newway.domain.enums.PayoutStatus payoutstatus = TypeUtil.toEnumField(payoutStatus.getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.PayoutStatus.class);
-        if (payoutstatus == null) {
-            throw new IllegalArgumentException("Illegal payout status: " + payoutStatus);
-        }
-        payoutSource.setStatus(payoutstatus);
+        payoutSource.setStatus(TBaseUtil.unionFieldToEnum(payoutStatus, com.rbkmoney.newway.domain.enums.PayoutStatus.class));
         if (payoutStatus.isSetPaid()) {
             PaidDetails details = payoutStatus.getPaid().getDetails();
-            PayoutPaidStatusDetails paidDetails = TypeUtil.toEnumField(details.getSetField().getFieldName(), PayoutPaidStatusDetails.class);
-            if (paidDetails == null) {
-                throw new IllegalArgumentException("Illegal paid details: " + details);
-            }
-            payoutSource.setStatusPaidDetails(paidDetails);
+            payoutSource.setStatusPaidDetails(TBaseUtil.unionFieldToEnum(details, PayoutPaidStatusDetails.class));
             if (details.isSetCardDetails()) {
                 payoutSource.setStatusPaidDetailsCardProviderName(details.getCardDetails().getProviderDetails().getName());
                 payoutSource.setStatusPaidDetailsCardProviderTransactionId(details.getCardDetails().getProviderDetails().getTransactionId());
@@ -83,11 +76,7 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
             payoutSource.setStatusPaidDetailsCardProviderTransactionId(null);
             PayoutCancelled cancelled = payoutStatus.getCancelled();
             payoutSource.setStatusCancelledUserInfoId(cancelled.getUserInfo().getId());
-            UserType statusCancelledUserInfoType = TypeUtil.toEnumField(cancelled.getUserInfo().getType().getSetField().getFieldName(), UserType.class);
-            if (statusCancelledUserInfoType == null) {
-                throw new IllegalArgumentException("Illegal user type: " + cancelled.getUserInfo().getType());
-            }
-            payoutSource.setStatusCancelledUserInfoType(statusCancelledUserInfoType);
+            payoutSource.setStatusCancelledUserInfoType(TBaseUtil.unionFieldToEnum(cancelled.getUserInfo().getType(), UserType.class));
             payoutSource.setStatusCancelledDetails(cancelled.getDetails());
             payoutSource.setStatusConfirmedUserInfoType(null);
         } if (payoutStatus.isSetConfirmed()) {
@@ -98,11 +87,7 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
             payoutSource.setStatusCancelledUserInfoType(null);
             payoutSource.setStatusCancelledDetails(null);
             UserInfo confirmedUserInfo = payoutStatus.getConfirmed().getUserInfo();
-            UserType statusCondirmedUserInfoType = TypeUtil.toEnumField(confirmedUserInfo.getType().getSetField().getFieldName(), UserType.class);
-            if (statusCondirmedUserInfoType == null) {
-                throw new IllegalArgumentException("Illegal user type: " + confirmedUserInfo.getType());
-            }
-            payoutSource.setStatusConfirmedUserInfoType(statusCondirmedUserInfoType);
+            payoutSource.setStatusConfirmedUserInfoType(TBaseUtil.unionFieldToEnum(confirmedUserInfo.getType(), UserType.class));
         }
         payoutDao.updateNotCurrent(payoutSource.getPayoutId());
         long pytId = payoutDao.save(payoutSource);

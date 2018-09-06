@@ -5,6 +5,7 @@ import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentRefundChange;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -72,11 +73,7 @@ public class InvoicePaymentRefundStatusChangedHandler extends AbstractInvoicingH
         refundSource.setWtime(null);
         refundSource.setEventId(eventId);
         refundSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        RefundStatus status = TypeUtil.toEnumField(invoicePaymentRefundStatus.getSetField().getFieldName(), RefundStatus.class);
-        if (status == null) {
-            throw new IllegalArgumentException("Illegal payment status: " + invoicePaymentRefundStatus);
-        }
-        refundSource.setStatus(status);
+        refundSource.setStatus(TBaseUtil.unionFieldToEnum(invoicePaymentRefundStatus, RefundStatus.class));
         if (invoicePaymentRefundStatus.isSetFailed()) {
             refundSource.setStatusFailedFailure(JsonUtil.toJsonString(invoicePaymentRefundStatus.getFailed()));
         } else {
