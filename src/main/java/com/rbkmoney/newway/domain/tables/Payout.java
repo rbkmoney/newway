@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payout extends TableImpl<PayoutRecord> {
 
-    private static final long serialVersionUID = -603955319;
+    private static final long serialVersionUID = -1228384706;
 
     /**
      * The reference instance of <code>nw.payout</code>
@@ -295,6 +295,51 @@ public class Payout extends TableImpl<PayoutRecord> {
      * The column <code>nw.payout.current</code>.
      */
     public final TableField<PayoutRecord, Boolean> CURRENT = createField("current", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>nw.payout.type_account_international_aba_rtn</code>.
+     */
+    public final TableField<PayoutRecord, String> TYPE_ACCOUNT_INTERNATIONAL_ABA_RTN = createField("type_account_international_aba_rtn", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payout.type_account_international_country_code</code>.
+     */
+    public final TableField<PayoutRecord, String> TYPE_ACCOUNT_INTERNATIONAL_COUNTRY_CODE = createField("type_account_international_country_code", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payout.type_account_international_correspondent_bank_account</code>.
+     */
+    public final TableField<PayoutRecord, String> TYPE_ACCOUNT_INTERNATIONAL_CORRESPONDENT_BANK_ACCOUNT = createField("type_account_international_correspondent_bank_account", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payout.type_account_international_correspondent_bank_name</code>.
+     */
+    public final TableField<PayoutRecord, String> TYPE_ACCOUNT_INTERNATIONAL_CORRESPONDENT_BANK_NAME = createField("type_account_international_correspondent_bank_name", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payout.type_account_international_correspondent_bank_address</code>.
+     */
+    public final TableField<PayoutRecord, String> TYPE_ACCOUNT_INTERNATIONAL_CORRESPONDENT_BANK_ADDRESS = createField("type_account_international_correspondent_bank_address", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payout.type_account_international_correspondent_bank_bic</code>.
+     */
+    public final TableField<PayoutRecord, String> TYPE_ACCOUNT_INTERNATIONAL_CORRESPONDENT_BANK_BIC = createField("type_account_international_correspondent_bank_bic", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payout.type_account_international_correspondent_bank_iban</code>.
+     */
+    public final TableField<PayoutRecord, String> TYPE_ACCOUNT_INTERNATIONAL_CORRESPONDENT_BANK_IBAN = createField("type_account_international_correspondent_bank_iban", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payout.type_account_international_correspondent_bank_aba_rtn</code>.
+     */
+    public final TableField<PayoutRecord, String> TYPE_ACCOUNT_INTERNATIONAL_CORRESPONDENT_BANK_ABA_RTN = createField("type_account_international_correspondent_bank_aba_rtn", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payout.type_account_international_correspondent_bank_country_code</code>.
+     */
+    public final TableField<PayoutRecord, String> TYPE_ACCOUNT_INTERNATIONAL_CORRESPONDENT_BANK_COUNTRY_CODE = createField("type_account_international_correspondent_bank_country_code", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * Create a <code>nw.payout</code> table reference

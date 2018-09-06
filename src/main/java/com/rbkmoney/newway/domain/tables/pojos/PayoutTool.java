@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PayoutTool implements Serializable {
 
-    private static final long serialVersionUID = 1158521299;
+    private static final long serialVersionUID = 1501545717;
 
     private Long           id;
     private Long           cntrctId;
@@ -43,6 +43,15 @@ public class PayoutTool implements Serializable {
     private String         payoutToolInfoInternationalBankIban;
     private String         payoutToolInfoInternationalBankBic;
     private String         payoutToolInfoInternationalBankLocalCode;
+    private String         payoutToolInfoInternationalBankAbaRtn;
+    private String         payoutToolInfoInternationalBankCountryCode;
+    private String         payoutToolInfoInternationalCorrespondentBankAccount;
+    private String         payoutToolInfoInternationalCorrespondentBankName;
+    private String         payoutToolInfoInternationalCorrespondentBankAddress;
+    private String         payoutToolInfoInternationalCorrespondentBankBic;
+    private String         payoutToolInfoInternationalCorrespondentBankIban;
+    private String         payoutToolInfoInternationalCorrespondentBankAbaRtn;
+    private String         payoutToolInfoInternationalCorrespondentBankCountryCode;
 
     public PayoutTool() {}
 
@@ -63,6 +72,15 @@ public class PayoutTool implements Serializable {
         this.payoutToolInfoInternationalBankIban = value.payoutToolInfoInternationalBankIban;
         this.payoutToolInfoInternationalBankBic = value.payoutToolInfoInternationalBankBic;
         this.payoutToolInfoInternationalBankLocalCode = value.payoutToolInfoInternationalBankLocalCode;
+        this.payoutToolInfoInternationalBankAbaRtn = value.payoutToolInfoInternationalBankAbaRtn;
+        this.payoutToolInfoInternationalBankCountryCode = value.payoutToolInfoInternationalBankCountryCode;
+        this.payoutToolInfoInternationalCorrespondentBankAccount = value.payoutToolInfoInternationalCorrespondentBankAccount;
+        this.payoutToolInfoInternationalCorrespondentBankName = value.payoutToolInfoInternationalCorrespondentBankName;
+        this.payoutToolInfoInternationalCorrespondentBankAddress = value.payoutToolInfoInternationalCorrespondentBankAddress;
+        this.payoutToolInfoInternationalCorrespondentBankBic = value.payoutToolInfoInternationalCorrespondentBankBic;
+        this.payoutToolInfoInternationalCorrespondentBankIban = value.payoutToolInfoInternationalCorrespondentBankIban;
+        this.payoutToolInfoInternationalCorrespondentBankAbaRtn = value.payoutToolInfoInternationalCorrespondentBankAbaRtn;
+        this.payoutToolInfoInternationalCorrespondentBankCountryCode = value.payoutToolInfoInternationalCorrespondentBankCountryCode;
     }
 
     public PayoutTool(
@@ -81,7 +99,16 @@ public class PayoutTool implements Serializable {
         String         payoutToolInfoInternationalBankAddress,
         String         payoutToolInfoInternationalBankIban,
         String         payoutToolInfoInternationalBankBic,
-        String         payoutToolInfoInternationalBankLocalCode
+        String         payoutToolInfoInternationalBankLocalCode,
+        String         payoutToolInfoInternationalBankAbaRtn,
+        String         payoutToolInfoInternationalBankCountryCode,
+        String         payoutToolInfoInternationalCorrespondentBankAccount,
+        String         payoutToolInfoInternationalCorrespondentBankName,
+        String         payoutToolInfoInternationalCorrespondentBankAddress,
+        String         payoutToolInfoInternationalCorrespondentBankBic,
+        String         payoutToolInfoInternationalCorrespondentBankIban,
+        String         payoutToolInfoInternationalCorrespondentBankAbaRtn,
+        String         payoutToolInfoInternationalCorrespondentBankCountryCode
     ) {
         this.id = id;
         this.cntrctId = cntrctId;
@@ -99,6 +126,15 @@ public class PayoutTool implements Serializable {
         this.payoutToolInfoInternationalBankIban = payoutToolInfoInternationalBankIban;
         this.payoutToolInfoInternationalBankBic = payoutToolInfoInternationalBankBic;
         this.payoutToolInfoInternationalBankLocalCode = payoutToolInfoInternationalBankLocalCode;
+        this.payoutToolInfoInternationalBankAbaRtn = payoutToolInfoInternationalBankAbaRtn;
+        this.payoutToolInfoInternationalBankCountryCode = payoutToolInfoInternationalBankCountryCode;
+        this.payoutToolInfoInternationalCorrespondentBankAccount = payoutToolInfoInternationalCorrespondentBankAccount;
+        this.payoutToolInfoInternationalCorrespondentBankName = payoutToolInfoInternationalCorrespondentBankName;
+        this.payoutToolInfoInternationalCorrespondentBankAddress = payoutToolInfoInternationalCorrespondentBankAddress;
+        this.payoutToolInfoInternationalCorrespondentBankBic = payoutToolInfoInternationalCorrespondentBankBic;
+        this.payoutToolInfoInternationalCorrespondentBankIban = payoutToolInfoInternationalCorrespondentBankIban;
+        this.payoutToolInfoInternationalCorrespondentBankAbaRtn = payoutToolInfoInternationalCorrespondentBankAbaRtn;
+        this.payoutToolInfoInternationalCorrespondentBankCountryCode = payoutToolInfoInternationalCorrespondentBankCountryCode;
     }
 
     public Long getId() {
@@ -229,6 +265,78 @@ public class PayoutTool implements Serializable {
         this.payoutToolInfoInternationalBankLocalCode = payoutToolInfoInternationalBankLocalCode;
     }
 
+    public String getPayoutToolInfoInternationalBankAbaRtn() {
+        return this.payoutToolInfoInternationalBankAbaRtn;
+    }
+
+    public void setPayoutToolInfoInternationalBankAbaRtn(String payoutToolInfoInternationalBankAbaRtn) {
+        this.payoutToolInfoInternationalBankAbaRtn = payoutToolInfoInternationalBankAbaRtn;
+    }
+
+    public String getPayoutToolInfoInternationalBankCountryCode() {
+        return this.payoutToolInfoInternationalBankCountryCode;
+    }
+
+    public void setPayoutToolInfoInternationalBankCountryCode(String payoutToolInfoInternationalBankCountryCode) {
+        this.payoutToolInfoInternationalBankCountryCode = payoutToolInfoInternationalBankCountryCode;
+    }
+
+    public String getPayoutToolInfoInternationalCorrespondentBankAccount() {
+        return this.payoutToolInfoInternationalCorrespondentBankAccount;
+    }
+
+    public void setPayoutToolInfoInternationalCorrespondentBankAccount(String payoutToolInfoInternationalCorrespondentBankAccount) {
+        this.payoutToolInfoInternationalCorrespondentBankAccount = payoutToolInfoInternationalCorrespondentBankAccount;
+    }
+
+    public String getPayoutToolInfoInternationalCorrespondentBankName() {
+        return this.payoutToolInfoInternationalCorrespondentBankName;
+    }
+
+    public void setPayoutToolInfoInternationalCorrespondentBankName(String payoutToolInfoInternationalCorrespondentBankName) {
+        this.payoutToolInfoInternationalCorrespondentBankName = payoutToolInfoInternationalCorrespondentBankName;
+    }
+
+    public String getPayoutToolInfoInternationalCorrespondentBankAddress() {
+        return this.payoutToolInfoInternationalCorrespondentBankAddress;
+    }
+
+    public void setPayoutToolInfoInternationalCorrespondentBankAddress(String payoutToolInfoInternationalCorrespondentBankAddress) {
+        this.payoutToolInfoInternationalCorrespondentBankAddress = payoutToolInfoInternationalCorrespondentBankAddress;
+    }
+
+    public String getPayoutToolInfoInternationalCorrespondentBankBic() {
+        return this.payoutToolInfoInternationalCorrespondentBankBic;
+    }
+
+    public void setPayoutToolInfoInternationalCorrespondentBankBic(String payoutToolInfoInternationalCorrespondentBankBic) {
+        this.payoutToolInfoInternationalCorrespondentBankBic = payoutToolInfoInternationalCorrespondentBankBic;
+    }
+
+    public String getPayoutToolInfoInternationalCorrespondentBankIban() {
+        return this.payoutToolInfoInternationalCorrespondentBankIban;
+    }
+
+    public void setPayoutToolInfoInternationalCorrespondentBankIban(String payoutToolInfoInternationalCorrespondentBankIban) {
+        this.payoutToolInfoInternationalCorrespondentBankIban = payoutToolInfoInternationalCorrespondentBankIban;
+    }
+
+    public String getPayoutToolInfoInternationalCorrespondentBankAbaRtn() {
+        return this.payoutToolInfoInternationalCorrespondentBankAbaRtn;
+    }
+
+    public void setPayoutToolInfoInternationalCorrespondentBankAbaRtn(String payoutToolInfoInternationalCorrespondentBankAbaRtn) {
+        this.payoutToolInfoInternationalCorrespondentBankAbaRtn = payoutToolInfoInternationalCorrespondentBankAbaRtn;
+    }
+
+    public String getPayoutToolInfoInternationalCorrespondentBankCountryCode() {
+        return this.payoutToolInfoInternationalCorrespondentBankCountryCode;
+    }
+
+    public void setPayoutToolInfoInternationalCorrespondentBankCountryCode(String payoutToolInfoInternationalCorrespondentBankCountryCode) {
+        this.payoutToolInfoInternationalCorrespondentBankCountryCode = payoutToolInfoInternationalCorrespondentBankCountryCode;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -334,6 +442,60 @@ public class PayoutTool implements Serializable {
         }
         else if (!payoutToolInfoInternationalBankLocalCode.equals(other.payoutToolInfoInternationalBankLocalCode))
             return false;
+        if (payoutToolInfoInternationalBankAbaRtn == null) {
+            if (other.payoutToolInfoInternationalBankAbaRtn != null)
+                return false;
+        }
+        else if (!payoutToolInfoInternationalBankAbaRtn.equals(other.payoutToolInfoInternationalBankAbaRtn))
+            return false;
+        if (payoutToolInfoInternationalBankCountryCode == null) {
+            if (other.payoutToolInfoInternationalBankCountryCode != null)
+                return false;
+        }
+        else if (!payoutToolInfoInternationalBankCountryCode.equals(other.payoutToolInfoInternationalBankCountryCode))
+            return false;
+        if (payoutToolInfoInternationalCorrespondentBankAccount == null) {
+            if (other.payoutToolInfoInternationalCorrespondentBankAccount != null)
+                return false;
+        }
+        else if (!payoutToolInfoInternationalCorrespondentBankAccount.equals(other.payoutToolInfoInternationalCorrespondentBankAccount))
+            return false;
+        if (payoutToolInfoInternationalCorrespondentBankName == null) {
+            if (other.payoutToolInfoInternationalCorrespondentBankName != null)
+                return false;
+        }
+        else if (!payoutToolInfoInternationalCorrespondentBankName.equals(other.payoutToolInfoInternationalCorrespondentBankName))
+            return false;
+        if (payoutToolInfoInternationalCorrespondentBankAddress == null) {
+            if (other.payoutToolInfoInternationalCorrespondentBankAddress != null)
+                return false;
+        }
+        else if (!payoutToolInfoInternationalCorrespondentBankAddress.equals(other.payoutToolInfoInternationalCorrespondentBankAddress))
+            return false;
+        if (payoutToolInfoInternationalCorrespondentBankBic == null) {
+            if (other.payoutToolInfoInternationalCorrespondentBankBic != null)
+                return false;
+        }
+        else if (!payoutToolInfoInternationalCorrespondentBankBic.equals(other.payoutToolInfoInternationalCorrespondentBankBic))
+            return false;
+        if (payoutToolInfoInternationalCorrespondentBankIban == null) {
+            if (other.payoutToolInfoInternationalCorrespondentBankIban != null)
+                return false;
+        }
+        else if (!payoutToolInfoInternationalCorrespondentBankIban.equals(other.payoutToolInfoInternationalCorrespondentBankIban))
+            return false;
+        if (payoutToolInfoInternationalCorrespondentBankAbaRtn == null) {
+            if (other.payoutToolInfoInternationalCorrespondentBankAbaRtn != null)
+                return false;
+        }
+        else if (!payoutToolInfoInternationalCorrespondentBankAbaRtn.equals(other.payoutToolInfoInternationalCorrespondentBankAbaRtn))
+            return false;
+        if (payoutToolInfoInternationalCorrespondentBankCountryCode == null) {
+            if (other.payoutToolInfoInternationalCorrespondentBankCountryCode != null)
+                return false;
+        }
+        else if (!payoutToolInfoInternationalCorrespondentBankCountryCode.equals(other.payoutToolInfoInternationalCorrespondentBankCountryCode))
+            return false;
         return true;
     }
 
@@ -357,6 +519,15 @@ public class PayoutTool implements Serializable {
         result = prime * result + ((this.payoutToolInfoInternationalBankIban == null) ? 0 : this.payoutToolInfoInternationalBankIban.hashCode());
         result = prime * result + ((this.payoutToolInfoInternationalBankBic == null) ? 0 : this.payoutToolInfoInternationalBankBic.hashCode());
         result = prime * result + ((this.payoutToolInfoInternationalBankLocalCode == null) ? 0 : this.payoutToolInfoInternationalBankLocalCode.hashCode());
+        result = prime * result + ((this.payoutToolInfoInternationalBankAbaRtn == null) ? 0 : this.payoutToolInfoInternationalBankAbaRtn.hashCode());
+        result = prime * result + ((this.payoutToolInfoInternationalBankCountryCode == null) ? 0 : this.payoutToolInfoInternationalBankCountryCode.hashCode());
+        result = prime * result + ((this.payoutToolInfoInternationalCorrespondentBankAccount == null) ? 0 : this.payoutToolInfoInternationalCorrespondentBankAccount.hashCode());
+        result = prime * result + ((this.payoutToolInfoInternationalCorrespondentBankName == null) ? 0 : this.payoutToolInfoInternationalCorrespondentBankName.hashCode());
+        result = prime * result + ((this.payoutToolInfoInternationalCorrespondentBankAddress == null) ? 0 : this.payoutToolInfoInternationalCorrespondentBankAddress.hashCode());
+        result = prime * result + ((this.payoutToolInfoInternationalCorrespondentBankBic == null) ? 0 : this.payoutToolInfoInternationalCorrespondentBankBic.hashCode());
+        result = prime * result + ((this.payoutToolInfoInternationalCorrespondentBankIban == null) ? 0 : this.payoutToolInfoInternationalCorrespondentBankIban.hashCode());
+        result = prime * result + ((this.payoutToolInfoInternationalCorrespondentBankAbaRtn == null) ? 0 : this.payoutToolInfoInternationalCorrespondentBankAbaRtn.hashCode());
+        result = prime * result + ((this.payoutToolInfoInternationalCorrespondentBankCountryCode == null) ? 0 : this.payoutToolInfoInternationalCorrespondentBankCountryCode.hashCode());
         return result;
     }
 
@@ -380,6 +551,15 @@ public class PayoutTool implements Serializable {
         sb.append(", ").append(payoutToolInfoInternationalBankIban);
         sb.append(", ").append(payoutToolInfoInternationalBankBic);
         sb.append(", ").append(payoutToolInfoInternationalBankLocalCode);
+        sb.append(", ").append(payoutToolInfoInternationalBankAbaRtn);
+        sb.append(", ").append(payoutToolInfoInternationalBankCountryCode);
+        sb.append(", ").append(payoutToolInfoInternationalCorrespondentBankAccount);
+        sb.append(", ").append(payoutToolInfoInternationalCorrespondentBankName);
+        sb.append(", ").append(payoutToolInfoInternationalCorrespondentBankAddress);
+        sb.append(", ").append(payoutToolInfoInternationalCorrespondentBankBic);
+        sb.append(", ").append(payoutToolInfoInternationalCorrespondentBankIban);
+        sb.append(", ").append(payoutToolInfoInternationalCorrespondentBankAbaRtn);
+        sb.append(", ").append(payoutToolInfoInternationalCorrespondentBankCountryCode);
 
         sb.append(")");
         return sb.toString();

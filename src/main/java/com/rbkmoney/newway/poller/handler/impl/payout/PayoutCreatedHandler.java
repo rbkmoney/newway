@@ -2,6 +2,7 @@ package com.rbkmoney.newway.poller.handler.impl.payout;
 
 import com.rbkmoney.damsel.domain.BankCard;
 import com.rbkmoney.damsel.domain.InternationalBankAccount;
+import com.rbkmoney.damsel.domain.InternationalBankDetails;
 import com.rbkmoney.damsel.domain.RussianBankAccount;
 import com.rbkmoney.damsel.payout_processing.*;
 import com.rbkmoney.geck.common.util.TypeUtil;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class PayoutCreatedHandler extends AbstractPayoutHandler {
@@ -85,7 +87,8 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
             }
             payout.setStatusCancelledUserInfoType(statusCancelledUserInfoType);
             payout.setStatusCancelledDetails(cancelled.getDetails());
-        } if (payoutCreated.getStatus().isSetConfirmed()) {
+        }
+        if (payoutCreated.getStatus().isSetConfirmed()) {
             UserInfo confirmedUserInfo = payoutCreated.getStatus().getConfirmed().getUserInfo();
             UserType statusCondirmedUserInfoType = TypeUtil.toEnumField(confirmedUserInfo.getType().getSetField().getFieldName(), UserType.class);
             if (statusCondirmedUserInfoType == null) {
@@ -94,7 +97,7 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
             payout.setStatusConfirmedUserInfoType(statusCondirmedUserInfoType);
         }
         PayoutType payoutType = TypeUtil.toEnumField(payoutCreated.getType().getSetField().getFieldName(), PayoutType.class);
-        if (payoutType == null ) {
+        if (payoutType == null) {
             throw new IllegalArgumentException("Illegal payout type: " + payoutCreated.getType());
         }
         payout.setType(payoutType);
@@ -134,7 +137,42 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
                 payout.setTypeAccountInternationalBankAddress(bankAccount.getBankAddress());
                 payout.setTypeAccountInternationalIban(bankAccount.getIban());
                 payout.setTypeAccountInternationalBic(bankAccount.getBic());
-                payout.setTypeAccountInternationalLocalBankCode(bankAccount.getLocalBankCode());
+
+                if (bankAccount.isSetBank()) {
+                    InternationalBankDetails bankDetails = bankAccount.getBank();
+                    payout.setTypeAccountInternationalBankName(bankDetails.getName());
+                    payout.setTypeAccountInternationalBankAddress(bankDetails.getAddress());
+                    payout.setTypeAccountInternationalBic(bankDetails.getBic());
+                    payout.setTypeAccountInternationalAbaRtn(bankDetails.getAbaRtn());
+                    payout.setTypeAccountInternationalCountryCode(
+                            Optional.ofNullable(bankDetails.getCountry())
+                                    .map(country -> country.toString())
+                                    .orElse(null)
+                    );
+                }
+
+                if (bankAccount.isSetCorrespondentAccount()) {
+                    InternationalBankAccount correspondentBankAccount = bankAccount.getCorrespondentAccount();
+                    payout.setTypeAccountInternationalCorrespondentBankAccount(correspondentBankAccount.getAccountHolder());
+                    payout.setTypeAccountInternationalCorrespondentBankName(correspondentBankAccount.getBankName());
+                    payout.setTypeAccountInternationalCorrespondentBankAddress(correspondentBankAccount.getBankAddress());
+                    payout.setTypeAccountInternationalCorrespondentBankIban(correspondentBankAccount.getIban());
+                    payout.setTypeAccountInternationalCorrespondentBankBic(correspondentBankAccount.getBic());
+
+                    if (correspondentBankAccount.isSetBank()) {
+                        InternationalBankDetails correspondentBankDetails = correspondentBankAccount.getBank();
+                        payout.setTypeAccountInternationalCorrespondentBankName(correspondentBankDetails.getName());
+                        payout.setTypeAccountInternationalCorrespondentBankAddress(correspondentBankDetails.getAddress());
+                        payout.setTypeAccountInternationalCorrespondentBankBic(correspondentBankDetails.getBic());
+                        payout.setTypeAccountInternationalCorrespondentBankAbaRtn(correspondentBankDetails.getAbaRtn());
+                        payout.setTypeAccountInternationalCorrespondentBankCountryCode(
+                                Optional.ofNullable(correspondentBankDetails.getCountry())
+                                        .map(country -> country.toString())
+                                        .orElse(null)
+                        );
+                    }
+                }
+
                 payout.setTypeAccountInternationalLegalEntityLegalName(internationalPayoutAccount.getLegalEntity().getLegalName());
                 payout.setTypeAccountInternationalLegalEntityTradingName(internationalPayoutAccount.getLegalEntity().getTradingName());
                 payout.setTypeAccountInternationalLegalEntityRegisteredAddress(internationalPayoutAccount.getLegalEntity().getRegisteredAddress());

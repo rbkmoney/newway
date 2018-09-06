@@ -8,6 +8,7 @@ import com.rbkmoney.newway.domain.tables.pojos.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.pojos.PayoutTool;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ContractUtil {
@@ -58,7 +59,40 @@ public class ContractUtil {
             payoutTool.setPayoutToolInfoInternationalBankAddress(internationalBankAccount.getBankAddress());
             payoutTool.setPayoutToolInfoInternationalBankIban(internationalBankAccount.getIban());
             payoutTool.setPayoutToolInfoInternationalBankBic(internationalBankAccount.getBic());
-            payoutTool.setPayoutToolInfoInternationalBankLocalCode(internationalBankAccount.getLocalBankCode());
+
+            if (internationalBankAccount.isSetBank()) {
+                InternationalBankDetails bankDetails = internationalBankAccount.getBank();
+                payoutTool.setPayoutToolInfoInternationalBankName(bankDetails.getName());
+                payoutTool.setPayoutToolInfoInternationalBankAddress(bankDetails.getAddress());
+                payoutTool.setPayoutToolInfoInternationalBankBic(bankDetails.getBic());
+                payoutTool.setPayoutToolInfoInternationalBankAbaRtn(bankDetails.getAbaRtn());
+                payoutTool.setPayoutToolInfoInternationalBankCountryCode(
+                        Optional.ofNullable(bankDetails.getCountry())
+                                .map(country -> country.toString())
+                                .orElse(null)
+                );
+            }
+            if (internationalBankAccount.isSetCorrespondentAccount()) {
+                InternationalBankAccount correspondentBankAccount = internationalBankAccount.getCorrespondentAccount();
+                payoutTool.setPayoutToolInfoInternationalCorrespondentBankAccount(correspondentBankAccount.getAccountHolder());
+                payoutTool.setPayoutToolInfoInternationalCorrespondentBankName(correspondentBankAccount.getBankName());
+                payoutTool.setPayoutToolInfoInternationalCorrespondentBankAddress(correspondentBankAccount.getBankAddress());
+                payoutTool.setPayoutToolInfoInternationalCorrespondentBankIban(correspondentBankAccount.getIban());
+                payoutTool.setPayoutToolInfoInternationalCorrespondentBankBic(correspondentBankAccount.getBic());
+
+                if (correspondentBankAccount.isSetBank()) {
+                    InternationalBankDetails correspondentBankDetails = correspondentBankAccount.getBank();
+                    payoutTool.setPayoutToolInfoInternationalCorrespondentBankName(correspondentBankDetails.getName());
+                    payoutTool.setPayoutToolInfoInternationalCorrespondentBankAddress(correspondentBankDetails.getAddress());
+                    payoutTool.setPayoutToolInfoInternationalCorrespondentBankBic(correspondentBankDetails.getBic());
+                    payoutTool.setPayoutToolInfoInternationalCorrespondentBankAbaRtn(correspondentBankDetails.getAbaRtn());
+                    payoutTool.setPayoutToolInfoInternationalCorrespondentBankCountryCode(
+                            Optional.ofNullable(correspondentBankDetails.getCountry())
+                                    .map(country -> country.toString())
+                                    .orElse(null)
+                    );
+                }
+            }
         }
         return payoutTool;
     }
