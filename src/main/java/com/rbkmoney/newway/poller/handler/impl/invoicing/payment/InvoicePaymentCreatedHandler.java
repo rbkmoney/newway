@@ -1,10 +1,10 @@
 package com.rbkmoney.newway.poller.handler.impl.invoicing.payment;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rbkmoney.damsel.domain.ContactInfo;
 import com.rbkmoney.damsel.domain.CustomerPayer;
 import com.rbkmoney.damsel.domain.InvoicePayment;
 import com.rbkmoney.damsel.domain.PaymentTool;
+import com.rbkmoney.damsel.domain.RecurrentTokenSource;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentStarted;
@@ -43,8 +43,6 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
     private final PaymentDao paymentDao;
 
     private final CashFlowDao cashFlowDao;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final Filter filter;
 
@@ -136,6 +134,22 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
             payment.setRouteProviderId(invoicePaymentStarted.getRoute().getProvider().getId());
             payment.setRouteTerminalId(invoicePaymentStarted.getRoute().getTerminal().getId());
         }
+        if (invoicePayment.isSetIsRecurring()) {
+            payment.setIsRecurring(invoicePayment.isIsRecurring());
+        }
+        if (invoicePayment.isSetRecurrentIntention()) {
+            RecurrentTokenSource recurrentTokenSource = invoicePayment.getRecurrentIntention().getTokenSource();
+            com.rbkmoney.newway.domain.enums.RecurrentTokenSource recurrentIntentionTokenSource = TypeUtil.toEnumField(recurrentTokenSource.getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.RecurrentTokenSource.class);
+            if (recurrentIntentionTokenSource == null) {
+                throw new IllegalArgumentException("Illegal recurrent intention token source: " + recurrentTokenSource);
+            }
+            payment.setRecurrentIntentionTokenSource(recurrentIntentionTokenSource);
+            if (recurrentTokenSource.isSetPayment()) {
+                payment.setRecurrentIntentionTokenSourceInvoiceId(recurrentTokenSource.getPayment().getInvoiceId());
+                payment.setRecurrentIntentionTokenSourcePaymentId(recurrentTokenSource.getPayment().getPaymentId());
+            }
+        }
+
         long pmntId = paymentDao.save(payment);
 
         if (invoicePaymentStarted.isSetCashFlow()) {

@@ -49,7 +49,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             com.rbkmoney.damsel.domain.Contract contractCreated = contractEffectUnit.getEffect().getCreated();
             String contractId = contractEffectUnit.getContractId();
             String partyId = event.getSource().getPartyId();
-            log.info("Start contract created handling, eventId={}, partyId={}, contractId={}", eventId, contractId);
+            log.info("Start contract created handling, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
             Contract contract = new Contract();
             contract.setEventId(eventId);
             contract.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
@@ -94,7 +94,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             List<com.rbkmoney.newway.domain.tables.pojos.PayoutTool> payoutTools = ContractUtil.convertPayoutTools(contractCreated, cntrctId);
             payoutToolDao.save(payoutTools);
 
-            log.info("Contract has been saved, eventId={}, contractId={}", eventId, contractId);
+            log.info("Contract has been saved, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
         });
     }
 }

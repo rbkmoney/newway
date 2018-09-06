@@ -10,6 +10,7 @@ import com.rbkmoney.newway.domain.enums.PayerType;
 import com.rbkmoney.newway.domain.enums.PaymentFlowType;
 import com.rbkmoney.newway.domain.enums.PaymentStatus;
 import com.rbkmoney.newway.domain.enums.PaymentToolType;
+import com.rbkmoney.newway.domain.enums.RecurrentTokenSource;
 import com.rbkmoney.newway.domain.enums.RiskScore;
 import com.rbkmoney.newway.domain.tables.records.PaymentRecord;
 
@@ -41,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payment extends TableImpl<PaymentRecord> {
 
-    private static final long serialVersionUID = -1550487756;
+    private static final long serialVersionUID = -1409619571;
 
     /**
      * The reference instance of <code>nw.payment</code>
@@ -270,6 +271,31 @@ public class Payment extends TableImpl<PaymentRecord> {
      * The column <code>nw.payment.current</code>.
      */
     public final TableField<PaymentRecord, Boolean> CURRENT = createField("current", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>nw.payment.is_recurring</code>.
+     */
+    public final TableField<PaymentRecord, Boolean> IS_RECURRING = createField("is_recurring", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+
+    /**
+     * The column <code>nw.payment.recurrent_intention_token_source</code>.
+     */
+    public final TableField<PaymentRecord, RecurrentTokenSource> RECURRENT_INTENTION_TOKEN_SOURCE = createField("recurrent_intention_token_source", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.RecurrentTokenSource.class), this, "");
+
+    /**
+     * The column <code>nw.payment.recurrent_intention_token_source_invoice_id</code>.
+     */
+    public final TableField<PaymentRecord, String> RECURRENT_INTENTION_TOKEN_SOURCE_INVOICE_ID = createField("recurrent_intention_token_source_invoice_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payment.recurrent_intention_token_source_payment_id</code>.
+     */
+    public final TableField<PaymentRecord, String> RECURRENT_INTENTION_TOKEN_SOURCE_PAYMENT_ID = createField("recurrent_intention_token_source_payment_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payment.recurrent_intention_token</code>.
+     */
+    public final TableField<PaymentRecord, String> RECURRENT_INTENTION_TOKEN = createField("recurrent_intention_token", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * Create a <code>nw.payment</code> table reference
