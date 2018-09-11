@@ -34,6 +34,11 @@ public class Sequences {
     public static final Sequence<Long> CASH_FLOW_ID_SEQ = new SequenceImpl<Long>("cash_flow_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>nw.category_id_seq</code>
+     */
+    public static final Sequence<Long> CATEGORY_ID_SEQ = new SequenceImpl<Long>("category_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>nw.contract_adjustment_id_seq</code>
      */
     public static final Sequence<Long> CONTRACT_ADJUSTMENT_ID_SEQ = new SequenceImpl<Long>("contract_adjustment_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

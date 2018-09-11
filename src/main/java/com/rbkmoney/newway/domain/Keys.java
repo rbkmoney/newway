@@ -6,6 +6,7 @@ package com.rbkmoney.newway.domain;
 
 import com.rbkmoney.newway.domain.tables.Adjustment;
 import com.rbkmoney.newway.domain.tables.CashFlow;
+import com.rbkmoney.newway.domain.tables.Category;
 import com.rbkmoney.newway.domain.tables.Contract;
 import com.rbkmoney.newway.domain.tables.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.Contractor;
@@ -20,6 +21,7 @@ import com.rbkmoney.newway.domain.tables.Refund;
 import com.rbkmoney.newway.domain.tables.Shop;
 import com.rbkmoney.newway.domain.tables.records.AdjustmentRecord;
 import com.rbkmoney.newway.domain.tables.records.CashFlowRecord;
+import com.rbkmoney.newway.domain.tables.records.CategoryRecord;
 import com.rbkmoney.newway.domain.tables.records.ContractAdjustmentRecord;
 import com.rbkmoney.newway.domain.tables.records.ContractRecord;
 import com.rbkmoney.newway.domain.tables.records.ContractorRecord;
@@ -61,6 +63,7 @@ public class Keys {
 
     public static final Identity<AdjustmentRecord, Long> IDENTITY_ADJUSTMENT = Identities0.IDENTITY_ADJUSTMENT;
     public static final Identity<CashFlowRecord, Long> IDENTITY_CASH_FLOW = Identities0.IDENTITY_CASH_FLOW;
+    public static final Identity<CategoryRecord, Long> IDENTITY_CATEGORY = Identities0.IDENTITY_CATEGORY;
     public static final Identity<ContractRecord, Long> IDENTITY_CONTRACT = Identities0.IDENTITY_CONTRACT;
     public static final Identity<ContractAdjustmentRecord, Long> IDENTITY_CONTRACT_ADJUSTMENT = Identities0.IDENTITY_CONTRACT_ADJUSTMENT;
     public static final Identity<ContractorRecord, Long> IDENTITY_CONTRACTOR = Identities0.IDENTITY_CONTRACTOR;
@@ -80,6 +83,7 @@ public class Keys {
 
     public static final UniqueKey<AdjustmentRecord> ADJUSTMENT_PKEY = UniqueKeys0.ADJUSTMENT_PKEY;
     public static final UniqueKey<CashFlowRecord> CASH_FLOW_PKEY = UniqueKeys0.CASH_FLOW_PKEY;
+    public static final UniqueKey<CategoryRecord> CATEGORY_PKEY = UniqueKeys0.CATEGORY_PKEY;
     public static final UniqueKey<ContractRecord> CONTRACT_PKEY = UniqueKeys0.CONTRACT_PKEY;
     public static final UniqueKey<ContractAdjustmentRecord> CONTRACT_ADJUSTMENT_PKEY = UniqueKeys0.CONTRACT_ADJUSTMENT_PKEY;
     public static final UniqueKey<ContractorRecord> CONTRACTOR_PKEY = UniqueKeys0.CONTRACTOR_PKEY;
@@ -109,6 +113,7 @@ public class Keys {
     private static class Identities0 extends AbstractKeys {
         public static Identity<AdjustmentRecord, Long> IDENTITY_ADJUSTMENT = createIdentity(Adjustment.ADJUSTMENT, Adjustment.ADJUSTMENT.ID);
         public static Identity<CashFlowRecord, Long> IDENTITY_CASH_FLOW = createIdentity(CashFlow.CASH_FLOW, CashFlow.CASH_FLOW.ID);
+        public static Identity<CategoryRecord, Long> IDENTITY_CATEGORY = createIdentity(Category.CATEGORY, Category.CATEGORY.ID);
         public static Identity<ContractRecord, Long> IDENTITY_CONTRACT = createIdentity(Contract.CONTRACT, Contract.CONTRACT.ID);
         public static Identity<ContractAdjustmentRecord, Long> IDENTITY_CONTRACT_ADJUSTMENT = createIdentity(ContractAdjustment.CONTRACT_ADJUSTMENT, ContractAdjustment.CONTRACT_ADJUSTMENT.ID);
         public static Identity<ContractorRecord, Long> IDENTITY_CONTRACTOR = createIdentity(Contractor.CONTRACTOR, Contractor.CONTRACTOR.ID);
@@ -126,6 +131,7 @@ public class Keys {
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<AdjustmentRecord> ADJUSTMENT_PKEY = createUniqueKey(Adjustment.ADJUSTMENT, "adjustment_pkey", Adjustment.ADJUSTMENT.ID);
         public static final UniqueKey<CashFlowRecord> CASH_FLOW_PKEY = createUniqueKey(CashFlow.CASH_FLOW, "cash_flow_pkey", CashFlow.CASH_FLOW.ID);
+        public static final UniqueKey<CategoryRecord> CATEGORY_PKEY = createUniqueKey(Category.CATEGORY, "category_pkey", Category.CATEGORY.ID);
         public static final UniqueKey<ContractRecord> CONTRACT_PKEY = createUniqueKey(Contract.CONTRACT, "contract_pkey", Contract.CONTRACT.ID);
         public static final UniqueKey<ContractAdjustmentRecord> CONTRACT_ADJUSTMENT_PKEY = createUniqueKey(ContractAdjustment.CONTRACT_ADJUSTMENT, "contract_adjustment_pkey", ContractAdjustment.CONTRACT_ADJUSTMENT.ID);
         public static final UniqueKey<ContractorRecord> CONTRACTOR_PKEY = createUniqueKey(Contractor.CONTRACTOR, "contractor_pkey", Contractor.CONTRACTOR.ID);
