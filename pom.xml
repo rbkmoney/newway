@@ -21,7 +21,7 @@
         <project.maintainer>Inal Arsanukaev &lt;i.arsanukaev@rbkmoney.com&gt;</project.maintainer>
         <shared.resources.version>0.2.1</shared.resources.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <postgresql.jdbc.version>9.4.1212</postgresql.jdbc.version>
+        <postgresql.jdbc.version>42.2.5</postgresql.jdbc.version>
         <dockerfile.base.service.tag>22c57470c4fc47161894f036b7cf9d70f42b75f5</dockerfile.base.service.tag>
         <server.port>8022</server.port>
         <db.url>jdbc:postgresql://localhost:5432/newway</db.url>
@@ -30,7 +30,6 @@
         <db.schema>nw</db.schema>
         <flyway.version>4.2.0</flyway.version>
         <damsel.version>1.249-4529702</damsel.version>
-        <jooq.version>3.11.4</jooq.version>
     </properties>
 
     <dependencies>
@@ -208,7 +207,7 @@
                             <pojosToString>true</pojosToString>
                         </generate>
                         <database>
-                            <name>org.jooq.meta.postgres.PostgresDatabase</name>
+                            <name>org.jooq.util.postgres.PostgresDatabase</name>
                             <includes>.*</includes>
                             <excludes>schema_version|.*func|get_adjustment.*|get_cashflow.*|get_payment.*|get_payout.*|get_refund.*</excludes>
                             <inputSchema>${db.schema}</inputSchema>
