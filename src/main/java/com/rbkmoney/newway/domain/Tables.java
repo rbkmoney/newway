@@ -6,6 +6,7 @@ package com.rbkmoney.newway.domain;
 
 import com.rbkmoney.newway.domain.tables.Adjustment;
 import com.rbkmoney.newway.domain.tables.CashFlow;
+import com.rbkmoney.newway.domain.tables.Category;
 import com.rbkmoney.newway.domain.tables.Contract;
 import com.rbkmoney.newway.domain.tables.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.Contractor;
@@ -44,6 +45,11 @@ public class Tables {
      * The table <code>nw.cash_flow</code>.
      */
     public static final CashFlow CASH_FLOW = com.rbkmoney.newway.domain.tables.CashFlow.CASH_FLOW;
+
+    /**
+     * The table <code>nw.category</code>.
+     */
+    public static final Category CATEGORY = com.rbkmoney.newway.domain.tables.Category.CATEGORY;
 
     /**
      * The table <code>nw.contract</code>.

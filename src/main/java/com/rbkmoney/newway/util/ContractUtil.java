@@ -58,7 +58,7 @@ public class ContractUtil {
             payoutTool.setPayoutToolInfoInternationalBankAddress(internationalBankAccount.getBankAddress());
             payoutTool.setPayoutToolInfoInternationalBankIban(internationalBankAccount.getIban());
             payoutTool.setPayoutToolInfoInternationalBankBic(internationalBankAccount.getBic());
-            payoutTool.setPayoutToolInfoInternationalBankLocalCode(internationalBankAccount.getLocalBankCode());
+           // payoutTool.setPayoutToolInfoInternationalBankLocalCode(internationalBankAccount.getLocalBankCode());
         }
         return payoutTool;
     }

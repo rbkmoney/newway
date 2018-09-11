@@ -6,6 +6,7 @@ package com.rbkmoney.newway.domain;
 
 import com.rbkmoney.newway.domain.tables.Adjustment;
 import com.rbkmoney.newway.domain.tables.CashFlow;
+import com.rbkmoney.newway.domain.tables.Category;
 import com.rbkmoney.newway.domain.tables.Contract;
 import com.rbkmoney.newway.domain.tables.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.Contractor;
@@ -44,7 +45,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Nw extends SchemaImpl {
 
-    private static final long serialVersionUID = 113080781;
+    private static final long serialVersionUID = -471624831;
 
     /**
      * The reference instance of <code>nw</code>
@@ -60,6 +61,11 @@ public class Nw extends SchemaImpl {
      * The table <code>nw.cash_flow</code>.
      */
     public final CashFlow CASH_FLOW = com.rbkmoney.newway.domain.tables.CashFlow.CASH_FLOW;
+
+    /**
+     * The table <code>nw.category</code>.
+     */
+    public final Category CATEGORY = com.rbkmoney.newway.domain.tables.Category.CATEGORY;
 
     /**
      * The table <code>nw.contract</code>.
@@ -148,6 +154,7 @@ public class Nw extends SchemaImpl {
         return Arrays.<Sequence<?>>asList(
             Sequences.ADJUSTMENT_ID_SEQ,
             Sequences.CASH_FLOW_ID_SEQ,
+            Sequences.CATEGORY_ID_SEQ,
             Sequences.CONTRACT_ADJUSTMENT_ID_SEQ,
             Sequences.CONTRACT_ID_SEQ,
             Sequences.CONTRACTOR_ID_SEQ,
@@ -173,6 +180,7 @@ public class Nw extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             Adjustment.ADJUSTMENT,
             CashFlow.CASH_FLOW,
+            Category.CATEGORY,
             Contract.CONTRACT,
             ContractAdjustment.CONTRACT_ADJUSTMENT,
             Contractor.CONTRACTOR,
