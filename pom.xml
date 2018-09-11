@@ -30,6 +30,7 @@
         <db.schema>nw</db.schema>
         <flyway.version>4.2.0</flyway.version>
         <damsel.version>1.249-4529702</damsel.version>
+        <jooq.version>3.11.4</jooq.version>
     </properties>
 
     <dependencies>
@@ -207,7 +208,7 @@
                             <pojosToString>true</pojosToString>
                         </generate>
                         <database>
-                            <name>org.jooq.util.postgres.PostgresDatabase</name>
+                            <name>org.jooq.meta.postgres.PostgresDatabase</name>
                             <includes>.*</includes>
                             <excludes>schema_version|.*func|get_adjustment.*|get_cashflow.*|get_payment.*|get_payout.*|get_refund.*</excludes>
                             <inputSchema>${db.schema}</inputSchema>

@@ -5,27 +5,28 @@ import com.rbkmoney.damsel.domain_config.RepositorySrv;
 import com.rbkmoney.newway.service.DominantService;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-@Component
+@Service
+@DependsOn("dbInitializer")
 public class DominantPoller {
 
     private final List<DominantHandler> handlers;
     private final RepositorySrv.Iface dominantClient;
-    private final int maxQuerySize;
+    private final int maxQuerySize = 10;
     private long after;
 
     public DominantPoller(List<DominantHandler> handlers, RepositorySrv.Iface dominantClient,
-                          DominantService dominantService, @Value("${dmt.polling.maxQuerySize}") int maxQuerySize) {
+                          DominantService dominantService) {
         this.handlers = handlers;
         this.dominantClient = dominantClient;
         this.after = dominantService.getLastVersionId().orElse(0L);
-        this.maxQuerySize = maxQuerySize;
     }
 
     @Scheduled(fixedDelay = 10000)
