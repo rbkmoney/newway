@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Category extends TableImpl<CategoryRecord> {
 
-    private static final long serialVersionUID = -1456182321;
+    private static final long serialVersionUID = 1729394875;
 
     /**
      * The reference instance of <code>nw.category</code>
@@ -65,6 +65,21 @@ public class Category extends TableImpl<CategoryRecord> {
      * The column <code>nw.category.category_id</code>.
      */
     public final TableField<CategoryRecord, Integer> CATEGORY_ID = createField("category_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>nw.category.name</code>.
+     */
+    public final TableField<CategoryRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
+     * The column <code>nw.category.description</code>.
+     */
+    public final TableField<CategoryRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
+     * The column <code>nw.category.type</code>.
+     */
+    public final TableField<CategoryRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>nw.category.wtime</code>.
