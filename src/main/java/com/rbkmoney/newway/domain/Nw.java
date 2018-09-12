@@ -5,11 +5,13 @@ package com.rbkmoney.newway.domain;
 
 
 import com.rbkmoney.newway.domain.tables.Adjustment;
+import com.rbkmoney.newway.domain.tables.Calendar;
 import com.rbkmoney.newway.domain.tables.CashFlow;
 import com.rbkmoney.newway.domain.tables.Category;
 import com.rbkmoney.newway.domain.tables.Contract;
 import com.rbkmoney.newway.domain.tables.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.Contractor;
+import com.rbkmoney.newway.domain.tables.Currency;
 import com.rbkmoney.newway.domain.tables.Invoice;
 import com.rbkmoney.newway.domain.tables.InvoiceCart;
 import com.rbkmoney.newway.domain.tables.Party;
@@ -17,8 +19,10 @@ import com.rbkmoney.newway.domain.tables.Payment;
 import com.rbkmoney.newway.domain.tables.Payout;
 import com.rbkmoney.newway.domain.tables.PayoutSummary;
 import com.rbkmoney.newway.domain.tables.PayoutTool;
+import com.rbkmoney.newway.domain.tables.Provider;
 import com.rbkmoney.newway.domain.tables.Refund;
 import com.rbkmoney.newway.domain.tables.Shop;
+import com.rbkmoney.newway.domain.tables.Terminal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +49,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Nw extends SchemaImpl {
 
-    private static final long serialVersionUID = -471624831;
+    private static final long serialVersionUID = -1745816537;
 
     /**
      * The reference instance of <code>nw</code>
@@ -56,6 +60,11 @@ public class Nw extends SchemaImpl {
      * The table <code>nw.adjustment</code>.
      */
     public final Adjustment ADJUSTMENT = com.rbkmoney.newway.domain.tables.Adjustment.ADJUSTMENT;
+
+    /**
+     * The table <code>nw.calendar</code>.
+     */
+    public final Calendar CALENDAR = com.rbkmoney.newway.domain.tables.Calendar.CALENDAR;
 
     /**
      * The table <code>nw.cash_flow</code>.
@@ -81,6 +90,11 @@ public class Nw extends SchemaImpl {
      * The table <code>nw.contractor</code>.
      */
     public final Contractor CONTRACTOR = com.rbkmoney.newway.domain.tables.Contractor.CONTRACTOR;
+
+    /**
+     * The table <code>nw.currency</code>.
+     */
+    public final Currency CURRENCY = com.rbkmoney.newway.domain.tables.Currency.CURRENCY;
 
     /**
      * The table <code>nw.invoice</code>.
@@ -118,6 +132,11 @@ public class Nw extends SchemaImpl {
     public final PayoutTool PAYOUT_TOOL = com.rbkmoney.newway.domain.tables.PayoutTool.PAYOUT_TOOL;
 
     /**
+     * The table <code>nw.provider</code>.
+     */
+    public final Provider PROVIDER = com.rbkmoney.newway.domain.tables.Provider.PROVIDER;
+
+    /**
      * The table <code>nw.refund</code>.
      */
     public final Refund REFUND = com.rbkmoney.newway.domain.tables.Refund.REFUND;
@@ -126,6 +145,11 @@ public class Nw extends SchemaImpl {
      * The table <code>nw.shop</code>.
      */
     public final Shop SHOP = com.rbkmoney.newway.domain.tables.Shop.SHOP;
+
+    /**
+     * The table <code>nw.terminal</code>.
+     */
+    public final Terminal TERMINAL = com.rbkmoney.newway.domain.tables.Terminal.TERMINAL;
 
     /**
      * No further instances allowed
@@ -153,11 +177,13 @@ public class Nw extends SchemaImpl {
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
             Sequences.ADJUSTMENT_ID_SEQ,
+            Sequences.CALENDAR_ID_SEQ,
             Sequences.CASH_FLOW_ID_SEQ,
             Sequences.CATEGORY_ID_SEQ,
             Sequences.CONTRACT_ADJUSTMENT_ID_SEQ,
             Sequences.CONTRACT_ID_SEQ,
             Sequences.CONTRACTOR_ID_SEQ,
+            Sequences.CURRENCY_ID_SEQ,
             Sequences.INVOICE_CART_ID_SEQ,
             Sequences.INVOICE_ID_SEQ,
             Sequences.PARTY_ID_SEQ,
@@ -165,8 +191,10 @@ public class Nw extends SchemaImpl {
             Sequences.PAYOUT_ID_SEQ,
             Sequences.PAYOUT_SUMMARY_ID_SEQ,
             Sequences.PAYOUT_TOOL_ID_SEQ,
+            Sequences.PROVIDER_ID_SEQ,
             Sequences.REFUND_ID_SEQ,
-            Sequences.SHOP_ID_SEQ);
+            Sequences.SHOP_ID_SEQ,
+            Sequences.TERMINAL_ID_SEQ);
     }
 
     @Override
@@ -179,11 +207,13 @@ public class Nw extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             Adjustment.ADJUSTMENT,
+            Calendar.CALENDAR,
             CashFlow.CASH_FLOW,
             Category.CATEGORY,
             Contract.CONTRACT,
             ContractAdjustment.CONTRACT_ADJUSTMENT,
             Contractor.CONTRACTOR,
+            Currency.CURRENCY,
             Invoice.INVOICE,
             InvoiceCart.INVOICE_CART,
             Party.PARTY,
@@ -191,7 +221,9 @@ public class Nw extends SchemaImpl {
             Payout.PAYOUT,
             PayoutSummary.PAYOUT_SUMMARY,
             PayoutTool.PAYOUT_TOOL,
+            Provider.PROVIDER,
             Refund.REFUND,
-            Shop.SHOP);
+            Shop.SHOP,
+            Terminal.TERMINAL);
     }
 }

@@ -1,6 +1,5 @@
 package com.rbkmoney.newway.poller.event_stock.impl.invoicing.payment;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rbkmoney.damsel.domain.ContactInfo;
 import com.rbkmoney.damsel.domain.CustomerPayer;
 import com.rbkmoney.damsel.domain.InvoicePayment;
@@ -43,8 +42,6 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
     private final PaymentDao paymentDao;
 
     private final CashFlowDao cashFlowDao;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final Filter filter;
 
@@ -101,7 +98,7 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
         } else if (invoicePayment.getStatus().isSetCaptured()) {
             payment.setStatusCapturedReason(invoicePayment.getStatus().getCaptured().getReason());
         } else if (invoicePayment.getStatus().isSetFailed()) {
-            payment.setStatusFailedFailure(JsonUtil.toJsonString(invoicePayment.getStatus().getFailed()));
+            payment.setStatusFailedFailure(JsonUtil.tBaseToJsonString(invoicePayment.getStatus().getFailed()));
         }
         payment.setAmount(invoicePayment.getCost().getAmount());
         payment.setCurrencyCode(invoicePayment.getCost().getCurrency().getSymbolicCode());

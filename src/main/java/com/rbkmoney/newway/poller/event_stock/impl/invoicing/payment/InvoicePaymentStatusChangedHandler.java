@@ -80,7 +80,7 @@ public class InvoicePaymentStatusChangedHandler extends AbstractInvoicingHandler
         } else if (invoicePaymentStatus.isSetFailed()) {
             paymentSource.setStatusCancelledReason(null);
             paymentSource.setStatusCapturedReason(null);
-            paymentSource.setStatusFailedFailure(JsonUtil.toJsonString(invoicePaymentStatus.getFailed()));
+            paymentSource.setStatusFailedFailure(JsonUtil.tBaseToJsonString(invoicePaymentStatus.getFailed()));
         }
 
         paymentDao.updateNotCurrent(invoiceId, paymentId);

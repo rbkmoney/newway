@@ -78,7 +78,7 @@ public class InvoicePaymentRefundStatusChangedHandler extends AbstractInvoicingH
         }
         refundSource.setStatus(status);
         if (invoicePaymentRefundStatus.isSetFailed()) {
-            refundSource.setStatusFailedFailure(JsonUtil.toJsonString(invoicePaymentRefundStatus.getFailed()));
+            refundSource.setStatusFailedFailure(JsonUtil.tBaseToJsonString(invoicePaymentRefundStatus.getFailed()));
         } else {
             refundSource.setStatusFailedFailure(null);
         }

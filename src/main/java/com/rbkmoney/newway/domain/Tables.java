@@ -5,11 +5,13 @@ package com.rbkmoney.newway.domain;
 
 
 import com.rbkmoney.newway.domain.tables.Adjustment;
+import com.rbkmoney.newway.domain.tables.Calendar;
 import com.rbkmoney.newway.domain.tables.CashFlow;
 import com.rbkmoney.newway.domain.tables.Category;
 import com.rbkmoney.newway.domain.tables.Contract;
 import com.rbkmoney.newway.domain.tables.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.Contractor;
+import com.rbkmoney.newway.domain.tables.Currency;
 import com.rbkmoney.newway.domain.tables.Invoice;
 import com.rbkmoney.newway.domain.tables.InvoiceCart;
 import com.rbkmoney.newway.domain.tables.Party;
@@ -17,8 +19,10 @@ import com.rbkmoney.newway.domain.tables.Payment;
 import com.rbkmoney.newway.domain.tables.Payout;
 import com.rbkmoney.newway.domain.tables.PayoutSummary;
 import com.rbkmoney.newway.domain.tables.PayoutTool;
+import com.rbkmoney.newway.domain.tables.Provider;
 import com.rbkmoney.newway.domain.tables.Refund;
 import com.rbkmoney.newway.domain.tables.Shop;
+import com.rbkmoney.newway.domain.tables.Terminal;
 
 import javax.annotation.Generated;
 
@@ -40,6 +44,11 @@ public class Tables {
      * The table <code>nw.adjustment</code>.
      */
     public static final Adjustment ADJUSTMENT = com.rbkmoney.newway.domain.tables.Adjustment.ADJUSTMENT;
+
+    /**
+     * The table <code>nw.calendar</code>.
+     */
+    public static final Calendar CALENDAR = com.rbkmoney.newway.domain.tables.Calendar.CALENDAR;
 
     /**
      * The table <code>nw.cash_flow</code>.
@@ -65,6 +74,11 @@ public class Tables {
      * The table <code>nw.contractor</code>.
      */
     public static final Contractor CONTRACTOR = com.rbkmoney.newway.domain.tables.Contractor.CONTRACTOR;
+
+    /**
+     * The table <code>nw.currency</code>.
+     */
+    public static final Currency CURRENCY = com.rbkmoney.newway.domain.tables.Currency.CURRENCY;
 
     /**
      * The table <code>nw.invoice</code>.
@@ -102,6 +116,11 @@ public class Tables {
     public static final PayoutTool PAYOUT_TOOL = com.rbkmoney.newway.domain.tables.PayoutTool.PAYOUT_TOOL;
 
     /**
+     * The table <code>nw.provider</code>.
+     */
+    public static final Provider PROVIDER = com.rbkmoney.newway.domain.tables.Provider.PROVIDER;
+
+    /**
      * The table <code>nw.refund</code>.
      */
     public static final Refund REFUND = com.rbkmoney.newway.domain.tables.Refund.REFUND;
@@ -110,4 +129,9 @@ public class Tables {
      * The table <code>nw.shop</code>.
      */
     public static final Shop SHOP = com.rbkmoney.newway.domain.tables.Shop.SHOP;
+
+    /**
+     * The table <code>nw.terminal</code>.
+     */
+    public static final Terminal TERMINAL = com.rbkmoney.newway.domain.tables.Terminal.TERMINAL;
 }

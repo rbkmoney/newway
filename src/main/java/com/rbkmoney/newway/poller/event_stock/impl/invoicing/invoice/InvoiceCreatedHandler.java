@@ -1,8 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.invoicing.invoice;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rbkmoney.damsel.domain.Invoice;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
@@ -37,8 +35,6 @@ public class InvoiceCreatedHandler extends AbstractInvoicingHandler {
     private final InvoiceDao invoiceDao;
 
     private final InvoiceCartDao invoiceCartDao;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final Filter filter;
 
@@ -94,12 +90,8 @@ public class InvoiceCreatedHandler extends AbstractInvoicingHandler {
                 ic.setAmount(il.getPrice().getAmount());
                 ic.setCurrencyCode(il.getPrice().getCurrency().getSymbolicCode());
                 Map<String, JsonNode> jsonNodeMap = il.getMetadata().entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> JsonUtil.toJsonNode(e.getValue())));
-                try {
-                    ic.setMetadataJson(objectMapper.writeValueAsString(jsonNodeMap));
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException("Couldn't convert map to json string: " + jsonNodeMap, e);
-                }
+                        .collect(Collectors.toMap(Map.Entry::getKey, e -> JsonUtil.tBaseToJsonNode(e.getValue())));
+                ic.setMetadataJson(JsonUtil.objectToJsonString(jsonNodeMap));
                 return ic;
             }).collect(Collectors.toList());
             invoiceCartDao.save(invoiceCarts);
