@@ -23,11 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Category implements Serializable {
 
-    private static final long serialVersionUID = 4913789;
+    private static final long serialVersionUID = -1860168428;
 
     private Long          id;
     private Long          versionId;
     private Integer       categoryId;
+    private String        name;
+    private String        description;
+    private String        type;
     private LocalDateTime wtime;
     private Boolean       current;
 
@@ -37,6 +40,9 @@ public class Category implements Serializable {
         this.id = value.id;
         this.versionId = value.versionId;
         this.categoryId = value.categoryId;
+        this.name = value.name;
+        this.description = value.description;
+        this.type = value.type;
         this.wtime = value.wtime;
         this.current = value.current;
     }
@@ -45,12 +51,18 @@ public class Category implements Serializable {
         Long          id,
         Long          versionId,
         Integer       categoryId,
+        String        name,
+        String        description,
+        String        type,
         LocalDateTime wtime,
         Boolean       current
     ) {
         this.id = id;
         this.versionId = versionId;
         this.categoryId = categoryId;
+        this.name = name;
+        this.description = description;
+        this.type = type;
         this.wtime = wtime;
         this.current = current;
     }
@@ -77,6 +89,30 @@ public class Category implements Serializable {
 
     public void setCategoryId(Integer categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public LocalDateTime getWtime() {
@@ -122,6 +158,24 @@ public class Category implements Serializable {
         }
         else if (!categoryId.equals(other.categoryId))
             return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        }
+        else if (!name.equals(other.name))
+            return false;
+        if (description == null) {
+            if (other.description != null)
+                return false;
+        }
+        else if (!description.equals(other.description))
+            return false;
+        if (type == null) {
+            if (other.type != null)
+                return false;
+        }
+        else if (!type.equals(other.type))
+            return false;
         if (wtime == null) {
             if (other.wtime != null)
                 return false;
@@ -144,6 +198,9 @@ public class Category implements Serializable {
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.versionId == null) ? 0 : this.versionId.hashCode());
         result = prime * result + ((this.categoryId == null) ? 0 : this.categoryId.hashCode());
+        result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
+        result = prime * result + ((this.description == null) ? 0 : this.description.hashCode());
+        result = prime * result + ((this.type == null) ? 0 : this.type.hashCode());
         result = prime * result + ((this.wtime == null) ? 0 : this.wtime.hashCode());
         result = prime * result + ((this.current == null) ? 0 : this.current.hashCode());
         return result;
@@ -156,6 +213,9 @@ public class Category implements Serializable {
         sb.append(id);
         sb.append(", ").append(versionId);
         sb.append(", ").append(categoryId);
+        sb.append(", ").append(name);
+        sb.append(", ").append(description);
+        sb.append(", ").append(type);
         sb.append(", ").append(wtime);
         sb.append(", ").append(current);
 

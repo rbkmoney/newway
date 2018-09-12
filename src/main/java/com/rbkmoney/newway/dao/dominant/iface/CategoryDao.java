@@ -9,7 +9,5 @@ public interface CategoryDao extends GenericDao {
 
     Long save(Category category) throws DaoException;
 
-    Category get(Integer categoryId) throws DaoException;
-
     void updateNotCurrent(Integer categoryId) throws DaoException;
 }
