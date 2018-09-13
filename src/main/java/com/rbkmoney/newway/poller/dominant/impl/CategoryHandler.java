@@ -28,7 +28,7 @@ public class CategoryHandler extends AbstractDominantHandler<CategoryObject, Cat
 
     @Override
     protected Integer getObjectRefId() {
-        return getDomainObject().getCategory().getRef().getId();
+        return getObject().getRef().getId();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class CategoryHandler extends AbstractDominantHandler<CategoryObject, Cat
     public Category convertToDatabaseObject(CategoryObject categoryObject, Long versionId, boolean current) {
         Category category = new Category();
         category.setVersionId(versionId);
-        category.setCategoryRefId(categoryObject.getRef().getId());
+        category.setCategoryRefId(getObjectRefId());
         com.rbkmoney.damsel.domain.Category data = categoryObject.getData();
         category.setName(data.getName());
         category.setDescription(data.getDescription());

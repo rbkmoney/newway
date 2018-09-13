@@ -10,15 +10,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class CurrencyHandler extends AbstractDominantHandler<CurrencyObject, Currency, String> {
 
-    private final CurrencyDaoImpl CurrencyDao;
+    private final CurrencyDaoImpl currencyDao;
 
-    public CurrencyHandler(CurrencyDaoImpl CurrencyDao) {
-        this.CurrencyDao = CurrencyDao;
+    public CurrencyHandler(CurrencyDaoImpl currencyDao) {
+        this.currencyDao = currencyDao;
     }
 
     @Override
     protected DomainObjectDao<Currency, String> getDomainObjectDao() {
-        return CurrencyDao;
+        return currencyDao;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class CurrencyHandler extends AbstractDominantHandler<CurrencyObject, Cur
 
     @Override
     protected String getObjectRefId() {
-        return getDomainObject().getCurrency().getRef().getSymbolicCode();
+        return getObject().getRef().getSymbolicCode();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class CurrencyHandler extends AbstractDominantHandler<CurrencyObject, Cur
     public Currency convertToDatabaseObject(CurrencyObject currencyObject, Long versionId, boolean current) {
         Currency currency = new Currency();
         currency.setVersionId(versionId);
-        currency.setCurrencyRefId(currencyObject.getRef().getSymbolicCode());
+        currency.setCurrencyRefId(getObjectRefId());
         com.rbkmoney.damsel.domain.Currency data = currencyObject.getData();
         currency.setName(data.getName());
         currency.setSymbolicCode(data.getSymbolicCode());

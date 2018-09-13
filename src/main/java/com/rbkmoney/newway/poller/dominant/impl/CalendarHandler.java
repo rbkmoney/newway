@@ -35,19 +35,19 @@ public class CalendarHandler extends AbstractDominantHandler<CalendarObject, Cal
 
     @Override
     protected Integer getObjectRefId() {
-        return getDomainObject().getCategory().getRef().getId();
+        return getObject().getRef().getId();
     }
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetCategory();
+        return getDomainObject().isSetCalendar();
     }
 
     @Override
     public Calendar convertToDatabaseObject(CalendarObject calendarObject, Long versionId, boolean current) {
         Calendar calendar = new Calendar();
         calendar.setVersionId(versionId);
-        calendar.setCalendarRefId(calendarObject.getRef().getId());
+        calendar.setCalendarRefId(getObjectRefId());
         com.rbkmoney.damsel.domain.Calendar data = calendarObject.getData();
         calendar.setName(data.getName());
         calendar.setDescription(data.getDescription());

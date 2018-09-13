@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Terminal extends TableImpl<TerminalRecord> {
 
-    private static final long serialVersionUID = 1228013533;
+    private static final long serialVersionUID = 727001877;
 
     /**
      * The reference instance of <code>nw.terminal</code>
@@ -84,7 +84,7 @@ public class Terminal extends TableImpl<TerminalRecord> {
     /**
      * The column <code>nw.terminal.risk_coverage</code>.
      */
-    public final TableField<TerminalRecord, Integer> RISK_COVERAGE = createField("risk_coverage", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<TerminalRecord, String> RISK_COVERAGE = createField("risk_coverage", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
      * The column <code>nw.terminal.terms_json</code>.

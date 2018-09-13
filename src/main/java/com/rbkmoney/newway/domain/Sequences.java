@@ -64,6 +64,11 @@ public class Sequences {
     public static final Sequence<Long> CURRENCY_ID_SEQ = new SequenceImpl<Long>("currency_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>nw.inspector_id_seq</code>
+     */
+    public static final Sequence<Long> INSPECTOR_ID_SEQ = new SequenceImpl<Long>("inspector_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>nw.invoice_cart_id_seq</code>
      */
     public static final Sequence<Long> INVOICE_CART_ID_SEQ = new SequenceImpl<Long>("invoice_cart_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -84,9 +89,24 @@ public class Sequences {
     public static final Sequence<Long> PAYMENT_ID_SEQ = new SequenceImpl<Long>("payment_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>nw.payment_institution_id_seq</code>
+     */
+    public static final Sequence<Long> PAYMENT_INSTITUTION_ID_SEQ = new SequenceImpl<Long>("payment_institution_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>nw.payment_method_id_seq</code>
+     */
+    public static final Sequence<Long> PAYMENT_METHOD_ID_SEQ = new SequenceImpl<Long>("payment_method_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>nw.payout_id_seq</code>
      */
     public static final Sequence<Long> PAYOUT_ID_SEQ = new SequenceImpl<Long>("payout_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>nw.payout_method_id_seq</code>
+     */
+    public static final Sequence<Long> PAYOUT_METHOD_ID_SEQ = new SequenceImpl<Long>("payout_method_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>nw.payout_summary_id_seq</code>
@@ -104,6 +124,11 @@ public class Sequences {
     public static final Sequence<Long> PROVIDER_ID_SEQ = new SequenceImpl<Long>("provider_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>nw.proxy_id_seq</code>
+     */
+    public static final Sequence<Long> PROXY_ID_SEQ = new SequenceImpl<Long>("proxy_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>nw.refund_id_seq</code>
      */
     public static final Sequence<Long> REFUND_ID_SEQ = new SequenceImpl<Long>("refund_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -112,6 +137,11 @@ public class Sequences {
      * The sequence <code>nw.shop_id_seq</code>
      */
     public static final Sequence<Long> SHOP_ID_SEQ = new SequenceImpl<Long>("shop_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>nw.term_set_hierarchy_id_seq</code>
+     */
+    public static final Sequence<Long> TERM_SET_HIERARCHY_ID_SEQ = new SequenceImpl<Long>("term_set_hierarchy_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>nw.terminal_id_seq</code>
