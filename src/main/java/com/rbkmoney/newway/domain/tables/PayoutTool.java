@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PayoutTool extends TableImpl<PayoutToolRecord> {
 
-    private static final long serialVersionUID = -1082020398;
+    private static final long serialVersionUID = -1419475909;
 
     /**
      * The reference instance of <code>nw.payout_tool</code>
@@ -134,6 +134,11 @@ public class PayoutTool extends TableImpl<PayoutToolRecord> {
     public final TableField<PayoutToolRecord, String> PAYOUT_TOOL_INFO_INTERNATIONAL_BANK_LOCAL_CODE = createField("payout_tool_info_international_bank_local_code", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
+     * The column <code>nw.payout_tool.payout_tool_info_international_bank_number</code>.
+     */
+    public final TableField<PayoutToolRecord, String> PAYOUT_TOOL_INFO_INTERNATIONAL_BANK_NUMBER = createField("payout_tool_info_international_bank_number", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
      * The column <code>nw.payout_tool.payout_tool_info_international_bank_aba_rtn</code>.
      */
     public final TableField<PayoutToolRecord, String> PAYOUT_TOOL_INFO_INTERNATIONAL_BANK_ABA_RTN = createField("payout_tool_info_international_bank_aba_rtn", org.jooq.impl.SQLDataType.VARCHAR, this, "");
@@ -167,6 +172,11 @@ public class PayoutTool extends TableImpl<PayoutToolRecord> {
      * The column <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_iban</code>.
      */
     public final TableField<PayoutToolRecord, String> PAYOUT_TOOL_INFO_INTERNATIONAL_CORRESPONDENT_BANK_IBAN = createField("payout_tool_info_international_correspondent_bank_iban", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_number</code>.
+     */
+    public final TableField<PayoutToolRecord, String> PAYOUT_TOOL_INFO_INTERNATIONAL_CORRESPONDENT_BANK_NUMBER = createField("payout_tool_info_international_correspondent_bank_number", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_aba_rtn</code>.

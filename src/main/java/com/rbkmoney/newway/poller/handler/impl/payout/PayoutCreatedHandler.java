@@ -133,18 +133,16 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
                 InternationalPayoutAccount internationalPayoutAccount = payoutAccount.getInternationalPayoutAccount();
                 InternationalBankAccount bankAccount = internationalPayoutAccount.getBankAccount();
                 payout.setTypeAccountInternationalAccountHolder(bankAccount.getAccountHolder());
-                payout.setTypeAccountInternationalBankName(bankAccount.getBankName());
-                payout.setTypeAccountInternationalBankAddress(bankAccount.getBankAddress());
                 payout.setTypeAccountInternationalIban(bankAccount.getIban());
-                payout.setTypeAccountInternationalBic(bankAccount.getBic());
+                payout.setTypeAccountInternationalBankNumber(bankAccount.getNumber());
 
                 if (bankAccount.isSetBank()) {
                     InternationalBankDetails bankDetails = bankAccount.getBank();
                     payout.setTypeAccountInternationalBankName(bankDetails.getName());
                     payout.setTypeAccountInternationalBankAddress(bankDetails.getAddress());
                     payout.setTypeAccountInternationalBic(bankDetails.getBic());
-                    payout.setTypeAccountInternationalAbaRtn(bankDetails.getAbaRtn());
-                    payout.setTypeAccountInternationalCountryCode(
+                    payout.setTypeAccountInternationalBankAbaRtn(bankDetails.getAbaRtn());
+                    payout.setTypeAccountInternationalBankCountryCode(
                             Optional.ofNullable(bankDetails.getCountry())
                                     .map(country -> country.toString())
                                     .orElse(null)
@@ -154,10 +152,8 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
                 if (bankAccount.isSetCorrespondentAccount()) {
                     InternationalBankAccount correspondentBankAccount = bankAccount.getCorrespondentAccount();
                     payout.setTypeAccountInternationalCorrespondentBankAccount(correspondentBankAccount.getAccountHolder());
-                    payout.setTypeAccountInternationalCorrespondentBankName(correspondentBankAccount.getBankName());
-                    payout.setTypeAccountInternationalCorrespondentBankAddress(correspondentBankAccount.getBankAddress());
                     payout.setTypeAccountInternationalCorrespondentBankIban(correspondentBankAccount.getIban());
-                    payout.setTypeAccountInternationalCorrespondentBankBic(correspondentBankAccount.getBic());
+                    payout.setTypeAccountInternationalCorrespondentBankNumber(correspondentBankAccount.getNumber());
 
                     if (correspondentBankAccount.isSetBank()) {
                         InternationalBankDetails correspondentBankDetails = correspondentBankAccount.getBank();

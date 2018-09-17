@@ -54,11 +54,9 @@ public class ContractUtil {
             payoutTool.setPayoutToolInfoRussianBankBik(russianBankAccount.getBankBik());
         } else if (pt.getPayoutToolInfo().isSetInternationalBankAccount()) {
             InternationalBankAccount internationalBankAccount = pt.getPayoutToolInfo().getInternationalBankAccount();
+            payoutTool.setPayoutToolInfoInternationalBankNumber(internationalBankAccount.getNumber());
             payoutTool.setPayoutToolInfoInternationalBankAccountHolder(internationalBankAccount.getAccountHolder());
-            payoutTool.setPayoutToolInfoInternationalBankName(internationalBankAccount.getBankName());
-            payoutTool.setPayoutToolInfoInternationalBankAddress(internationalBankAccount.getBankAddress());
             payoutTool.setPayoutToolInfoInternationalBankIban(internationalBankAccount.getIban());
-            payoutTool.setPayoutToolInfoInternationalBankBic(internationalBankAccount.getBic());
 
             if (internationalBankAccount.isSetBank()) {
                 InternationalBankDetails bankDetails = internationalBankAccount.getBank();
@@ -74,11 +72,9 @@ public class ContractUtil {
             }
             if (internationalBankAccount.isSetCorrespondentAccount()) {
                 InternationalBankAccount correspondentBankAccount = internationalBankAccount.getCorrespondentAccount();
+                payoutTool.setPayoutToolInfoInternationalCorrespondentBankNumber(correspondentBankAccount.getNumber());
                 payoutTool.setPayoutToolInfoInternationalCorrespondentBankAccount(correspondentBankAccount.getAccountHolder());
-                payoutTool.setPayoutToolInfoInternationalCorrespondentBankName(correspondentBankAccount.getBankName());
-                payoutTool.setPayoutToolInfoInternationalCorrespondentBankAddress(correspondentBankAccount.getBankAddress());
                 payoutTool.setPayoutToolInfoInternationalCorrespondentBankIban(correspondentBankAccount.getIban());
-                payoutTool.setPayoutToolInfoInternationalCorrespondentBankBic(correspondentBankAccount.getBic());
 
                 if (correspondentBankAccount.isSetBank()) {
                     InternationalBankDetails correspondentBankDetails = correspondentBankAccount.getBank();

@@ -32,7 +32,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PayoutRecord extends UpdatableRecordImpl<PayoutRecord> {
 
-    private static final long serialVersionUID = -2136401262;
+    private static final long serialVersionUID = -437996189;
 
     /**
      * Setter for <code>nw.payout.id</code>.
@@ -707,129 +707,157 @@ public class PayoutRecord extends UpdatableRecordImpl<PayoutRecord> {
     }
 
     /**
-     * Setter for <code>nw.payout.type_account_international_aba_rtn</code>.
+     * Setter for <code>nw.payout.type_account_international_bank_number</code>.
      */
-    public void setTypeAccountInternationalAbaRtn(String value) {
+    public void setTypeAccountInternationalBankNumber(String value) {
         set(48, value);
     }
 
     /**
-     * Getter for <code>nw.payout.type_account_international_aba_rtn</code>.
+     * Getter for <code>nw.payout.type_account_international_bank_number</code>.
      */
-    public String getTypeAccountInternationalAbaRtn() {
+    public String getTypeAccountInternationalBankNumber() {
         return (String) get(48);
     }
 
     /**
-     * Setter for <code>nw.payout.type_account_international_country_code</code>.
+     * Setter for <code>nw.payout.type_account_international_bank_aba_rtn</code>.
      */
-    public void setTypeAccountInternationalCountryCode(String value) {
+    public void setTypeAccountInternationalBankAbaRtn(String value) {
         set(49, value);
     }
 
     /**
-     * Getter for <code>nw.payout.type_account_international_country_code</code>.
+     * Getter for <code>nw.payout.type_account_international_bank_aba_rtn</code>.
      */
-    public String getTypeAccountInternationalCountryCode() {
+    public String getTypeAccountInternationalBankAbaRtn() {
         return (String) get(49);
+    }
+
+    /**
+     * Setter for <code>nw.payout.type_account_international_bank_country_code</code>.
+     */
+    public void setTypeAccountInternationalBankCountryCode(String value) {
+        set(50, value);
+    }
+
+    /**
+     * Getter for <code>nw.payout.type_account_international_bank_country_code</code>.
+     */
+    public String getTypeAccountInternationalBankCountryCode() {
+        return (String) get(50);
+    }
+
+    /**
+     * Setter for <code>nw.payout.type_account_international_correspondent_bank_number</code>.
+     */
+    public void setTypeAccountInternationalCorrespondentBankNumber(String value) {
+        set(51, value);
+    }
+
+    /**
+     * Getter for <code>nw.payout.type_account_international_correspondent_bank_number</code>.
+     */
+    public String getTypeAccountInternationalCorrespondentBankNumber() {
+        return (String) get(51);
     }
 
     /**
      * Setter for <code>nw.payout.type_account_international_correspondent_bank_account</code>.
      */
     public void setTypeAccountInternationalCorrespondentBankAccount(String value) {
-        set(50, value);
+        set(52, value);
     }
 
     /**
      * Getter for <code>nw.payout.type_account_international_correspondent_bank_account</code>.
      */
     public String getTypeAccountInternationalCorrespondentBankAccount() {
-        return (String) get(50);
+        return (String) get(52);
     }
 
     /**
      * Setter for <code>nw.payout.type_account_international_correspondent_bank_name</code>.
      */
     public void setTypeAccountInternationalCorrespondentBankName(String value) {
-        set(51, value);
+        set(53, value);
     }
 
     /**
      * Getter for <code>nw.payout.type_account_international_correspondent_bank_name</code>.
      */
     public String getTypeAccountInternationalCorrespondentBankName() {
-        return (String) get(51);
+        return (String) get(53);
     }
 
     /**
      * Setter for <code>nw.payout.type_account_international_correspondent_bank_address</code>.
      */
     public void setTypeAccountInternationalCorrespondentBankAddress(String value) {
-        set(52, value);
+        set(54, value);
     }
 
     /**
      * Getter for <code>nw.payout.type_account_international_correspondent_bank_address</code>.
      */
     public String getTypeAccountInternationalCorrespondentBankAddress() {
-        return (String) get(52);
+        return (String) get(54);
     }
 
     /**
      * Setter for <code>nw.payout.type_account_international_correspondent_bank_bic</code>.
      */
     public void setTypeAccountInternationalCorrespondentBankBic(String value) {
-        set(53, value);
+        set(55, value);
     }
 
     /**
      * Getter for <code>nw.payout.type_account_international_correspondent_bank_bic</code>.
      */
     public String getTypeAccountInternationalCorrespondentBankBic() {
-        return (String) get(53);
+        return (String) get(55);
     }
 
     /**
      * Setter for <code>nw.payout.type_account_international_correspondent_bank_iban</code>.
      */
     public void setTypeAccountInternationalCorrespondentBankIban(String value) {
-        set(54, value);
+        set(56, value);
     }
 
     /**
      * Getter for <code>nw.payout.type_account_international_correspondent_bank_iban</code>.
      */
     public String getTypeAccountInternationalCorrespondentBankIban() {
-        return (String) get(54);
+        return (String) get(56);
     }
 
     /**
      * Setter for <code>nw.payout.type_account_international_correspondent_bank_aba_rtn</code>.
      */
     public void setTypeAccountInternationalCorrespondentBankAbaRtn(String value) {
-        set(55, value);
+        set(57, value);
     }
 
     /**
      * Getter for <code>nw.payout.type_account_international_correspondent_bank_aba_rtn</code>.
      */
     public String getTypeAccountInternationalCorrespondentBankAbaRtn() {
-        return (String) get(55);
+        return (String) get(57);
     }
 
     /**
      * Setter for <code>nw.payout.type_account_international_correspondent_bank_country_code</code>.
      */
     public void setTypeAccountInternationalCorrespondentBankCountryCode(String value) {
-        set(56, value);
+        set(58, value);
     }
 
     /**
      * Getter for <code>nw.payout.type_account_international_correspondent_bank_country_code</code>.
      */
     public String getTypeAccountInternationalCorrespondentBankCountryCode() {
-        return (String) get(56);
+        return (String) get(58);
     }
 
     // -------------------------------------------------------------------------
@@ -858,7 +886,7 @@ public class PayoutRecord extends UpdatableRecordImpl<PayoutRecord> {
     /**
      * Create a detached, initialised PayoutRecord
      */
-    public PayoutRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String payoutId, String partyId, String shopId, String contractId, LocalDateTime createdAt, PayoutStatus status, PayoutPaidStatusDetails statusPaidDetails, String statusPaidDetailsCardProviderName, String statusPaidDetailsCardProviderTransactionId, String statusCancelledUserInfoId, UserType statusCancelledUserInfoType, String statusCancelledDetails, String statusConfirmedUserInfoId, UserType statusConfirmedUserInfoType, PayoutType type, String typeCardToken, String typeCardPaymentSystem, String typeCardBin, String typeCardMaskedPan, String typeCardTokenProvider, PayoutAccountType typeAccountType, String typeAccountRussianAccount, String typeAccountRussianBankName, String typeAccountRussianBankPostAccount, String typeAccountRussianBankBik, String typeAccountRussianInn, String typeAccountInternationalAccountHolder, String typeAccountInternationalBankName, String typeAccountInternationalBankAddress, String typeAccountInternationalIban, String typeAccountInternationalBic, String typeAccountInternationalLocalBankCode, String typeAccountInternationalLegalEntityLegalName, String typeAccountInternationalLegalEntityTradingName, String typeAccountInternationalLegalEntityRegisteredAddress, String typeAccountInternationalLegalEntityActualAddress, String typeAccountInternationalLegalEntityRegisteredNumber, String typeAccountPurpose, LocalDateTime typeAccountLegalAgreementSignedAt, String typeAccountLegalAgreementId, LocalDateTime typeAccountLegalAgreementValidUntil, String initiatorId, UserType initiatorType, LocalDateTime wtime, Boolean current, String typeAccountInternationalAbaRtn, String typeAccountInternationalCountryCode, String typeAccountInternationalCorrespondentBankAccount, String typeAccountInternationalCorrespondentBankName, String typeAccountInternationalCorrespondentBankAddress, String typeAccountInternationalCorrespondentBankBic, String typeAccountInternationalCorrespondentBankIban, String typeAccountInternationalCorrespondentBankAbaRtn, String typeAccountInternationalCorrespondentBankCountryCode) {
+    public PayoutRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String payoutId, String partyId, String shopId, String contractId, LocalDateTime createdAt, PayoutStatus status, PayoutPaidStatusDetails statusPaidDetails, String statusPaidDetailsCardProviderName, String statusPaidDetailsCardProviderTransactionId, String statusCancelledUserInfoId, UserType statusCancelledUserInfoType, String statusCancelledDetails, String statusConfirmedUserInfoId, UserType statusConfirmedUserInfoType, PayoutType type, String typeCardToken, String typeCardPaymentSystem, String typeCardBin, String typeCardMaskedPan, String typeCardTokenProvider, PayoutAccountType typeAccountType, String typeAccountRussianAccount, String typeAccountRussianBankName, String typeAccountRussianBankPostAccount, String typeAccountRussianBankBik, String typeAccountRussianInn, String typeAccountInternationalAccountHolder, String typeAccountInternationalBankName, String typeAccountInternationalBankAddress, String typeAccountInternationalIban, String typeAccountInternationalBic, String typeAccountInternationalLocalBankCode, String typeAccountInternationalLegalEntityLegalName, String typeAccountInternationalLegalEntityTradingName, String typeAccountInternationalLegalEntityRegisteredAddress, String typeAccountInternationalLegalEntityActualAddress, String typeAccountInternationalLegalEntityRegisteredNumber, String typeAccountPurpose, LocalDateTime typeAccountLegalAgreementSignedAt, String typeAccountLegalAgreementId, LocalDateTime typeAccountLegalAgreementValidUntil, String initiatorId, UserType initiatorType, LocalDateTime wtime, Boolean current, String typeAccountInternationalBankNumber, String typeAccountInternationalBankAbaRtn, String typeAccountInternationalBankCountryCode, String typeAccountInternationalCorrespondentBankNumber, String typeAccountInternationalCorrespondentBankAccount, String typeAccountInternationalCorrespondentBankName, String typeAccountInternationalCorrespondentBankAddress, String typeAccountInternationalCorrespondentBankBic, String typeAccountInternationalCorrespondentBankIban, String typeAccountInternationalCorrespondentBankAbaRtn, String typeAccountInternationalCorrespondentBankCountryCode) {
         super(Payout.PAYOUT);
 
         set(0, id);
@@ -909,14 +937,16 @@ public class PayoutRecord extends UpdatableRecordImpl<PayoutRecord> {
         set(45, initiatorType);
         set(46, wtime);
         set(47, current);
-        set(48, typeAccountInternationalAbaRtn);
-        set(49, typeAccountInternationalCountryCode);
-        set(50, typeAccountInternationalCorrespondentBankAccount);
-        set(51, typeAccountInternationalCorrespondentBankName);
-        set(52, typeAccountInternationalCorrespondentBankAddress);
-        set(53, typeAccountInternationalCorrespondentBankBic);
-        set(54, typeAccountInternationalCorrespondentBankIban);
-        set(55, typeAccountInternationalCorrespondentBankAbaRtn);
-        set(56, typeAccountInternationalCorrespondentBankCountryCode);
+        set(48, typeAccountInternationalBankNumber);
+        set(49, typeAccountInternationalBankAbaRtn);
+        set(50, typeAccountInternationalBankCountryCode);
+        set(51, typeAccountInternationalCorrespondentBankNumber);
+        set(52, typeAccountInternationalCorrespondentBankAccount);
+        set(53, typeAccountInternationalCorrespondentBankName);
+        set(54, typeAccountInternationalCorrespondentBankAddress);
+        set(55, typeAccountInternationalCorrespondentBankBic);
+        set(56, typeAccountInternationalCorrespondentBankIban);
+        set(57, typeAccountInternationalCorrespondentBankAbaRtn);
+        set(58, typeAccountInternationalCorrespondentBankCountryCode);
     }
 }

@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PayoutToolRecord extends UpdatableRecordImpl<PayoutToolRecord> {
 
-    private static final long serialVersionUID = -561322411;
+    private static final long serialVersionUID = 54218766;
 
     /**
      * Setter for <code>nw.payout_tool.id</code>.
@@ -255,129 +255,157 @@ public class PayoutToolRecord extends UpdatableRecordImpl<PayoutToolRecord> {
     }
 
     /**
+     * Setter for <code>nw.payout_tool.payout_tool_info_international_bank_number</code>.
+     */
+    public void setPayoutToolInfoInternationalBankNumber(String value) {
+        set(16, value);
+    }
+
+    /**
+     * Getter for <code>nw.payout_tool.payout_tool_info_international_bank_number</code>.
+     */
+    public String getPayoutToolInfoInternationalBankNumber() {
+        return (String) get(16);
+    }
+
+    /**
      * Setter for <code>nw.payout_tool.payout_tool_info_international_bank_aba_rtn</code>.
      */
     public void setPayoutToolInfoInternationalBankAbaRtn(String value) {
-        set(16, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>nw.payout_tool.payout_tool_info_international_bank_aba_rtn</code>.
      */
     public String getPayoutToolInfoInternationalBankAbaRtn() {
-        return (String) get(16);
+        return (String) get(17);
     }
 
     /**
      * Setter for <code>nw.payout_tool.payout_tool_info_international_bank_country_code</code>.
      */
     public void setPayoutToolInfoInternationalBankCountryCode(String value) {
-        set(17, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>nw.payout_tool.payout_tool_info_international_bank_country_code</code>.
      */
     public String getPayoutToolInfoInternationalBankCountryCode() {
-        return (String) get(17);
+        return (String) get(18);
     }
 
     /**
      * Setter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_account</code>.
      */
     public void setPayoutToolInfoInternationalCorrespondentBankAccount(String value) {
-        set(18, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_account</code>.
      */
     public String getPayoutToolInfoInternationalCorrespondentBankAccount() {
-        return (String) get(18);
+        return (String) get(19);
     }
 
     /**
      * Setter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_name</code>.
      */
     public void setPayoutToolInfoInternationalCorrespondentBankName(String value) {
-        set(19, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_name</code>.
      */
     public String getPayoutToolInfoInternationalCorrespondentBankName() {
-        return (String) get(19);
+        return (String) get(20);
     }
 
     /**
      * Setter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_address</code>.
      */
     public void setPayoutToolInfoInternationalCorrespondentBankAddress(String value) {
-        set(20, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_address</code>.
      */
     public String getPayoutToolInfoInternationalCorrespondentBankAddress() {
-        return (String) get(20);
+        return (String) get(21);
     }
 
     /**
      * Setter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_bic</code>.
      */
     public void setPayoutToolInfoInternationalCorrespondentBankBic(String value) {
-        set(21, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_bic</code>.
      */
     public String getPayoutToolInfoInternationalCorrespondentBankBic() {
-        return (String) get(21);
+        return (String) get(22);
     }
 
     /**
      * Setter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_iban</code>.
      */
     public void setPayoutToolInfoInternationalCorrespondentBankIban(String value) {
-        set(22, value);
+        set(23, value);
     }
 
     /**
      * Getter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_iban</code>.
      */
     public String getPayoutToolInfoInternationalCorrespondentBankIban() {
-        return (String) get(22);
+        return (String) get(23);
+    }
+
+    /**
+     * Setter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_number</code>.
+     */
+    public void setPayoutToolInfoInternationalCorrespondentBankNumber(String value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_number</code>.
+     */
+    public String getPayoutToolInfoInternationalCorrespondentBankNumber() {
+        return (String) get(24);
     }
 
     /**
      * Setter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_aba_rtn</code>.
      */
     public void setPayoutToolInfoInternationalCorrespondentBankAbaRtn(String value) {
-        set(23, value);
+        set(25, value);
     }
 
     /**
      * Getter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_aba_rtn</code>.
      */
     public String getPayoutToolInfoInternationalCorrespondentBankAbaRtn() {
-        return (String) get(23);
+        return (String) get(25);
     }
 
     /**
      * Setter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_country_code</code>.
      */
     public void setPayoutToolInfoInternationalCorrespondentBankCountryCode(String value) {
-        set(24, value);
+        set(26, value);
     }
 
     /**
      * Getter for <code>nw.payout_tool.payout_tool_info_international_correspondent_bank_country_code</code>.
      */
     public String getPayoutToolInfoInternationalCorrespondentBankCountryCode() {
-        return (String) get(24);
+        return (String) get(26);
     }
 
     // -------------------------------------------------------------------------
@@ -406,7 +434,7 @@ public class PayoutToolRecord extends UpdatableRecordImpl<PayoutToolRecord> {
     /**
      * Create a detached, initialised PayoutToolRecord
      */
-    public PayoutToolRecord(Long id, Long cntrctId, String payoutToolId, LocalDateTime createdAt, String currencyCode, PayoutToolInfo payoutToolInfo, String payoutToolInfoRussianBankAccount, String payoutToolInfoRussianBankName, String payoutToolInfoRussianBankPostAccount, String payoutToolInfoRussianBankBik, String payoutToolInfoInternationalBankAccountHolder, String payoutToolInfoInternationalBankName, String payoutToolInfoInternationalBankAddress, String payoutToolInfoInternationalBankIban, String payoutToolInfoInternationalBankBic, String payoutToolInfoInternationalBankLocalCode, String payoutToolInfoInternationalBankAbaRtn, String payoutToolInfoInternationalBankCountryCode, String payoutToolInfoInternationalCorrespondentBankAccount, String payoutToolInfoInternationalCorrespondentBankName, String payoutToolInfoInternationalCorrespondentBankAddress, String payoutToolInfoInternationalCorrespondentBankBic, String payoutToolInfoInternationalCorrespondentBankIban, String payoutToolInfoInternationalCorrespondentBankAbaRtn, String payoutToolInfoInternationalCorrespondentBankCountryCode) {
+    public PayoutToolRecord(Long id, Long cntrctId, String payoutToolId, LocalDateTime createdAt, String currencyCode, PayoutToolInfo payoutToolInfo, String payoutToolInfoRussianBankAccount, String payoutToolInfoRussianBankName, String payoutToolInfoRussianBankPostAccount, String payoutToolInfoRussianBankBik, String payoutToolInfoInternationalBankAccountHolder, String payoutToolInfoInternationalBankName, String payoutToolInfoInternationalBankAddress, String payoutToolInfoInternationalBankIban, String payoutToolInfoInternationalBankBic, String payoutToolInfoInternationalBankLocalCode, String payoutToolInfoInternationalBankNumber, String payoutToolInfoInternationalBankAbaRtn, String payoutToolInfoInternationalBankCountryCode, String payoutToolInfoInternationalCorrespondentBankAccount, String payoutToolInfoInternationalCorrespondentBankName, String payoutToolInfoInternationalCorrespondentBankAddress, String payoutToolInfoInternationalCorrespondentBankBic, String payoutToolInfoInternationalCorrespondentBankIban, String payoutToolInfoInternationalCorrespondentBankNumber, String payoutToolInfoInternationalCorrespondentBankAbaRtn, String payoutToolInfoInternationalCorrespondentBankCountryCode) {
         super(PayoutTool.PAYOUT_TOOL);
 
         set(0, id);
@@ -425,14 +453,16 @@ public class PayoutToolRecord extends UpdatableRecordImpl<PayoutToolRecord> {
         set(13, payoutToolInfoInternationalBankIban);
         set(14, payoutToolInfoInternationalBankBic);
         set(15, payoutToolInfoInternationalBankLocalCode);
-        set(16, payoutToolInfoInternationalBankAbaRtn);
-        set(17, payoutToolInfoInternationalBankCountryCode);
-        set(18, payoutToolInfoInternationalCorrespondentBankAccount);
-        set(19, payoutToolInfoInternationalCorrespondentBankName);
-        set(20, payoutToolInfoInternationalCorrespondentBankAddress);
-        set(21, payoutToolInfoInternationalCorrespondentBankBic);
-        set(22, payoutToolInfoInternationalCorrespondentBankIban);
-        set(23, payoutToolInfoInternationalCorrespondentBankAbaRtn);
-        set(24, payoutToolInfoInternationalCorrespondentBankCountryCode);
+        set(16, payoutToolInfoInternationalBankNumber);
+        set(17, payoutToolInfoInternationalBankAbaRtn);
+        set(18, payoutToolInfoInternationalBankCountryCode);
+        set(19, payoutToolInfoInternationalCorrespondentBankAccount);
+        set(20, payoutToolInfoInternationalCorrespondentBankName);
+        set(21, payoutToolInfoInternationalCorrespondentBankAddress);
+        set(22, payoutToolInfoInternationalCorrespondentBankBic);
+        set(23, payoutToolInfoInternationalCorrespondentBankIban);
+        set(24, payoutToolInfoInternationalCorrespondentBankNumber);
+        set(25, payoutToolInfoInternationalCorrespondentBankAbaRtn);
+        set(26, payoutToolInfoInternationalCorrespondentBankCountryCode);
     }
 }
