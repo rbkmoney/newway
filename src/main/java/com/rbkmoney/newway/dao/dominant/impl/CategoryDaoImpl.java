@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.dao.dominant.impl;
 
 import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.dominant.iface.CategoryDao;
+import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.domain.tables.pojos.Category;
 import com.rbkmoney.newway.domain.tables.records.CategoryRecord;
 import com.rbkmoney.newway.exception.DaoException;
@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 import static com.rbkmoney.newway.domain.Tables.CATEGORY;
 
 @Component
-public class CategoryDaoImpl extends AbstractGenericDao implements CategoryDao {
+public class CategoryDaoImpl extends AbstractGenericDao implements DomainObjectDao<Category, Integer> {
 
     public CategoryDaoImpl(DataSource dataSource) {
         super(dataSource);
@@ -32,7 +32,7 @@ public class CategoryDaoImpl extends AbstractGenericDao implements CategoryDao {
     @Override
     public void updateNotCurrent(Integer categoryId) throws DaoException {
         Query query = getDslContext().update(CATEGORY).set(CATEGORY.CURRENT, false)
-                .where(CATEGORY.CATEGORY_ID.eq(categoryId).and(CATEGORY.CURRENT));
+                .where(CATEGORY.CATEGORY_REF_ID.eq(categoryId).and(CATEGORY.CURRENT));
         executeOne(query);
     }
 }

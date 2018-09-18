@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CategoryRecord extends UpdatableRecordImpl<CategoryRecord> implements Record8<Long, Long, Integer, String, String, String, LocalDateTime, Boolean> {
 
-    private static final long serialVersionUID = 1401274706;
+    private static final long serialVersionUID = -1496330550;
 
     /**
      * Setter for <code>nw.category.id</code>.
@@ -61,16 +61,16 @@ public class CategoryRecord extends UpdatableRecordImpl<CategoryRecord> implemen
     }
 
     /**
-     * Setter for <code>nw.category.category_id</code>.
+     * Setter for <code>nw.category.category_ref_id</code>.
      */
-    public void setCategoryId(Integer value) {
+    public void setCategoryRefId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>nw.category.category_id</code>.
+     * Getter for <code>nw.category.category_ref_id</code>.
      */
-    public Integer getCategoryId() {
+    public Integer getCategoryRefId() {
         return (Integer) get(2);
     }
 
@@ -197,7 +197,7 @@ public class CategoryRecord extends UpdatableRecordImpl<CategoryRecord> implemen
      */
     @Override
     public Field<Integer> field3() {
-        return Category.CATEGORY.CATEGORY_ID;
+        return Category.CATEGORY.CATEGORY_REF_ID;
     }
 
     /**
@@ -261,7 +261,7 @@ public class CategoryRecord extends UpdatableRecordImpl<CategoryRecord> implemen
      */
     @Override
     public Integer value3() {
-        return getCategoryId();
+        return getCategoryRefId();
     }
 
     /**
@@ -327,7 +327,7 @@ public class CategoryRecord extends UpdatableRecordImpl<CategoryRecord> implemen
      */
     @Override
     public CategoryRecord value3(Integer value) {
-        setCategoryId(value);
+        setCategoryRefId(value);
         return this;
     }
 
@@ -406,12 +406,12 @@ public class CategoryRecord extends UpdatableRecordImpl<CategoryRecord> implemen
     /**
      * Create a detached, initialised CategoryRecord
      */
-    public CategoryRecord(Long id, Long versionId, Integer categoryId, String name, String description, String type, LocalDateTime wtime, Boolean current) {
+    public CategoryRecord(Long id, Long versionId, Integer categoryRefId, String name, String description, String type, LocalDateTime wtime, Boolean current) {
         super(Category.CATEGORY);
 
         set(0, id);
         set(1, versionId);
-        set(2, categoryId);
+        set(2, categoryRefId);
         set(3, name);
         set(4, description);
         set(5, type);

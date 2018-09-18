@@ -23,11 +23,11 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Category implements Serializable {
 
-    private static final long serialVersionUID = -1860168428;
+    private static final long serialVersionUID = 552512453;
 
     private Long          id;
     private Long          versionId;
-    private Integer       categoryId;
+    private Integer       categoryRefId;
     private String        name;
     private String        description;
     private String        type;
@@ -39,7 +39,7 @@ public class Category implements Serializable {
     public Category(Category value) {
         this.id = value.id;
         this.versionId = value.versionId;
-        this.categoryId = value.categoryId;
+        this.categoryRefId = value.categoryRefId;
         this.name = value.name;
         this.description = value.description;
         this.type = value.type;
@@ -50,7 +50,7 @@ public class Category implements Serializable {
     public Category(
         Long          id,
         Long          versionId,
-        Integer       categoryId,
+        Integer       categoryRefId,
         String        name,
         String        description,
         String        type,
@@ -59,7 +59,7 @@ public class Category implements Serializable {
     ) {
         this.id = id;
         this.versionId = versionId;
-        this.categoryId = categoryId;
+        this.categoryRefId = categoryRefId;
         this.name = name;
         this.description = description;
         this.type = type;
@@ -83,12 +83,12 @@ public class Category implements Serializable {
         this.versionId = versionId;
     }
 
-    public Integer getCategoryId() {
-        return this.categoryId;
+    public Integer getCategoryRefId() {
+        return this.categoryRefId;
     }
 
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
+    public void setCategoryRefId(Integer categoryRefId) {
+        this.categoryRefId = categoryRefId;
     }
 
     public String getName() {
@@ -152,11 +152,11 @@ public class Category implements Serializable {
         }
         else if (!versionId.equals(other.versionId))
             return false;
-        if (categoryId == null) {
-            if (other.categoryId != null)
+        if (categoryRefId == null) {
+            if (other.categoryRefId != null)
                 return false;
         }
-        else if (!categoryId.equals(other.categoryId))
+        else if (!categoryRefId.equals(other.categoryRefId))
             return false;
         if (name == null) {
             if (other.name != null)
@@ -197,7 +197,7 @@ public class Category implements Serializable {
         int result = 1;
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.versionId == null) ? 0 : this.versionId.hashCode());
-        result = prime * result + ((this.categoryId == null) ? 0 : this.categoryId.hashCode());
+        result = prime * result + ((this.categoryRefId == null) ? 0 : this.categoryRefId.hashCode());
         result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
         result = prime * result + ((this.description == null) ? 0 : this.description.hashCode());
         result = prime * result + ((this.type == null) ? 0 : this.type.hashCode());
@@ -212,7 +212,7 @@ public class Category implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(versionId);
-        sb.append(", ").append(categoryId);
+        sb.append(", ").append(categoryRefId);
         sb.append(", ").append(name);
         sb.append(", ").append(description);
         sb.append(", ").append(type);

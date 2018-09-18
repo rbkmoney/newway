@@ -93,7 +93,7 @@ public class InvoicePaymentRefundCreatedHandler extends AbstractInvoicingHandler
         }
         refund.setStatus(status);
         if (invoicePaymentRefund.getStatus().isSetFailed()) {
-            refund.setStatusFailedFailure(JsonUtil.toJsonString(invoicePaymentRefund.getStatus().getFailed()));
+            refund.setStatusFailedFailure(JsonUtil.tBaseToJsonString(invoicePaymentRefund.getStatus().getFailed()));
         }
 
         if (invoicePaymentRefund.isSetCash()) {

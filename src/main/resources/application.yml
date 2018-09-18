@@ -33,6 +33,6 @@ dmt:
   url: http://dominant:8022/v1/domain/repository
   networkTimeout: 5000
   polling:
-    delay: 10000
+    delay: 3000
     maxQuerySize: 10
 

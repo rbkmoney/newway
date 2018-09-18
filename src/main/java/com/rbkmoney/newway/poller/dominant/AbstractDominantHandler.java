@@ -2,19 +2,43 @@ package com.rbkmoney.newway.poller.dominant;
 
 import com.rbkmoney.damsel.domain.DomainObject;
 import com.rbkmoney.damsel.domain_config.Operation;
+import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-public abstract class AbstractDominantHandler implements DominantHandler<Operation> {
+/**
+ *
+ * @param <T> - damsel object class (CategoryObject, CurrencyObject etc.)
+ * @param <C> - jooq object class (Category, Currency etc.)
+ * @param <I> - object reference id class (Integer, String etc.)
+ */
+public abstract class AbstractDominantHandler<T, C, I> implements DominantHandler<Operation> {
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private DomainObject domainObject;
 
+    protected DomainObject getDomainObject() {
+        return domainObject;
+    }
+
+    protected abstract DomainObjectDao<C, I> getDomainObjectDao();
+    protected abstract T getObject();
+    protected abstract I getObjectRefId();
+    protected abstract boolean acceptDomainObject();
+    public abstract C convertToDatabaseObject(T object, Long versionId, boolean current);
+
     @Override
     public void handle(Operation operation, Long versionId) {
+        T object = getObject();
         if (operation.isSetInsert()) {
-            insertDomainObject(domainObject, versionId);
+            insertDomainObject(object, versionId);
         } else if (operation.isSetUpdate()) {
-            updateDomainObject(domainObject, versionId);
+            updateDomainObject(object, versionId);
         } else if (operation.isSetRemove()) {
-            removeDomainObject(domainObject, versionId);
+            removeDomainObject(object, versionId);
         } else {
             throw new IllegalStateException("Unknown type of operation. Only insert/update/remove supports. Operation: " + operation);
         }
@@ -31,11 +55,27 @@ public abstract class AbstractDominantHandler implements DominantHandler<Operati
         } else {
             throw new IllegalStateException("Unknown type of operation. Only insert/update/remove supports. Operation: " + operation);
         }
-        return acceptDomainObject(domainObject);
+        return acceptDomainObject();
     }
 
-    protected abstract boolean acceptDomainObject(DomainObject domainObject);
-    protected abstract void insertDomainObject(DomainObject domainObject, Long versionId);
-    protected abstract void updateDomainObject(DomainObject domainObject, Long versionId);
-    protected abstract void removeDomainObject(DomainObject domainObject, Long versionId);
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void insertDomainObject(T object, Long versionId) {
+        log.info("Start to insert '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getObjectRefId(), versionId);
+        getDomainObjectDao().save(convertToDatabaseObject(object, versionId, true));
+        log.info("End to insert '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getObjectRefId(), versionId);
+    }
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void updateDomainObject(T object, Long versionId) {
+        log.info("Start to update '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getObjectRefId(), versionId);
+        getDomainObjectDao().updateNotCurrent(getObjectRefId());
+        getDomainObjectDao().save(convertToDatabaseObject(object, versionId, true));
+        log.info("End to update '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getObjectRefId(), versionId);
+    }
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void removeDomainObject(T object, Long versionId) {
+        log.info("Start to remove '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getObjectRefId(), versionId);
+        getDomainObjectDao().updateNotCurrent(getObjectRefId());
+        getDomainObjectDao().save(convertToDatabaseObject(object, versionId, false));
+        log.info("End to remove '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getObjectRefId(), versionId);
+    }
 }

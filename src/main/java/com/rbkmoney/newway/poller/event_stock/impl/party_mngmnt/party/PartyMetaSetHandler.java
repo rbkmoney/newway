@@ -51,7 +51,7 @@ public class PartyMetaSetHandler extends AbstractPartyManagementHandler {
         partySource.setEventId(eventId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         partySource.setPartyMetaSetNs(partyMetaSet.getNs());
-        partySource.setPartyMetaSetDataJson(JsonUtil.toJsonString(partyMetaSet.getData()));
+        partySource.setPartyMetaSetDataJson(JsonUtil.tBaseToJsonString(partyMetaSet.getData()));
         partyDao.updateNotCurrent(partyId);
         partyDao.save(partySource);
         log.info("Party metaset has been saved, eventId={}, partyId={}", eventId, partyId);
