@@ -51,7 +51,7 @@ public class CalendarHandler extends AbstractDominantHandler<CalendarObject, Cal
         com.rbkmoney.damsel.domain.Calendar data = calendarObject.getData();
         calendar.setName(data.getName());
         calendar.setDescription(data.getDescription());
-        calendar.setTimezone(TypeUtil.stringToLocalDateTime(data.getTimezone()));
+        calendar.setTimezone(data.getTimezone());
         if (data.isSetFirstDayOfWeek()) {
             calendar.setFirstDayOfWeek(data.getFirstDayOfWeek().getValue());
         }

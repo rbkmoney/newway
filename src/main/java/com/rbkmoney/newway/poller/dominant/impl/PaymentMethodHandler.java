@@ -2,8 +2,10 @@ package com.rbkmoney.newway.poller.dominant.impl;
 
 import com.rbkmoney.damsel.domain.PaymentMethodObject;
 import com.rbkmoney.damsel.domain.TokenizedBankCard;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.dao.dominant.impl.PaymentMethodDaoImpl;
+import com.rbkmoney.newway.domain.enums.PaymentMethodType;
 import com.rbkmoney.newway.domain.tables.pojos.PaymentMethod;
 import com.rbkmoney.newway.poller.dominant.AbstractDominantHandler;
 import org.springframework.stereotype.Component;
@@ -59,6 +61,7 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
         com.rbkmoney.damsel.domain.PaymentMethodDefinition data = paymentMethodObject.getData();
         paymentMethod.setName(data.getName());
         paymentMethod.setDescription(data.getDescription());
+        paymentMethod.setType(TBaseUtil.unionFieldToEnum(paymentMethodObject.getRef().getId(), PaymentMethodType.class));
         paymentMethod.setCurrent(current);
         return paymentMethod;
     }

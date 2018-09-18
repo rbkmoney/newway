@@ -9,7 +9,6 @@ import com.rbkmoney.eventstock.client.EventHandler;
 import com.rbkmoney.newway.poller.event_stock.impl.payout.AbstractPayoutHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +20,11 @@ public class PayoutEventStockHandler implements EventHandler<StockEvent> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private List<AbstractPayoutHandler> payoutHandlers;
+    private final List<AbstractPayoutHandler> payoutHandlers;
+
+    public PayoutEventStockHandler(List<AbstractPayoutHandler> payoutHandlers) {
+        this.payoutHandlers = payoutHandlers;
+    }
 
     @Override
     public EventAction handle(StockEvent stockEvent, String subsKey) {

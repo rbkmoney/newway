@@ -53,7 +53,9 @@ public class InspectorHandler extends AbstractDominantHandler<InspectorObject, I
         inspector.setDescription(data.getDescription());
         inspector.setProxyRefId(data.getProxy().getRef().getId());
         inspector.setProxyAdditionalJson(JsonUtil.objectToJsonString(data.getProxy().getAdditional()));
-        inspector.setFallbackRiskScore(data.getFallbackRiskScore().name());
+        if (data.isSetFallbackRiskScore()) {
+            inspector.setFallbackRiskScore(data.getFallbackRiskScore().name());
+        }
         inspector.setCurrent(current);
         return inspector;
     }

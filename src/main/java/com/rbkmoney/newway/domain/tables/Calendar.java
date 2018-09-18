@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Calendar extends TableImpl<CalendarRecord> {
 
-    private static final long serialVersionUID = 1369150036;
+    private static final long serialVersionUID = 1394869531;
 
     /**
      * The reference instance of <code>nw.calendar</code>
@@ -74,12 +74,12 @@ public class Calendar extends TableImpl<CalendarRecord> {
     /**
      * The column <code>nw.calendar.description</code>.
      */
-    public final TableField<CalendarRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<CalendarRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>nw.calendar.timezone</code>.
      */
-    public final TableField<CalendarRecord, LocalDateTime> TIMEZONE = createField("timezone", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
+    public final TableField<CalendarRecord, String> TIMEZONE = createField("timezone", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
      * The column <code>nw.calendar.holidays_json</code>.

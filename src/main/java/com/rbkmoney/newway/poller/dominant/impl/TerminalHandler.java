@@ -45,9 +45,13 @@ public class TerminalHandler extends AbstractDominantHandler<TerminalObject, Ter
         com.rbkmoney.damsel.domain.Terminal data = terminalObject.getData();
         terminal.setName(data.getName());
         terminal.setDescription(data.getDescription());
-        terminal.setOptionsJson(JsonUtil.objectToJsonString(data.getOptions()));
+        if (data.isSetOptions()) {
+            terminal.setOptionsJson(JsonUtil.objectToJsonString(data.getOptions()));
+        }
         terminal.setRiskCoverage(data.getRiskCoverage().name());
-        terminal.setTermsJson(JsonUtil.tBaseToJsonString(data.getTerms()));
+        if (data.isSetTerms()) {
+            terminal.setTermsJson(JsonUtil.tBaseToJsonString(data.getTerms()));
+        }
         terminal.setCurrent(current);
         return terminal;
     }

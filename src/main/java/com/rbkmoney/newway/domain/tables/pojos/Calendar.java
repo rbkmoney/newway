@@ -23,14 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Calendar implements Serializable {
 
-    private static final long serialVersionUID = 1754166688;
+    private static final long serialVersionUID = 430035616;
 
     private Long          id;
     private Long          versionId;
     private Integer       calendarRefId;
     private String        name;
     private String        description;
-    private LocalDateTime timezone;
+    private String        timezone;
     private String        holidaysJson;
     private Integer       firstDayOfWeek;
     private LocalDateTime wtime;
@@ -57,7 +57,7 @@ public class Calendar implements Serializable {
         Integer       calendarRefId,
         String        name,
         String        description,
-        LocalDateTime timezone,
+        String        timezone,
         String        holidaysJson,
         Integer       firstDayOfWeek,
         LocalDateTime wtime,
@@ -115,11 +115,11 @@ public class Calendar implements Serializable {
         this.description = description;
     }
 
-    public LocalDateTime getTimezone() {
+    public String getTimezone() {
         return this.timezone;
     }
 
-    public void setTimezone(LocalDateTime timezone) {
+    public void setTimezone(String timezone) {
         this.timezone = timezone;
     }
 

@@ -34,7 +34,7 @@ public class PayoutMethodHandler extends AbstractDominantHandler<PayoutMethodObj
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetCurrency();
+        return getDomainObject().isSetPayoutMethod();
     }
 
     @Override
