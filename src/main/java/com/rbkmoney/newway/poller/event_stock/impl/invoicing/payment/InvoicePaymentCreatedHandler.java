@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.invoicing.payment;
 
 import com.rbkmoney.damsel.domain.*;
-import com.rbkmoney.damsel.domain.RecurrentTokenSource;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentStarted;

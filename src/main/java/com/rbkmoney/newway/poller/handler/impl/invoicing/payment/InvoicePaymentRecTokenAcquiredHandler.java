@@ -15,7 +15,7 @@ import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.NotFoundException;
-import com.rbkmoney.newway.poller.handler.impl.invoicing.AbstractInvoicingHandler;
+import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
