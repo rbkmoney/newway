@@ -8,7 +8,6 @@ import com.rbkmoney.newway.domain.enums.PayerType;
 import com.rbkmoney.newway.domain.enums.PaymentFlowType;
 import com.rbkmoney.newway.domain.enums.PaymentStatus;
 import com.rbkmoney.newway.domain.enums.PaymentToolType;
-import com.rbkmoney.newway.domain.enums.RecurrentTokenSource;
 import com.rbkmoney.newway.domain.enums.RiskScore;
 
 import java.io.Serializable;
@@ -31,56 +30,55 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payment implements Serializable {
 
-    private static final long serialVersionUID = 1906566481;
+    private static final long serialVersionUID = -845003393;
 
-    private Long                 id;
-    private Long                 eventId;
-    private LocalDateTime        eventCreatedAt;
-    private String               paymentId;
-    private LocalDateTime        createdAt;
-    private String               invoiceId;
-    private String               partyId;
-    private String               shopId;
-    private Long                 domainRevision;
-    private Long                 partyRevision;
-    private PaymentStatus        status;
-    private String               statusCancelledReason;
-    private String               statusCapturedReason;
-    private String               statusFailedFailure;
-    private Long                 amount;
-    private String               currencyCode;
-    private PayerType            payerType;
-    private PaymentToolType      payerPaymentToolType;
-    private String               payerBankCardToken;
-    private String               payerBankCardPaymentSystem;
-    private String               payerBankCardBin;
-    private String               payerBankCardMaskedPan;
-    private String               payerBankCardTokenProvider;
-    private String               payerPaymentTerminalType;
-    private String               payerDigitalWalletProvider;
-    private String               payerDigitalWalletId;
-    private String               payerPaymentSessionId;
-    private String               payerIpAddress;
-    private String               payerFingerprint;
-    private String               payerPhoneNumber;
-    private String               payerEmail;
-    private String               payerCustomerId;
-    private String               payerCustomerBindingId;
-    private String               payerCustomerRecPaymentToolId;
-    private byte[]               context;
-    private PaymentFlowType      paymentFlowType;
-    private String               paymentFlowOnHoldExpiration;
-    private LocalDateTime        paymentFlowHeldUntil;
-    private RiskScore            riskScore;
-    private Integer              routeProviderId;
-    private Integer              routeTerminalId;
-    private LocalDateTime        wtime;
-    private Boolean              current;
-    private Boolean              isRecurring;
-    private RecurrentTokenSource recurrentIntentionTokenSource;
-    private String               recurrentIntentionTokenSourceInvoiceId;
-    private String               recurrentIntentionTokenSourcePaymentId;
-    private String               recurrentIntentionToken;
+    private Long            id;
+    private Long            eventId;
+    private LocalDateTime   eventCreatedAt;
+    private String          paymentId;
+    private LocalDateTime   createdAt;
+    private String          invoiceId;
+    private String          partyId;
+    private String          shopId;
+    private Long            domainRevision;
+    private Long            partyRevision;
+    private PaymentStatus   status;
+    private String          statusCancelledReason;
+    private String          statusCapturedReason;
+    private String          statusFailedFailure;
+    private Long            amount;
+    private String          currencyCode;
+    private PayerType       payerType;
+    private PaymentToolType payerPaymentToolType;
+    private String          payerBankCardToken;
+    private String          payerBankCardPaymentSystem;
+    private String          payerBankCardBin;
+    private String          payerBankCardMaskedPan;
+    private String          payerBankCardTokenProvider;
+    private String          payerPaymentTerminalType;
+    private String          payerDigitalWalletProvider;
+    private String          payerDigitalWalletId;
+    private String          payerPaymentSessionId;
+    private String          payerIpAddress;
+    private String          payerFingerprint;
+    private String          payerPhoneNumber;
+    private String          payerEmail;
+    private String          payerCustomerId;
+    private String          payerCustomerBindingId;
+    private String          payerCustomerRecPaymentToolId;
+    private byte[]          context;
+    private PaymentFlowType paymentFlowType;
+    private String          paymentFlowOnHoldExpiration;
+    private LocalDateTime   paymentFlowHeldUntil;
+    private RiskScore       riskScore;
+    private Integer         routeProviderId;
+    private Integer         routeTerminalId;
+    private LocalDateTime   wtime;
+    private Boolean         current;
+    private Boolean         makeRecurrent;
+    private String          payerRecurrentParentInvoiceId;
+    private String          payerRecurrentParentPaymentId;
+    private String          recurrentIntentionToken;
 
     public Payment() {}
 
@@ -128,62 +126,60 @@ public class Payment implements Serializable {
         this.routeTerminalId = value.routeTerminalId;
         this.wtime = value.wtime;
         this.current = value.current;
-        this.isRecurring = value.isRecurring;
-        this.recurrentIntentionTokenSource = value.recurrentIntentionTokenSource;
-        this.recurrentIntentionTokenSourceInvoiceId = value.recurrentIntentionTokenSourceInvoiceId;
-        this.recurrentIntentionTokenSourcePaymentId = value.recurrentIntentionTokenSourcePaymentId;
+        this.makeRecurrent = value.makeRecurrent;
+        this.payerRecurrentParentInvoiceId = value.payerRecurrentParentInvoiceId;
+        this.payerRecurrentParentPaymentId = value.payerRecurrentParentPaymentId;
         this.recurrentIntentionToken = value.recurrentIntentionToken;
     }
 
     public Payment(
-        Long                 id,
-        Long                 eventId,
-        LocalDateTime        eventCreatedAt,
-        String               paymentId,
-        LocalDateTime        createdAt,
-        String               invoiceId,
-        String               partyId,
-        String               shopId,
-        Long                 domainRevision,
-        Long                 partyRevision,
-        PaymentStatus        status,
-        String               statusCancelledReason,
-        String               statusCapturedReason,
-        String               statusFailedFailure,
-        Long                 amount,
-        String               currencyCode,
-        PayerType            payerType,
-        PaymentToolType      payerPaymentToolType,
-        String               payerBankCardToken,
-        String               payerBankCardPaymentSystem,
-        String               payerBankCardBin,
-        String               payerBankCardMaskedPan,
-        String               payerBankCardTokenProvider,
-        String               payerPaymentTerminalType,
-        String               payerDigitalWalletProvider,
-        String               payerDigitalWalletId,
-        String               payerPaymentSessionId,
-        String               payerIpAddress,
-        String               payerFingerprint,
-        String               payerPhoneNumber,
-        String               payerEmail,
-        String               payerCustomerId,
-        String               payerCustomerBindingId,
-        String               payerCustomerRecPaymentToolId,
-        byte[]               context,
-        PaymentFlowType      paymentFlowType,
-        String               paymentFlowOnHoldExpiration,
-        LocalDateTime        paymentFlowHeldUntil,
-        RiskScore            riskScore,
-        Integer              routeProviderId,
-        Integer              routeTerminalId,
-        LocalDateTime        wtime,
-        Boolean              current,
-        Boolean              isRecurring,
-        RecurrentTokenSource recurrentIntentionTokenSource,
-        String               recurrentIntentionTokenSourceInvoiceId,
-        String               recurrentIntentionTokenSourcePaymentId,
-        String               recurrentIntentionToken
+        Long            id,
+        Long            eventId,
+        LocalDateTime   eventCreatedAt,
+        String          paymentId,
+        LocalDateTime   createdAt,
+        String          invoiceId,
+        String          partyId,
+        String          shopId,
+        Long            domainRevision,
+        Long            partyRevision,
+        PaymentStatus   status,
+        String          statusCancelledReason,
+        String          statusCapturedReason,
+        String          statusFailedFailure,
+        Long            amount,
+        String          currencyCode,
+        PayerType       payerType,
+        PaymentToolType payerPaymentToolType,
+        String          payerBankCardToken,
+        String          payerBankCardPaymentSystem,
+        String          payerBankCardBin,
+        String          payerBankCardMaskedPan,
+        String          payerBankCardTokenProvider,
+        String          payerPaymentTerminalType,
+        String          payerDigitalWalletProvider,
+        String          payerDigitalWalletId,
+        String          payerPaymentSessionId,
+        String          payerIpAddress,
+        String          payerFingerprint,
+        String          payerPhoneNumber,
+        String          payerEmail,
+        String          payerCustomerId,
+        String          payerCustomerBindingId,
+        String          payerCustomerRecPaymentToolId,
+        byte[]          context,
+        PaymentFlowType paymentFlowType,
+        String          paymentFlowOnHoldExpiration,
+        LocalDateTime   paymentFlowHeldUntil,
+        RiskScore       riskScore,
+        Integer         routeProviderId,
+        Integer         routeTerminalId,
+        LocalDateTime   wtime,
+        Boolean         current,
+        Boolean         makeRecurrent,
+        String          payerRecurrentParentInvoiceId,
+        String          payerRecurrentParentPaymentId,
+        String          recurrentIntentionToken
     ) {
         this.id = id;
         this.eventId = eventId;
@@ -228,10 +224,9 @@ public class Payment implements Serializable {
         this.routeTerminalId = routeTerminalId;
         this.wtime = wtime;
         this.current = current;
-        this.isRecurring = isRecurring;
-        this.recurrentIntentionTokenSource = recurrentIntentionTokenSource;
-        this.recurrentIntentionTokenSourceInvoiceId = recurrentIntentionTokenSourceInvoiceId;
-        this.recurrentIntentionTokenSourcePaymentId = recurrentIntentionTokenSourcePaymentId;
+        this.makeRecurrent = makeRecurrent;
+        this.payerRecurrentParentInvoiceId = payerRecurrentParentInvoiceId;
+        this.payerRecurrentParentPaymentId = payerRecurrentParentPaymentId;
         this.recurrentIntentionToken = recurrentIntentionToken;
     }
 
@@ -579,36 +574,28 @@ public class Payment implements Serializable {
         this.current = current;
     }
 
-    public Boolean getIsRecurring() {
-        return this.isRecurring;
+    public Boolean getMakeRecurrent() {
+        return this.makeRecurrent;
     }
 
-    public void setIsRecurring(Boolean isRecurring) {
-        this.isRecurring = isRecurring;
+    public void setMakeRecurrent(Boolean makeRecurrent) {
+        this.makeRecurrent = makeRecurrent;
     }
 
-    public RecurrentTokenSource getRecurrentIntentionTokenSource() {
-        return this.recurrentIntentionTokenSource;
+    public String getPayerRecurrentParentInvoiceId() {
+        return this.payerRecurrentParentInvoiceId;
     }
 
-    public void setRecurrentIntentionTokenSource(RecurrentTokenSource recurrentIntentionTokenSource) {
-        this.recurrentIntentionTokenSource = recurrentIntentionTokenSource;
+    public void setPayerRecurrentParentInvoiceId(String payerRecurrentParentInvoiceId) {
+        this.payerRecurrentParentInvoiceId = payerRecurrentParentInvoiceId;
     }
 
-    public String getRecurrentIntentionTokenSourceInvoiceId() {
-        return this.recurrentIntentionTokenSourceInvoiceId;
+    public String getPayerRecurrentParentPaymentId() {
+        return this.payerRecurrentParentPaymentId;
     }
 
-    public void setRecurrentIntentionTokenSourceInvoiceId(String recurrentIntentionTokenSourceInvoiceId) {
-        this.recurrentIntentionTokenSourceInvoiceId = recurrentIntentionTokenSourceInvoiceId;
-    }
-
-    public String getRecurrentIntentionTokenSourcePaymentId() {
-        return this.recurrentIntentionTokenSourcePaymentId;
-    }
-
-    public void setRecurrentIntentionTokenSourcePaymentId(String recurrentIntentionTokenSourcePaymentId) {
-        this.recurrentIntentionTokenSourcePaymentId = recurrentIntentionTokenSourcePaymentId;
+    public void setPayerRecurrentParentPaymentId(String payerRecurrentParentPaymentId) {
+        this.payerRecurrentParentPaymentId = payerRecurrentParentPaymentId;
     }
 
     public String getRecurrentIntentionToken() {
@@ -886,29 +873,23 @@ public class Payment implements Serializable {
         }
         else if (!current.equals(other.current))
             return false;
-        if (isRecurring == null) {
-            if (other.isRecurring != null)
+        if (makeRecurrent == null) {
+            if (other.makeRecurrent != null)
                 return false;
         }
-        else if (!isRecurring.equals(other.isRecurring))
+        else if (!makeRecurrent.equals(other.makeRecurrent))
             return false;
-        if (recurrentIntentionTokenSource == null) {
-            if (other.recurrentIntentionTokenSource != null)
+        if (payerRecurrentParentInvoiceId == null) {
+            if (other.payerRecurrentParentInvoiceId != null)
                 return false;
         }
-        else if (!recurrentIntentionTokenSource.equals(other.recurrentIntentionTokenSource))
+        else if (!payerRecurrentParentInvoiceId.equals(other.payerRecurrentParentInvoiceId))
             return false;
-        if (recurrentIntentionTokenSourceInvoiceId == null) {
-            if (other.recurrentIntentionTokenSourceInvoiceId != null)
+        if (payerRecurrentParentPaymentId == null) {
+            if (other.payerRecurrentParentPaymentId != null)
                 return false;
         }
-        else if (!recurrentIntentionTokenSourceInvoiceId.equals(other.recurrentIntentionTokenSourceInvoiceId))
-            return false;
-        if (recurrentIntentionTokenSourcePaymentId == null) {
-            if (other.recurrentIntentionTokenSourcePaymentId != null)
-                return false;
-        }
-        else if (!recurrentIntentionTokenSourcePaymentId.equals(other.recurrentIntentionTokenSourcePaymentId))
+        else if (!payerRecurrentParentPaymentId.equals(other.payerRecurrentParentPaymentId))
             return false;
         if (recurrentIntentionToken == null) {
             if (other.recurrentIntentionToken != null)
@@ -966,10 +947,9 @@ public class Payment implements Serializable {
         result = prime * result + ((this.routeTerminalId == null) ? 0 : this.routeTerminalId.hashCode());
         result = prime * result + ((this.wtime == null) ? 0 : this.wtime.hashCode());
         result = prime * result + ((this.current == null) ? 0 : this.current.hashCode());
-        result = prime * result + ((this.isRecurring == null) ? 0 : this.isRecurring.hashCode());
-        result = prime * result + ((this.recurrentIntentionTokenSource == null) ? 0 : this.recurrentIntentionTokenSource.hashCode());
-        result = prime * result + ((this.recurrentIntentionTokenSourceInvoiceId == null) ? 0 : this.recurrentIntentionTokenSourceInvoiceId.hashCode());
-        result = prime * result + ((this.recurrentIntentionTokenSourcePaymentId == null) ? 0 : this.recurrentIntentionTokenSourcePaymentId.hashCode());
+        result = prime * result + ((this.makeRecurrent == null) ? 0 : this.makeRecurrent.hashCode());
+        result = prime * result + ((this.payerRecurrentParentInvoiceId == null) ? 0 : this.payerRecurrentParentInvoiceId.hashCode());
+        result = prime * result + ((this.payerRecurrentParentPaymentId == null) ? 0 : this.payerRecurrentParentPaymentId.hashCode());
         result = prime * result + ((this.recurrentIntentionToken == null) ? 0 : this.recurrentIntentionToken.hashCode());
         return result;
     }
@@ -1021,10 +1001,9 @@ public class Payment implements Serializable {
         sb.append(", ").append(routeTerminalId);
         sb.append(", ").append(wtime);
         sb.append(", ").append(current);
-        sb.append(", ").append(isRecurring);
-        sb.append(", ").append(recurrentIntentionTokenSource);
-        sb.append(", ").append(recurrentIntentionTokenSourceInvoiceId);
-        sb.append(", ").append(recurrentIntentionTokenSourcePaymentId);
+        sb.append(", ").append(makeRecurrent);
+        sb.append(", ").append(payerRecurrentParentInvoiceId);
+        sb.append(", ").append(payerRecurrentParentPaymentId);
         sb.append(", ").append(recurrentIntentionToken);
 
         sb.append(")");

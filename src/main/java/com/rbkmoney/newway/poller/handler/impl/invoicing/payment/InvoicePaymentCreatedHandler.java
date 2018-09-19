@@ -1,9 +1,6 @@
 package com.rbkmoney.newway.poller.handler.impl.invoicing.payment;
 
-import com.rbkmoney.damsel.domain.ContactInfo;
-import com.rbkmoney.damsel.domain.CustomerPayer;
-import com.rbkmoney.damsel.domain.InvoicePayment;
-import com.rbkmoney.damsel.domain.PaymentTool;
+import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.domain.RecurrentTokenSource;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
@@ -100,19 +97,28 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
         }
         payment.setAmount(invoicePayment.getCost().getAmount());
         payment.setCurrencyCode(invoicePayment.getCost().getCurrency().getSymbolicCode());
-        payment.setPayerType(TBaseUtil.unionFieldToEnum(invoicePayment.getPayer(), PayerType.class));
-        if (invoicePayment.getPayer().isSetPaymentResource()) {
-            PaymentTool paymentTool = invoicePayment.getPayer().getPaymentResource().getResource().getPaymentTool();
-            fillPaymentTool(payment, paymentTool);
-            ContactInfo contactInfo = invoicePayment.getPayer().getPaymentResource().getContactInfo();
-            fillContactInfo(payment, contactInfo);
-        } else if (invoicePayment.getPayer().isSetCustomer()) {
-            CustomerPayer customer = invoicePayment.getPayer().getCustomer();
+        Payer payer = invoicePayment.getPayer();
+        payment.setPayerType(TBaseUtil.unionFieldToEnum(payer, PayerType.class));
+        if (payer.isSetPaymentResource()) {
+            PaymentResourcePayer paymentResource = payer.getPaymentResource();
+            fillPaymentTool(payment, paymentResource.getResource().getPaymentTool());
+            fillContactInfo(payment, paymentResource.getContactInfo());
+            if (paymentResource.getResource().isSetClientInfo()) {
+                payment.setPayerIpAddress(paymentResource.getResource().getClientInfo().getIpAddress());
+                payment.setPayerFingerprint(paymentResource.getResource().getClientInfo().getFingerprint());
+            }
+        } else if (payer.isSetCustomer()) {
+            CustomerPayer customer = payer.getCustomer();
             payment.setPayerCustomerId(customer.getCustomerId());
             payment.setPayerCustomerBindingId(customer.getCustomerBindingId());
             payment.setPayerCustomerRecPaymentToolId(customer.getRecPaymentToolId());
             fillPaymentTool(payment, customer.getPaymentTool());
             fillContactInfo(payment, customer.getContactInfo());
+        } else if (payer.isSetRecurrent()) {
+            payment.setPayerRecurrentParentInvoiceId(payer.getRecurrent().getRecurrentParent().getInvoiceId());
+            payment.setPayerRecurrentParentPaymentId(payer.getRecurrent().getRecurrentParent().getPaymentId());
+            fillPaymentTool(payment, payer.getRecurrent().getPaymentTool());
+            fillContactInfo(payment, payer.getRecurrent().getContactInfo());
         }
         payment.setPaymentFlowType(TBaseUtil.unionFieldToEnum(invoicePayment.getFlow(), PaymentFlowType.class));
         if (invoicePayment.getFlow().isSetHold()) {
@@ -123,16 +129,8 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
             payment.setRouteProviderId(invoicePaymentStarted.getRoute().getProvider().getId());
             payment.setRouteTerminalId(invoicePaymentStarted.getRoute().getTerminal().getId());
         }
-        if (invoicePayment.isSetIsRecurring()) {
-            payment.setIsRecurring(invoicePayment.isIsRecurring());
-        }
-        if (invoicePayment.isSetRecurrentIntention()) {
-            RecurrentTokenSource recurrentTokenSource = invoicePayment.getRecurrentIntention().getTokenSource();
-            payment.setRecurrentIntentionTokenSource(TBaseUtil.unionFieldToEnum(recurrentTokenSource, com.rbkmoney.newway.domain.enums.RecurrentTokenSource.class));
-            if (recurrentTokenSource.isSetPayment()) {
-                payment.setRecurrentIntentionTokenSourceInvoiceId(recurrentTokenSource.getPayment().getInvoiceId());
-                payment.setRecurrentIntentionTokenSourcePaymentId(recurrentTokenSource.getPayment().getPaymentId());
-            }
+        if (invoicePayment.isSetMakeRecurrent()) {
+            payment.setMakeRecurrent(invoicePayment.isMakeRecurrent());
         }
 
         long pmntId = paymentDao.save(payment);

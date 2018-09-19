@@ -8,7 +8,6 @@ import com.rbkmoney.newway.domain.enums.PayerType;
 import com.rbkmoney.newway.domain.enums.PaymentFlowType;
 import com.rbkmoney.newway.domain.enums.PaymentStatus;
 import com.rbkmoney.newway.domain.enums.PaymentToolType;
-import com.rbkmoney.newway.domain.enums.RecurrentTokenSource;
 import com.rbkmoney.newway.domain.enums.RiskScore;
 import com.rbkmoney.newway.domain.tables.Payment;
 
@@ -33,7 +32,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
 
-    private static final long serialVersionUID = 1043313227;
+    private static final long serialVersionUID = -1095066936;
 
     /**
      * Setter for <code>nw.payment.id</code>.
@@ -638,73 +637,59 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
     }
 
     /**
-     * Setter for <code>nw.payment.is_recurring</code>.
+     * Setter for <code>nw.payment.make_recurrent</code>.
      */
-    public void setIsRecurring(Boolean value) {
+    public void setMakeRecurrent(Boolean value) {
         set(43, value);
     }
 
     /**
-     * Getter for <code>nw.payment.is_recurring</code>.
+     * Getter for <code>nw.payment.make_recurrent</code>.
      */
-    public Boolean getIsRecurring() {
+    public Boolean getMakeRecurrent() {
         return (Boolean) get(43);
     }
 
     /**
-     * Setter for <code>nw.payment.recurrent_intention_token_source</code>.
+     * Setter for <code>nw.payment.payer_recurrent_parent_invoice_id</code>.
      */
-    public void setRecurrentIntentionTokenSource(RecurrentTokenSource value) {
+    public void setPayerRecurrentParentInvoiceId(String value) {
         set(44, value);
     }
 
     /**
-     * Getter for <code>nw.payment.recurrent_intention_token_source</code>.
+     * Getter for <code>nw.payment.payer_recurrent_parent_invoice_id</code>.
      */
-    public RecurrentTokenSource getRecurrentIntentionTokenSource() {
-        return (RecurrentTokenSource) get(44);
+    public String getPayerRecurrentParentInvoiceId() {
+        return (String) get(44);
     }
 
     /**
-     * Setter for <code>nw.payment.recurrent_intention_token_source_invoice_id</code>.
+     * Setter for <code>nw.payment.payer_recurrent_parent_payment_id</code>.
      */
-    public void setRecurrentIntentionTokenSourceInvoiceId(String value) {
+    public void setPayerRecurrentParentPaymentId(String value) {
         set(45, value);
     }
 
     /**
-     * Getter for <code>nw.payment.recurrent_intention_token_source_invoice_id</code>.
+     * Getter for <code>nw.payment.payer_recurrent_parent_payment_id</code>.
      */
-    public String getRecurrentIntentionTokenSourceInvoiceId() {
+    public String getPayerRecurrentParentPaymentId() {
         return (String) get(45);
-    }
-
-    /**
-     * Setter for <code>nw.payment.recurrent_intention_token_source_payment_id</code>.
-     */
-    public void setRecurrentIntentionTokenSourcePaymentId(String value) {
-        set(46, value);
-    }
-
-    /**
-     * Getter for <code>nw.payment.recurrent_intention_token_source_payment_id</code>.
-     */
-    public String getRecurrentIntentionTokenSourcePaymentId() {
-        return (String) get(46);
     }
 
     /**
      * Setter for <code>nw.payment.recurrent_intention_token</code>.
      */
     public void setRecurrentIntentionToken(String value) {
-        set(47, value);
+        set(46, value);
     }
 
     /**
      * Getter for <code>nw.payment.recurrent_intention_token</code>.
      */
     public String getRecurrentIntentionToken() {
-        return (String) get(47);
+        return (String) get(46);
     }
 
     // -------------------------------------------------------------------------
@@ -733,7 +718,7 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
     /**
      * Create a detached, initialised PaymentRecord
      */
-    public PaymentRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String paymentId, LocalDateTime createdAt, String invoiceId, String partyId, String shopId, Long domainRevision, Long partyRevision, PaymentStatus status, String statusCancelledReason, String statusCapturedReason, String statusFailedFailure, Long amount, String currencyCode, PayerType payerType, PaymentToolType payerPaymentToolType, String payerBankCardToken, String payerBankCardPaymentSystem, String payerBankCardBin, String payerBankCardMaskedPan, String payerBankCardTokenProvider, String payerPaymentTerminalType, String payerDigitalWalletProvider, String payerDigitalWalletId, String payerPaymentSessionId, String payerIpAddress, String payerFingerprint, String payerPhoneNumber, String payerEmail, String payerCustomerId, String payerCustomerBindingId, String payerCustomerRecPaymentToolId, byte[] context, PaymentFlowType paymentFlowType, String paymentFlowOnHoldExpiration, LocalDateTime paymentFlowHeldUntil, RiskScore riskScore, Integer routeProviderId, Integer routeTerminalId, LocalDateTime wtime, Boolean current, Boolean isRecurring, RecurrentTokenSource recurrentIntentionTokenSource, String recurrentIntentionTokenSourceInvoiceId, String recurrentIntentionTokenSourcePaymentId, String recurrentIntentionToken) {
+    public PaymentRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String paymentId, LocalDateTime createdAt, String invoiceId, String partyId, String shopId, Long domainRevision, Long partyRevision, PaymentStatus status, String statusCancelledReason, String statusCapturedReason, String statusFailedFailure, Long amount, String currencyCode, PayerType payerType, PaymentToolType payerPaymentToolType, String payerBankCardToken, String payerBankCardPaymentSystem, String payerBankCardBin, String payerBankCardMaskedPan, String payerBankCardTokenProvider, String payerPaymentTerminalType, String payerDigitalWalletProvider, String payerDigitalWalletId, String payerPaymentSessionId, String payerIpAddress, String payerFingerprint, String payerPhoneNumber, String payerEmail, String payerCustomerId, String payerCustomerBindingId, String payerCustomerRecPaymentToolId, byte[] context, PaymentFlowType paymentFlowType, String paymentFlowOnHoldExpiration, LocalDateTime paymentFlowHeldUntil, RiskScore riskScore, Integer routeProviderId, Integer routeTerminalId, LocalDateTime wtime, Boolean current, Boolean makeRecurrent, String payerRecurrentParentInvoiceId, String payerRecurrentParentPaymentId, String recurrentIntentionToken) {
         super(Payment.PAYMENT);
 
         set(0, id);
@@ -779,10 +764,9 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
         set(40, routeTerminalId);
         set(41, wtime);
         set(42, current);
-        set(43, isRecurring);
-        set(44, recurrentIntentionTokenSource);
-        set(45, recurrentIntentionTokenSourceInvoiceId);
-        set(46, recurrentIntentionTokenSourcePaymentId);
-        set(47, recurrentIntentionToken);
+        set(43, makeRecurrent);
+        set(44, payerRecurrentParentInvoiceId);
+        set(45, payerRecurrentParentPaymentId);
+        set(46, recurrentIntentionToken);
     }
 }
