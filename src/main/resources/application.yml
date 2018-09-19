@@ -16,7 +16,7 @@ retry-policy:
   maxAttempts: 10
 bm:
   processing:
-    url: http://bustermaze:8022/repo
+    url: http://localhost:8022/repo
     polling:
       delay: 10000
       retryDelay: 1000
