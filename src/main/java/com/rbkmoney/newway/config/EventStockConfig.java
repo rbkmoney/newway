@@ -2,9 +2,9 @@ package com.rbkmoney.newway.config;
 
 import com.rbkmoney.eventstock.client.EventPublisher;
 import com.rbkmoney.eventstock.client.poll.PollingEventPublisherBuilder;
-import com.rbkmoney.newway.poller.handler.InvoicingEventStockHandler;
-import com.rbkmoney.newway.poller.handler.PayoutEventStockHandler;
-import com.rbkmoney.newway.poller.handler.PartyManagementEventStockHandler;
+import com.rbkmoney.newway.poller.event_stock.InvoicingEventStockHandler;
+import com.rbkmoney.newway.poller.event_stock.PayoutEventStockHandler;
+import com.rbkmoney.newway.poller.event_stock.PartyManagementEventStockHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

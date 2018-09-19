@@ -29,7 +29,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payout implements Serializable {
 
-    private static final long serialVersionUID = -158095608;
+    private static final long serialVersionUID = 799667123;
 
     private Long                    id;
     private Long                    eventId;
@@ -79,6 +79,17 @@ public class Payout implements Serializable {
     private UserType                initiatorType;
     private LocalDateTime           wtime;
     private Boolean                 current;
+    private String                  typeAccountInternationalBankNumber;
+    private String                  typeAccountInternationalBankAbaRtn;
+    private String                  typeAccountInternationalBankCountryCode;
+    private String                  typeAccountInternationalCorrespondentBankNumber;
+    private String                  typeAccountInternationalCorrespondentBankAccount;
+    private String                  typeAccountInternationalCorrespondentBankName;
+    private String                  typeAccountInternationalCorrespondentBankAddress;
+    private String                  typeAccountInternationalCorrespondentBankBic;
+    private String                  typeAccountInternationalCorrespondentBankIban;
+    private String                  typeAccountInternationalCorrespondentBankAbaRtn;
+    private String                  typeAccountInternationalCorrespondentBankCountryCode;
 
     public Payout() {}
 
@@ -131,6 +142,17 @@ public class Payout implements Serializable {
         this.initiatorType = value.initiatorType;
         this.wtime = value.wtime;
         this.current = value.current;
+        this.typeAccountInternationalBankNumber = value.typeAccountInternationalBankNumber;
+        this.typeAccountInternationalBankAbaRtn = value.typeAccountInternationalBankAbaRtn;
+        this.typeAccountInternationalBankCountryCode = value.typeAccountInternationalBankCountryCode;
+        this.typeAccountInternationalCorrespondentBankNumber = value.typeAccountInternationalCorrespondentBankNumber;
+        this.typeAccountInternationalCorrespondentBankAccount = value.typeAccountInternationalCorrespondentBankAccount;
+        this.typeAccountInternationalCorrespondentBankName = value.typeAccountInternationalCorrespondentBankName;
+        this.typeAccountInternationalCorrespondentBankAddress = value.typeAccountInternationalCorrespondentBankAddress;
+        this.typeAccountInternationalCorrespondentBankBic = value.typeAccountInternationalCorrespondentBankBic;
+        this.typeAccountInternationalCorrespondentBankIban = value.typeAccountInternationalCorrespondentBankIban;
+        this.typeAccountInternationalCorrespondentBankAbaRtn = value.typeAccountInternationalCorrespondentBankAbaRtn;
+        this.typeAccountInternationalCorrespondentBankCountryCode = value.typeAccountInternationalCorrespondentBankCountryCode;
     }
 
     public Payout(
@@ -181,7 +203,18 @@ public class Payout implements Serializable {
         String                  initiatorId,
         UserType                initiatorType,
         LocalDateTime           wtime,
-        Boolean                 current
+        Boolean                 current,
+        String                  typeAccountInternationalBankNumber,
+        String                  typeAccountInternationalBankAbaRtn,
+        String                  typeAccountInternationalBankCountryCode,
+        String                  typeAccountInternationalCorrespondentBankNumber,
+        String                  typeAccountInternationalCorrespondentBankAccount,
+        String                  typeAccountInternationalCorrespondentBankName,
+        String                  typeAccountInternationalCorrespondentBankAddress,
+        String                  typeAccountInternationalCorrespondentBankBic,
+        String                  typeAccountInternationalCorrespondentBankIban,
+        String                  typeAccountInternationalCorrespondentBankAbaRtn,
+        String                  typeAccountInternationalCorrespondentBankCountryCode
     ) {
         this.id = id;
         this.eventId = eventId;
@@ -231,6 +264,17 @@ public class Payout implements Serializable {
         this.initiatorType = initiatorType;
         this.wtime = wtime;
         this.current = current;
+        this.typeAccountInternationalBankNumber = typeAccountInternationalBankNumber;
+        this.typeAccountInternationalBankAbaRtn = typeAccountInternationalBankAbaRtn;
+        this.typeAccountInternationalBankCountryCode = typeAccountInternationalBankCountryCode;
+        this.typeAccountInternationalCorrespondentBankNumber = typeAccountInternationalCorrespondentBankNumber;
+        this.typeAccountInternationalCorrespondentBankAccount = typeAccountInternationalCorrespondentBankAccount;
+        this.typeAccountInternationalCorrespondentBankName = typeAccountInternationalCorrespondentBankName;
+        this.typeAccountInternationalCorrespondentBankAddress = typeAccountInternationalCorrespondentBankAddress;
+        this.typeAccountInternationalCorrespondentBankBic = typeAccountInternationalCorrespondentBankBic;
+        this.typeAccountInternationalCorrespondentBankIban = typeAccountInternationalCorrespondentBankIban;
+        this.typeAccountInternationalCorrespondentBankAbaRtn = typeAccountInternationalCorrespondentBankAbaRtn;
+        this.typeAccountInternationalCorrespondentBankCountryCode = typeAccountInternationalCorrespondentBankCountryCode;
     }
 
     public Long getId() {
@@ -617,6 +661,94 @@ public class Payout implements Serializable {
         this.current = current;
     }
 
+    public String getTypeAccountInternationalBankNumber() {
+        return this.typeAccountInternationalBankNumber;
+    }
+
+    public void setTypeAccountInternationalBankNumber(String typeAccountInternationalBankNumber) {
+        this.typeAccountInternationalBankNumber = typeAccountInternationalBankNumber;
+    }
+
+    public String getTypeAccountInternationalBankAbaRtn() {
+        return this.typeAccountInternationalBankAbaRtn;
+    }
+
+    public void setTypeAccountInternationalBankAbaRtn(String typeAccountInternationalBankAbaRtn) {
+        this.typeAccountInternationalBankAbaRtn = typeAccountInternationalBankAbaRtn;
+    }
+
+    public String getTypeAccountInternationalBankCountryCode() {
+        return this.typeAccountInternationalBankCountryCode;
+    }
+
+    public void setTypeAccountInternationalBankCountryCode(String typeAccountInternationalBankCountryCode) {
+        this.typeAccountInternationalBankCountryCode = typeAccountInternationalBankCountryCode;
+    }
+
+    public String getTypeAccountInternationalCorrespondentBankNumber() {
+        return this.typeAccountInternationalCorrespondentBankNumber;
+    }
+
+    public void setTypeAccountInternationalCorrespondentBankNumber(String typeAccountInternationalCorrespondentBankNumber) {
+        this.typeAccountInternationalCorrespondentBankNumber = typeAccountInternationalCorrespondentBankNumber;
+    }
+
+    public String getTypeAccountInternationalCorrespondentBankAccount() {
+        return this.typeAccountInternationalCorrespondentBankAccount;
+    }
+
+    public void setTypeAccountInternationalCorrespondentBankAccount(String typeAccountInternationalCorrespondentBankAccount) {
+        this.typeAccountInternationalCorrespondentBankAccount = typeAccountInternationalCorrespondentBankAccount;
+    }
+
+    public String getTypeAccountInternationalCorrespondentBankName() {
+        return this.typeAccountInternationalCorrespondentBankName;
+    }
+
+    public void setTypeAccountInternationalCorrespondentBankName(String typeAccountInternationalCorrespondentBankName) {
+        this.typeAccountInternationalCorrespondentBankName = typeAccountInternationalCorrespondentBankName;
+    }
+
+    public String getTypeAccountInternationalCorrespondentBankAddress() {
+        return this.typeAccountInternationalCorrespondentBankAddress;
+    }
+
+    public void setTypeAccountInternationalCorrespondentBankAddress(String typeAccountInternationalCorrespondentBankAddress) {
+        this.typeAccountInternationalCorrespondentBankAddress = typeAccountInternationalCorrespondentBankAddress;
+    }
+
+    public String getTypeAccountInternationalCorrespondentBankBic() {
+        return this.typeAccountInternationalCorrespondentBankBic;
+    }
+
+    public void setTypeAccountInternationalCorrespondentBankBic(String typeAccountInternationalCorrespondentBankBic) {
+        this.typeAccountInternationalCorrespondentBankBic = typeAccountInternationalCorrespondentBankBic;
+    }
+
+    public String getTypeAccountInternationalCorrespondentBankIban() {
+        return this.typeAccountInternationalCorrespondentBankIban;
+    }
+
+    public void setTypeAccountInternationalCorrespondentBankIban(String typeAccountInternationalCorrespondentBankIban) {
+        this.typeAccountInternationalCorrespondentBankIban = typeAccountInternationalCorrespondentBankIban;
+    }
+
+    public String getTypeAccountInternationalCorrespondentBankAbaRtn() {
+        return this.typeAccountInternationalCorrespondentBankAbaRtn;
+    }
+
+    public void setTypeAccountInternationalCorrespondentBankAbaRtn(String typeAccountInternationalCorrespondentBankAbaRtn) {
+        this.typeAccountInternationalCorrespondentBankAbaRtn = typeAccountInternationalCorrespondentBankAbaRtn;
+    }
+
+    public String getTypeAccountInternationalCorrespondentBankCountryCode() {
+        return this.typeAccountInternationalCorrespondentBankCountryCode;
+    }
+
+    public void setTypeAccountInternationalCorrespondentBankCountryCode(String typeAccountInternationalCorrespondentBankCountryCode) {
+        this.typeAccountInternationalCorrespondentBankCountryCode = typeAccountInternationalCorrespondentBankCountryCode;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -914,6 +1046,72 @@ public class Payout implements Serializable {
         }
         else if (!current.equals(other.current))
             return false;
+        if (typeAccountInternationalBankNumber == null) {
+            if (other.typeAccountInternationalBankNumber != null)
+                return false;
+        }
+        else if (!typeAccountInternationalBankNumber.equals(other.typeAccountInternationalBankNumber))
+            return false;
+        if (typeAccountInternationalBankAbaRtn == null) {
+            if (other.typeAccountInternationalBankAbaRtn != null)
+                return false;
+        }
+        else if (!typeAccountInternationalBankAbaRtn.equals(other.typeAccountInternationalBankAbaRtn))
+            return false;
+        if (typeAccountInternationalBankCountryCode == null) {
+            if (other.typeAccountInternationalBankCountryCode != null)
+                return false;
+        }
+        else if (!typeAccountInternationalBankCountryCode.equals(other.typeAccountInternationalBankCountryCode))
+            return false;
+        if (typeAccountInternationalCorrespondentBankNumber == null) {
+            if (other.typeAccountInternationalCorrespondentBankNumber != null)
+                return false;
+        }
+        else if (!typeAccountInternationalCorrespondentBankNumber.equals(other.typeAccountInternationalCorrespondentBankNumber))
+            return false;
+        if (typeAccountInternationalCorrespondentBankAccount == null) {
+            if (other.typeAccountInternationalCorrespondentBankAccount != null)
+                return false;
+        }
+        else if (!typeAccountInternationalCorrespondentBankAccount.equals(other.typeAccountInternationalCorrespondentBankAccount))
+            return false;
+        if (typeAccountInternationalCorrespondentBankName == null) {
+            if (other.typeAccountInternationalCorrespondentBankName != null)
+                return false;
+        }
+        else if (!typeAccountInternationalCorrespondentBankName.equals(other.typeAccountInternationalCorrespondentBankName))
+            return false;
+        if (typeAccountInternationalCorrespondentBankAddress == null) {
+            if (other.typeAccountInternationalCorrespondentBankAddress != null)
+                return false;
+        }
+        else if (!typeAccountInternationalCorrespondentBankAddress.equals(other.typeAccountInternationalCorrespondentBankAddress))
+            return false;
+        if (typeAccountInternationalCorrespondentBankBic == null) {
+            if (other.typeAccountInternationalCorrespondentBankBic != null)
+                return false;
+        }
+        else if (!typeAccountInternationalCorrespondentBankBic.equals(other.typeAccountInternationalCorrespondentBankBic))
+            return false;
+        if (typeAccountInternationalCorrespondentBankIban == null) {
+            if (other.typeAccountInternationalCorrespondentBankIban != null)
+                return false;
+        }
+        else if (!typeAccountInternationalCorrespondentBankIban.equals(other.typeAccountInternationalCorrespondentBankIban))
+            return false;
+        if (typeAccountInternationalCorrespondentBankAbaRtn == null) {
+            if (other.typeAccountInternationalCorrespondentBankAbaRtn != null)
+                return false;
+        }
+        else if (!typeAccountInternationalCorrespondentBankAbaRtn.equals(other.typeAccountInternationalCorrespondentBankAbaRtn))
+            return false;
+        if (typeAccountInternationalCorrespondentBankCountryCode == null) {
+            if (other.typeAccountInternationalCorrespondentBankCountryCode != null)
+                return false;
+        }
+        else if (!typeAccountInternationalCorrespondentBankCountryCode.equals(other.typeAccountInternationalCorrespondentBankCountryCode))
+            return false;
         return true;
     }
 
@@ -969,6 +1167,17 @@ public class Payout implements Serializable {
         result = prime * result + ((this.initiatorType == null) ? 0 : this.initiatorType.hashCode());
         result = prime * result + ((this.wtime == null) ? 0 : this.wtime.hashCode());
         result = prime * result + ((this.current == null) ? 0 : this.current.hashCode());
+        result = prime * result + ((this.typeAccountInternationalBankNumber == null) ? 0 : this.typeAccountInternationalBankNumber.hashCode());
+        result = prime * result + ((this.typeAccountInternationalBankAbaRtn == null) ? 0 : this.typeAccountInternationalBankAbaRtn.hashCode());
+        result = prime * result + ((this.typeAccountInternationalBankCountryCode == null) ? 0 : this.typeAccountInternationalBankCountryCode.hashCode());
+        result = prime * result + ((this.typeAccountInternationalCorrespondentBankNumber == null) ? 0 : this.typeAccountInternationalCorrespondentBankNumber.hashCode());
+        result = prime * result + ((this.typeAccountInternationalCorrespondentBankAccount == null) ? 0 : this.typeAccountInternationalCorrespondentBankAccount.hashCode());
+        result = prime * result + ((this.typeAccountInternationalCorrespondentBankName == null) ? 0 : this.typeAccountInternationalCorrespondentBankName.hashCode());
+        result = prime * result + ((this.typeAccountInternationalCorrespondentBankAddress == null) ? 0 : this.typeAccountInternationalCorrespondentBankAddress.hashCode());
+        result = prime * result + ((this.typeAccountInternationalCorrespondentBankBic == null) ? 0 : this.typeAccountInternationalCorrespondentBankBic.hashCode());
+        result = prime * result + ((this.typeAccountInternationalCorrespondentBankIban == null) ? 0 : this.typeAccountInternationalCorrespondentBankIban.hashCode());
+        result = prime * result + ((this.typeAccountInternationalCorrespondentBankAbaRtn == null) ? 0 : this.typeAccountInternationalCorrespondentBankAbaRtn.hashCode());
+        result = prime * result + ((this.typeAccountInternationalCorrespondentBankCountryCode == null) ? 0 : this.typeAccountInternationalCorrespondentBankCountryCode.hashCode());
         return result;
     }
 
@@ -1024,6 +1233,17 @@ public class Payout implements Serializable {
         sb.append(", ").append(initiatorType);
         sb.append(", ").append(wtime);
         sb.append(", ").append(current);
+        sb.append(", ").append(typeAccountInternationalBankNumber);
+        sb.append(", ").append(typeAccountInternationalBankAbaRtn);
+        sb.append(", ").append(typeAccountInternationalBankCountryCode);
+        sb.append(", ").append(typeAccountInternationalCorrespondentBankNumber);
+        sb.append(", ").append(typeAccountInternationalCorrespondentBankAccount);
+        sb.append(", ").append(typeAccountInternationalCorrespondentBankName);
+        sb.append(", ").append(typeAccountInternationalCorrespondentBankAddress);
+        sb.append(", ").append(typeAccountInternationalCorrespondentBankBic);
+        sb.append(", ").append(typeAccountInternationalCorrespondentBankIban);
+        sb.append(", ").append(typeAccountInternationalCorrespondentBankAbaRtn);
+        sb.append(", ").append(typeAccountInternationalCorrespondentBankCountryCode);
 
         sb.append(")");
         return sb.toString();
