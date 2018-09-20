@@ -1,3 +1,4 @@
+DROP TABLE nw.category;
 --category--
 CREATE TABLE nw.category(
   id                       BIGSERIAL NOT NULL,
