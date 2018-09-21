@@ -17,6 +17,7 @@ import com.rbkmoney.newway.domain.tables.pojos.Contractor;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractClaimChangedHandler;
+import com.rbkmoney.newway.util.ContractorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -48,70 +49,17 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
             String contractorId = contractorEffect.getId();
             String partyId = event.getSource().getPartyId();
             log.info("Start contractor created handling, eventId={}, partyId={}, contractorId={}", eventId, partyId, contractorId);
-            Contractor contractor = new Contractor();
-            contractor.setEventId(eventId);
-            contractor.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             Party partySource = partyDao.get(partyId);
             if (partySource == null) {
                 throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
             }
-            contractor.setRevision(partySource.getRevision());
-            contractor.setPartyId(partyId);
-            contractor.setContractorId(contractorId);
+            Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, partySource.getRevision(), contractorCreated, contractorId);
             contractor.setIdentificationalLevel(partyContractor.getStatus().name());
-            ContractorType contractorType = TypeUtil.toEnumField(contractorCreated.getSetField().getFieldName(), ContractorType.class);
-            if (contractorType == null) {
-                throw new IllegalArgumentException("Illegal contractorType: " + contractorCreated);
-            }
-            contractor.setType(contractorType);
-            if (contractorCreated.isSetRegisteredUser()) {
-                contractor.setRegisteredUserEmail(contractorCreated.getRegisteredUser().getEmail());
-            } else if (contractorCreated.isSetLegalEntity()) {
-                LegalEntity legalEntity = TypeUtil.toEnumField(contractorCreated.getLegalEntity().getSetField().getFieldName(), LegalEntity.class);
-                if (legalEntity == null) {
-                    throw new IllegalArgumentException("Unknown legal entity: " + contractor.getLegalEntity());
-                }
-                contractor.setLegalEntity(legalEntity);
-                if (contractorCreated.getLegalEntity().isSetRussianLegalEntity()) {
-                    RussianLegalEntity russianLegalEntity = contractorCreated.getLegalEntity().getRussianLegalEntity();
-                    contractor.setRussianLegalEntityRegisteredName(russianLegalEntity.getRegisteredName());
-                    contractor.setRussianLegalEntityRegisteredNumber(russianLegalEntity.getRegisteredNumber());
-                    contractor.setRussianLegalEntityInn(russianLegalEntity.getInn());
-                    contractor.setRussianLegalEntityActualAddress(russianLegalEntity.getActualAddress());
-                    contractor.setRussianLegalEntityPostAddress(russianLegalEntity.getPostAddress());
-                    contractor.setRussianLegalEntityRepresentativePosition(russianLegalEntity.getRepresentativePosition());
-                    contractor.setRussianLegalEntityRepresentativeFullName(russianLegalEntity.getRepresentativeFullName());
-                    contractor.setRussianLegalEntityRepresentativeDocument(russianLegalEntity.getRepresentativeDocument());
-                    contractor.setRussianLegalEntityRussianBankAccount(russianLegalEntity.getRussianBankAccount().getAccount());
-                    contractor.setRussianLegalEntityRussianBankName(russianLegalEntity.getRussianBankAccount().getBankName());
-                    contractor.setRussianLegalEntityRussianBankPostAccount(russianLegalEntity.getRussianBankAccount().getBankPostAccount());
-                    contractor.setRussianLegalEntityRussianBankBik(russianLegalEntity.getRussianBankAccount().getBankBik());
-                } else if (contractorCreated.getLegalEntity().isSetInternationalLegalEntity()) {
-                    InternationalLegalEntity internationalLegalEntity = contractorCreated.getLegalEntity().getInternationalLegalEntity();
-                    contractor.setInternationalLegalEntityLegalName(internationalLegalEntity.getLegalName());
-                    contractor.setInternationalLegalEntityTradingName(internationalLegalEntity.getTradingName());
-                    contractor.setInternationalLegalEntityRegisteredAddress(internationalLegalEntity.getRegisteredAddress());
-                    contractor.setInternationalLegalEntityActualAddress(internationalLegalEntity.getActualAddress());
-                    contractor.setInternationalLegalEntityRegisteredNumber(internationalLegalEntity.getRegisteredNumber());
-                }
-            } else if (contractorCreated.isSetPrivateEntity()) {
-                PrivateEntity privateEntity = TypeUtil.toEnumField(contractorCreated.getPrivateEntity().getSetField().getFieldName(), PrivateEntity.class);
-                if (privateEntity == null) {
-                    throw new IllegalArgumentException("Illegal private entity: " + contractor.getPrivateEntity());
-                }
-                contractor.setPrivateEntity(privateEntity);
-                if (contractorCreated.getPrivateEntity().isSetRussianPrivateEntity()) {
-                    RussianPrivateEntity russianPrivateEntity = contractorCreated.getPrivateEntity().getRussianPrivateEntity();
-                    contractor.setRussianPrivateEntityFirstName(russianPrivateEntity.getFirstName());
-                    contractor.setRussianPrivateEntitySecondName(russianPrivateEntity.getSecondName());
-                    contractor.setRussianPrivateEntityMiddleName(russianPrivateEntity.getMiddleName());
-                    contractor.setRussianPrivateEntityPhoneNumber(russianPrivateEntity.getContactInfo().getPhoneNumber());
-                    contractor.setRussianPrivateEntityEmail(russianPrivateEntity.getContactInfo().getEmail());
-                }
-            }
             contractorDao.save(contractor);
             log.info("Contract contractor has been saved, eventId={}, partyId={}, contractorId={}", eventId, partyId, contractorId);
 
         });
     }
+
+
 }
