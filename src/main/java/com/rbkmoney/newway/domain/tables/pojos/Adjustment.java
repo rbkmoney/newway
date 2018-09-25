@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Adjustment implements Serializable {
 
-    private static final long serialVersionUID = 1271956723;
+    private static final long serialVersionUID = -1575561747;
 
     private Long             id;
     private Long             eventId;
@@ -43,6 +43,9 @@ public class Adjustment implements Serializable {
     private String           reason;
     private LocalDateTime    wtime;
     private Boolean          current;
+    private Long             fee;
+    private Long             providerFee;
+    private Long             externalFee;
 
     public Adjustment() {}
 
@@ -63,6 +66,9 @@ public class Adjustment implements Serializable {
         this.reason = value.reason;
         this.wtime = value.wtime;
         this.current = value.current;
+        this.fee = value.fee;
+        this.providerFee = value.providerFee;
+        this.externalFee = value.externalFee;
     }
 
     public Adjustment(
@@ -81,7 +87,10 @@ public class Adjustment implements Serializable {
         LocalDateTime    statusCancelledAt,
         String           reason,
         LocalDateTime    wtime,
-        Boolean          current
+        Boolean          current,
+        Long             fee,
+        Long             providerFee,
+        Long             externalFee
     ) {
         this.id = id;
         this.eventId = eventId;
@@ -99,6 +108,9 @@ public class Adjustment implements Serializable {
         this.reason = reason;
         this.wtime = wtime;
         this.current = current;
+        this.fee = fee;
+        this.providerFee = providerFee;
+        this.externalFee = externalFee;
     }
 
     public Long getId() {
@@ -229,6 +241,30 @@ public class Adjustment implements Serializable {
         this.current = current;
     }
 
+    public Long getFee() {
+        return this.fee;
+    }
+
+    public void setFee(Long fee) {
+        this.fee = fee;
+    }
+
+    public Long getProviderFee() {
+        return this.providerFee;
+    }
+
+    public void setProviderFee(Long providerFee) {
+        this.providerFee = providerFee;
+    }
+
+    public Long getExternalFee() {
+        return this.externalFee;
+    }
+
+    public void setExternalFee(Long externalFee) {
+        this.externalFee = externalFee;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -334,6 +370,24 @@ public class Adjustment implements Serializable {
         }
         else if (!current.equals(other.current))
             return false;
+        if (fee == null) {
+            if (other.fee != null)
+                return false;
+        }
+        else if (!fee.equals(other.fee))
+            return false;
+        if (providerFee == null) {
+            if (other.providerFee != null)
+                return false;
+        }
+        else if (!providerFee.equals(other.providerFee))
+            return false;
+        if (externalFee == null) {
+            if (other.externalFee != null)
+                return false;
+        }
+        else if (!externalFee.equals(other.externalFee))
+            return false;
         return true;
     }
 
@@ -357,6 +411,9 @@ public class Adjustment implements Serializable {
         result = prime * result + ((this.reason == null) ? 0 : this.reason.hashCode());
         result = prime * result + ((this.wtime == null) ? 0 : this.wtime.hashCode());
         result = prime * result + ((this.current == null) ? 0 : this.current.hashCode());
+        result = prime * result + ((this.fee == null) ? 0 : this.fee.hashCode());
+        result = prime * result + ((this.providerFee == null) ? 0 : this.providerFee.hashCode());
+        result = prime * result + ((this.externalFee == null) ? 0 : this.externalFee.hashCode());
         return result;
     }
 
@@ -380,6 +437,9 @@ public class Adjustment implements Serializable {
         sb.append(", ").append(reason);
         sb.append(", ").append(wtime);
         sb.append(", ").append(current);
+        sb.append(", ").append(fee);
+        sb.append(", ").append(providerFee);
+        sb.append(", ").append(externalFee);
 
         sb.append(")");
         return sb.toString();

@@ -33,7 +33,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payment implements Serializable {
 
-    private static final long serialVersionUID = -192407231;
+    private static final long serialVersionUID = 2110878257;
 
     private Long                               id;
     private Long                               eventId;
@@ -88,6 +88,10 @@ public class Payment implements Serializable {
     private String                             sessionPayloadTransactionBoundTrxExtraJson;
     private byte[]                             sessionPayloadProxyStateChangedProxyState;
     private String                             sessionPayloadInteractionRequestedInteractionJson;
+    private Long                               fee;
+    private Long                               providerFee;
+    private Long                               externalFee;
+    private Long                               guaranteeDeposit;
 
     public Payment() {}
 
@@ -145,6 +149,10 @@ public class Payment implements Serializable {
         this.sessionPayloadTransactionBoundTrxExtraJson = value.sessionPayloadTransactionBoundTrxExtraJson;
         this.sessionPayloadProxyStateChangedProxyState = value.sessionPayloadProxyStateChangedProxyState;
         this.sessionPayloadInteractionRequestedInteractionJson = value.sessionPayloadInteractionRequestedInteractionJson;
+        this.fee = value.fee;
+        this.providerFee = value.providerFee;
+        this.externalFee = value.externalFee;
+        this.guaranteeDeposit = value.guaranteeDeposit;
     }
 
     public Payment(
@@ -200,7 +208,11 @@ public class Payment implements Serializable {
         LocalDateTime                      sessionPayloadTransactionBoundTrxTimestamp,
         String                             sessionPayloadTransactionBoundTrxExtraJson,
         byte[]                             sessionPayloadProxyStateChangedProxyState,
-        String                             sessionPayloadInteractionRequestedInteractionJson
+        String                             sessionPayloadInteractionRequestedInteractionJson,
+        Long                               fee,
+        Long                               providerFee,
+        Long                               externalFee,
+        Long                               guaranteeDeposit
     ) {
         this.id = id;
         this.eventId = eventId;
@@ -255,6 +267,10 @@ public class Payment implements Serializable {
         this.sessionPayloadTransactionBoundTrxExtraJson = sessionPayloadTransactionBoundTrxExtraJson;
         this.sessionPayloadProxyStateChangedProxyState = sessionPayloadProxyStateChangedProxyState;
         this.sessionPayloadInteractionRequestedInteractionJson = sessionPayloadInteractionRequestedInteractionJson;
+        this.fee = fee;
+        this.providerFee = providerFee;
+        this.externalFee = externalFee;
+        this.guaranteeDeposit = guaranteeDeposit;
     }
 
     public Long getId() {
@@ -681,6 +697,38 @@ public class Payment implements Serializable {
         this.sessionPayloadInteractionRequestedInteractionJson = sessionPayloadInteractionRequestedInteractionJson;
     }
 
+    public Long getFee() {
+        return this.fee;
+    }
+
+    public void setFee(Long fee) {
+        this.fee = fee;
+    }
+
+    public Long getProviderFee() {
+        return this.providerFee;
+    }
+
+    public void setProviderFee(Long providerFee) {
+        this.providerFee = providerFee;
+    }
+
+    public Long getExternalFee() {
+        return this.externalFee;
+    }
+
+    public void setExternalFee(Long externalFee) {
+        this.externalFee = externalFee;
+    }
+
+    public Long getGuaranteeDeposit() {
+        return this.guaranteeDeposit;
+    }
+
+    public void setGuaranteeDeposit(Long guaranteeDeposit) {
+        this.guaranteeDeposit = guaranteeDeposit;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -1008,6 +1056,30 @@ public class Payment implements Serializable {
         }
         else if (!sessionPayloadInteractionRequestedInteractionJson.equals(other.sessionPayloadInteractionRequestedInteractionJson))
             return false;
+        if (fee == null) {
+            if (other.fee != null)
+                return false;
+        }
+        else if (!fee.equals(other.fee))
+            return false;
+        if (providerFee == null) {
+            if (other.providerFee != null)
+                return false;
+        }
+        else if (!providerFee.equals(other.providerFee))
+            return false;
+        if (externalFee == null) {
+            if (other.externalFee != null)
+                return false;
+        }
+        else if (!externalFee.equals(other.externalFee))
+            return false;
+        if (guaranteeDeposit == null) {
+            if (other.guaranteeDeposit != null)
+                return false;
+        }
+        else if (!guaranteeDeposit.equals(other.guaranteeDeposit))
+            return false;
         return true;
     }
 
@@ -1068,6 +1140,10 @@ public class Payment implements Serializable {
         result = prime * result + ((this.sessionPayloadTransactionBoundTrxExtraJson == null) ? 0 : this.sessionPayloadTransactionBoundTrxExtraJson.hashCode());
         result = prime * result + ((this.sessionPayloadProxyStateChangedProxyState == null) ? 0 : Arrays.hashCode(this.sessionPayloadProxyStateChangedProxyState));
         result = prime * result + ((this.sessionPayloadInteractionRequestedInteractionJson == null) ? 0 : this.sessionPayloadInteractionRequestedInteractionJson.hashCode());
+        result = prime * result + ((this.fee == null) ? 0 : this.fee.hashCode());
+        result = prime * result + ((this.providerFee == null) ? 0 : this.providerFee.hashCode());
+        result = prime * result + ((this.externalFee == null) ? 0 : this.externalFee.hashCode());
+        result = prime * result + ((this.guaranteeDeposit == null) ? 0 : this.guaranteeDeposit.hashCode());
         return result;
     }
 
@@ -1128,6 +1204,10 @@ public class Payment implements Serializable {
         sb.append(", ").append(sessionPayloadTransactionBoundTrxExtraJson);
         sb.append(", ").append("[binary...]");
         sb.append(", ").append(sessionPayloadInteractionRequestedInteractionJson);
+        sb.append(", ").append(fee);
+        sb.append(", ").append(providerFee);
+        sb.append(", ").append(externalFee);
+        sb.append(", ").append(guaranteeDeposit);
 
         sb.append(")");
         return sb.toString();

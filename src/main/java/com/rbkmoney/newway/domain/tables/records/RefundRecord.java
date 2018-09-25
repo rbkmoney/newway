@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RefundRecord extends UpdatableRecordImpl<RefundRecord> {
 
-    private static final long serialVersionUID = 580702697;
+    private static final long serialVersionUID = -1877189194;
 
     /**
      * Setter for <code>nw.refund.id</code>.
@@ -411,6 +411,48 @@ public class RefundRecord extends UpdatableRecordImpl<RefundRecord> {
         return (String) get(26);
     }
 
+    /**
+     * Setter for <code>nw.refund.fee</code>.
+     */
+    public void setFee(Long value) {
+        set(27, value);
+    }
+
+    /**
+     * Getter for <code>nw.refund.fee</code>.
+     */
+    public Long getFee() {
+        return (Long) get(27);
+    }
+
+    /**
+     * Setter for <code>nw.refund.provider_fee</code>.
+     */
+    public void setProviderFee(Long value) {
+        set(28, value);
+    }
+
+    /**
+     * Getter for <code>nw.refund.provider_fee</code>.
+     */
+    public Long getProviderFee() {
+        return (Long) get(28);
+    }
+
+    /**
+     * Setter for <code>nw.refund.external_fee</code>.
+     */
+    public void setExternalFee(Long value) {
+        set(29, value);
+    }
+
+    /**
+     * Getter for <code>nw.refund.external_fee</code>.
+     */
+    public Long getExternalFee() {
+        return (Long) get(29);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -437,7 +479,7 @@ public class RefundRecord extends UpdatableRecordImpl<RefundRecord> {
     /**
      * Create a detached, initialised RefundRecord
      */
-    public RefundRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, Long domainRevision, String refundId, String paymentId, String invoiceId, String partyId, String shopId, LocalDateTime createdAt, RefundStatus status, String statusFailedFailure, Long amount, String currencyCode, String reason, LocalDateTime wtime, Boolean current, SessionTargetStatus sessionTarget, SessionChangePayload sessionPayload, SessionChangePayloadFinishedResult sessionPayloadFinishedResult, String sessionPayloadFinishedResultFailedFailureJson, String sessionPayloadSuspendedTag, String sessionPayloadTransactionBoundTrxId, LocalDateTime sessionPayloadTransactionBoundTrxTimestamp, String sessionPayloadTransactionBoundTrxExtraJson, byte[] sessionPayloadProxyStateChangedProxyState, String sessionPayloadInteractionRequestedInteractionJson) {
+    public RefundRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, Long domainRevision, String refundId, String paymentId, String invoiceId, String partyId, String shopId, LocalDateTime createdAt, RefundStatus status, String statusFailedFailure, Long amount, String currencyCode, String reason, LocalDateTime wtime, Boolean current, SessionTargetStatus sessionTarget, SessionChangePayload sessionPayload, SessionChangePayloadFinishedResult sessionPayloadFinishedResult, String sessionPayloadFinishedResultFailedFailureJson, String sessionPayloadSuspendedTag, String sessionPayloadTransactionBoundTrxId, LocalDateTime sessionPayloadTransactionBoundTrxTimestamp, String sessionPayloadTransactionBoundTrxExtraJson, byte[] sessionPayloadProxyStateChangedProxyState, String sessionPayloadInteractionRequestedInteractionJson, Long fee, Long providerFee, Long externalFee) {
         super(Refund.REFUND);
 
         set(0, id);
@@ -467,5 +509,8 @@ public class RefundRecord extends UpdatableRecordImpl<RefundRecord> {
         set(24, sessionPayloadTransactionBoundTrxExtraJson);
         set(25, sessionPayloadProxyStateChangedProxyState);
         set(26, sessionPayloadInteractionRequestedInteractionJson);
+        set(27, fee);
+        set(28, providerFee);
+        set(29, externalFee);
     }
 }

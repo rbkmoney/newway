@@ -10,5 +10,7 @@ public interface RefundDao extends GenericDao {
 
     Refund get(String invoiceId, String paymentId, String refundId) throws DaoException;
 
+    void updateCommissions(Long rfndId) throws DaoException;
+
     void updateNotCurrent(String invoiceId, String paymentId, String refundId) throws DaoException;
 }
