@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Adjustment extends TableImpl<AdjustmentRecord> {
 
-    private static final long serialVersionUID = 825415316;
+    private static final long serialVersionUID = 1568171720;
 
     /**
      * The reference instance of <code>nw.adjustment</code>
@@ -131,6 +131,21 @@ public class Adjustment extends TableImpl<AdjustmentRecord> {
      * The column <code>nw.adjustment.current</code>.
      */
     public final TableField<AdjustmentRecord, Boolean> CURRENT = createField("current", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>nw.adjustment.fee</code>.
+     */
+    public final TableField<AdjustmentRecord, Long> FEE = createField("fee", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>nw.adjustment.provider_fee</code>.
+     */
+    public final TableField<AdjustmentRecord, Long> PROVIDER_FEE = createField("provider_fee", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>nw.adjustment.external_fee</code>.
+     */
+    public final TableField<AdjustmentRecord, Long> EXTERNAL_FEE = createField("external_fee", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>nw.adjustment</code> table reference

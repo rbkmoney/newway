@@ -138,6 +138,9 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
         if (invoicePaymentStarted.isSetCashFlow()) {
             List<CashFlow> cashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentStarted.getCashFlow(), pmntId, PaymentChangeType.payment);
             cashFlowDao.save(cashFlowList);
+            if (!invoicePaymentStarted.getCashFlow().isEmpty()) {
+                paymentDao.updateCommissions(pmntId);
+            }
         }
 
         log.info("Payment has been saved, eventId={}, invoiceId={}, paymentId={}", event.getId(), invoiceId, invoicePayment.getId());

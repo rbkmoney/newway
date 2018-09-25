@@ -63,6 +63,7 @@ public class InvoicePaymentCashFlowChangedHandler extends AbstractInvoicingHandl
         long pmntId = paymentDao.save(paymentSource);
         List<CashFlow> cashFlows = CashFlowUtil.convertCashFlows(invoicePaymentChange.getPayload().getInvoicePaymentCashFlowChanged().getCashFlow(), pmntId, PaymentChangeType.payment);
         cashFlowDao.save(cashFlows);
+        paymentDao.updateCommissions(pmntId);
         log.info("Payment cashflow has been saved, eventId='{}', invoiceId='{}', paymentId='{}'", event.getId(), invoiceId, paymentId);
     }
 
