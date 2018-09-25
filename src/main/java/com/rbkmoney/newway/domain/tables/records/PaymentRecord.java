@@ -35,7 +35,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
 
-    private static final long serialVersionUID = -889299317;
+    private static final long serialVersionUID = 1021799579;
 
     /**
      * Setter for <code>nw.payment.id</code>.
@@ -821,6 +821,20 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
         return (Long) get(55);
     }
 
+    /**
+     * Setter for <code>nw.payment.guarantee_deposit</code>.
+     */
+    public void setGuaranteeDeposit(Long value) {
+        set(56, value);
+    }
+
+    /**
+     * Getter for <code>nw.payment.guarantee_deposit</code>.
+     */
+    public Long getGuaranteeDeposit() {
+        return (Long) get(56);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -847,7 +861,7 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
     /**
      * Create a detached, initialised PaymentRecord
      */
-    public PaymentRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String paymentId, LocalDateTime createdAt, String invoiceId, String partyId, String shopId, Long domainRevision, Long partyRevision, PaymentStatus status, String statusCancelledReason, String statusCapturedReason, String statusFailedFailure, Long amount, String currencyCode, PayerType payerType, PaymentToolType payerPaymentToolType, String payerBankCardToken, String payerBankCardPaymentSystem, String payerBankCardBin, String payerBankCardMaskedPan, String payerBankCardTokenProvider, String payerPaymentTerminalType, String payerDigitalWalletProvider, String payerDigitalWalletId, String payerPaymentSessionId, String payerIpAddress, String payerFingerprint, String payerPhoneNumber, String payerEmail, String payerCustomerId, String payerCustomerBindingId, String payerCustomerRecPaymentToolId, byte[] context, PaymentFlowType paymentFlowType, String paymentFlowOnHoldExpiration, LocalDateTime paymentFlowHeldUntil, RiskScore riskScore, Integer routeProviderId, Integer routeTerminalId, LocalDateTime wtime, Boolean current, SessionTargetStatus sessionTarget, SessionChangePayload sessionPayload, SessionChangePayloadFinishedResult sessionPayloadFinishedResult, String sessionPayloadFinishedResultFailedFailureJson, String sessionPayloadSuspendedTag, String sessionPayloadTransactionBoundTrxId, LocalDateTime sessionPayloadTransactionBoundTrxTimestamp, String sessionPayloadTransactionBoundTrxExtraJson, byte[] sessionPayloadProxyStateChangedProxyState, String sessionPayloadInteractionRequestedInteractionJson, Long fee, Long providerFee, Long externalFee) {
+    public PaymentRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String paymentId, LocalDateTime createdAt, String invoiceId, String partyId, String shopId, Long domainRevision, Long partyRevision, PaymentStatus status, String statusCancelledReason, String statusCapturedReason, String statusFailedFailure, Long amount, String currencyCode, PayerType payerType, PaymentToolType payerPaymentToolType, String payerBankCardToken, String payerBankCardPaymentSystem, String payerBankCardBin, String payerBankCardMaskedPan, String payerBankCardTokenProvider, String payerPaymentTerminalType, String payerDigitalWalletProvider, String payerDigitalWalletId, String payerPaymentSessionId, String payerIpAddress, String payerFingerprint, String payerPhoneNumber, String payerEmail, String payerCustomerId, String payerCustomerBindingId, String payerCustomerRecPaymentToolId, byte[] context, PaymentFlowType paymentFlowType, String paymentFlowOnHoldExpiration, LocalDateTime paymentFlowHeldUntil, RiskScore riskScore, Integer routeProviderId, Integer routeTerminalId, LocalDateTime wtime, Boolean current, SessionTargetStatus sessionTarget, SessionChangePayload sessionPayload, SessionChangePayloadFinishedResult sessionPayloadFinishedResult, String sessionPayloadFinishedResultFailedFailureJson, String sessionPayloadSuspendedTag, String sessionPayloadTransactionBoundTrxId, LocalDateTime sessionPayloadTransactionBoundTrxTimestamp, String sessionPayloadTransactionBoundTrxExtraJson, byte[] sessionPayloadProxyStateChangedProxyState, String sessionPayloadInteractionRequestedInteractionJson, Long fee, Long providerFee, Long externalFee, Long guaranteeDeposit) {
         super(Payment.PAYMENT);
 
         set(0, id);
@@ -906,5 +920,6 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
         set(53, fee);
         set(54, providerFee);
         set(55, externalFee);
+        set(56, guaranteeDeposit);
     }
 }

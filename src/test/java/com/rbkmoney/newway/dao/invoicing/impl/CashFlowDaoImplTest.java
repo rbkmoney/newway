@@ -52,6 +52,7 @@ public class CashFlowDaoImplTest extends AbstractIntegrationTest {
         assertEquals(paymentWithCommissions.getFee(), fees.getOrDefault(FeeType.FEE, 0L));
         assertEquals(paymentWithCommissions.getProviderFee(), fees.getOrDefault(FeeType.PROVIDER_FEE, 0L));
         assertEquals(paymentWithCommissions.getExternalFee(), fees.getOrDefault(FeeType.EXTERNAL_FEE, 0L));
+        assertEquals(paymentWithCommissions.getGuaranteeDeposit(), fees.getOrDefault(FeeType.GUARANTEE_DEPOSIT, 0L));
     }
 
     public static Map<FeeType, Long> getFees(List<CashFlow> cashFlowList) {
@@ -92,6 +93,14 @@ public class CashFlowDaoImplTest extends AbstractIntegrationTest {
             return FeeType.PROVIDER_FEE;
         }
 
+        if (source == com.rbkmoney.newway.domain.enums.CashFlowAccount.merchant
+                && sourceValue.equals(MerchantCashFlowAccount.settlement.name())
+                && destination == com.rbkmoney.newway.domain.enums.CashFlowAccount.merchant
+                && destinationValue.equals(MerchantCashFlowAccount.guarantee.name())
+                ) {
+            return FeeType.GUARANTEE_DEPOSIT;
+        }
+
         return FeeType.UNKNOWN;
     }
 
@@ -100,5 +109,6 @@ public class CashFlowDaoImplTest extends AbstractIntegrationTest {
         FEE,
         PROVIDER_FEE,
         EXTERNAL_FEE,
+        GUARANTEE_DEPOSIT
     }
 }

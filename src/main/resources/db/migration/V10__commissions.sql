@@ -1,6 +1,7 @@
 ALTER TABLE nw.payment ADD COLUMN fee BIGINT;
 ALTER TABLE nw.payment ADD COLUMN provider_fee BIGINT;
 ALTER TABLE nw.payment ADD COLUMN external_fee BIGINT;
+ALTER TABLE nw.payment ADD COLUMN guarantee_deposit BIGINT;
 
 ALTER TABLE nw.refund ADD COLUMN fee BIGINT;
 ALTER TABLE nw.refund ADD COLUMN provider_fee BIGINT;

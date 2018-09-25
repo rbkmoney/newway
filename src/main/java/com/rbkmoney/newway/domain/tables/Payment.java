@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payment extends TableImpl<PaymentRecord> {
 
-    private static final long serialVersionUID = 470769871;
+    private static final long serialVersionUID = 477879338;
 
     /**
      * The reference instance of <code>nw.payment</code>
@@ -338,6 +338,11 @@ public class Payment extends TableImpl<PaymentRecord> {
      * The column <code>nw.payment.external_fee</code>.
      */
     public final TableField<PaymentRecord, Long> EXTERNAL_FEE = createField("external_fee", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>nw.payment.guarantee_deposit</code>.
+     */
+    public final TableField<PaymentRecord, Long> GUARANTEE_DEPOSIT = createField("guarantee_deposit", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>nw.payment</code> table reference
