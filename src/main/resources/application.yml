@@ -15,7 +15,14 @@ flyway:
 retry-policy:
   maxAttempts: 10
 bm:
-  processing:
+  invoicing:
+    url: http://bustermaze:8022/repo
+    polling:
+      delay: 10000
+      retryDelay: 1000
+      maxPoolSize: 1
+      maxQuerySize: 300
+  partyManagement:
     url: http://bustermaze:8022/repo
     polling:
       delay: 10000
