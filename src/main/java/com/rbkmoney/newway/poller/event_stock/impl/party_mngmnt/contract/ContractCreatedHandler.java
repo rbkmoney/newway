@@ -5,16 +5,15 @@ import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
-import com.rbkmoney.newway.dao.party.iface.ContractAdjustmentDao;
-import com.rbkmoney.newway.dao.party.iface.ContractDao;
-import com.rbkmoney.newway.dao.party.iface.PartyDao;
-import com.rbkmoney.newway.dao.party.iface.PayoutToolDao;
+import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.domain.enums.ContractStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Contract;
+import com.rbkmoney.newway.domain.tables.pojos.Contractor;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractClaimChangedHandler;
 import com.rbkmoney.newway.util.ContractUtil;
+import com.rbkmoney.newway.util.ContractorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,6 +21,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class ContractCreatedHandler extends AbstractClaimChangedHandler {
@@ -29,12 +29,14 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final ContractDao contractDao;
+    private final ContractorDao contractorDao;
     private final PartyDao partyDao;
     private final ContractAdjustmentDao contractAdjustmentDao;
     private final PayoutToolDao payoutToolDao;
 
-    public ContractCreatedHandler(ContractDao contractDao, PartyDao partyDao, ContractAdjustmentDao contractAdjustmentDao, PayoutToolDao payoutToolDao) {
+    public ContractCreatedHandler(ContractDao contractDao, ContractorDao contractorDao, PartyDao partyDao, ContractAdjustmentDao contractAdjustmentDao, PayoutToolDao payoutToolDao) {
         this.contractDao = contractDao;
+        this.contractorDao = contractorDao;
         this.partyDao = partyDao;
         this.contractAdjustmentDao = contractAdjustmentDao;
         this.payoutToolDao = payoutToolDao;
@@ -82,8 +84,21 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             if (contractCreated.isSetReportPreferences() && contractCreated.getReportPreferences().isSetServiceAcceptanceActPreferences()) {
                 ContractUtil.fillReportPreferences(contract, contractCreated.getReportPreferences().getServiceAcceptanceActPreferences());
             }
-            contract.setContractorId(contractCreated.getContractorId());
+
+            String contractorId = "";
+            if (contractCreated.isSetContractorId()) {
+                contractorId = contractCreated.getContractorId();
+            } else if (contractCreated.isSetContractor()) {
+                contractorId = UUID.randomUUID().toString();
+            }
+            
+            contract.setContractorId(contractorId);
             long cntrctId = contractDao.save(contract);
+
+            if (contractCreated.isSetContractor()) {
+                Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, partySource.getRevision(), contractCreated.getContractor(), contractorId);
+                contractorDao.save(contractor);
+            }
 
             List<com.rbkmoney.newway.domain.tables.pojos.ContractAdjustment> adjustments = ContractUtil.convertContractAdjustments(contractCreated, cntrctId);
             contractAdjustmentDao.save(adjustments);

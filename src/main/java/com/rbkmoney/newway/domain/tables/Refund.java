@@ -7,6 +7,9 @@ package com.rbkmoney.newway.domain.tables;
 import com.rbkmoney.newway.domain.Keys;
 import com.rbkmoney.newway.domain.Nw;
 import com.rbkmoney.newway.domain.enums.RefundStatus;
+import com.rbkmoney.newway.domain.enums.SessionChangePayload;
+import com.rbkmoney.newway.domain.enums.SessionChangePayloadFinishedResult;
+import com.rbkmoney.newway.domain.enums.SessionTargetStatus;
 import com.rbkmoney.newway.domain.tables.records.RefundRecord;
 
 import java.time.LocalDateTime;
@@ -37,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Refund extends TableImpl<RefundRecord> {
 
-    private static final long serialVersionUID = -765656765;
+    private static final long serialVersionUID = 1588040370;
 
     /**
      * The reference instance of <code>nw.refund</code>
@@ -136,6 +139,71 @@ public class Refund extends TableImpl<RefundRecord> {
      * The column <code>nw.refund.current</code>.
      */
     public final TableField<RefundRecord, Boolean> CURRENT = createField("current", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>nw.refund.session_target</code>.
+     */
+    public final TableField<RefundRecord, SessionTargetStatus> SESSION_TARGET = createField("session_target", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.SessionTargetStatus.class), this, "");
+
+    /**
+     * The column <code>nw.refund.session_payload</code>.
+     */
+    public final TableField<RefundRecord, SessionChangePayload> SESSION_PAYLOAD = createField("session_payload", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.SessionChangePayload.class), this, "");
+
+    /**
+     * The column <code>nw.refund.session_payload_finished_result</code>.
+     */
+    public final TableField<RefundRecord, SessionChangePayloadFinishedResult> SESSION_PAYLOAD_FINISHED_RESULT = createField("session_payload_finished_result", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.SessionChangePayloadFinishedResult.class), this, "");
+
+    /**
+     * The column <code>nw.refund.session_payload_finished_result_failed_failure_json</code>.
+     */
+    public final TableField<RefundRecord, String> SESSION_PAYLOAD_FINISHED_RESULT_FAILED_FAILURE_JSON = createField("session_payload_finished_result_failed_failure_json", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.refund.session_payload_suspended_tag</code>.
+     */
+    public final TableField<RefundRecord, String> SESSION_PAYLOAD_SUSPENDED_TAG = createField("session_payload_suspended_tag", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.refund.session_payload_transaction_bound_trx_id</code>.
+     */
+    public final TableField<RefundRecord, String> SESSION_PAYLOAD_TRANSACTION_BOUND_TRX_ID = createField("session_payload_transaction_bound_trx_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.refund.session_payload_transaction_bound_trx_timestamp</code>.
+     */
+    public final TableField<RefundRecord, LocalDateTime> SESSION_PAYLOAD_TRANSACTION_BOUND_TRX_TIMESTAMP = createField("session_payload_transaction_bound_trx_timestamp", org.jooq.impl.SQLDataType.LOCALDATETIME, this, "");
+
+    /**
+     * The column <code>nw.refund.session_payload_transaction_bound_trx_extra_json</code>.
+     */
+    public final TableField<RefundRecord, String> SESSION_PAYLOAD_TRANSACTION_BOUND_TRX_EXTRA_JSON = createField("session_payload_transaction_bound_trx_extra_json", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.refund.session_payload_proxy_state_changed_proxy_state</code>.
+     */
+    public final TableField<RefundRecord, byte[]> SESSION_PAYLOAD_PROXY_STATE_CHANGED_PROXY_STATE = createField("session_payload_proxy_state_changed_proxy_state", org.jooq.impl.SQLDataType.BLOB, this, "");
+
+    /**
+     * The column <code>nw.refund.session_payload_interaction_requested_interaction_json</code>.
+     */
+    public final TableField<RefundRecord, String> SESSION_PAYLOAD_INTERACTION_REQUESTED_INTERACTION_JSON = createField("session_payload_interaction_requested_interaction_json", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.refund.fee</code>.
+     */
+    public final TableField<RefundRecord, Long> FEE = createField("fee", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>nw.refund.provider_fee</code>.
+     */
+    public final TableField<RefundRecord, Long> PROVIDER_FEE = createField("provider_fee", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>nw.refund.external_fee</code>.
+     */
+    public final TableField<RefundRecord, Long> EXTERNAL_FEE = createField("external_fee", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>nw.refund</code> table reference

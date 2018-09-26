@@ -106,6 +106,7 @@ public class InvoicePaymentRefundCreatedHandler extends AbstractInvoicingHandler
 
         List<CashFlow> cashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentRefundCreated.getCashFlow(), rfndId, PaymentChangeType.refund);
         cashFlowDao.save(cashFlowList);
+        refundDao.updateCommissions(rfndId);
 
         log.info("Refund has been saved, eventId={}, invoiceId={}, paymentId={}, refundId={}",
                 eventId, invoiceId, paymentId, refundId);
