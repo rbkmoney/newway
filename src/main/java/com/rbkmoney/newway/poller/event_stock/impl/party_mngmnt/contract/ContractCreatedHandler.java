@@ -3,6 +3,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contract;
 import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.domain.enums.ContractStatus;
@@ -51,7 +52,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             com.rbkmoney.damsel.domain.Contract contractCreated = contractEffectUnit.getEffect().getCreated();
             String contractId = contractEffectUnit.getContractId();
             String partyId = event.getSource().getPartyId();
-            log.info("Start contract created handling, eventId={}, partyId={}, contractId={}", eventId, contractId);
+            log.info("Start contract created handling, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
             Contract contract = new Contract();
             contract.setEventId(eventId);
             contract.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
@@ -72,11 +73,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             if (contractCreated.isSetValidUntil()) {
                 contract.setValidUntil(TypeUtil.stringToLocalDateTime(contractCreated.getValidUntil()));
             }
-            ContractStatus status = TypeUtil.toEnumField(contractCreated.getStatus().getSetField().getFieldName(), ContractStatus.class);
-            if (status == null) {
-                throw new IllegalArgumentException("Illegal contract status: "+contractCreated.getStatus());
-            }
-            contract.setStatus(status);
+            contract.setStatus(TBaseUtil.unionFieldToEnum(contractCreated.getStatus(), ContractStatus.class));
             if (contractCreated.getStatus().isSetTerminated()) {
                 contract.setStatusTerminatedAt(TypeUtil.stringToLocalDateTime(contractCreated.getStatus().getTerminated().getTerminatedAt()));
             }
@@ -109,7 +106,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             List<com.rbkmoney.newway.domain.tables.pojos.PayoutTool> payoutTools = ContractUtil.convertPayoutTools(contractCreated, cntrctId);
             payoutToolDao.save(payoutTools);
 
-            log.info("Contract has been saved, eventId={}, contractId={}", eventId, contractId);
+            log.info("Contract has been saved, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
         });
     }
 }

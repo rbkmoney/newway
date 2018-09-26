@@ -3,6 +3,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.party;
 import com.rbkmoney.damsel.domain.Blocking;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -49,11 +50,7 @@ public class PartyBlockingHandler extends AbstractPartyManagementHandler {
         partySource.setWtime(null);
         partySource.setEventId(eventId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        com.rbkmoney.newway.domain.enums.Blocking blocking = TypeUtil.toEnumField(partyBlocking.getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.Blocking.class);
-        if (blocking == null) {
-            throw new IllegalArgumentException("Illegal party blocking: " + partyBlocking);
-        }
-        partySource.setBlocking(blocking);
+        partySource.setBlocking(TBaseUtil.unionFieldToEnum(partyBlocking, com.rbkmoney.newway.domain.enums.Blocking.class));
         if (partyBlocking.isSetUnblocked()) {
             partySource.setBlockingUnblockedReason(partyBlocking.getUnblocked().getReason());
             partySource.setBlockingUnblockedSince(TypeUtil.stringToLocalDateTime(partyBlocking.getUnblocked().getSince()));

@@ -35,7 +35,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
 
-    private static final long serialVersionUID = 1021799579;
+    private static final long serialVersionUID = -538197258;
 
     /**
      * Setter for <code>nw.payment.id</code>.
@@ -835,6 +835,62 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
         return (Long) get(56);
     }
 
+    /**
+     * Setter for <code>nw.payment.make_recurrent</code>.
+     */
+    public void setMakeRecurrent(Boolean value) {
+        set(57, value);
+    }
+
+    /**
+     * Getter for <code>nw.payment.make_recurrent</code>.
+     */
+    public Boolean getMakeRecurrent() {
+        return (Boolean) get(57);
+    }
+
+    /**
+     * Setter for <code>nw.payment.payer_recurrent_parent_invoice_id</code>.
+     */
+    public void setPayerRecurrentParentInvoiceId(String value) {
+        set(58, value);
+    }
+
+    /**
+     * Getter for <code>nw.payment.payer_recurrent_parent_invoice_id</code>.
+     */
+    public String getPayerRecurrentParentInvoiceId() {
+        return (String) get(58);
+    }
+
+    /**
+     * Setter for <code>nw.payment.payer_recurrent_parent_payment_id</code>.
+     */
+    public void setPayerRecurrentParentPaymentId(String value) {
+        set(59, value);
+    }
+
+    /**
+     * Getter for <code>nw.payment.payer_recurrent_parent_payment_id</code>.
+     */
+    public String getPayerRecurrentParentPaymentId() {
+        return (String) get(59);
+    }
+
+    /**
+     * Setter for <code>nw.payment.recurrent_intention_token</code>.
+     */
+    public void setRecurrentIntentionToken(String value) {
+        set(60, value);
+    }
+
+    /**
+     * Getter for <code>nw.payment.recurrent_intention_token</code>.
+     */
+    public String getRecurrentIntentionToken() {
+        return (String) get(60);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -861,7 +917,7 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
     /**
      * Create a detached, initialised PaymentRecord
      */
-    public PaymentRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String paymentId, LocalDateTime createdAt, String invoiceId, String partyId, String shopId, Long domainRevision, Long partyRevision, PaymentStatus status, String statusCancelledReason, String statusCapturedReason, String statusFailedFailure, Long amount, String currencyCode, PayerType payerType, PaymentToolType payerPaymentToolType, String payerBankCardToken, String payerBankCardPaymentSystem, String payerBankCardBin, String payerBankCardMaskedPan, String payerBankCardTokenProvider, String payerPaymentTerminalType, String payerDigitalWalletProvider, String payerDigitalWalletId, String payerPaymentSessionId, String payerIpAddress, String payerFingerprint, String payerPhoneNumber, String payerEmail, String payerCustomerId, String payerCustomerBindingId, String payerCustomerRecPaymentToolId, byte[] context, PaymentFlowType paymentFlowType, String paymentFlowOnHoldExpiration, LocalDateTime paymentFlowHeldUntil, RiskScore riskScore, Integer routeProviderId, Integer routeTerminalId, LocalDateTime wtime, Boolean current, SessionTargetStatus sessionTarget, SessionChangePayload sessionPayload, SessionChangePayloadFinishedResult sessionPayloadFinishedResult, String sessionPayloadFinishedResultFailedFailureJson, String sessionPayloadSuspendedTag, String sessionPayloadTransactionBoundTrxId, LocalDateTime sessionPayloadTransactionBoundTrxTimestamp, String sessionPayloadTransactionBoundTrxExtraJson, byte[] sessionPayloadProxyStateChangedProxyState, String sessionPayloadInteractionRequestedInteractionJson, Long fee, Long providerFee, Long externalFee, Long guaranteeDeposit) {
+    public PaymentRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String paymentId, LocalDateTime createdAt, String invoiceId, String partyId, String shopId, Long domainRevision, Long partyRevision, PaymentStatus status, String statusCancelledReason, String statusCapturedReason, String statusFailedFailure, Long amount, String currencyCode, PayerType payerType, PaymentToolType payerPaymentToolType, String payerBankCardToken, String payerBankCardPaymentSystem, String payerBankCardBin, String payerBankCardMaskedPan, String payerBankCardTokenProvider, String payerPaymentTerminalType, String payerDigitalWalletProvider, String payerDigitalWalletId, String payerPaymentSessionId, String payerIpAddress, String payerFingerprint, String payerPhoneNumber, String payerEmail, String payerCustomerId, String payerCustomerBindingId, String payerCustomerRecPaymentToolId, byte[] context, PaymentFlowType paymentFlowType, String paymentFlowOnHoldExpiration, LocalDateTime paymentFlowHeldUntil, RiskScore riskScore, Integer routeProviderId, Integer routeTerminalId, LocalDateTime wtime, Boolean current, SessionTargetStatus sessionTarget, SessionChangePayload sessionPayload, SessionChangePayloadFinishedResult sessionPayloadFinishedResult, String sessionPayloadFinishedResultFailedFailureJson, String sessionPayloadSuspendedTag, String sessionPayloadTransactionBoundTrxId, LocalDateTime sessionPayloadTransactionBoundTrxTimestamp, String sessionPayloadTransactionBoundTrxExtraJson, byte[] sessionPayloadProxyStateChangedProxyState, String sessionPayloadInteractionRequestedInteractionJson, Long fee, Long providerFee, Long externalFee, Long guaranteeDeposit, Boolean makeRecurrent, String payerRecurrentParentInvoiceId, String payerRecurrentParentPaymentId, String recurrentIntentionToken) {
         super(Payment.PAYMENT);
 
         set(0, id);
@@ -921,5 +977,9 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
         set(54, providerFee);
         set(55, externalFee);
         set(56, guaranteeDeposit);
+        set(57, makeRecurrent);
+        set(58, payerRecurrentParentInvoiceId);
+        set(59, payerRecurrentParentPaymentId);
+        set(60, recurrentIntentionToken);
     }
 }

@@ -3,6 +3,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.shop;
 import com.rbkmoney.damsel.domain.Suspension;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -49,11 +50,7 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
         shopSource.setWtime(null);
         shopSource.setEventId(eventId);
         shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        com.rbkmoney.newway.domain.enums.Suspension suspensionType = TypeUtil.toEnumField(suspension.getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.Suspension.class);
-        if (suspensionType == null) {
-            throw new IllegalArgumentException("Illegal shop suspension: " + suspensionType);
-        }
-        shopSource.setSuspension(suspensionType);
+        shopSource.setSuspension(TBaseUtil.unionFieldToEnum(suspension, com.rbkmoney.newway.domain.enums.Suspension.class));
         if (suspension.isSetActive()) {
             shopSource.setSuspensionActiveSince(TypeUtil.stringToLocalDateTime(suspension.getActive().getSince()));
             shopSource.setSuspensionSuspendedSince(null);

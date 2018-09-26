@@ -5,6 +5,7 @@ import com.rbkmoney.damsel.domain.InternationalBankAccount;
 import com.rbkmoney.damsel.domain.InternationalBankDetails;
 import com.rbkmoney.damsel.domain.RussianBankAccount;
 import com.rbkmoney.damsel.payout_processing.*;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -62,18 +63,10 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
         payout.setShopId(payoutCreated.getShopId());
         payout.setContractId(payoutCreated.getContractId());
         payout.setCreatedAt(TypeUtil.stringToLocalDateTime(payoutCreated.getCreatedAt()));
-        PayoutStatus payoutstatus = TypeUtil.toEnumField(payoutCreated.getStatus().getSetField().getFieldName(), PayoutStatus.class);
-        if (payoutstatus == null) {
-            throw new IllegalArgumentException("Illegal payout status: " + payoutCreated.getStatus());
-        }
-        payout.setStatus(payoutstatus);
+        payout.setStatus(TBaseUtil.unionFieldToEnum(payoutCreated.getStatus(), PayoutStatus.class));
         if (payoutCreated.getStatus().isSetPaid()) {
             PaidDetails details = payoutCreated.getStatus().getPaid().getDetails();
-            PayoutPaidStatusDetails paidDetails = TypeUtil.toEnumField(details.getSetField().getFieldName(), PayoutPaidStatusDetails.class);
-            if (paidDetails == null) {
-                throw new IllegalArgumentException("Illegal paid details: " + details);
-            }
-            payout.setStatusPaidDetails(paidDetails);
+            payout.setStatusPaidDetails(TBaseUtil.unionFieldToEnum(details, PayoutPaidStatusDetails.class));
             if (details.isSetCardDetails()) {
                 payout.setStatusPaidDetailsCardProviderName(details.getCardDetails().getProviderDetails().getName());
                 payout.setStatusPaidDetailsCardProviderTransactionId(details.getCardDetails().getProviderDetails().getTransactionId());
@@ -81,25 +74,13 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
         } else if (payoutCreated.getStatus().isSetCancelled()) {
             PayoutCancelled cancelled = payoutCreated.getStatus().getCancelled();
             payout.setStatusCancelledUserInfoId(cancelled.getUserInfo().getId());
-            UserType statusCancelledUserInfoType = TypeUtil.toEnumField(cancelled.getUserInfo().getType().getSetField().getFieldName(), UserType.class);
-            if (statusCancelledUserInfoType == null) {
-                throw new IllegalArgumentException("Illegal user type: " + cancelled.getUserInfo().getType());
-            }
-            payout.setStatusCancelledUserInfoType(statusCancelledUserInfoType);
+            payout.setStatusCancelledUserInfoType(TBaseUtil.unionFieldToEnum(cancelled.getUserInfo().getType(), UserType.class));
             payout.setStatusCancelledDetails(cancelled.getDetails());
-        }
-        if (payoutCreated.getStatus().isSetConfirmed()) {
+        } else if (payoutCreated.getStatus().isSetConfirmed()) {
             UserInfo confirmedUserInfo = payoutCreated.getStatus().getConfirmed().getUserInfo();
-            UserType statusCondirmedUserInfoType = TypeUtil.toEnumField(confirmedUserInfo.getType().getSetField().getFieldName(), UserType.class);
-            if (statusCondirmedUserInfoType == null) {
-                throw new IllegalArgumentException("Illegal user type: " + confirmedUserInfo.getType());
-            }
-            payout.setStatusConfirmedUserInfoType(statusCondirmedUserInfoType);
+            payout.setStatusConfirmedUserInfoType(TBaseUtil.unionFieldToEnum(confirmedUserInfo.getType(), UserType.class));
         }
-        PayoutType payoutType = TypeUtil.toEnumField(payoutCreated.getType().getSetField().getFieldName(), PayoutType.class);
-        if (payoutType == null) {
-            throw new IllegalArgumentException("Illegal payout type: " + payoutCreated.getType());
-        }
+        PayoutType payoutType = TBaseUtil.unionFieldToEnum(payoutCreated.getType(), PayoutType.class);
         payout.setType(payoutType);
         if (payoutCreated.getType().isSetBankCard()) {
             BankCard card = payoutCreated.getType().getBankCard().getCard();
@@ -110,11 +91,7 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
             payout.setTypeCardTokenProvider(card.getTokenProvider().name());
         } else if (payoutCreated.getType().isSetBankAccount()) {
             PayoutAccount payoutAccount = payoutCreated.getType().getBankAccount();
-            PayoutAccountType payoutAccountType = TypeUtil.toEnumField(payoutAccount.getSetField().getFieldName(), PayoutAccountType.class);
-            if (payoutAccountType == null) {
-                throw new IllegalArgumentException("Illegal payout account type: " + payoutAccount);
-            }
-            payout.setTypeAccountType(payoutAccountType);
+            payout.setTypeAccountType(TBaseUtil.unionFieldToEnum(payoutAccount, PayoutAccountType.class));
             if (payoutAccount.isSetRussianPayoutAccount()) {
                 RussianPayoutAccount russianPayoutAccount = payoutAccount.getRussianPayoutAccount();
                 RussianBankAccount russianBankAccount = russianPayoutAccount.getBankAccount();
@@ -183,11 +160,7 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
             }
         }
         payout.setInitiatorId(change.getPayoutCreated().getInitiator().getId());
-        UserType userType = TypeUtil.toEnumField(change.getPayoutCreated().getInitiator().getType().getSetField().getFieldName(), UserType.class);
-        if (userType == null) {
-            throw new IllegalArgumentException("Illegal user type: " + change.getPayoutCreated().getInitiator().getType());
-        }
-        payout.setInitiatorType(userType);
+        payout.setInitiatorType(TBaseUtil.unionFieldToEnum(change.getPayoutCreated().getInitiator().getType(), UserType.class));
         long pytId = payoutDao.save(payout);
         if (payoutCreated.isSetSummary()) {
             List<PayoutSummary> payoutSummaries = PayoutUtil.convertPayoutSummaries(payoutCreated, pytId);

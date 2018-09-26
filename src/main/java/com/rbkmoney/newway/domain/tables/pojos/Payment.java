@@ -33,7 +33,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payment implements Serializable {
 
-    private static final long serialVersionUID = 2110878257;
+    private static final long serialVersionUID = 1162777227;
 
     private Long                               id;
     private Long                               eventId;
@@ -92,6 +92,10 @@ public class Payment implements Serializable {
     private Long                               providerFee;
     private Long                               externalFee;
     private Long                               guaranteeDeposit;
+    private Boolean                            makeRecurrent;
+    private String                             payerRecurrentParentInvoiceId;
+    private String                             payerRecurrentParentPaymentId;
+    private String                             recurrentIntentionToken;
 
     public Payment() {}
 
@@ -153,6 +157,10 @@ public class Payment implements Serializable {
         this.providerFee = value.providerFee;
         this.externalFee = value.externalFee;
         this.guaranteeDeposit = value.guaranteeDeposit;
+        this.makeRecurrent = value.makeRecurrent;
+        this.payerRecurrentParentInvoiceId = value.payerRecurrentParentInvoiceId;
+        this.payerRecurrentParentPaymentId = value.payerRecurrentParentPaymentId;
+        this.recurrentIntentionToken = value.recurrentIntentionToken;
     }
 
     public Payment(
@@ -212,7 +220,11 @@ public class Payment implements Serializable {
         Long                               fee,
         Long                               providerFee,
         Long                               externalFee,
-        Long                               guaranteeDeposit
+        Long                               guaranteeDeposit,
+        Boolean                            makeRecurrent,
+        String                             payerRecurrentParentInvoiceId,
+        String                             payerRecurrentParentPaymentId,
+        String                             recurrentIntentionToken
     ) {
         this.id = id;
         this.eventId = eventId;
@@ -271,6 +283,10 @@ public class Payment implements Serializable {
         this.providerFee = providerFee;
         this.externalFee = externalFee;
         this.guaranteeDeposit = guaranteeDeposit;
+        this.makeRecurrent = makeRecurrent;
+        this.payerRecurrentParentInvoiceId = payerRecurrentParentInvoiceId;
+        this.payerRecurrentParentPaymentId = payerRecurrentParentPaymentId;
+        this.recurrentIntentionToken = recurrentIntentionToken;
     }
 
     public Long getId() {
@@ -729,6 +745,38 @@ public class Payment implements Serializable {
         this.guaranteeDeposit = guaranteeDeposit;
     }
 
+    public Boolean getMakeRecurrent() {
+        return this.makeRecurrent;
+    }
+
+    public void setMakeRecurrent(Boolean makeRecurrent) {
+        this.makeRecurrent = makeRecurrent;
+    }
+
+    public String getPayerRecurrentParentInvoiceId() {
+        return this.payerRecurrentParentInvoiceId;
+    }
+
+    public void setPayerRecurrentParentInvoiceId(String payerRecurrentParentInvoiceId) {
+        this.payerRecurrentParentInvoiceId = payerRecurrentParentInvoiceId;
+    }
+
+    public String getPayerRecurrentParentPaymentId() {
+        return this.payerRecurrentParentPaymentId;
+    }
+
+    public void setPayerRecurrentParentPaymentId(String payerRecurrentParentPaymentId) {
+        this.payerRecurrentParentPaymentId = payerRecurrentParentPaymentId;
+    }
+
+    public String getRecurrentIntentionToken() {
+        return this.recurrentIntentionToken;
+    }
+
+    public void setRecurrentIntentionToken(String recurrentIntentionToken) {
+        this.recurrentIntentionToken = recurrentIntentionToken;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -1080,6 +1128,30 @@ public class Payment implements Serializable {
         }
         else if (!guaranteeDeposit.equals(other.guaranteeDeposit))
             return false;
+        if (makeRecurrent == null) {
+            if (other.makeRecurrent != null)
+                return false;
+        }
+        else if (!makeRecurrent.equals(other.makeRecurrent))
+            return false;
+        if (payerRecurrentParentInvoiceId == null) {
+            if (other.payerRecurrentParentInvoiceId != null)
+                return false;
+        }
+        else if (!payerRecurrentParentInvoiceId.equals(other.payerRecurrentParentInvoiceId))
+            return false;
+        if (payerRecurrentParentPaymentId == null) {
+            if (other.payerRecurrentParentPaymentId != null)
+                return false;
+        }
+        else if (!payerRecurrentParentPaymentId.equals(other.payerRecurrentParentPaymentId))
+            return false;
+        if (recurrentIntentionToken == null) {
+            if (other.recurrentIntentionToken != null)
+                return false;
+        }
+        else if (!recurrentIntentionToken.equals(other.recurrentIntentionToken))
+            return false;
         return true;
     }
 
@@ -1144,6 +1216,10 @@ public class Payment implements Serializable {
         result = prime * result + ((this.providerFee == null) ? 0 : this.providerFee.hashCode());
         result = prime * result + ((this.externalFee == null) ? 0 : this.externalFee.hashCode());
         result = prime * result + ((this.guaranteeDeposit == null) ? 0 : this.guaranteeDeposit.hashCode());
+        result = prime * result + ((this.makeRecurrent == null) ? 0 : this.makeRecurrent.hashCode());
+        result = prime * result + ((this.payerRecurrentParentInvoiceId == null) ? 0 : this.payerRecurrentParentInvoiceId.hashCode());
+        result = prime * result + ((this.payerRecurrentParentPaymentId == null) ? 0 : this.payerRecurrentParentPaymentId.hashCode());
+        result = prime * result + ((this.recurrentIntentionToken == null) ? 0 : this.recurrentIntentionToken.hashCode());
         return result;
     }
 
@@ -1208,6 +1284,10 @@ public class Payment implements Serializable {
         sb.append(", ").append(providerFee);
         sb.append(", ").append(externalFee);
         sb.append(", ").append(guaranteeDeposit);
+        sb.append(", ").append(makeRecurrent);
+        sb.append(", ").append(payerRecurrentParentInvoiceId);
+        sb.append(", ").append(payerRecurrentParentPaymentId);
+        sb.append(", ").append(recurrentIntentionToken);
 
         sb.append(")");
         return sb.toString();

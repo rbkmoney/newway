@@ -1,12 +1,10 @@
 package com.rbkmoney.newway.poller.event_stock.impl.invoicing.payment;
 
-import com.rbkmoney.damsel.domain.ContactInfo;
-import com.rbkmoney.damsel.domain.CustomerPayer;
-import com.rbkmoney.damsel.domain.InvoicePayment;
-import com.rbkmoney.damsel.domain.PaymentTool;
+import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentStarted;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -88,11 +86,7 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
         if (invoicePayment.isSetPartyRevision()) {
             payment.setPartyRevision(invoicePayment.getPartyRevision());
         }
-        PaymentStatus status = TypeUtil.toEnumField(invoicePayment.getStatus().getSetField().getFieldName(), PaymentStatus.class);
-        if (status == null) {
-            throw new IllegalArgumentException("Illegal payment status: " + invoicePayment.getStatus());
-        }
-        payment.setStatus(status);
+        payment.setStatus(TBaseUtil.unionFieldToEnum(invoicePayment.getStatus(), PaymentStatus.class));
         if (invoicePayment.getStatus().isSetCancelled()) {
             payment.setStatusCancelledReason(invoicePayment.getStatus().getCancelled().getReason());
         } else if (invoicePayment.getStatus().isSetCaptured()) {
@@ -102,29 +96,30 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
         }
         payment.setAmount(invoicePayment.getCost().getAmount());
         payment.setCurrencyCode(invoicePayment.getCost().getCurrency().getSymbolicCode());
-        PayerType payerType = TypeUtil.toEnumField(invoicePayment.getPayer().getSetField().getFieldName(), PayerType.class);
-        if (payerType == null) {
-            throw new IllegalArgumentException("Illegal payer type: " + invoicePayment.getPayer());
-        }
-        payment.setPayerType(payerType);
-        if (invoicePayment.getPayer().isSetPaymentResource()) {
-            PaymentTool paymentTool = invoicePayment.getPayer().getPaymentResource().getResource().getPaymentTool();
-            fillPaymentTool(payment, paymentTool);
-            ContactInfo contactInfo = invoicePayment.getPayer().getPaymentResource().getContactInfo();
-            fillContactInfo(payment, contactInfo);
-        } else if (invoicePayment.getPayer().isSetCustomer()) {
-            CustomerPayer customer = invoicePayment.getPayer().getCustomer();
+        Payer payer = invoicePayment.getPayer();
+        payment.setPayerType(TBaseUtil.unionFieldToEnum(payer, PayerType.class));
+        if (payer.isSetPaymentResource()) {
+            PaymentResourcePayer paymentResource = payer.getPaymentResource();
+            fillPaymentTool(payment, paymentResource.getResource().getPaymentTool());
+            fillContactInfo(payment, paymentResource.getContactInfo());
+            if (paymentResource.getResource().isSetClientInfo()) {
+                payment.setPayerIpAddress(paymentResource.getResource().getClientInfo().getIpAddress());
+                payment.setPayerFingerprint(paymentResource.getResource().getClientInfo().getFingerprint());
+            }
+        } else if (payer.isSetCustomer()) {
+            CustomerPayer customer = payer.getCustomer();
             payment.setPayerCustomerId(customer.getCustomerId());
             payment.setPayerCustomerBindingId(customer.getCustomerBindingId());
             payment.setPayerCustomerRecPaymentToolId(customer.getRecPaymentToolId());
             fillPaymentTool(payment, customer.getPaymentTool());
             fillContactInfo(payment, customer.getContactInfo());
+        } else if (payer.isSetRecurrent()) {
+            payment.setPayerRecurrentParentInvoiceId(payer.getRecurrent().getRecurrentParent().getInvoiceId());
+            payment.setPayerRecurrentParentPaymentId(payer.getRecurrent().getRecurrentParent().getPaymentId());
+            fillPaymentTool(payment, payer.getRecurrent().getPaymentTool());
+            fillContactInfo(payment, payer.getRecurrent().getContactInfo());
         }
-        PaymentFlowType paymentFlowType = TypeUtil.toEnumField(invoicePayment.getFlow().getSetField().getFieldName(), PaymentFlowType.class);
-        if (paymentFlowType == null) {
-            throw new IllegalArgumentException("Illegal payment flow type: " + invoicePayment.getPayer());
-        }
-        payment.setPaymentFlowType(paymentFlowType);
+        payment.setPaymentFlowType(TBaseUtil.unionFieldToEnum(invoicePayment.getFlow(), PaymentFlowType.class));
         if (invoicePayment.getFlow().isSetHold()) {
             payment.setPaymentFlowHeldUntil(TypeUtil.stringToLocalDateTime(invoicePayment.getFlow().getHold().getHeldUntil()));
             payment.setPaymentFlowOnHoldExpiration(invoicePayment.getFlow().getHold().getOnHoldExpiration().name());
@@ -133,6 +128,10 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
             payment.setRouteProviderId(invoicePaymentStarted.getRoute().getProvider().getId());
             payment.setRouteTerminalId(invoicePaymentStarted.getRoute().getTerminal().getId());
         }
+        if (invoicePayment.isSetMakeRecurrent()) {
+            payment.setMakeRecurrent(invoicePayment.isMakeRecurrent());
+        }
+
         long pmntId = paymentDao.save(payment);
 
         if (invoicePaymentStarted.isSetCashFlow()) {
@@ -152,7 +151,7 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
     }
 
     private void fillPaymentTool(Payment payment, PaymentTool paymentTool) {
-        payment.setPayerPaymentToolType(TypeUtil.toEnumField(paymentTool.getSetField().getFieldName(), PaymentToolType.class));
+        payment.setPayerPaymentToolType(TBaseUtil.unionFieldToEnum(paymentTool, PaymentToolType.class));
         if (paymentTool.isSetBankCard()) {
             payment.setPayerBankCardToken(paymentTool.getBankCard().getToken());
             payment.setPayerBankCardPaymentSystem(paymentTool.getBankCard().getPaymentSystem().name());

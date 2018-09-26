@@ -28,7 +28,9 @@ public enum PayerType implements EnumType {
 
     payment_resource("payment_resource"),
 
-    customer("customer");
+    customer("customer"),
+
+    recurrent("recurrent");
 
     private final String literal;
 
