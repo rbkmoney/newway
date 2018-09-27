@@ -18,11 +18,11 @@ public class EventStockConfig {
     @Bean
     public EventPublisher partyManagementEventPublisher(
             PartyManagementEventStockHandler partyManagementEventStockHandler,
-            @Value("${bm.processing.url}") Resource resource,
-            @Value("${bm.processing.polling.delay}") int pollDelay,
-            @Value("${bm.processing.polling.retryDelay}") int retryDelay,
-            @Value("${bm.processing.polling.maxPoolSize}") int maxPoolSize,
-            @Value("${bm.processing.polling.maxQuerySize}") int maxQuerySize
+            @Value("${bm.partyManagement.url}") Resource resource,
+            @Value("${bm.partyManagement.polling.delay}") int pollDelay,
+            @Value("${bm.partyManagement.polling.retryDelay}") int retryDelay,
+            @Value("${bm.partyManagement.polling.maxPoolSize}") int maxPoolSize,
+            @Value("${bm.partyManagement.polling.maxQuerySize}") int maxQuerySize
     ) throws IOException {
         return new PollingEventPublisherBuilder()
                 .withURI(resource.getURI())
@@ -37,11 +37,11 @@ public class EventStockConfig {
     @Bean
     public EventPublisher invoicingEventPublisher(
             InvoicingEventStockHandler invoicingEventStockHandler,
-            @Value("${bm.processing.url}") Resource resource,
-            @Value("${bm.processing.polling.delay}") int pollDelay,
-            @Value("${bm.processing.polling.retryDelay}") int retryDelay,
-            @Value("${bm.processing.polling.maxPoolSize}") int maxPoolSize,
-            @Value("${bm.processing.polling.maxQuerySize}") int maxQuerySize
+            @Value("${bm.invoicing.url}") Resource resource,
+            @Value("${bm.invoicing.polling.delay}") int pollDelay,
+            @Value("${bm.invoicing.polling.retryDelay}") int retryDelay,
+            @Value("${bm.invoicing.polling.maxPoolSize}") int maxPoolSize,
+            @Value("${bm.invoicing.polling.maxQuerySize}") int maxQuerySize
     ) throws IOException {
         return new PollingEventPublisherBuilder()
                 .withURI(resource.getURI())
