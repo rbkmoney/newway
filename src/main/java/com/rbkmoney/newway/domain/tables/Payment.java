@@ -44,7 +44,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payment extends TableImpl<PaymentRecord> {
 
-    private static final long serialVersionUID = 477879338;
+    private static final long serialVersionUID = -1275329731;
 
     /**
      * The reference instance of <code>nw.payment</code>
@@ -343,6 +343,26 @@ public class Payment extends TableImpl<PaymentRecord> {
      * The column <code>nw.payment.guarantee_deposit</code>.
      */
     public final TableField<PaymentRecord, Long> GUARANTEE_DEPOSIT = createField("guarantee_deposit", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>nw.payment.make_recurrent</code>.
+     */
+    public final TableField<PaymentRecord, Boolean> MAKE_RECURRENT = createField("make_recurrent", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+
+    /**
+     * The column <code>nw.payment.payer_recurrent_parent_invoice_id</code>.
+     */
+    public final TableField<PaymentRecord, String> PAYER_RECURRENT_PARENT_INVOICE_ID = createField("payer_recurrent_parent_invoice_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payment.payer_recurrent_parent_payment_id</code>.
+     */
+    public final TableField<PaymentRecord, String> PAYER_RECURRENT_PARENT_PAYMENT_ID = createField("payer_recurrent_parent_payment_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payment.recurrent_intention_token</code>.
+     */
+    public final TableField<PaymentRecord, String> RECURRENT_INTENTION_TOKEN = createField("recurrent_intention_token", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * Create a <code>nw.payment</code> table reference

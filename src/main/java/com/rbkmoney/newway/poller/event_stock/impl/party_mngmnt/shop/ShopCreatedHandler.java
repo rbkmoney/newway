@@ -4,6 +4,7 @@ import com.rbkmoney.damsel.domain.Shop;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.ShopEffectUnit;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.dao.party.iface.ShopDao;
@@ -52,11 +53,7 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
             shop.setShopId(shopId);
             shop.setPartyId(partyId);
             shop.setCreatedAt(TypeUtil.stringToLocalDateTime(shopCreated.getCreatedAt()));
-            com.rbkmoney.newway.domain.enums.Blocking blocking = TypeUtil.toEnumField(shopCreated.getBlocking().getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.Blocking.class);
-            if (blocking == null) {
-                throw new IllegalArgumentException("Illegal shop blocking: " + shopCreated.getBlocking());
-            }
-            shop.setBlocking(blocking);
+            shop.setBlocking(TBaseUtil.unionFieldToEnum(shopCreated.getBlocking(), com.rbkmoney.newway.domain.enums.Blocking.class));
             if (shopCreated.getBlocking().isSetUnblocked()) {
                 shop.setBlockingUnblockedReason(shopCreated.getBlocking().getUnblocked().getReason());
                 shop.setBlockingUnblockedSince(TypeUtil.stringToLocalDateTime(shopCreated.getBlocking().getUnblocked().getSince()));
@@ -64,11 +61,7 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
                 shop.setBlockingBlockedReason(shopCreated.getBlocking().getBlocked().getReason());
                 shop.setBlockingBlockedSince(TypeUtil.stringToLocalDateTime(shopCreated.getBlocking().getBlocked().getSince()));
             }
-            com.rbkmoney.newway.domain.enums.Suspension suspension = TypeUtil.toEnumField(shopCreated.getSuspension().getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.Suspension.class);
-            if (suspension == null) {
-                throw new IllegalArgumentException("Illegal shop suspension: " + shopCreated.getSuspension());
-            }
-            shop.setSuspension(suspension);
+            shop.setSuspension(TBaseUtil.unionFieldToEnum(shopCreated.getSuspension(), com.rbkmoney.newway.domain.enums.Suspension.class));
             if (shopCreated.getSuspension().isSetActive()) {
                 shop.setSuspensionActiveSince(TypeUtil.stringToLocalDateTime(shopCreated.getSuspension().getActive().getSince()));
             } else if (shopCreated.getSuspension().isSetSuspended()) {

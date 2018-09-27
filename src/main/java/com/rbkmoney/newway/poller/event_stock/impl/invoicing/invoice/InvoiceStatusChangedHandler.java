@@ -3,6 +3,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.invoicing.invoice;
 import com.rbkmoney.damsel.domain.InvoiceStatus;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -59,11 +60,7 @@ public class InvoiceStatusChangedHandler extends AbstractInvoicingHandler {
         invoiceSource.setWtime(null);
         invoiceSource.setEventId(eventId);
         invoiceSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        com.rbkmoney.newway.domain.enums.InvoiceStatus status = TypeUtil.toEnumField(invoiceStatus.getSetField().getFieldName(), com.rbkmoney.newway.domain.enums.InvoiceStatus.class);
-        if (status == null) {
-            throw new IllegalArgumentException("Illegal invoice status: " + invoiceStatus);
-        }
-        invoiceSource.setStatus(status);
+        invoiceSource.setStatus(TBaseUtil.unionFieldToEnum(invoiceStatus, com.rbkmoney.newway.domain.enums.InvoiceStatus.class));
         if (invoiceStatus.isSetCancelled()) {
             invoiceSource.setStatusCancelledDetails(invoiceStatus.getCancelled().getDetails());
             invoiceSource.setStatusFulfilledDetails(null);

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.rbkmoney.damsel.domain.Invoice;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -62,10 +63,7 @@ public class InvoiceCreatedHandler extends AbstractInvoicingHandler {
         invoiceRecord.setShopId(invoice.getShopId());
         invoiceRecord.setPartyRevision(invoice.getPartyRevision());
         invoiceRecord.setCreatedAt(TypeUtil.stringToLocalDateTime(invoice.getCreatedAt()));
-        InvoiceStatus status = TypeUtil.toEnumField(invoice.getStatus().getSetField().getFieldName(), InvoiceStatus.class);
-        if (status == null) {
-            throw new IllegalArgumentException("Illegal invoice status: " + invoice.getStatus());
-        }
+        InvoiceStatus status = TBaseUtil.unionFieldToEnum(invoice.getStatus(), InvoiceStatus.class);
         invoiceRecord.setStatus(status);
         if (invoice.getStatus().isSetCancelled()) {
             invoiceRecord.setStatusCancelledDetails(invoice.getStatus().getCancelled().getDetails());
