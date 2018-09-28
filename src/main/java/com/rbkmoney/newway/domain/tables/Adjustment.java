@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Adjustment extends TableImpl<AdjustmentRecord> {
 
-    private static final long serialVersionUID = 1568171720;
+    private static final long serialVersionUID = 1192366780;
 
     /**
      * The reference instance of <code>nw.adjustment</code>
@@ -146,6 +146,11 @@ public class Adjustment extends TableImpl<AdjustmentRecord> {
      * The column <code>nw.adjustment.external_fee</code>.
      */
     public final TableField<AdjustmentRecord, Long> EXTERNAL_FEE = createField("external_fee", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>nw.adjustment.party_revision</code>.
+     */
+    public final TableField<AdjustmentRecord, Long> PARTY_REVISION = createField("party_revision", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>nw.adjustment</code> table reference
