@@ -101,6 +101,9 @@ public class InvoicePaymentRefundCreatedHandler extends AbstractInvoicingHandler
             refund.setCurrencyCode(payment.getCurrencyCode());
         }
         refund.setReason(invoicePaymentRefund.getReason());
+        if (invoicePaymentRefund.isSetPartyRevision()) {
+            refund.setPartyRevision(invoicePaymentRefund.getPartyRevision());
+        }
 
         long rfndId = refundDao.save(refund);
 

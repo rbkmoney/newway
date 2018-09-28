@@ -1,0 +1,1 @@
+ALTER TABLE nw.refund ADD COLUMN party_revision BIGINT;
