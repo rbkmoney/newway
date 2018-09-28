@@ -25,7 +25,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Adjustment implements Serializable {
 
-    private static final long serialVersionUID = -1575561747;
+    private static final long serialVersionUID = 1195990638;
 
     private Long             id;
     private Long             eventId;
@@ -46,6 +46,7 @@ public class Adjustment implements Serializable {
     private Long             fee;
     private Long             providerFee;
     private Long             externalFee;
+    private Long             partyRevision;
 
     public Adjustment() {}
 
@@ -69,6 +70,7 @@ public class Adjustment implements Serializable {
         this.fee = value.fee;
         this.providerFee = value.providerFee;
         this.externalFee = value.externalFee;
+        this.partyRevision = value.partyRevision;
     }
 
     public Adjustment(
@@ -90,7 +92,8 @@ public class Adjustment implements Serializable {
         Boolean          current,
         Long             fee,
         Long             providerFee,
-        Long             externalFee
+        Long             externalFee,
+        Long             partyRevision
     ) {
         this.id = id;
         this.eventId = eventId;
@@ -111,6 +114,7 @@ public class Adjustment implements Serializable {
         this.fee = fee;
         this.providerFee = providerFee;
         this.externalFee = externalFee;
+        this.partyRevision = partyRevision;
     }
 
     public Long getId() {
@@ -265,6 +269,14 @@ public class Adjustment implements Serializable {
         this.externalFee = externalFee;
     }
 
+    public Long getPartyRevision() {
+        return this.partyRevision;
+    }
+
+    public void setPartyRevision(Long partyRevision) {
+        this.partyRevision = partyRevision;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -388,6 +400,12 @@ public class Adjustment implements Serializable {
         }
         else if (!externalFee.equals(other.externalFee))
             return false;
+        if (partyRevision == null) {
+            if (other.partyRevision != null)
+                return false;
+        }
+        else if (!partyRevision.equals(other.partyRevision))
+            return false;
         return true;
     }
 
@@ -414,6 +432,7 @@ public class Adjustment implements Serializable {
         result = prime * result + ((this.fee == null) ? 0 : this.fee.hashCode());
         result = prime * result + ((this.providerFee == null) ? 0 : this.providerFee.hashCode());
         result = prime * result + ((this.externalFee == null) ? 0 : this.externalFee.hashCode());
+        result = prime * result + ((this.partyRevision == null) ? 0 : this.partyRevision.hashCode());
         return result;
     }
 
@@ -440,6 +459,7 @@ public class Adjustment implements Serializable {
         sb.append(", ").append(fee);
         sb.append(", ").append(providerFee);
         sb.append(", ").append(externalFee);
+        sb.append(", ").append(partyRevision);
 
         sb.append(")");
         return sb.toString();

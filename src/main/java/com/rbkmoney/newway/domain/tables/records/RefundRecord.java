@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RefundRecord extends UpdatableRecordImpl<RefundRecord> {
 
-    private static final long serialVersionUID = -1877189194;
+    private static final long serialVersionUID = 1479149256;
 
     /**
      * Setter for <code>nw.refund.id</code>.
@@ -453,6 +453,20 @@ public class RefundRecord extends UpdatableRecordImpl<RefundRecord> {
         return (Long) get(29);
     }
 
+    /**
+     * Setter for <code>nw.refund.party_revision</code>.
+     */
+    public void setPartyRevision(Long value) {
+        set(30, value);
+    }
+
+    /**
+     * Getter for <code>nw.refund.party_revision</code>.
+     */
+    public Long getPartyRevision() {
+        return (Long) get(30);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -479,7 +493,7 @@ public class RefundRecord extends UpdatableRecordImpl<RefundRecord> {
     /**
      * Create a detached, initialised RefundRecord
      */
-    public RefundRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, Long domainRevision, String refundId, String paymentId, String invoiceId, String partyId, String shopId, LocalDateTime createdAt, RefundStatus status, String statusFailedFailure, Long amount, String currencyCode, String reason, LocalDateTime wtime, Boolean current, SessionTargetStatus sessionTarget, SessionChangePayload sessionPayload, SessionChangePayloadFinishedResult sessionPayloadFinishedResult, String sessionPayloadFinishedResultFailedFailureJson, String sessionPayloadSuspendedTag, String sessionPayloadTransactionBoundTrxId, LocalDateTime sessionPayloadTransactionBoundTrxTimestamp, String sessionPayloadTransactionBoundTrxExtraJson, byte[] sessionPayloadProxyStateChangedProxyState, String sessionPayloadInteractionRequestedInteractionJson, Long fee, Long providerFee, Long externalFee) {
+    public RefundRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, Long domainRevision, String refundId, String paymentId, String invoiceId, String partyId, String shopId, LocalDateTime createdAt, RefundStatus status, String statusFailedFailure, Long amount, String currencyCode, String reason, LocalDateTime wtime, Boolean current, SessionTargetStatus sessionTarget, SessionChangePayload sessionPayload, SessionChangePayloadFinishedResult sessionPayloadFinishedResult, String sessionPayloadFinishedResultFailedFailureJson, String sessionPayloadSuspendedTag, String sessionPayloadTransactionBoundTrxId, LocalDateTime sessionPayloadTransactionBoundTrxTimestamp, String sessionPayloadTransactionBoundTrxExtraJson, byte[] sessionPayloadProxyStateChangedProxyState, String sessionPayloadInteractionRequestedInteractionJson, Long fee, Long providerFee, Long externalFee, Long partyRevision) {
         super(Refund.REFUND);
 
         set(0, id);
@@ -512,5 +526,6 @@ public class RefundRecord extends UpdatableRecordImpl<RefundRecord> {
         set(27, fee);
         set(28, providerFee);
         set(29, externalFee);
+        set(30, partyRevision);
     }
 }

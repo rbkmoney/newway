@@ -94,6 +94,9 @@ public class InvoicePaymentAdjustmentCreatedHandler extends AbstractInvoicingHan
             adjustment.setStatusCancelledAt(TypeUtil.stringToLocalDateTime(invoicePaymentAdjustment.getStatus().getCancelled().getAt()));
         }
         adjustment.setReason(invoicePaymentAdjustment.getReason());
+        if (invoicePaymentAdjustment.isSetPartyRevision()) {
+            adjustment.setPartyRevision(invoicePaymentAdjustment.getPartyRevision());
+        }
 
         long adjId = adjustmentDao.save(adjustment);
         List<CashFlow> newCashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentAdjustment.getNewCashFlow(), adjId, PaymentChangeType.adjustment, AdjustmentCashFlowType.new_cash_flow);
