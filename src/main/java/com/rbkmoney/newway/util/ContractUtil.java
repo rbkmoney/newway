@@ -119,4 +119,14 @@ public class ContractUtil {
             }
         }
     }
+
+    public static void setNullReportPreferences(com.rbkmoney.newway.domain.tables.pojos.Contract contract) {
+        contract.setReportActScheduleId(null);
+        contract.setReportActSignerPosition(null);
+        contract.setReportActSignerFullName(null);
+        contract.setReportActSignerDocument(null);
+        contract.setReportActSignerDocPowerOfAttorneyLegalAgreementId(null);
+        contract.setReportActSignerDocPowerOfAttorneySignedAt(null);
+        contract.setReportActSignerDocPowerOfAttorneyValidUntil(null);
+    }
 }
