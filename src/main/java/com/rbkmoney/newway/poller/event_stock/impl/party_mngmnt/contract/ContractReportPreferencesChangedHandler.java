@@ -57,7 +57,11 @@ public class ContractReportPreferencesChangedHandler extends AbstractClaimChange
             contractSource.setWtime(null);
             contractSource.setEventId(eventId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-            ContractUtil.fillReportPreferences(contractSource, reportPreferencesChanged.getServiceAcceptanceActPreferences());
+            if (reportPreferencesChanged != null && reportPreferencesChanged.isSetServiceAcceptanceActPreferences()) {
+                ContractUtil.fillReportPreferences(contractSource, reportPreferencesChanged.getServiceAcceptanceActPreferences());
+            } else {
+                ContractUtil.setNullReportPreferences(contractSource);
+            }
             contractDao.updateNotCurrent(partyId, contractId);
             long cntrctId = contractDao.save(contractSource);
 
