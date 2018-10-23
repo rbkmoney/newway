@@ -44,6 +44,11 @@ public class Sequences {
     public static final Sequence<Long> CATEGORY_ID_SEQ = new SequenceImpl<Long>("category_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>nw.challenge_id_seq</code>
+     */
+    public static final Sequence<Long> CHALLENGE_ID_SEQ = new SequenceImpl<Long>("challenge_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>nw.contract_adjustment_id_seq</code>
      */
     public static final Sequence<Long> CONTRACT_ADJUSTMENT_ID_SEQ = new SequenceImpl<Long>("contract_adjustment_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -62,6 +67,16 @@ public class Sequences {
      * The sequence <code>nw.currency_id_seq</code>
      */
     public static final Sequence<Long> CURRENCY_ID_SEQ = new SequenceImpl<Long>("currency_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>nw.fistful_cash_flow_id_seq</code>
+     */
+    public static final Sequence<Long> FISTFUL_CASH_FLOW_ID_SEQ = new SequenceImpl<Long>("fistful_cash_flow_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>nw.identity_id_seq</code>
+     */
+    public static final Sequence<Long> IDENTITY_ID_SEQ = new SequenceImpl<Long>("identity_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>nw.inspector_id_seq</code>
@@ -147,4 +162,14 @@ public class Sequences {
      * The sequence <code>nw.terminal_id_seq</code>
      */
     public static final Sequence<Long> TERMINAL_ID_SEQ = new SequenceImpl<Long>("terminal_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>nw.wallet_id_seq</code>
+     */
+    public static final Sequence<Long> WALLET_ID_SEQ = new SequenceImpl<Long>("wallet_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>nw.withdrawal_id_seq</code>
+     */
+    public static final Sequence<Long> WITHDRAWAL_ID_SEQ = new SequenceImpl<Long>("withdrawal_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 }

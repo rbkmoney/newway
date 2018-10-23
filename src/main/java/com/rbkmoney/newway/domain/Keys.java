@@ -8,10 +8,12 @@ import com.rbkmoney.newway.domain.tables.Adjustment;
 import com.rbkmoney.newway.domain.tables.Calendar;
 import com.rbkmoney.newway.domain.tables.CashFlow;
 import com.rbkmoney.newway.domain.tables.Category;
+import com.rbkmoney.newway.domain.tables.Challenge;
 import com.rbkmoney.newway.domain.tables.Contract;
 import com.rbkmoney.newway.domain.tables.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.Contractor;
 import com.rbkmoney.newway.domain.tables.Currency;
+import com.rbkmoney.newway.domain.tables.FistfulCashFlow;
 import com.rbkmoney.newway.domain.tables.Inspector;
 import com.rbkmoney.newway.domain.tables.Invoice;
 import com.rbkmoney.newway.domain.tables.InvoiceCart;
@@ -29,14 +31,19 @@ import com.rbkmoney.newway.domain.tables.Refund;
 import com.rbkmoney.newway.domain.tables.Shop;
 import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
 import com.rbkmoney.newway.domain.tables.Terminal;
+import com.rbkmoney.newway.domain.tables.Wallet;
+import com.rbkmoney.newway.domain.tables.Withdrawal;
 import com.rbkmoney.newway.domain.tables.records.AdjustmentRecord;
 import com.rbkmoney.newway.domain.tables.records.CalendarRecord;
 import com.rbkmoney.newway.domain.tables.records.CashFlowRecord;
 import com.rbkmoney.newway.domain.tables.records.CategoryRecord;
+import com.rbkmoney.newway.domain.tables.records.ChallengeRecord;
 import com.rbkmoney.newway.domain.tables.records.ContractAdjustmentRecord;
 import com.rbkmoney.newway.domain.tables.records.ContractRecord;
 import com.rbkmoney.newway.domain.tables.records.ContractorRecord;
 import com.rbkmoney.newway.domain.tables.records.CurrencyRecord;
+import com.rbkmoney.newway.domain.tables.records.FistfulCashFlowRecord;
+import com.rbkmoney.newway.domain.tables.records.IdentityRecord;
 import com.rbkmoney.newway.domain.tables.records.InspectorRecord;
 import com.rbkmoney.newway.domain.tables.records.InvoiceCartRecord;
 import com.rbkmoney.newway.domain.tables.records.InvoiceRecord;
@@ -54,6 +61,8 @@ import com.rbkmoney.newway.domain.tables.records.RefundRecord;
 import com.rbkmoney.newway.domain.tables.records.ShopRecord;
 import com.rbkmoney.newway.domain.tables.records.TermSetHierarchyRecord;
 import com.rbkmoney.newway.domain.tables.records.TerminalRecord;
+import com.rbkmoney.newway.domain.tables.records.WalletRecord;
+import com.rbkmoney.newway.domain.tables.records.WithdrawalRecord;
 
 import javax.annotation.Generated;
 
@@ -85,10 +94,13 @@ public class Keys {
     public static final Identity<CalendarRecord, Long> IDENTITY_CALENDAR = Identities0.IDENTITY_CALENDAR;
     public static final Identity<CashFlowRecord, Long> IDENTITY_CASH_FLOW = Identities0.IDENTITY_CASH_FLOW;
     public static final Identity<CategoryRecord, Long> IDENTITY_CATEGORY = Identities0.IDENTITY_CATEGORY;
+    public static final Identity<ChallengeRecord, Long> IDENTITY_CHALLENGE = Identities0.IDENTITY_CHALLENGE;
     public static final Identity<ContractRecord, Long> IDENTITY_CONTRACT = Identities0.IDENTITY_CONTRACT;
     public static final Identity<ContractAdjustmentRecord, Long> IDENTITY_CONTRACT_ADJUSTMENT = Identities0.IDENTITY_CONTRACT_ADJUSTMENT;
     public static final Identity<ContractorRecord, Long> IDENTITY_CONTRACTOR = Identities0.IDENTITY_CONTRACTOR;
     public static final Identity<CurrencyRecord, Long> IDENTITY_CURRENCY = Identities0.IDENTITY_CURRENCY;
+    public static final Identity<FistfulCashFlowRecord, Long> IDENTITY_FISTFUL_CASH_FLOW = Identities0.IDENTITY_FISTFUL_CASH_FLOW;
+    public static final Identity<IdentityRecord, Long> IDENTITY_IDENTITY = Identities0.IDENTITY_IDENTITY;
     public static final Identity<InspectorRecord, Long> IDENTITY_INSPECTOR = Identities0.IDENTITY_INSPECTOR;
     public static final Identity<InvoiceRecord, Long> IDENTITY_INVOICE = Identities0.IDENTITY_INVOICE;
     public static final Identity<InvoiceCartRecord, Long> IDENTITY_INVOICE_CART = Identities0.IDENTITY_INVOICE_CART;
@@ -106,6 +118,8 @@ public class Keys {
     public static final Identity<ShopRecord, Long> IDENTITY_SHOP = Identities0.IDENTITY_SHOP;
     public static final Identity<TermSetHierarchyRecord, Long> IDENTITY_TERM_SET_HIERARCHY = Identities0.IDENTITY_TERM_SET_HIERARCHY;
     public static final Identity<TerminalRecord, Long> IDENTITY_TERMINAL = Identities0.IDENTITY_TERMINAL;
+    public static final Identity<WalletRecord, Long> IDENTITY_WALLET = Identities0.IDENTITY_WALLET;
+    public static final Identity<WithdrawalRecord, Long> IDENTITY_WITHDRAWAL = Identities0.IDENTITY_WITHDRAWAL;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -115,10 +129,13 @@ public class Keys {
     public static final UniqueKey<CalendarRecord> CALENDAR_PKEY = UniqueKeys0.CALENDAR_PKEY;
     public static final UniqueKey<CashFlowRecord> CASH_FLOW_PKEY = UniqueKeys0.CASH_FLOW_PKEY;
     public static final UniqueKey<CategoryRecord> CATEGORY_PKEY = UniqueKeys0.CATEGORY_PKEY;
+    public static final UniqueKey<ChallengeRecord> CHALLENGE_PKEY = UniqueKeys0.CHALLENGE_PKEY;
     public static final UniqueKey<ContractRecord> CONTRACT_PKEY = UniqueKeys0.CONTRACT_PKEY;
     public static final UniqueKey<ContractAdjustmentRecord> CONTRACT_ADJUSTMENT_PKEY = UniqueKeys0.CONTRACT_ADJUSTMENT_PKEY;
     public static final UniqueKey<ContractorRecord> CONTRACTOR_PKEY = UniqueKeys0.CONTRACTOR_PKEY;
     public static final UniqueKey<CurrencyRecord> CURRENCY_PKEY = UniqueKeys0.CURRENCY_PKEY;
+    public static final UniqueKey<FistfulCashFlowRecord> FISTFUL_CASH_FLOW_PKEY = UniqueKeys0.FISTFUL_CASH_FLOW_PKEY;
+    public static final UniqueKey<IdentityRecord> IDENTITY_PKEY = UniqueKeys0.IDENTITY_PKEY;
     public static final UniqueKey<InspectorRecord> INSPECTOR_PKEY = UniqueKeys0.INSPECTOR_PKEY;
     public static final UniqueKey<InvoiceRecord> INVOICE_PKEY = UniqueKeys0.INVOICE_PKEY;
     public static final UniqueKey<InvoiceCartRecord> INVOICE_CART_PKEY = UniqueKeys0.INVOICE_CART_PKEY;
@@ -136,6 +153,8 @@ public class Keys {
     public static final UniqueKey<ShopRecord> SHOP_PKEY = UniqueKeys0.SHOP_PKEY;
     public static final UniqueKey<TermSetHierarchyRecord> TERM_SET_HIERARCHY_PKEY = UniqueKeys0.TERM_SET_HIERARCHY_PKEY;
     public static final UniqueKey<TerminalRecord> TERMINAL_PKEY = UniqueKeys0.TERMINAL_PKEY;
+    public static final UniqueKey<WalletRecord> WALLET_PKEY = UniqueKeys0.WALLET_PKEY;
+    public static final UniqueKey<WithdrawalRecord> WITHDRAWAL_PKEY = UniqueKeys0.WITHDRAWAL_PKEY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -155,10 +174,13 @@ public class Keys {
         public static Identity<CalendarRecord, Long> IDENTITY_CALENDAR = createIdentity(Calendar.CALENDAR, Calendar.CALENDAR.ID);
         public static Identity<CashFlowRecord, Long> IDENTITY_CASH_FLOW = createIdentity(CashFlow.CASH_FLOW, CashFlow.CASH_FLOW.ID);
         public static Identity<CategoryRecord, Long> IDENTITY_CATEGORY = createIdentity(Category.CATEGORY, Category.CATEGORY.ID);
+        public static Identity<ChallengeRecord, Long> IDENTITY_CHALLENGE = createIdentity(Challenge.CHALLENGE, Challenge.CHALLENGE.ID);
         public static Identity<ContractRecord, Long> IDENTITY_CONTRACT = createIdentity(Contract.CONTRACT, Contract.CONTRACT.ID);
         public static Identity<ContractAdjustmentRecord, Long> IDENTITY_CONTRACT_ADJUSTMENT = createIdentity(ContractAdjustment.CONTRACT_ADJUSTMENT, ContractAdjustment.CONTRACT_ADJUSTMENT.ID);
         public static Identity<ContractorRecord, Long> IDENTITY_CONTRACTOR = createIdentity(Contractor.CONTRACTOR, Contractor.CONTRACTOR.ID);
         public static Identity<CurrencyRecord, Long> IDENTITY_CURRENCY = createIdentity(Currency.CURRENCY, Currency.CURRENCY.ID);
+        public static Identity<FistfulCashFlowRecord, Long> IDENTITY_FISTFUL_CASH_FLOW = createIdentity(FistfulCashFlow.FISTFUL_CASH_FLOW, FistfulCashFlow.FISTFUL_CASH_FLOW.ID);
+        public static Identity<IdentityRecord, Long> IDENTITY_IDENTITY = createIdentity(com.rbkmoney.newway.domain.tables.Identity.IDENTITY, com.rbkmoney.newway.domain.tables.Identity.IDENTITY.ID);
         public static Identity<InspectorRecord, Long> IDENTITY_INSPECTOR = createIdentity(Inspector.INSPECTOR, Inspector.INSPECTOR.ID);
         public static Identity<InvoiceRecord, Long> IDENTITY_INVOICE = createIdentity(Invoice.INVOICE, Invoice.INVOICE.ID);
         public static Identity<InvoiceCartRecord, Long> IDENTITY_INVOICE_CART = createIdentity(InvoiceCart.INVOICE_CART, InvoiceCart.INVOICE_CART.ID);
@@ -176,6 +198,8 @@ public class Keys {
         public static Identity<ShopRecord, Long> IDENTITY_SHOP = createIdentity(Shop.SHOP, Shop.SHOP.ID);
         public static Identity<TermSetHierarchyRecord, Long> IDENTITY_TERM_SET_HIERARCHY = createIdentity(TermSetHierarchy.TERM_SET_HIERARCHY, TermSetHierarchy.TERM_SET_HIERARCHY.ID);
         public static Identity<TerminalRecord, Long> IDENTITY_TERMINAL = createIdentity(Terminal.TERMINAL, Terminal.TERMINAL.ID);
+        public static Identity<WalletRecord, Long> IDENTITY_WALLET = createIdentity(Wallet.WALLET, Wallet.WALLET.ID);
+        public static Identity<WithdrawalRecord, Long> IDENTITY_WITHDRAWAL = createIdentity(Withdrawal.WITHDRAWAL, Withdrawal.WITHDRAWAL.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -183,10 +207,13 @@ public class Keys {
         public static final UniqueKey<CalendarRecord> CALENDAR_PKEY = createUniqueKey(Calendar.CALENDAR, "calendar_pkey", Calendar.CALENDAR.ID);
         public static final UniqueKey<CashFlowRecord> CASH_FLOW_PKEY = createUniqueKey(CashFlow.CASH_FLOW, "cash_flow_pkey", CashFlow.CASH_FLOW.ID);
         public static final UniqueKey<CategoryRecord> CATEGORY_PKEY = createUniqueKey(Category.CATEGORY, "category_pkey", Category.CATEGORY.ID);
+        public static final UniqueKey<ChallengeRecord> CHALLENGE_PKEY = createUniqueKey(Challenge.CHALLENGE, "challenge_pkey", Challenge.CHALLENGE.ID);
         public static final UniqueKey<ContractRecord> CONTRACT_PKEY = createUniqueKey(Contract.CONTRACT, "contract_pkey", Contract.CONTRACT.ID);
         public static final UniqueKey<ContractAdjustmentRecord> CONTRACT_ADJUSTMENT_PKEY = createUniqueKey(ContractAdjustment.CONTRACT_ADJUSTMENT, "contract_adjustment_pkey", ContractAdjustment.CONTRACT_ADJUSTMENT.ID);
         public static final UniqueKey<ContractorRecord> CONTRACTOR_PKEY = createUniqueKey(Contractor.CONTRACTOR, "contractor_pkey", Contractor.CONTRACTOR.ID);
         public static final UniqueKey<CurrencyRecord> CURRENCY_PKEY = createUniqueKey(Currency.CURRENCY, "currency_pkey", Currency.CURRENCY.ID);
+        public static final UniqueKey<FistfulCashFlowRecord> FISTFUL_CASH_FLOW_PKEY = createUniqueKey(FistfulCashFlow.FISTFUL_CASH_FLOW, "fistful_cash_flow_pkey", FistfulCashFlow.FISTFUL_CASH_FLOW.ID);
+        public static final UniqueKey<IdentityRecord> IDENTITY_PKEY = createUniqueKey(com.rbkmoney.newway.domain.tables.Identity.IDENTITY, "identity_pkey", com.rbkmoney.newway.domain.tables.Identity.IDENTITY.ID);
         public static final UniqueKey<InspectorRecord> INSPECTOR_PKEY = createUniqueKey(Inspector.INSPECTOR, "inspector_pkey", Inspector.INSPECTOR.ID);
         public static final UniqueKey<InvoiceRecord> INVOICE_PKEY = createUniqueKey(Invoice.INVOICE, "invoice_pkey", Invoice.INVOICE.ID);
         public static final UniqueKey<InvoiceCartRecord> INVOICE_CART_PKEY = createUniqueKey(InvoiceCart.INVOICE_CART, "invoice_cart_pkey", InvoiceCart.INVOICE_CART.ID);
@@ -204,6 +231,8 @@ public class Keys {
         public static final UniqueKey<ShopRecord> SHOP_PKEY = createUniqueKey(Shop.SHOP, "shop_pkey", Shop.SHOP.ID);
         public static final UniqueKey<TermSetHierarchyRecord> TERM_SET_HIERARCHY_PKEY = createUniqueKey(TermSetHierarchy.TERM_SET_HIERARCHY, "term_set_hierarchy_pkey", TermSetHierarchy.TERM_SET_HIERARCHY.ID);
         public static final UniqueKey<TerminalRecord> TERMINAL_PKEY = createUniqueKey(Terminal.TERMINAL, "terminal_pkey", Terminal.TERMINAL.ID);
+        public static final UniqueKey<WalletRecord> WALLET_PKEY = createUniqueKey(Wallet.WALLET, "wallet_pkey", Wallet.WALLET.ID);
+        public static final UniqueKey<WithdrawalRecord> WITHDRAWAL_PKEY = createUniqueKey(Withdrawal.WITHDRAWAL, "withdrawal_pkey", Withdrawal.WITHDRAWAL.ID);
     }
 
     private static class ForeignKeys0 extends AbstractKeys {

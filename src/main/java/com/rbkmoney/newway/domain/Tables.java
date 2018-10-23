@@ -8,10 +8,13 @@ import com.rbkmoney.newway.domain.tables.Adjustment;
 import com.rbkmoney.newway.domain.tables.Calendar;
 import com.rbkmoney.newway.domain.tables.CashFlow;
 import com.rbkmoney.newway.domain.tables.Category;
+import com.rbkmoney.newway.domain.tables.Challenge;
 import com.rbkmoney.newway.domain.tables.Contract;
 import com.rbkmoney.newway.domain.tables.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.Contractor;
 import com.rbkmoney.newway.domain.tables.Currency;
+import com.rbkmoney.newway.domain.tables.FistfulCashFlow;
+import com.rbkmoney.newway.domain.tables.Identity;
 import com.rbkmoney.newway.domain.tables.Inspector;
 import com.rbkmoney.newway.domain.tables.Invoice;
 import com.rbkmoney.newway.domain.tables.InvoiceCart;
@@ -29,6 +32,8 @@ import com.rbkmoney.newway.domain.tables.Refund;
 import com.rbkmoney.newway.domain.tables.Shop;
 import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
 import com.rbkmoney.newway.domain.tables.Terminal;
+import com.rbkmoney.newway.domain.tables.Wallet;
+import com.rbkmoney.newway.domain.tables.Withdrawal;
 
 import javax.annotation.Generated;
 
@@ -67,6 +72,11 @@ public class Tables {
     public static final Category CATEGORY = com.rbkmoney.newway.domain.tables.Category.CATEGORY;
 
     /**
+     * The table <code>nw.challenge</code>.
+     */
+    public static final Challenge CHALLENGE = com.rbkmoney.newway.domain.tables.Challenge.CHALLENGE;
+
+    /**
      * The table <code>nw.contract</code>.
      */
     public static final Contract CONTRACT = com.rbkmoney.newway.domain.tables.Contract.CONTRACT;
@@ -85,6 +95,16 @@ public class Tables {
      * The table <code>nw.currency</code>.
      */
     public static final Currency CURRENCY = com.rbkmoney.newway.domain.tables.Currency.CURRENCY;
+
+    /**
+     * The table <code>nw.fistful_cash_flow</code>.
+     */
+    public static final FistfulCashFlow FISTFUL_CASH_FLOW = com.rbkmoney.newway.domain.tables.FistfulCashFlow.FISTFUL_CASH_FLOW;
+
+    /**
+     * The table <code>nw.identity</code>.
+     */
+    public static final Identity IDENTITY = com.rbkmoney.newway.domain.tables.Identity.IDENTITY;
 
     /**
      * The table <code>nw.inspector</code>.
@@ -170,4 +190,14 @@ public class Tables {
      * The table <code>nw.terminal</code>.
      */
     public static final Terminal TERMINAL = com.rbkmoney.newway.domain.tables.Terminal.TERMINAL;
+
+    /**
+     * The table <code>nw.wallet</code>.
+     */
+    public static final Wallet WALLET = com.rbkmoney.newway.domain.tables.Wallet.WALLET;
+
+    /**
+     * The table <code>nw.withdrawal</code>.
+     */
+    public static final Withdrawal WITHDRAWAL = com.rbkmoney.newway.domain.tables.Withdrawal.WITHDRAWAL;
 }
