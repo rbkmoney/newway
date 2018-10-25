@@ -41,6 +41,7 @@ public class WithdrawalTransferCreatedHandler extends AbstractWithdrawalHandler 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
+        log.info("Start withdrawal transfer created handling, eventId={}, walletId={}, transferChange={}", event.getPayload().getId(), event.getSource(), change.getTransfer());
         Withdrawal withdrawal = withdrawalDao.get(event.getSource());
 
         withdrawal.setId(null);
@@ -57,6 +58,7 @@ public class WithdrawalTransferCreatedHandler extends AbstractWithdrawalHandler 
 
         List<FistfulCashFlow> fistfulCashFlows = CashFlowUtil.convertFistfulCashFlows(change.getTransfer().getCreated().getCashflow().getPostings(), id);
         fistfulCashFlowDao.save(fistfulCashFlows);
+        log.info("Withdrawal transfer have been saved, eventId={}, walletId={}, transferChange={}", event.getPayload().getId(), event.getSource(), change.getTransfer());
     }
 
     @Override

@@ -29,8 +29,7 @@ public class WalletCreatedHandler extends AbstractWalletHandler {
 
     @Override
     public void handle(Change change, SinkEvent event) {
-//        log.info("Start invoice created handling, eventId={}, invoiceId={}, partyId={}, shopId={}",
-//                eventId, invoice.getId(), invoice.getOwnerId(), invoice.getShopId());
+        log.info("Start wallet created handling, eventId={}, walletId={}", event.getPayload().getId(), event.getSource());
         Wallet wallet = new Wallet();
         wallet.setEventId(event.getPayload().getId());
         wallet.setSequenceId(event.getSequence());
@@ -40,8 +39,7 @@ public class WalletCreatedHandler extends AbstractWalletHandler {
         wallet.setWalletName(change.getCreated().getName());
 
         walletDao.save(wallet);
-//        log.info("Invoice has been saved, eventId={}, invoiceId={}, partyId={}, shopId={}",
-//                eventId, invoice.getId(), invoice.getOwnerId(), invoice.getShopId());
+        log.info("Wallet have been saved, eventId={}, walletId={}", event.getPayload().getId(), event.getSource());
     }
 
     @Override

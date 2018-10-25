@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Wallet implements Serializable {
 
-    private static final long serialVersionUID = 1973685120;
+    private static final long serialVersionUID = -345022285;
 
     private Long          id;
     private Long          eventId;
@@ -33,6 +33,7 @@ public class Wallet implements Serializable {
     private String        walletId;
     private String        walletName;
     private String        identityId;
+    private String        partyId;
     private String        currencyCode;
     private LocalDateTime wtime;
     private Boolean       current;
@@ -48,6 +49,7 @@ public class Wallet implements Serializable {
         this.walletId = value.walletId;
         this.walletName = value.walletName;
         this.identityId = value.identityId;
+        this.partyId = value.partyId;
         this.currencyCode = value.currencyCode;
         this.wtime = value.wtime;
         this.current = value.current;
@@ -62,6 +64,7 @@ public class Wallet implements Serializable {
         String        walletId,
         String        walletName,
         String        identityId,
+        String        partyId,
         String        currencyCode,
         LocalDateTime wtime,
         Boolean       current
@@ -74,6 +77,7 @@ public class Wallet implements Serializable {
         this.walletId = walletId;
         this.walletName = walletName;
         this.identityId = identityId;
+        this.partyId = partyId;
         this.currencyCode = currencyCode;
         this.wtime = wtime;
         this.current = current;
@@ -141,6 +145,14 @@ public class Wallet implements Serializable {
 
     public void setIdentityId(String identityId) {
         this.identityId = identityId;
+    }
+
+    public String getPartyId() {
+        return this.partyId;
+    }
+
+    public void setPartyId(String partyId) {
+        this.partyId = partyId;
     }
 
     public String getCurrencyCode() {
@@ -224,6 +236,12 @@ public class Wallet implements Serializable {
         }
         else if (!identityId.equals(other.identityId))
             return false;
+        if (partyId == null) {
+            if (other.partyId != null)
+                return false;
+        }
+        else if (!partyId.equals(other.partyId))
+            return false;
         if (currencyCode == null) {
             if (other.currencyCode != null)
                 return false;
@@ -257,6 +275,7 @@ public class Wallet implements Serializable {
         result = prime * result + ((this.walletId == null) ? 0 : this.walletId.hashCode());
         result = prime * result + ((this.walletName == null) ? 0 : this.walletName.hashCode());
         result = prime * result + ((this.identityId == null) ? 0 : this.identityId.hashCode());
+        result = prime * result + ((this.partyId == null) ? 0 : this.partyId.hashCode());
         result = prime * result + ((this.currencyCode == null) ? 0 : this.currencyCode.hashCode());
         result = prime * result + ((this.wtime == null) ? 0 : this.wtime.hashCode());
         result = prime * result + ((this.current == null) ? 0 : this.current.hashCode());
@@ -275,6 +294,7 @@ public class Wallet implements Serializable {
         sb.append(", ").append(walletId);
         sb.append(", ").append(walletName);
         sb.append(", ").append(identityId);
+        sb.append(", ").append(partyId);
         sb.append(", ").append(currencyCode);
         sb.append(", ").append(wtime);
         sb.append(", ").append(current);

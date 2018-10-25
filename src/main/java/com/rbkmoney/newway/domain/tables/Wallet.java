@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Wallet extends TableImpl<WalletRecord> {
 
-    private static final long serialVersionUID = -1143589801;
+    private static final long serialVersionUID = 478620744;
 
     /**
      * The reference instance of <code>nw.wallet</code>
@@ -90,6 +90,11 @@ public class Wallet extends TableImpl<WalletRecord> {
      * The column <code>nw.wallet.identity_id</code>.
      */
     public final TableField<WalletRecord, String> IDENTITY_ID = createField("identity_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.wallet.party_id</code>.
+     */
+    public final TableField<WalletRecord, String> PARTY_ID = createField("party_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>nw.wallet.currency_code</code>.

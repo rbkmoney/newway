@@ -38,6 +38,7 @@ public class WithdrawalTransferStatusChangedHandler extends AbstractWithdrawalHa
 
     @Override
     public void handle(Change change, SinkEvent event) {
+        log.info("Start withdrawal transfer status changed handling, eventId={}, walletId={}, transferChange={}", event.getPayload().getId(), event.getSource(), change.getTransfer());
         Withdrawal withdrawal = withdrawalDao.get(event.getSource());
 
         long sourceId = withdrawal.getId();
@@ -59,6 +60,7 @@ public class WithdrawalTransferStatusChangedHandler extends AbstractWithdrawalHa
             pcf.setObjId(id);
         });
         fistfulCashFlowDao.save(cashFlows);
+        log.info("Withdrawal transfer status have been changed, eventId={}, walletId={}, transferChange={}", event.getPayload().getId(), event.getSource(), change.getTransfer());
     }
 
     @Override

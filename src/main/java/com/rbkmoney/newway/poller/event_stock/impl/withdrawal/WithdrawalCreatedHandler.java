@@ -31,6 +31,7 @@ public class WithdrawalCreatedHandler extends AbstractWithdrawalHandler {
 
     @Override
     public void handle(Change change, SinkEvent event) {
+        log.info("Start withdrawal created handling, eventId={}, walletId={}", event.getPayload().getId(), event.getSource());
         Withdrawal withdrawal = new Withdrawal();
         withdrawal.setEventId(event.getPayload().getId());
         withdrawal.setSequenceId(event.getSequence());
@@ -46,6 +47,7 @@ public class WithdrawalCreatedHandler extends AbstractWithdrawalHandler {
         withdrawal.setWithdrawalStatus(WithdrawalStatus.pending);
 
         withdrawalDao.save(withdrawal);
+        log.info("Withdrawal have been saved, eventId={}, walletId={}", event.getPayload().getId(), event.getSource());
     }
 
     @Override

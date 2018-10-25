@@ -29,6 +29,7 @@ public class IdentityLevelChangedHandler extends AbstractIdentityHandler {
 
     @Override
     public void handle(Change change, SinkEvent event) {
+        log.info("Start identity level changed handling, eventId={}, walletId={}, level={}", event.getPayload().getId(), event.getSource(), change.getLevelChanged());
         Identity identity = identityDao.get(event.getSource());
 
         identity.setId(null);
@@ -42,7 +43,7 @@ public class IdentityLevelChangedHandler extends AbstractIdentityHandler {
 
         identityDao.updateNotCurrent(event.getSource());
         identityDao.save(identity);
-
+        log.info("Identity level have been changed, eventId={}, walletId={}, level={}", event.getPayload().getId(), event.getSource(), change.getLevelChanged());
     }
 
     @Override

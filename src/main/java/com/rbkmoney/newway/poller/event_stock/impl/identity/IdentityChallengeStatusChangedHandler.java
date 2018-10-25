@@ -35,6 +35,8 @@ public class IdentityChallengeStatusChangedHandler extends AbstractIdentityHandl
     @Override
     public void handle(Change change, SinkEvent event) {
         ChallengeChange challengeChange = change.getIdentityChallenge();
+        ChallengeStatus status = challengeChange.getPayload().getStatusChanged();
+        log.info("Start identity challenge status changed handling, eventId={}, walletId={}, challengeId={}, status={}", event.getPayload().getId(), event.getSource(), challengeChange.getId(), status);
 
         Challenge challenge = challengeDao.get(event.getSource(), challengeChange.getId());
 
@@ -45,7 +47,6 @@ public class IdentityChallengeStatusChangedHandler extends AbstractIdentityHandl
         challenge.setIdentityId(event.getSource());
         challenge.setChallengeId(challengeChange.getId());
 
-        ChallengeStatus status = challengeChange.getPayload().getStatusChanged();
         challenge.setChallengeStatus(TBaseUtil.unionFieldToEnum(status, com.rbkmoney.newway.domain.enums.ChallengeStatus.class));
         if (status.isSetCompleted()) {
             ChallengeCompleted challengeCompleted = status.getCompleted();
@@ -57,6 +58,7 @@ public class IdentityChallengeStatusChangedHandler extends AbstractIdentityHandl
 
         challengeDao.updateNotCurrent(event.getSource(), challengeChange.getId());
         challengeDao.save(challenge);
+        log.info("Identity challenge status have been changed, eventId={}, walletId={}, challengeId={}, status={}", event.getPayload().getId(), event.getSource(), challengeChange.getId(), status);
     }
 
     @Override

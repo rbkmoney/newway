@@ -32,6 +32,7 @@ public class IdentityChallengeCreatedHandler extends AbstractIdentityHandler {
     @Override
     public void handle(Change change, SinkEvent event) {
         ChallengeChange challengeChange = change.getIdentityChallenge();
+        log.info("Start identity challenge created handling, eventId={}, walletId={}, challengeId={}", event.getPayload().getId(), event.getSource(), challengeChange.getId());
 
         Challenge challenge = new Challenge();
         challenge.setEventId(event.getPayload().getId());
@@ -45,6 +46,7 @@ public class IdentityChallengeCreatedHandler extends AbstractIdentityHandler {
         challenge.setChallengeClassId(challengePayload.getCreated().getCls());
 
         challengeDao.save(challenge);
+        log.info("Start identity challenge have been created, eventId={}, walletId={}, challengeId={}", event.getPayload().getId(), event.getSource(), challengeChange.getId());
     }
 
     @Override
