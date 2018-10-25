@@ -36,6 +36,24 @@ bm:
       retryDelay: 1000
       maxPoolSize: 1
   pollingEnabled: true
+identity:
+  polling:
+    url: http://localhost:8080/identity
+    delay: 10000
+    retryDelay: 1000
+    maxPoolSize: 1
+wallet:
+  polling:
+    url: http://localhost:8080/wallet
+    delay: 10000
+    retryDelay: 1000
+    maxPoolSize: 1
+withdrawal:
+  polling:
+    url: http://localhost:8080/withdrawal
+    delay: 10000
+    retryDelay: 1000
+    maxPoolSize: 1
 dmt:
   url: http://dominant:8022/v1/domain/repository
   networkTimeout: 5000
