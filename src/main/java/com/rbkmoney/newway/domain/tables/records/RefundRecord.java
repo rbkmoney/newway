@@ -5,9 +5,6 @@ package com.rbkmoney.newway.domain.tables.records;
 
 
 import com.rbkmoney.newway.domain.enums.RefundStatus;
-import com.rbkmoney.newway.domain.enums.SessionChangePayload;
-import com.rbkmoney.newway.domain.enums.SessionChangePayloadFinishedResult;
-import com.rbkmoney.newway.domain.enums.SessionTargetStatus;
 import com.rbkmoney.newway.domain.tables.Refund;
 
 import java.time.LocalDateTime;
@@ -31,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RefundRecord extends UpdatableRecordImpl<RefundRecord> {
 
-    private static final long serialVersionUID = 1479149256;
+    private static final long serialVersionUID = -1657787982;
 
     /**
      * Setter for <code>nw.refund.id</code>.
@@ -272,199 +269,87 @@ public class RefundRecord extends UpdatableRecordImpl<RefundRecord> {
     }
 
     /**
-     * Setter for <code>nw.refund.session_target</code>.
-     */
-    public void setSessionTarget(SessionTargetStatus value) {
-        set(17, value);
-    }
-
-    /**
-     * Getter for <code>nw.refund.session_target</code>.
-     */
-    public SessionTargetStatus getSessionTarget() {
-        return (SessionTargetStatus) get(17);
-    }
-
-    /**
-     * Setter for <code>nw.refund.session_payload</code>.
-     */
-    public void setSessionPayload(SessionChangePayload value) {
-        set(18, value);
-    }
-
-    /**
-     * Getter for <code>nw.refund.session_payload</code>.
-     */
-    public SessionChangePayload getSessionPayload() {
-        return (SessionChangePayload) get(18);
-    }
-
-    /**
-     * Setter for <code>nw.refund.session_payload_finished_result</code>.
-     */
-    public void setSessionPayloadFinishedResult(SessionChangePayloadFinishedResult value) {
-        set(19, value);
-    }
-
-    /**
-     * Getter for <code>nw.refund.session_payload_finished_result</code>.
-     */
-    public SessionChangePayloadFinishedResult getSessionPayloadFinishedResult() {
-        return (SessionChangePayloadFinishedResult) get(19);
-    }
-
-    /**
-     * Setter for <code>nw.refund.session_payload_finished_result_failed_failure_json</code>.
-     */
-    public void setSessionPayloadFinishedResultFailedFailureJson(String value) {
-        set(20, value);
-    }
-
-    /**
-     * Getter for <code>nw.refund.session_payload_finished_result_failed_failure_json</code>.
-     */
-    public String getSessionPayloadFinishedResultFailedFailureJson() {
-        return (String) get(20);
-    }
-
-    /**
-     * Setter for <code>nw.refund.session_payload_suspended_tag</code>.
-     */
-    public void setSessionPayloadSuspendedTag(String value) {
-        set(21, value);
-    }
-
-    /**
-     * Getter for <code>nw.refund.session_payload_suspended_tag</code>.
-     */
-    public String getSessionPayloadSuspendedTag() {
-        return (String) get(21);
-    }
-
-    /**
      * Setter for <code>nw.refund.session_payload_transaction_bound_trx_id</code>.
      */
     public void setSessionPayloadTransactionBoundTrxId(String value) {
-        set(22, value);
+        set(17, value);
     }
 
     /**
      * Getter for <code>nw.refund.session_payload_transaction_bound_trx_id</code>.
      */
     public String getSessionPayloadTransactionBoundTrxId() {
-        return (String) get(22);
-    }
-
-    /**
-     * Setter for <code>nw.refund.session_payload_transaction_bound_trx_timestamp</code>.
-     */
-    public void setSessionPayloadTransactionBoundTrxTimestamp(LocalDateTime value) {
-        set(23, value);
-    }
-
-    /**
-     * Getter for <code>nw.refund.session_payload_transaction_bound_trx_timestamp</code>.
-     */
-    public LocalDateTime getSessionPayloadTransactionBoundTrxTimestamp() {
-        return (LocalDateTime) get(23);
+        return (String) get(17);
     }
 
     /**
      * Setter for <code>nw.refund.session_payload_transaction_bound_trx_extra_json</code>.
      */
     public void setSessionPayloadTransactionBoundTrxExtraJson(String value) {
-        set(24, value);
+        set(18, value);
     }
 
     /**
      * Getter for <code>nw.refund.session_payload_transaction_bound_trx_extra_json</code>.
      */
     public String getSessionPayloadTransactionBoundTrxExtraJson() {
-        return (String) get(24);
-    }
-
-    /**
-     * Setter for <code>nw.refund.session_payload_proxy_state_changed_proxy_state</code>.
-     */
-    public void setSessionPayloadProxyStateChangedProxyState(byte... value) {
-        set(25, value);
-    }
-
-    /**
-     * Getter for <code>nw.refund.session_payload_proxy_state_changed_proxy_state</code>.
-     */
-    public byte[] getSessionPayloadProxyStateChangedProxyState() {
-        return (byte[]) get(25);
-    }
-
-    /**
-     * Setter for <code>nw.refund.session_payload_interaction_requested_interaction_json</code>.
-     */
-    public void setSessionPayloadInteractionRequestedInteractionJson(String value) {
-        set(26, value);
-    }
-
-    /**
-     * Getter for <code>nw.refund.session_payload_interaction_requested_interaction_json</code>.
-     */
-    public String getSessionPayloadInteractionRequestedInteractionJson() {
-        return (String) get(26);
+        return (String) get(18);
     }
 
     /**
      * Setter for <code>nw.refund.fee</code>.
      */
     public void setFee(Long value) {
-        set(27, value);
+        set(19, value);
     }
 
     /**
      * Getter for <code>nw.refund.fee</code>.
      */
     public Long getFee() {
-        return (Long) get(27);
+        return (Long) get(19);
     }
 
     /**
      * Setter for <code>nw.refund.provider_fee</code>.
      */
     public void setProviderFee(Long value) {
-        set(28, value);
+        set(20, value);
     }
 
     /**
      * Getter for <code>nw.refund.provider_fee</code>.
      */
     public Long getProviderFee() {
-        return (Long) get(28);
+        return (Long) get(20);
     }
 
     /**
      * Setter for <code>nw.refund.external_fee</code>.
      */
     public void setExternalFee(Long value) {
-        set(29, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>nw.refund.external_fee</code>.
      */
     public Long getExternalFee() {
-        return (Long) get(29);
+        return (Long) get(21);
     }
 
     /**
      * Setter for <code>nw.refund.party_revision</code>.
      */
     public void setPartyRevision(Long value) {
-        set(30, value);
+        set(22, value);
     }
 
     /**
      * Getter for <code>nw.refund.party_revision</code>.
      */
     public Long getPartyRevision() {
-        return (Long) get(30);
+        return (Long) get(22);
     }
 
     // -------------------------------------------------------------------------
@@ -493,7 +378,7 @@ public class RefundRecord extends UpdatableRecordImpl<RefundRecord> {
     /**
      * Create a detached, initialised RefundRecord
      */
-    public RefundRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, Long domainRevision, String refundId, String paymentId, String invoiceId, String partyId, String shopId, LocalDateTime createdAt, RefundStatus status, String statusFailedFailure, Long amount, String currencyCode, String reason, LocalDateTime wtime, Boolean current, SessionTargetStatus sessionTarget, SessionChangePayload sessionPayload, SessionChangePayloadFinishedResult sessionPayloadFinishedResult, String sessionPayloadFinishedResultFailedFailureJson, String sessionPayloadSuspendedTag, String sessionPayloadTransactionBoundTrxId, LocalDateTime sessionPayloadTransactionBoundTrxTimestamp, String sessionPayloadTransactionBoundTrxExtraJson, byte[] sessionPayloadProxyStateChangedProxyState, String sessionPayloadInteractionRequestedInteractionJson, Long fee, Long providerFee, Long externalFee, Long partyRevision) {
+    public RefundRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, Long domainRevision, String refundId, String paymentId, String invoiceId, String partyId, String shopId, LocalDateTime createdAt, RefundStatus status, String statusFailedFailure, Long amount, String currencyCode, String reason, LocalDateTime wtime, Boolean current, String sessionPayloadTransactionBoundTrxId, String sessionPayloadTransactionBoundTrxExtraJson, Long fee, Long providerFee, Long externalFee, Long partyRevision) {
         super(Refund.REFUND);
 
         set(0, id);
@@ -513,19 +398,11 @@ public class RefundRecord extends UpdatableRecordImpl<RefundRecord> {
         set(14, reason);
         set(15, wtime);
         set(16, current);
-        set(17, sessionTarget);
-        set(18, sessionPayload);
-        set(19, sessionPayloadFinishedResult);
-        set(20, sessionPayloadFinishedResultFailedFailureJson);
-        set(21, sessionPayloadSuspendedTag);
-        set(22, sessionPayloadTransactionBoundTrxId);
-        set(23, sessionPayloadTransactionBoundTrxTimestamp);
-        set(24, sessionPayloadTransactionBoundTrxExtraJson);
-        set(25, sessionPayloadProxyStateChangedProxyState);
-        set(26, sessionPayloadInteractionRequestedInteractionJson);
-        set(27, fee);
-        set(28, providerFee);
-        set(29, externalFee);
-        set(30, partyRevision);
+        set(17, sessionPayloadTransactionBoundTrxId);
+        set(18, sessionPayloadTransactionBoundTrxExtraJson);
+        set(19, fee);
+        set(20, providerFee);
+        set(21, externalFee);
+        set(22, partyRevision);
     }
 }
