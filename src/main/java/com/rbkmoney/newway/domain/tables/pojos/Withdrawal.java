@@ -26,16 +26,17 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Withdrawal implements Serializable {
 
-    private static final long serialVersionUID = 1446009620;
+    private static final long serialVersionUID = 1724026266;
 
     private Long                     id;
     private Long                     eventId;
     private LocalDateTime            eventCreatedAt;
     private LocalDateTime            eventOccuredAt;
     private Integer                  sequenceId;
-    private String                   withdrawalId;
     private String                   sourceId;
     private String                   destinationId;
+    private String                   withdrawalId;
+    private String                   providerId;
     private Long                     amount;
     private String                   currencyCode;
     private WithdrawalStatus         withdrawalStatus;
@@ -51,9 +52,10 @@ public class Withdrawal implements Serializable {
         this.eventCreatedAt = value.eventCreatedAt;
         this.eventOccuredAt = value.eventOccuredAt;
         this.sequenceId = value.sequenceId;
-        this.withdrawalId = value.withdrawalId;
         this.sourceId = value.sourceId;
         this.destinationId = value.destinationId;
+        this.withdrawalId = value.withdrawalId;
+        this.providerId = value.providerId;
         this.amount = value.amount;
         this.currencyCode = value.currencyCode;
         this.withdrawalStatus = value.withdrawalStatus;
@@ -68,9 +70,10 @@ public class Withdrawal implements Serializable {
         LocalDateTime            eventCreatedAt,
         LocalDateTime            eventOccuredAt,
         Integer                  sequenceId,
-        String                   withdrawalId,
         String                   sourceId,
         String                   destinationId,
+        String                   withdrawalId,
+        String                   providerId,
         Long                     amount,
         String                   currencyCode,
         WithdrawalStatus         withdrawalStatus,
@@ -83,9 +86,10 @@ public class Withdrawal implements Serializable {
         this.eventCreatedAt = eventCreatedAt;
         this.eventOccuredAt = eventOccuredAt;
         this.sequenceId = sequenceId;
-        this.withdrawalId = withdrawalId;
         this.sourceId = sourceId;
         this.destinationId = destinationId;
+        this.withdrawalId = withdrawalId;
+        this.providerId = providerId;
         this.amount = amount;
         this.currencyCode = currencyCode;
         this.withdrawalStatus = withdrawalStatus;
@@ -134,14 +138,6 @@ public class Withdrawal implements Serializable {
         this.sequenceId = sequenceId;
     }
 
-    public String getWithdrawalId() {
-        return this.withdrawalId;
-    }
-
-    public void setWithdrawalId(String withdrawalId) {
-        this.withdrawalId = withdrawalId;
-    }
-
     public String getSourceId() {
         return this.sourceId;
     }
@@ -156,6 +152,22 @@ public class Withdrawal implements Serializable {
 
     public void setDestinationId(String destinationId) {
         this.destinationId = destinationId;
+    }
+
+    public String getWithdrawalId() {
+        return this.withdrawalId;
+    }
+
+    public void setWithdrawalId(String withdrawalId) {
+        this.withdrawalId = withdrawalId;
+    }
+
+    public String getProviderId() {
+        return this.providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 
     public Long getAmount() {
@@ -245,12 +257,6 @@ public class Withdrawal implements Serializable {
         }
         else if (!sequenceId.equals(other.sequenceId))
             return false;
-        if (withdrawalId == null) {
-            if (other.withdrawalId != null)
-                return false;
-        }
-        else if (!withdrawalId.equals(other.withdrawalId))
-            return false;
         if (sourceId == null) {
             if (other.sourceId != null)
                 return false;
@@ -262,6 +268,18 @@ public class Withdrawal implements Serializable {
                 return false;
         }
         else if (!destinationId.equals(other.destinationId))
+            return false;
+        if (withdrawalId == null) {
+            if (other.withdrawalId != null)
+                return false;
+        }
+        else if (!withdrawalId.equals(other.withdrawalId))
+            return false;
+        if (providerId == null) {
+            if (other.providerId != null)
+                return false;
+        }
+        else if (!providerId.equals(other.providerId))
             return false;
         if (amount == null) {
             if (other.amount != null)
@@ -311,9 +329,10 @@ public class Withdrawal implements Serializable {
         result = prime * result + ((this.eventCreatedAt == null) ? 0 : this.eventCreatedAt.hashCode());
         result = prime * result + ((this.eventOccuredAt == null) ? 0 : this.eventOccuredAt.hashCode());
         result = prime * result + ((this.sequenceId == null) ? 0 : this.sequenceId.hashCode());
-        result = prime * result + ((this.withdrawalId == null) ? 0 : this.withdrawalId.hashCode());
         result = prime * result + ((this.sourceId == null) ? 0 : this.sourceId.hashCode());
         result = prime * result + ((this.destinationId == null) ? 0 : this.destinationId.hashCode());
+        result = prime * result + ((this.withdrawalId == null) ? 0 : this.withdrawalId.hashCode());
+        result = prime * result + ((this.providerId == null) ? 0 : this.providerId.hashCode());
         result = prime * result + ((this.amount == null) ? 0 : this.amount.hashCode());
         result = prime * result + ((this.currencyCode == null) ? 0 : this.currencyCode.hashCode());
         result = prime * result + ((this.withdrawalStatus == null) ? 0 : this.withdrawalStatus.hashCode());
@@ -332,9 +351,10 @@ public class Withdrawal implements Serializable {
         sb.append(", ").append(eventCreatedAt);
         sb.append(", ").append(eventOccuredAt);
         sb.append(", ").append(sequenceId);
-        sb.append(", ").append(withdrawalId);
         sb.append(", ").append(sourceId);
         sb.append(", ").append(destinationId);
+        sb.append(", ").append(withdrawalId);
+        sb.append(", ").append(providerId);
         sb.append(", ").append(amount);
         sb.append(", ").append(currencyCode);
         sb.append(", ").append(withdrawalStatus);

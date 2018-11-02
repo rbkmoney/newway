@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Withdrawal extends TableImpl<WithdrawalRecord> {
 
-    private static final long serialVersionUID = -180857859;
+    private static final long serialVersionUID = 501923951;
 
     /**
      * The reference instance of <code>nw.withdrawal</code>
@@ -79,19 +79,24 @@ public class Withdrawal extends TableImpl<WithdrawalRecord> {
     public final TableField<WithdrawalRecord, Integer> SEQUENCE_ID = createField("sequence_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>nw.withdrawal.source_id</code>.
+     */
+    public final TableField<WithdrawalRecord, String> SOURCE_ID = createField("source_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
+     * The column <code>nw.withdrawal.destination_id</code>.
+     */
+    public final TableField<WithdrawalRecord, String> DESTINATION_ID = createField("destination_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+
+    /**
      * The column <code>nw.withdrawal.withdrawal_id</code>.
      */
     public final TableField<WithdrawalRecord, String> WITHDRAWAL_ID = createField("withdrawal_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
-     * The column <code>nw.withdrawal.source_id</code>.
+     * The column <code>nw.withdrawal.provider_id</code>.
      */
-    public final TableField<WithdrawalRecord, String> SOURCE_ID = createField("source_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
-
-    /**
-     * The column <code>nw.withdrawal.destination_id</code>.
-     */
-    public final TableField<WithdrawalRecord, String> DESTINATION_ID = createField("destination_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+    public final TableField<WithdrawalRecord, String> PROVIDER_ID = createField("provider_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>nw.withdrawal.amount</code>.
