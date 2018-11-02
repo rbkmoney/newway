@@ -9,9 +9,6 @@ import com.rbkmoney.newway.domain.enums.PaymentFlowType;
 import com.rbkmoney.newway.domain.enums.PaymentStatus;
 import com.rbkmoney.newway.domain.enums.PaymentToolType;
 import com.rbkmoney.newway.domain.enums.RiskScore;
-import com.rbkmoney.newway.domain.enums.SessionChangePayload;
-import com.rbkmoney.newway.domain.enums.SessionChangePayloadFinishedResult;
-import com.rbkmoney.newway.domain.enums.SessionTargetStatus;
 import com.rbkmoney.newway.domain.tables.Payment;
 
 import java.time.LocalDateTime;
@@ -35,7 +32,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
 
-    private static final long serialVersionUID = -538197258;
+    private static final long serialVersionUID = -1881497824;
 
     /**
      * Setter for <code>nw.payment.id</code>.
@@ -640,255 +637,143 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
     }
 
     /**
-     * Setter for <code>nw.payment.session_target</code>.
-     */
-    public void setSessionTarget(SessionTargetStatus value) {
-        set(43, value);
-    }
-
-    /**
-     * Getter for <code>nw.payment.session_target</code>.
-     */
-    public SessionTargetStatus getSessionTarget() {
-        return (SessionTargetStatus) get(43);
-    }
-
-    /**
-     * Setter for <code>nw.payment.session_payload</code>.
-     */
-    public void setSessionPayload(SessionChangePayload value) {
-        set(44, value);
-    }
-
-    /**
-     * Getter for <code>nw.payment.session_payload</code>.
-     */
-    public SessionChangePayload getSessionPayload() {
-        return (SessionChangePayload) get(44);
-    }
-
-    /**
-     * Setter for <code>nw.payment.session_payload_finished_result</code>.
-     */
-    public void setSessionPayloadFinishedResult(SessionChangePayloadFinishedResult value) {
-        set(45, value);
-    }
-
-    /**
-     * Getter for <code>nw.payment.session_payload_finished_result</code>.
-     */
-    public SessionChangePayloadFinishedResult getSessionPayloadFinishedResult() {
-        return (SessionChangePayloadFinishedResult) get(45);
-    }
-
-    /**
-     * Setter for <code>nw.payment.session_payload_finished_result_failed_failure_json</code>.
-     */
-    public void setSessionPayloadFinishedResultFailedFailureJson(String value) {
-        set(46, value);
-    }
-
-    /**
-     * Getter for <code>nw.payment.session_payload_finished_result_failed_failure_json</code>.
-     */
-    public String getSessionPayloadFinishedResultFailedFailureJson() {
-        return (String) get(46);
-    }
-
-    /**
-     * Setter for <code>nw.payment.session_payload_suspended_tag</code>.
-     */
-    public void setSessionPayloadSuspendedTag(String value) {
-        set(47, value);
-    }
-
-    /**
-     * Getter for <code>nw.payment.session_payload_suspended_tag</code>.
-     */
-    public String getSessionPayloadSuspendedTag() {
-        return (String) get(47);
-    }
-
-    /**
      * Setter for <code>nw.payment.session_payload_transaction_bound_trx_id</code>.
      */
     public void setSessionPayloadTransactionBoundTrxId(String value) {
-        set(48, value);
+        set(43, value);
     }
 
     /**
      * Getter for <code>nw.payment.session_payload_transaction_bound_trx_id</code>.
      */
     public String getSessionPayloadTransactionBoundTrxId() {
-        return (String) get(48);
-    }
-
-    /**
-     * Setter for <code>nw.payment.session_payload_transaction_bound_trx_timestamp</code>.
-     */
-    public void setSessionPayloadTransactionBoundTrxTimestamp(LocalDateTime value) {
-        set(49, value);
-    }
-
-    /**
-     * Getter for <code>nw.payment.session_payload_transaction_bound_trx_timestamp</code>.
-     */
-    public LocalDateTime getSessionPayloadTransactionBoundTrxTimestamp() {
-        return (LocalDateTime) get(49);
+        return (String) get(43);
     }
 
     /**
      * Setter for <code>nw.payment.session_payload_transaction_bound_trx_extra_json</code>.
      */
     public void setSessionPayloadTransactionBoundTrxExtraJson(String value) {
-        set(50, value);
+        set(44, value);
     }
 
     /**
      * Getter for <code>nw.payment.session_payload_transaction_bound_trx_extra_json</code>.
      */
     public String getSessionPayloadTransactionBoundTrxExtraJson() {
-        return (String) get(50);
-    }
-
-    /**
-     * Setter for <code>nw.payment.session_payload_proxy_state_changed_proxy_state</code>.
-     */
-    public void setSessionPayloadProxyStateChangedProxyState(byte... value) {
-        set(51, value);
-    }
-
-    /**
-     * Getter for <code>nw.payment.session_payload_proxy_state_changed_proxy_state</code>.
-     */
-    public byte[] getSessionPayloadProxyStateChangedProxyState() {
-        return (byte[]) get(51);
-    }
-
-    /**
-     * Setter for <code>nw.payment.session_payload_interaction_requested_interaction_json</code>.
-     */
-    public void setSessionPayloadInteractionRequestedInteractionJson(String value) {
-        set(52, value);
-    }
-
-    /**
-     * Getter for <code>nw.payment.session_payload_interaction_requested_interaction_json</code>.
-     */
-    public String getSessionPayloadInteractionRequestedInteractionJson() {
-        return (String) get(52);
+        return (String) get(44);
     }
 
     /**
      * Setter for <code>nw.payment.fee</code>.
      */
     public void setFee(Long value) {
-        set(53, value);
+        set(45, value);
     }
 
     /**
      * Getter for <code>nw.payment.fee</code>.
      */
     public Long getFee() {
-        return (Long) get(53);
+        return (Long) get(45);
     }
 
     /**
      * Setter for <code>nw.payment.provider_fee</code>.
      */
     public void setProviderFee(Long value) {
-        set(54, value);
+        set(46, value);
     }
 
     /**
      * Getter for <code>nw.payment.provider_fee</code>.
      */
     public Long getProviderFee() {
-        return (Long) get(54);
+        return (Long) get(46);
     }
 
     /**
      * Setter for <code>nw.payment.external_fee</code>.
      */
     public void setExternalFee(Long value) {
-        set(55, value);
+        set(47, value);
     }
 
     /**
      * Getter for <code>nw.payment.external_fee</code>.
      */
     public Long getExternalFee() {
-        return (Long) get(55);
+        return (Long) get(47);
     }
 
     /**
      * Setter for <code>nw.payment.guarantee_deposit</code>.
      */
     public void setGuaranteeDeposit(Long value) {
-        set(56, value);
+        set(48, value);
     }
 
     /**
      * Getter for <code>nw.payment.guarantee_deposit</code>.
      */
     public Long getGuaranteeDeposit() {
-        return (Long) get(56);
+        return (Long) get(48);
     }
 
     /**
      * Setter for <code>nw.payment.make_recurrent</code>.
      */
     public void setMakeRecurrent(Boolean value) {
-        set(57, value);
+        set(49, value);
     }
 
     /**
      * Getter for <code>nw.payment.make_recurrent</code>.
      */
     public Boolean getMakeRecurrent() {
-        return (Boolean) get(57);
+        return (Boolean) get(49);
     }
 
     /**
      * Setter for <code>nw.payment.payer_recurrent_parent_invoice_id</code>.
      */
     public void setPayerRecurrentParentInvoiceId(String value) {
-        set(58, value);
+        set(50, value);
     }
 
     /**
      * Getter for <code>nw.payment.payer_recurrent_parent_invoice_id</code>.
      */
     public String getPayerRecurrentParentInvoiceId() {
-        return (String) get(58);
+        return (String) get(50);
     }
 
     /**
      * Setter for <code>nw.payment.payer_recurrent_parent_payment_id</code>.
      */
     public void setPayerRecurrentParentPaymentId(String value) {
-        set(59, value);
+        set(51, value);
     }
 
     /**
      * Getter for <code>nw.payment.payer_recurrent_parent_payment_id</code>.
      */
     public String getPayerRecurrentParentPaymentId() {
-        return (String) get(59);
+        return (String) get(51);
     }
 
     /**
      * Setter for <code>nw.payment.recurrent_intention_token</code>.
      */
     public void setRecurrentIntentionToken(String value) {
-        set(60, value);
+        set(52, value);
     }
 
     /**
      * Getter for <code>nw.payment.recurrent_intention_token</code>.
      */
     public String getRecurrentIntentionToken() {
-        return (String) get(60);
+        return (String) get(52);
     }
 
     // -------------------------------------------------------------------------
@@ -917,7 +802,7 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
     /**
      * Create a detached, initialised PaymentRecord
      */
-    public PaymentRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String paymentId, LocalDateTime createdAt, String invoiceId, String partyId, String shopId, Long domainRevision, Long partyRevision, PaymentStatus status, String statusCancelledReason, String statusCapturedReason, String statusFailedFailure, Long amount, String currencyCode, PayerType payerType, PaymentToolType payerPaymentToolType, String payerBankCardToken, String payerBankCardPaymentSystem, String payerBankCardBin, String payerBankCardMaskedPan, String payerBankCardTokenProvider, String payerPaymentTerminalType, String payerDigitalWalletProvider, String payerDigitalWalletId, String payerPaymentSessionId, String payerIpAddress, String payerFingerprint, String payerPhoneNumber, String payerEmail, String payerCustomerId, String payerCustomerBindingId, String payerCustomerRecPaymentToolId, byte[] context, PaymentFlowType paymentFlowType, String paymentFlowOnHoldExpiration, LocalDateTime paymentFlowHeldUntil, RiskScore riskScore, Integer routeProviderId, Integer routeTerminalId, LocalDateTime wtime, Boolean current, SessionTargetStatus sessionTarget, SessionChangePayload sessionPayload, SessionChangePayloadFinishedResult sessionPayloadFinishedResult, String sessionPayloadFinishedResultFailedFailureJson, String sessionPayloadSuspendedTag, String sessionPayloadTransactionBoundTrxId, LocalDateTime sessionPayloadTransactionBoundTrxTimestamp, String sessionPayloadTransactionBoundTrxExtraJson, byte[] sessionPayloadProxyStateChangedProxyState, String sessionPayloadInteractionRequestedInteractionJson, Long fee, Long providerFee, Long externalFee, Long guaranteeDeposit, Boolean makeRecurrent, String payerRecurrentParentInvoiceId, String payerRecurrentParentPaymentId, String recurrentIntentionToken) {
+    public PaymentRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String paymentId, LocalDateTime createdAt, String invoiceId, String partyId, String shopId, Long domainRevision, Long partyRevision, PaymentStatus status, String statusCancelledReason, String statusCapturedReason, String statusFailedFailure, Long amount, String currencyCode, PayerType payerType, PaymentToolType payerPaymentToolType, String payerBankCardToken, String payerBankCardPaymentSystem, String payerBankCardBin, String payerBankCardMaskedPan, String payerBankCardTokenProvider, String payerPaymentTerminalType, String payerDigitalWalletProvider, String payerDigitalWalletId, String payerPaymentSessionId, String payerIpAddress, String payerFingerprint, String payerPhoneNumber, String payerEmail, String payerCustomerId, String payerCustomerBindingId, String payerCustomerRecPaymentToolId, byte[] context, PaymentFlowType paymentFlowType, String paymentFlowOnHoldExpiration, LocalDateTime paymentFlowHeldUntil, RiskScore riskScore, Integer routeProviderId, Integer routeTerminalId, LocalDateTime wtime, Boolean current, String sessionPayloadTransactionBoundTrxId, String sessionPayloadTransactionBoundTrxExtraJson, Long fee, Long providerFee, Long externalFee, Long guaranteeDeposit, Boolean makeRecurrent, String payerRecurrentParentInvoiceId, String payerRecurrentParentPaymentId, String recurrentIntentionToken) {
         super(Payment.PAYMENT);
 
         set(0, id);
@@ -963,23 +848,15 @@ public class PaymentRecord extends UpdatableRecordImpl<PaymentRecord> {
         set(40, routeTerminalId);
         set(41, wtime);
         set(42, current);
-        set(43, sessionTarget);
-        set(44, sessionPayload);
-        set(45, sessionPayloadFinishedResult);
-        set(46, sessionPayloadFinishedResultFailedFailureJson);
-        set(47, sessionPayloadSuspendedTag);
-        set(48, sessionPayloadTransactionBoundTrxId);
-        set(49, sessionPayloadTransactionBoundTrxTimestamp);
-        set(50, sessionPayloadTransactionBoundTrxExtraJson);
-        set(51, sessionPayloadProxyStateChangedProxyState);
-        set(52, sessionPayloadInteractionRequestedInteractionJson);
-        set(53, fee);
-        set(54, providerFee);
-        set(55, externalFee);
-        set(56, guaranteeDeposit);
-        set(57, makeRecurrent);
-        set(58, payerRecurrentParentInvoiceId);
-        set(59, payerRecurrentParentPaymentId);
-        set(60, recurrentIntentionToken);
+        set(43, sessionPayloadTransactionBoundTrxId);
+        set(44, sessionPayloadTransactionBoundTrxExtraJson);
+        set(45, fee);
+        set(46, providerFee);
+        set(47, externalFee);
+        set(48, guaranteeDeposit);
+        set(49, makeRecurrent);
+        set(50, payerRecurrentParentInvoiceId);
+        set(51, payerRecurrentParentPaymentId);
+        set(52, recurrentIntentionToken);
     }
 }
