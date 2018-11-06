@@ -1,10 +1,9 @@
 package com.rbkmoney.newway.config;
 
 import com.rbkmoney.eventstock.client.EventPublisher;
+import com.rbkmoney.eventstock.client.poll.FistfulPollingEventPublisherBuilder;
 import com.rbkmoney.eventstock.client.poll.PollingEventPublisherBuilder;
-import com.rbkmoney.newway.poller.event_stock.InvoicingEventStockHandler;
-import com.rbkmoney.newway.poller.event_stock.PayoutEventStockHandler;
-import com.rbkmoney.newway.poller.event_stock.PartyManagementEventStockHandler;
+import com.rbkmoney.newway.poller.event_stock.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -64,6 +63,60 @@ public class EventStockConfig {
         return new PollingEventPublisherBuilder()
                 .withURI(resource.getURI())
                 .withEventHandler(payoutEventStockHandler)
+                .withMaxPoolSize(maxPoolSize)
+                .withEventRetryDelay(retryDelay)
+                .withPollDelay(pollDelay)
+                .build();
+    }
+
+    @Bean
+    public EventPublisher walletEventPublisher(
+            WalletEventStockHandler walletEventStockHandler,
+            @Value("${wallet.polling.url}") Resource resource,
+            @Value("${wallet.polling.delay}") int pollDelay,
+            @Value("${wallet.polling.retryDelay}") int retryDelay,
+            @Value("${wallet.polling.maxPoolSize}") int maxPoolSize
+    ) throws IOException {
+        return new FistfulPollingEventPublisherBuilder()
+                .withWalletServiceAdapter()
+                .withURI(resource.getURI())
+                .withEventHandler(walletEventStockHandler)
+                .withMaxPoolSize(maxPoolSize)
+                .withEventRetryDelay(retryDelay)
+                .withPollDelay(pollDelay)
+                .build();
+    }
+
+    @Bean
+    public EventPublisher identityEventPublisher(
+            IdentityEventStockHandler identityEventStockHandler,
+            @Value("${identity.polling.url}") Resource resource,
+            @Value("${identity.polling.delay}") int pollDelay,
+            @Value("${identity.polling.retryDelay}") int retryDelay,
+            @Value("${identity.polling.maxPoolSize}") int maxPoolSize
+    ) throws IOException {
+        return new FistfulPollingEventPublisherBuilder()
+                .withIdentityServiceAdapter()
+                .withURI(resource.getURI())
+                .withEventHandler(identityEventStockHandler)
+                .withMaxPoolSize(maxPoolSize)
+                .withEventRetryDelay(retryDelay)
+                .withPollDelay(pollDelay)
+                .build();
+    }
+
+    @Bean
+    public EventPublisher withdrawalEventPublisher(
+            WithdrawalEventStockHandler withdrawalEventStockHandler,
+            @Value("${withdrawal.polling.url}") Resource resource,
+            @Value("${withdrawal.polling.delay}") int pollDelay,
+            @Value("${withdrawal.polling.retryDelay}") int retryDelay,
+            @Value("${withdrawal.polling.maxPoolSize}") int maxPoolSize
+    ) throws IOException {
+        return new FistfulPollingEventPublisherBuilder()
+                .withWithdrawalServiceAdapter()
+                .withURI(resource.getURI())
+                .withEventHandler(withdrawalEventStockHandler)
                 .withMaxPoolSize(maxPoolSize)
                 .withEventRetryDelay(retryDelay)
                 .withPollDelay(pollDelay)

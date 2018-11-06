@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>newway</artifactId>
-    <version>1.0.19-SNAPSHOT</version>
+    <version>1.0.20-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
@@ -30,6 +30,7 @@
         <db.schema>nw</db.schema>
         <flyway.version>4.2.0</flyway.version>
         <damsel.version>1.256-2afe121</damsel.version>
+        <fistful-proto.version>1.4-08df5e9</fistful-proto.version>
     </properties>
 
     <dependencies>
@@ -96,13 +97,23 @@
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
-            <artifactId>eventstock-client</artifactId>
-            <version>1.2.1</version>
+            <artifactId>eventstock-client-damsel</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>eventstock-client-fistful</artifactId>
+            <version>1.2.3</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>damsel</artifactId>
             <version>${damsel.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>fistful-proto</artifactId>
+            <version>${fistful-proto.version}</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>

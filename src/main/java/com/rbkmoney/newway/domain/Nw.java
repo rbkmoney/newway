@@ -8,10 +8,13 @@ import com.rbkmoney.newway.domain.tables.Adjustment;
 import com.rbkmoney.newway.domain.tables.Calendar;
 import com.rbkmoney.newway.domain.tables.CashFlow;
 import com.rbkmoney.newway.domain.tables.Category;
+import com.rbkmoney.newway.domain.tables.Challenge;
 import com.rbkmoney.newway.domain.tables.Contract;
 import com.rbkmoney.newway.domain.tables.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.Contractor;
 import com.rbkmoney.newway.domain.tables.Currency;
+import com.rbkmoney.newway.domain.tables.FistfulCashFlow;
+import com.rbkmoney.newway.domain.tables.Identity;
 import com.rbkmoney.newway.domain.tables.Inspector;
 import com.rbkmoney.newway.domain.tables.Invoice;
 import com.rbkmoney.newway.domain.tables.InvoiceCart;
@@ -29,6 +32,8 @@ import com.rbkmoney.newway.domain.tables.Refund;
 import com.rbkmoney.newway.domain.tables.Shop;
 import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
 import com.rbkmoney.newway.domain.tables.Terminal;
+import com.rbkmoney.newway.domain.tables.Wallet;
+import com.rbkmoney.newway.domain.tables.Withdrawal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +60,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Nw extends SchemaImpl {
 
-    private static final long serialVersionUID = 1650142434;
+    private static final long serialVersionUID = 1744801859;
 
     /**
      * The reference instance of <code>nw</code>
@@ -83,6 +88,11 @@ public class Nw extends SchemaImpl {
     public final Category CATEGORY = com.rbkmoney.newway.domain.tables.Category.CATEGORY;
 
     /**
+     * The table <code>nw.challenge</code>.
+     */
+    public final Challenge CHALLENGE = com.rbkmoney.newway.domain.tables.Challenge.CHALLENGE;
+
+    /**
      * The table <code>nw.contract</code>.
      */
     public final Contract CONTRACT = com.rbkmoney.newway.domain.tables.Contract.CONTRACT;
@@ -101,6 +111,16 @@ public class Nw extends SchemaImpl {
      * The table <code>nw.currency</code>.
      */
     public final Currency CURRENCY = com.rbkmoney.newway.domain.tables.Currency.CURRENCY;
+
+    /**
+     * The table <code>nw.fistful_cash_flow</code>.
+     */
+    public final FistfulCashFlow FISTFUL_CASH_FLOW = com.rbkmoney.newway.domain.tables.FistfulCashFlow.FISTFUL_CASH_FLOW;
+
+    /**
+     * The table <code>nw.identity</code>.
+     */
+    public final Identity IDENTITY = com.rbkmoney.newway.domain.tables.Identity.IDENTITY;
 
     /**
      * The table <code>nw.inspector</code>.
@@ -188,6 +208,16 @@ public class Nw extends SchemaImpl {
     public final Terminal TERMINAL = com.rbkmoney.newway.domain.tables.Terminal.TERMINAL;
 
     /**
+     * The table <code>nw.wallet</code>.
+     */
+    public final Wallet WALLET = com.rbkmoney.newway.domain.tables.Wallet.WALLET;
+
+    /**
+     * The table <code>nw.withdrawal</code>.
+     */
+    public final Withdrawal WITHDRAWAL = com.rbkmoney.newway.domain.tables.Withdrawal.WITHDRAWAL;
+
+    /**
      * No further instances allowed
      */
     private Nw() {
@@ -216,10 +246,13 @@ public class Nw extends SchemaImpl {
             Sequences.CALENDAR_ID_SEQ,
             Sequences.CASH_FLOW_ID_SEQ,
             Sequences.CATEGORY_ID_SEQ,
+            Sequences.CHALLENGE_ID_SEQ,
             Sequences.CONTRACT_ADJUSTMENT_ID_SEQ,
             Sequences.CONTRACT_ID_SEQ,
             Sequences.CONTRACTOR_ID_SEQ,
             Sequences.CURRENCY_ID_SEQ,
+            Sequences.FISTFUL_CASH_FLOW_ID_SEQ,
+            Sequences.IDENTITY_ID_SEQ,
             Sequences.INSPECTOR_ID_SEQ,
             Sequences.INVOICE_CART_ID_SEQ,
             Sequences.INVOICE_ID_SEQ,
@@ -236,7 +269,9 @@ public class Nw extends SchemaImpl {
             Sequences.REFUND_ID_SEQ,
             Sequences.SHOP_ID_SEQ,
             Sequences.TERM_SET_HIERARCHY_ID_SEQ,
-            Sequences.TERMINAL_ID_SEQ);
+            Sequences.TERMINAL_ID_SEQ,
+            Sequences.WALLET_ID_SEQ,
+            Sequences.WITHDRAWAL_ID_SEQ);
     }
 
     @Override
@@ -252,10 +287,13 @@ public class Nw extends SchemaImpl {
             Calendar.CALENDAR,
             CashFlow.CASH_FLOW,
             Category.CATEGORY,
+            Challenge.CHALLENGE,
             Contract.CONTRACT,
             ContractAdjustment.CONTRACT_ADJUSTMENT,
             Contractor.CONTRACTOR,
             Currency.CURRENCY,
+            FistfulCashFlow.FISTFUL_CASH_FLOW,
+            Identity.IDENTITY,
             Inspector.INSPECTOR,
             Invoice.INVOICE,
             InvoiceCart.INVOICE_CART,
@@ -272,6 +310,8 @@ public class Nw extends SchemaImpl {
             Refund.REFUND,
             Shop.SHOP,
             TermSetHierarchy.TERM_SET_HIERARCHY,
-            Terminal.TERMINAL);
+            Terminal.TERMINAL,
+            Wallet.WALLET,
+            Withdrawal.WITHDRAWAL);
     }
 }

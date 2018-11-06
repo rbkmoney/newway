@@ -2,11 +2,13 @@ package com.rbkmoney.newway.util;
 
 import com.rbkmoney.damsel.domain.FinalCashFlowAccount;
 import com.rbkmoney.damsel.domain.FinalCashFlowPosting;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
 import com.rbkmoney.newway.domain.enums.CashFlowAccount;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
+import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +38,22 @@ public class CashFlowUtil {
         }
     }
 
+    public static String getCashFlowAccountTypeValue(com.rbkmoney.fistful.cashflow.FinalCashFlowAccount cfa) {
+        if (cfa.getAccountType().isSetMerchant()) {
+            return cfa.getAccountType().getMerchant().name();
+        } else if (cfa.getAccountType().isSetProvider()) {
+            return cfa.getAccountType().getProvider().name();
+        } else if (cfa.getAccountType().isSetSystem()) {
+            return cfa.getAccountType().getSystem().name();
+        } else if (cfa.getAccountType().isSetExternal()) {
+            return cfa.getAccountType().getExternal().name();
+        } else if (cfa.getAccountType().isSetWallet()) {
+            return cfa.getAccountType().getWallet().name();
+        } else {
+            throw new IllegalArgumentException("Illegal fistful cash flow account type: " + cfa.getAccountType());
+        }
+    }
+
     public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, long objId, PaymentChangeType paymentchangetype) {
         return convertCashFlows(cashFlowPostings, objId, paymentchangetype, null);
     }
@@ -56,6 +74,23 @@ public class CashFlowUtil {
             pcf.setCurrencyCode(cf.getVolume().getCurrency().getSymbolicCode());
             pcf.setDetails(cf.getDetails());
             return pcf;
+        }).collect(Collectors.toList());
+    }
+
+    public static List<FistfulCashFlow> convertFistfulCashFlows(List<com.rbkmoney.fistful.cashflow.FinalCashFlowPosting> cashFlowPostings, long objId) {
+        return cashFlowPostings.stream().map(cf -> {
+            FistfulCashFlow fcf = new FistfulCashFlow();
+            fcf.setObjId(objId);
+            fcf.setSourceAccountType(TBaseUtil.unionFieldToEnum(cf.getSource().getAccountType(), CashFlowAccount.class));
+            fcf.setSourceAccountTypeValue(getCashFlowAccountTypeValue(cf.getSource()));
+            fcf.setSourceAccountId(cf.getSource().getAccountId());
+            fcf.setDestinationAccountType(TBaseUtil.unionFieldToEnum(cf.getDestination().getAccountType(), CashFlowAccount.class));
+            fcf.setDestinationAccountTypeValue(getCashFlowAccountTypeValue(cf.getDestination()));
+            fcf.setDestinationAccountId(cf.getDestination().getAccountId());
+            fcf.setAmount(cf.getVolume().getAmount());
+            fcf.setCurrencyCode(cf.getVolume().getCurrency().getSymbolicCode());
+            fcf.setDetails(cf.getDetails());
+            return fcf;
         }).collect(Collectors.toList());
     }
 }
