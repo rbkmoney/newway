@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>newway</artifactId>
-    <version>1.0.20-SNAPSHOT</version>
+    <version>1.0.21-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
@@ -22,14 +22,14 @@
         <shared.resources.version>0.2.1</shared.resources.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <postgresql.jdbc.version>42.2.5</postgresql.jdbc.version>
-        <dockerfile.base.service.tag>22c57470c4fc47161894f036b7cf9d70f42b75f5</dockerfile.base.service.tag>
+        <dockerfile.base.service.tag>2a8b44ac628c1bdb729abd04ed7a2a54676e574b</dockerfile.base.service.tag>
         <server.port>8022</server.port>
         <db.url>jdbc:postgresql://localhost:5432/newway</db.url>
         <db.user>postgres</db.user>
         <db.password>postgres</db.password>
         <db.schema>nw</db.schema>
         <flyway.version>4.2.0</flyway.version>
-        <damsel.version>1.256-2afe121</damsel.version>
+        <damsel.version>1.267-5711f53</damsel.version>
         <fistful-proto.version>1.4-08df5e9</fistful-proto.version>
     </properties>
 
