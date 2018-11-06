@@ -1,12 +1,9 @@
 package com.rbkmoney.newway.config;
 
 import com.rbkmoney.eventstock.client.EventPublisher;
-import com.rbkmoney.eventstock.client.poll.FistfulServiceAdapter;
+import com.rbkmoney.eventstock.client.poll.FistfulPollingEventPublisherBuilder;
 import com.rbkmoney.eventstock.client.poll.PollingEventPublisherBuilder;
-import com.rbkmoney.eventstock.client.poll.ServiceAdapter;
 import com.rbkmoney.newway.poller.event_stock.*;
-import com.rbkmoney.newway.poller.event_stock.impl.wallet.AbstractWalletHandler;
-import com.rbkmoney.woody.api.ClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -80,12 +77,8 @@ public class EventStockConfig {
             @Value("${wallet.polling.retryDelay}") int retryDelay,
             @Value("${wallet.polling.maxPoolSize}") int maxPoolSize
     ) throws IOException {
-        return new PollingEventPublisherBuilder() {
-            @Override
-            protected ServiceAdapter createServiceAdapter(ClientBuilder clientBuilder) {
-                return FistfulServiceAdapter.buildWalletAdapter(clientBuilder);
-            }
-        }
+        return new FistfulPollingEventPublisherBuilder()
+                .withWalletServiceAdapter()
                 .withURI(resource.getURI())
                 .withEventHandler(walletEventStockHandler)
                 .withMaxPoolSize(maxPoolSize)
@@ -102,12 +95,8 @@ public class EventStockConfig {
             @Value("${identity.polling.retryDelay}") int retryDelay,
             @Value("${identity.polling.maxPoolSize}") int maxPoolSize
     ) throws IOException {
-        return new PollingEventPublisherBuilder() {
-            @Override
-            protected ServiceAdapter createServiceAdapter(ClientBuilder clientBuilder) {
-                return FistfulServiceAdapter.buildIdentityAdapter(clientBuilder);
-            }
-        }
+        return new FistfulPollingEventPublisherBuilder()
+                .withIdentityServiceAdapter()
                 .withURI(resource.getURI())
                 .withEventHandler(identityEventStockHandler)
                 .withMaxPoolSize(maxPoolSize)
@@ -124,12 +113,8 @@ public class EventStockConfig {
             @Value("${withdrawal.polling.retryDelay}") int retryDelay,
             @Value("${withdrawal.polling.maxPoolSize}") int maxPoolSize
     ) throws IOException {
-        return new PollingEventPublisherBuilder() {
-            @Override
-            protected ServiceAdapter createServiceAdapter(ClientBuilder clientBuilder) {
-                return FistfulServiceAdapter.buildWithdrawalAdapter(clientBuilder);
-            }
-        }
+        return new FistfulPollingEventPublisherBuilder()
+                .withWithdrawalServiceAdapter()
                 .withURI(resource.getURI())
                 .withEventHandler(withdrawalEventStockHandler)
                 .withMaxPoolSize(maxPoolSize)

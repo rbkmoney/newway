@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class WalletAccountCreatedHandler extends AbstractWalletHandler {
@@ -37,22 +39,23 @@ public class WalletAccountCreatedHandler extends AbstractWalletHandler {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
         Account account = change.getAccount().getCreated();
-        log.info("Start wallet account created handling, eventId={}, walletId={}, identityId={}", event.getPayload().getId(), event.getSource(), account.getIdentity());
+        log.info("Start wallet account created handling, eventId={}, walletId={}, identityId={}", event.getId(), event.getSource(), account.getIdentity());
         Wallet wallet = walletDao.get(event.getSource());
         if (wallet == null) {
             throw new NotFoundException(String.format("Wallet not found, walletId='%s'", event.getSource()));
         }
-        Identity identity = identityDao.get(event.getSource());
+        Identity identity = identityDao.get(account.getIdentity());
         if (identity == null) {
             throw new NotFoundException(String.format("Identity not found, walletId='%s'", event.getSource()));
         }
 
         wallet.setId(null);
         wallet.setWtime(null);
-        wallet.setEventId(event.getPayload().getId());
-        wallet.setSequenceId(event.getSequence());
+        wallet.setEventId(event.getId());
+        wallet.setSequenceId(event.getPayload().getSequence());
         wallet.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         wallet.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         wallet.setIdentityId(account.getIdentity());
@@ -61,7 +64,7 @@ public class WalletAccountCreatedHandler extends AbstractWalletHandler {
 
         walletDao.updateNotCurrent(event.getSource());
         walletDao.save(wallet);
-        log.info("Wallet account have been saved, eventId={}, walletId={}, identityId={}", event.getPayload().getId(), event.getSource(), account.getIdentity());
+        log.info("Wallet account have been saved, eventId={}, walletId={}, identityId={}", event.getId(), event.getSource(), account.getIdentity());
     }
 
     @Override

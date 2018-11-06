@@ -14,8 +14,9 @@ import com.rbkmoney.newway.domain.tables.pojos.Withdrawal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.List;
 
 @Component
@@ -36,15 +37,16 @@ public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
-        log.info("Start withdrawal status changed handling, eventId={}, walletId={}, status={}", event.getPayload().getId(), event.getSource(), change.getStatusChanged());
+        log.info("Start withdrawal provider id changed handling, eventId={}, walletId={}, providerId={}", event.getId(), event.getSource(), change.getRoute().getId());
         Withdrawal withdrawal = withdrawalDao.get(event.getSource());
 
         long sourceId = withdrawal.getId();
         withdrawal.setId(null);
         withdrawal.setWtime(null);
-        withdrawal.setEventId(event.getPayload().getId());
-        withdrawal.setSequenceId(event.getSequence());
+        withdrawal.setEventId(event.getId());
+        withdrawal.setSequenceId(event.getPayload().getSequence());
         withdrawal.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         withdrawal.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawal.setWithdrawalId(event.getSource());
@@ -59,7 +61,7 @@ public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
             pcf.setObjId(id);
         });
         fistfulCashFlowDao.save(cashFlows);
-        log.info("Withdrawal status have been changed, eventId={}, walletId={}, status={}", event.getPayload().getId(), event.getSource(),change.getStatusChanged());
+        log.info("Withdrawal provider id have been changed, eventId={}, walletId={}, providerId={}", event.getId(), event.getSource(), change.getRoute().getId());
     }
 
     @Override

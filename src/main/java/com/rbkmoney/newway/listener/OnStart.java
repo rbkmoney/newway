@@ -32,6 +32,9 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     @Value("${bm.pollingEnabled}")
     private boolean pollingEnabled;
 
+    @Value("${withdrawal.polling.lastEventId}")
+    private Long withdrawalLastEventId;
+
     public OnStart(EventPublisher partyManagementEventPublisher,
                    EventPublisher invoicingEventPublisher,
                    EventPublisher payoutEventPublisher,
@@ -67,7 +70,12 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
             payoutEventPublisher.subscribe(buildSubscriberConfig(payoutService.getLastEventId()));
             identityEventPublisher.subscribe(buildSubscriberConfig(identityService.getLastEventId()));
             walletEventPublisher.subscribe(buildSubscriberConfig(walletService.getLastEventId()));
-            withdrawalEventPublisher.subscribe(buildSubscriberConfig(withdrawalService.getLastEventId()));
+
+            Optional<Long> lastEventId = withdrawalService.getLastEventId();
+            if (!lastEventId.isPresent()) {
+                lastEventId = Optional.of(withdrawalLastEventId);
+            }
+            withdrawalEventPublisher.subscribe(buildSubscriberConfig(lastEventId));
         }
     }
 

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
+import static com.rbkmoney.newway.domain.tables.Challenge.CHALLENGE;
 import static com.rbkmoney.newway.domain.tables.Identity.IDENTITY;
 
 @Component
@@ -30,7 +31,10 @@ public class IdentityDaoImpl extends AbstractGenericDao implements IdentityDao {
 
     @Override
     public Long getLastEventId() throws DaoException {
-        Query query = getDslContext().select(DSL.max(IDENTITY.EVENT_ID)).from(IDENTITY);
+        Query query = getDslContext().select(DSL.max(DSL.field("event_id"))).from(
+                getDslContext().select(IDENTITY.EVENT_ID.max().as("event_id")).from(IDENTITY)
+                        .unionAll(getDslContext().select(CHALLENGE.EVENT_ID.max().as("event_id")).from(CHALLENGE))
+        );
         return fetchOne(query, Long.class);
     }
 

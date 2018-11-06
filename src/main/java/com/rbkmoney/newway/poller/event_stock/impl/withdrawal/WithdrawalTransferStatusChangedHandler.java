@@ -16,6 +16,8 @@ import com.rbkmoney.newway.domain.tables.pojos.Withdrawal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -37,15 +39,16 @@ public class WithdrawalTransferStatusChangedHandler extends AbstractWithdrawalHa
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
-        log.info("Start withdrawal transfer status changed handling, eventId={}, walletId={}, transferChange={}", event.getPayload().getId(), event.getSource(), change.getTransfer());
+        log.info("Start withdrawal transfer status changed handling, eventId={}, walletId={}, transferChange={}", event.getId(), event.getSource(), change.getTransfer());
         Withdrawal withdrawal = withdrawalDao.get(event.getSource());
 
         long sourceId = withdrawal.getId();
         withdrawal.setId(null);
         withdrawal.setWtime(null);
-        withdrawal.setEventId(event.getPayload().getId());
-        withdrawal.setSequenceId(event.getSequence());
+        withdrawal.setEventId(event.getId());
+        withdrawal.setSequenceId(event.getPayload().getSequence());
         withdrawal.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         withdrawal.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawal.setWithdrawalId(event.getSource());
@@ -60,7 +63,7 @@ public class WithdrawalTransferStatusChangedHandler extends AbstractWithdrawalHa
             pcf.setObjId(id);
         });
         fistfulCashFlowDao.save(cashFlows);
-        log.info("Withdrawal transfer status have been changed, eventId={}, walletId={}, transferChange={}", event.getPayload().getId(), event.getSource(), change.getTransfer());
+        log.info("Withdrawal transfer status have been changed, eventId={}, walletId={}, transferChange={}", event.getId(), event.getSource(), change.getTransfer());
     }
 
     @Override

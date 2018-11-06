@@ -41,14 +41,14 @@ public class WithdrawalStatusChangedHandler extends AbstractWithdrawalHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
-        log.info("Start withdrawal status changed handling, eventId={}, walletId={}, status={}", event.getPayload().getId(), event.getSource(), change.getStatusChanged());
+        log.info("Start withdrawal status changed handling, eventId={}, walletId={}, status={}", event.getId(), event.getSource(), change.getStatusChanged());
         Withdrawal withdrawal = withdrawalDao.get(event.getSource());
 
         long sourceId = withdrawal.getId();
         withdrawal.setId(null);
         withdrawal.setWtime(null);
-        withdrawal.setEventId(event.getPayload().getId());
-        withdrawal.setSequenceId(event.getSequence());
+        withdrawal.setEventId(event.getId());
+        withdrawal.setSequenceId(event.getPayload().getSequence());
         withdrawal.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         withdrawal.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawal.setWithdrawalId(event.getSource());
@@ -63,7 +63,7 @@ public class WithdrawalStatusChangedHandler extends AbstractWithdrawalHandler {
             pcf.setObjId(id);
         });
         fistfulCashFlowDao.save(cashFlows);
-        log.info("Withdrawal status have been changed, eventId={}, walletId={}, status={}", event.getPayload().getId(), event.getSource(),change.getStatusChanged());
+        log.info("Withdrawal status have been changed, eventId={}, walletId={}, status={}", event.getId(), event.getSource(),change.getStatusChanged());
     }
 
     @Override

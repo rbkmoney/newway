@@ -31,10 +31,10 @@ public class WithdrawalCreatedHandler extends AbstractWithdrawalHandler {
 
     @Override
     public void handle(Change change, SinkEvent event) {
-        log.info("Start withdrawal created handling, eventId={}, walletId={}", event.getPayload().getId(), event.getSource());
+        log.info("Start withdrawal created handling, eventId={}, walletId={}", event.getId(), event.getSource());
         Withdrawal withdrawal = new Withdrawal();
-        withdrawal.setEventId(event.getPayload().getId());
-        withdrawal.setSequenceId(event.getSequence());
+        withdrawal.setEventId(event.getId());
+        withdrawal.setSequenceId(event.getPayload().getSequence());
         withdrawal.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         withdrawal.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawal.setWithdrawalId(event.getSource());
@@ -47,7 +47,7 @@ public class WithdrawalCreatedHandler extends AbstractWithdrawalHandler {
         withdrawal.setWithdrawalStatus(WithdrawalStatus.pending);
 
         withdrawalDao.save(withdrawal);
-        log.info("Withdrawal have been saved, eventId={}, walletId={}", event.getPayload().getId(), event.getSource());
+        log.info("Withdrawal have been saved, eventId={}, walletId={}", event.getId(), event.getSource());
     }
 
     @Override

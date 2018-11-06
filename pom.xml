@@ -30,7 +30,7 @@
         <db.schema>nw</db.schema>
         <flyway.version>4.2.0</flyway.version>
         <damsel.version>1.256-2afe121</damsel.version>
-        <fistful-proto.version>1.3-325e57d</fistful-proto.version>
+        <fistful-proto.version>1.4-08df5e9</fistful-proto.version>
     </properties>
 
     <dependencies>
@@ -97,8 +97,13 @@
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
-            <artifactId>eventstock-client</artifactId>
-            <version>1.2.2</version>
+            <artifactId>eventstock-client-damsel</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>eventstock-client-fistful</artifactId>
+            <version>1.2.3</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>

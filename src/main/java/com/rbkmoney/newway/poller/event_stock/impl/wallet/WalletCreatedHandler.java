@@ -29,17 +29,17 @@ public class WalletCreatedHandler extends AbstractWalletHandler {
 
     @Override
     public void handle(Change change, SinkEvent event) {
-        log.info("Start wallet created handling, eventId={}, walletId={}", event.getPayload().getId(), event.getSource());
+        log.info("Start wallet created handling, eventId={}, walletId={}", event.getId(), event.getSource());
         Wallet wallet = new Wallet();
-        wallet.setEventId(event.getPayload().getId());
-        wallet.setSequenceId(event.getSequence());
+        wallet.setEventId(event.getId());
+        wallet.setSequenceId(event.getPayload().getSequence());
         wallet.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         wallet.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         wallet.setWalletId(event.getSource());
         wallet.setWalletName(change.getCreated().getName());
 
         walletDao.save(wallet);
-        log.info("Wallet have been saved, eventId={}, walletId={}", event.getPayload().getId(), event.getSource());
+        log.info("Wallet have been saved, eventId={}, walletId={}", event.getId(), event.getSource());
     }
 
     @Override

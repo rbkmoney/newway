@@ -38,22 +38,23 @@ bm:
   pollingEnabled: true
 identity:
   polling:
-    url: http://localhost:8080/identity
+    url: http://wapi:8022/v1/eventsink/identity
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1
 wallet:
   polling:
-    url: http://localhost:8080/wallet
+    url: http://wapi:8022/v1/eventsink/wallet
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1
 withdrawal:
   polling:
-    url: http://localhost:8080/withdrawal
+    url: http://wapi:8022/v1/eventsink/withdrawal
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1
+    lastEventId: 5000
 dmt:
   url: http://dominant:8022/v1/domain/repository
   networkTimeout: 5000

@@ -12,6 +12,8 @@ import com.rbkmoney.newway.domain.tables.pojos.Identity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class IdentityEffectiveChallengeChangedHandler extends AbstractIdentityHandler {
@@ -28,14 +30,15 @@ public class IdentityEffectiveChallengeChangedHandler extends AbstractIdentityHa
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
-        log.info("Start effective identity challenge changed handling, eventId={}, walletId={}, effectiveChallengeId={}", event.getPayload().getId(), event.getSource(), change.getEffectiveChallengeChanged());
+        log.info("Start effective identity challenge changed handling, eventId={}, walletId={}, effectiveChallengeId={}", event.getId(), event.getSource(), change.getEffectiveChallengeChanged());
         Identity identity = identityDao.get(event.getSource());
 
         identity.setId(null);
         identity.setWtime(null);
-        identity.setEventId(event.getPayload().getId());
-        identity.setSequenceId(event.getSequence());
+        identity.setEventId(event.getId());
+        identity.setSequenceId(event.getPayload().getSequence());
         identity.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         identity.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         identity.setIdentityId(event.getSource());
@@ -43,7 +46,7 @@ public class IdentityEffectiveChallengeChangedHandler extends AbstractIdentityHa
 
         identityDao.updateNotCurrent(event.getSource());
         identityDao.save(identity);
-        log.info("Effective identity challenge have been changed, eventId={}, walletId={}, effectiveChallengeId={}", event.getPayload().getId(), event.getSource(), change.getEffectiveChallengeChanged());
+        log.info("Effective identity challenge have been changed, eventId={}, walletId={}, effectiveChallengeId={}", event.getId(), event.getSource(), change.getEffectiveChallengeChanged());
     }
 
     @Override
