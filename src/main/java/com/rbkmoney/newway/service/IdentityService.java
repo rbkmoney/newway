@@ -38,6 +38,7 @@ public class IdentityService implements EventService<SinkEvent, Event> {
         }));
     }
 
+    @Override
     public Optional<Long> getLastEventId() throws DaoException {
         Optional<Long> lastEventId = Optional.ofNullable(identityDao.getLastEventId());
         log.info("Last identity eventId={}", lastEventId);
