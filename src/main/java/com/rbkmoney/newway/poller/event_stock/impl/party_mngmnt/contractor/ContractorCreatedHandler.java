@@ -1,18 +1,11 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contractor;
 
-import com.rbkmoney.damsel.domain.InternationalLegalEntity;
 import com.rbkmoney.damsel.domain.PartyContractor;
-import com.rbkmoney.damsel.domain.RussianLegalEntity;
-import com.rbkmoney.damsel.domain.RussianPrivateEntity;
 import com.rbkmoney.damsel.payment_processing.ContractorEffectUnit;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
-import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.dao.party.iface.ContractorDao;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
-import com.rbkmoney.newway.domain.enums.ContractorType;
-import com.rbkmoney.newway.domain.enums.LegalEntity;
-import com.rbkmoney.newway.domain.enums.PrivateEntity;
 import com.rbkmoney.newway.domain.tables.pojos.Contractor;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
 import com.rbkmoney.newway.exception.NotFoundException;

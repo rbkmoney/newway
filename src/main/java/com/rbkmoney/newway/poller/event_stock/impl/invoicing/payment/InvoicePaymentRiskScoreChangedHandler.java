@@ -1,4 +1,4 @@
-package com.rbkmoney.newway.poller.handler.impl.invoicing.payment;
+package com.rbkmoney.newway.poller.event_stock.impl.invoicing.payment;
 
 import com.rbkmoney.damsel.domain.RiskScore;
 import com.rbkmoney.damsel.payment_processing.Event;
@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Component
-public class InvoicePaymentRecTokenAcquiredHandler extends AbstractInvoicingHandler {
+public class InvoicePaymentRiskScoreChangedHandler extends AbstractInvoicingHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -37,11 +37,11 @@ public class InvoicePaymentRecTokenAcquiredHandler extends AbstractInvoicingHand
     private final Filter filter;
 
     @Autowired
-    public InvoicePaymentRecTokenAcquiredHandler(PaymentDao paymentDao, CashFlowDao cashFlowDao) {
+    public InvoicePaymentRiskScoreChangedHandler(PaymentDao paymentDao, CashFlowDao cashFlowDao) {
         this.paymentDao = paymentDao;
         this.cashFlowDao = cashFlowDao;
         this.filter = new PathConditionFilter(new PathConditionRule(
-                "invoice_payment_change.payload.invoice_payment_rec_token_acquired",
+                "invoice_payment_change.payload.invoice_payment_risk_score_changed",
                 new IsNullCondition().not()));
     }
 
@@ -51,8 +51,8 @@ public class InvoicePaymentRecTokenAcquiredHandler extends AbstractInvoicingHand
         InvoicePaymentChange invoicePaymentChange = change.getInvoicePaymentChange();
         String invoiceId = event.getSource().getInvoiceId();
         String paymentId = invoicePaymentChange.getId();
-        String token = invoicePaymentChange.getPayload().getInvoicePaymentRecTokenAcquired().getToken();
-        log.info("Start handling payment recurrent token acquired, eventId='{}', invoiceId='{}', paymentId='{}'", event.getId(), invoiceId, paymentId);
+        RiskScore riskScore = invoicePaymentChange.getPayload().getInvoicePaymentRiskScoreChanged().getRiskScore();
+        log.info("Start handling payment risk score change, eventId='{}', invoiceId='{}', paymentId='{}'", event.getId(), invoiceId, paymentId);
         Payment paymentSource = paymentDao.get(invoiceId, paymentId);
         if (paymentSource == null) {
             throw new NotFoundException(String.format("Invoice payment not found, invoiceId='%s', paymentId='%s'",
@@ -63,7 +63,11 @@ public class InvoicePaymentRecTokenAcquiredHandler extends AbstractInvoicingHand
         paymentSource.setWtime(null);
         paymentSource.setEventId(event.getId());
         paymentSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        paymentSource.setRecurrentIntentionToken(token);
+        com.rbkmoney.newway.domain.enums.RiskScore score = TypeUtil.toEnumField(riskScore.name(), com.rbkmoney.newway.domain.enums.RiskScore.class);
+        if (score == null) {
+            throw new IllegalArgumentException("Illegal risk score: " + riskScore);
+        }
+        paymentSource.setRiskScore(score);
         paymentDao.updateNotCurrent(invoiceId, paymentId);
         long pmntId = paymentDao.save(paymentSource);
         List<CashFlow> cashFlows = cashFlowDao.getByObjId(paymentSourceId, PaymentChangeType.payment);
@@ -72,7 +76,7 @@ public class InvoicePaymentRecTokenAcquiredHandler extends AbstractInvoicingHand
             pcf.setObjId(pmntId);
         });
         cashFlowDao.save(cashFlows);
-        log.info("Payment recurrent token have been saved, eventId='{}', invoiceId='{}', paymentId='{}'", event.getId(), invoiceId, paymentId);
+        log.info("Payment risk score have been saved, eventId='{}', invoiceId='{}', paymentId='{}'", event.getId(), invoiceId, paymentId);
     }
 
     @Override

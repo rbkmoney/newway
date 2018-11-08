@@ -1,10 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.identity;
 
-import com.rbkmoney.fistful.identity.ChallengeChange;
-import com.rbkmoney.fistful.identity.ChallengeCompleted;
-import com.rbkmoney.fistful.identity.ChallengeStatus;
-import com.rbkmoney.fistful.identity.SinkEvent;
-import com.rbkmoney.fistful.identity.Change;
+import com.rbkmoney.fistful.identity.*;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;

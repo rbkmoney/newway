@@ -1,18 +1,12 @@
 package com.rbkmoney.newway.poller.dominant.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.rbkmoney.damsel.domain.InspectorObject;
-import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.dao.dominant.impl.InspectorDaoImpl;
 import com.rbkmoney.newway.domain.tables.pojos.Inspector;
 import com.rbkmoney.newway.poller.dominant.AbstractDominantHandler;
 import com.rbkmoney.newway.util.JsonUtil;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 public class InspectorHandler extends AbstractDominantHandler<InspectorObject, Inspector, Integer> {

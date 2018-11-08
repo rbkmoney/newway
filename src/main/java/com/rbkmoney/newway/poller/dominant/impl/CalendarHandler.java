@@ -2,7 +2,6 @@ package com.rbkmoney.newway.poller.dominant.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rbkmoney.damsel.domain.CalendarObject;
-import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.dao.dominant.impl.CalendarDaoImpl;
 import com.rbkmoney.newway.domain.tables.pojos.Calendar;
