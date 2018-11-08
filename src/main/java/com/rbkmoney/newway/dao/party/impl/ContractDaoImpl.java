@@ -12,7 +12,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-
 import java.util.List;
 
 import static com.rbkmoney.newway.domain.Tables.CONTRACT;
