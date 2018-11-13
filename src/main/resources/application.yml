@@ -38,7 +38,7 @@ bm:
   pollingEnabled: true
 identity:
   polling:
-    url: http://localhost:8022/v1/eventsink/identity
+    url: http://wapi:8022/v1/eventsink/identity
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1
@@ -50,25 +50,25 @@ wallet:
     maxPoolSize: 1
 source:
   polling:
-    url: http://localhost:8022/v1/eventsink/source
+    url: http://wapi:8022/v1/eventsink/source
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1
 destination:
   polling:
-    url: http://localhost:8022/v1/eventsink/destination
+    url: http://wapi:8022/v1/eventsink/destination
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1
 deposit:
   polling:
-    url: http://localhost:8022/v1/eventsink/deposit
+    url: http://wapi:8022/v1/eventsink/deposit
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1
 withdrawal:
   polling:
-    url: http://localhost:8022/v1/eventsink/withdrawal
+    url: http://wapi:8022/v1/eventsink/withdrawal
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1

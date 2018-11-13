@@ -42,7 +42,7 @@ public class DepositTransferStatusChangedHandler extends AbstractDepositHandler 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
-        log.info("Start deposit transfer status changed handling, eventId={}, walletId={}, transferChange={}", event.getId(), event.getSource(), change.getTransfer());
+        log.info("Start deposit transfer status changed handling, eventId={}, depositId={}, transferChange={}", event.getId(), event.getSource(), change.getTransfer());
         Deposit deposit = depositDao.get(event.getSource());
 
         long sourceId = deposit.getId();
@@ -64,7 +64,7 @@ public class DepositTransferStatusChangedHandler extends AbstractDepositHandler 
             pcf.setObjId(id);
         });
         fistfulCashFlowDao.save(cashFlows);
-        log.info("Withdrawal deposit status have been changed, eventId={}, walletId={}, transferChange={}", event.getId(), event.getSource(), change.getTransfer());
+        log.info("Withdrawal deposit status have been changed, eventId={}, depositId={}, transferChange={}", event.getId(), event.getSource(), change.getTransfer());
     }
 
     @Override

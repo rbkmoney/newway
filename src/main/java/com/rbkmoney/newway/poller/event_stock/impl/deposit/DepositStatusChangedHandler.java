@@ -64,7 +64,7 @@ public class DepositStatusChangedHandler extends AbstractDepositHandler {
             pcf.setObjId(id);
         });
         fistfulCashFlowDao.save(cashFlows);
-        log.info("Deposit status have been changed, eventId={}, walletId={}, status={}", event.getId(), event.getSource(), change.getStatusChanged());
+        log.info("Deposit status have been changed, eventId={}, depositId={}, status={}", event.getId(), event.getSource(), change.getStatusChanged());
     }
 
     @Override
