@@ -13,6 +13,8 @@ import com.rbkmoney.newway.domain.tables.Contract;
 import com.rbkmoney.newway.domain.tables.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.Contractor;
 import com.rbkmoney.newway.domain.tables.Currency;
+import com.rbkmoney.newway.domain.tables.Deposit;
+import com.rbkmoney.newway.domain.tables.Destination;
 import com.rbkmoney.newway.domain.tables.FistfulCashFlow;
 import com.rbkmoney.newway.domain.tables.Identity;
 import com.rbkmoney.newway.domain.tables.Inspector;
@@ -30,6 +32,7 @@ import com.rbkmoney.newway.domain.tables.Provider;
 import com.rbkmoney.newway.domain.tables.Proxy;
 import com.rbkmoney.newway.domain.tables.Refund;
 import com.rbkmoney.newway.domain.tables.Shop;
+import com.rbkmoney.newway.domain.tables.Source;
 import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
 import com.rbkmoney.newway.domain.tables.Terminal;
 import com.rbkmoney.newway.domain.tables.Wallet;
@@ -95,6 +98,16 @@ public class Tables {
      * The table <code>nw.currency</code>.
      */
     public static final Currency CURRENCY = com.rbkmoney.newway.domain.tables.Currency.CURRENCY;
+
+    /**
+     * The table <code>nw.deposit</code>.
+     */
+    public static final Deposit DEPOSIT = com.rbkmoney.newway.domain.tables.Deposit.DEPOSIT;
+
+    /**
+     * The table <code>nw.destination</code>.
+     */
+    public static final Destination DESTINATION = com.rbkmoney.newway.domain.tables.Destination.DESTINATION;
 
     /**
      * The table <code>nw.fistful_cash_flow</code>.
@@ -180,6 +193,11 @@ public class Tables {
      * The table <code>nw.shop</code>.
      */
     public static final Shop SHOP = com.rbkmoney.newway.domain.tables.Shop.SHOP;
+
+    /**
+     * The table <code>nw.source</code>.
+     */
+    public static final Source SOURCE = com.rbkmoney.newway.domain.tables.Source.SOURCE;
 
     /**
      * The table <code>nw.term_set_hierarchy</code>.

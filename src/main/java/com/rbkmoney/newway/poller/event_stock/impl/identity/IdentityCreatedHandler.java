@@ -29,7 +29,7 @@ public class IdentityCreatedHandler extends AbstractIdentityHandler {
 
     @Override
     public void handle(Change change, SinkEvent event) {
-        log.info("Start identity created handling, eventId={}, walletId={}", event.getId(), event.getSource());
+        log.info("Start identity created handling, eventId={}, identityId={}", event.getId(), event.getSource());
         Identity identity = new Identity();
         identity.setEventId(event.getId());
         identity.setSequenceId(event.getPayload().getSequence());
@@ -42,7 +42,7 @@ public class IdentityCreatedHandler extends AbstractIdentityHandler {
         identity.setIdentityProviderId(change.getCreated().getProvider());
 
         identityDao.save(identity);
-        log.info("Identity haven been saved, eventId={}, walletId={}", event.getId(), event.getSource());
+        log.info("Identity haven been saved, eventId={}, identityId={}", event.getId(), event.getSource());
     }
 
     @Override

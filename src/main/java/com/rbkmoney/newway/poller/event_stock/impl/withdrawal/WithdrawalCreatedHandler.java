@@ -38,7 +38,7 @@ public class WithdrawalCreatedHandler extends AbstractWithdrawalHandler {
         withdrawal.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         withdrawal.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawal.setWithdrawalId(event.getSource());
-        withdrawal.setSourceId(change.getCreated().getSource());
+        withdrawal.setWalletId(change.getCreated().getSource());
         withdrawal.setDestinationId(change.getCreated().getDestination());
 
         Cash cash = change.getCreated().getBody();

@@ -6,11 +6,13 @@ import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
 import com.rbkmoney.newway.domain.enums.CashFlowAccount;
+import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class CashFlowUtil {
@@ -77,10 +79,11 @@ public class CashFlowUtil {
         }).collect(Collectors.toList());
     }
 
-    public static List<FistfulCashFlow> convertFistfulCashFlows(List<com.rbkmoney.fistful.cashflow.FinalCashFlowPosting> cashFlowPostings, long objId) {
+    public static List<FistfulCashFlow> convertFistfulCashFlows(List<com.rbkmoney.fistful.cashflow.FinalCashFlowPosting> cashFlowPostings, long objId, FistfulCashFlowChangeType cashFlowChangeType) {
         return cashFlowPostings.stream().map(cf -> {
             FistfulCashFlow fcf = new FistfulCashFlow();
             fcf.setObjId(objId);
+            fcf.setObjType(cashFlowChangeType);
             fcf.setSourceAccountType(TBaseUtil.unionFieldToEnum(cf.getSource().getAccountType(), CashFlowAccount.class));
             fcf.setSourceAccountTypeValue(getCashFlowAccountTypeValue(cf.getSource()));
             fcf.setSourceAccountId(cf.getSource().getAccountId());
@@ -93,4 +96,31 @@ public class CashFlowUtil {
             return fcf;
         }).collect(Collectors.toList());
     }
+
+    public static long getFistfulFee(List<com.rbkmoney.fistful.cashflow.FinalCashFlowPosting> postings) {
+        return getFistfulAmount(
+                postings,
+                posting -> posting.getSource().getAccountType().isSetWallet()
+                        && posting.getDestination().getAccountType().isSetSystem()
+        );
+    }
+
+    public static long getFistfulProviderFee(List<com.rbkmoney.fistful.cashflow.FinalCashFlowPosting> postings) {
+        return getFistfulAmount(
+                postings,
+                posting -> posting.getSource().getAccountType().isSetSystem()
+                        && posting.getDestination().getAccountType().isSetProvider()
+        );
+    }
+
+    public static long getFistfulAmount(
+            List<com.rbkmoney.fistful.cashflow.FinalCashFlowPosting> postings,
+            Predicate<com.rbkmoney.fistful.cashflow.FinalCashFlowPosting> filter
+    ) {
+        return postings.stream()
+                .filter(filter)
+                .map(posting -> posting.getVolume().getAmount())
+                .reduce(0L, Long::sum);
+    }
+
 }

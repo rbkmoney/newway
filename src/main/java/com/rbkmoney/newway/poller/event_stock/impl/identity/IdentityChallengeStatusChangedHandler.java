@@ -35,7 +35,7 @@ public class IdentityChallengeStatusChangedHandler extends AbstractIdentityHandl
     public void handle(Change change, SinkEvent event) {
         ChallengeChange challengeChange = change.getIdentityChallenge();
         ChallengeStatus status = challengeChange.getPayload().getStatusChanged();
-        log.info("Start identity challenge status changed handling, eventId={}, walletId={}, challengeId={}, status={}", event.getId(), event.getSource(), challengeChange.getId(), status);
+        log.info("Start identity challenge status changed handling, eventId={}, identityId={}, challengeId={}, status={}", event.getId(), event.getSource(), challengeChange.getId(), status);
 
         Challenge challenge = challengeDao.get(event.getSource(), challengeChange.getId());
 
@@ -59,7 +59,7 @@ public class IdentityChallengeStatusChangedHandler extends AbstractIdentityHandl
 
         challengeDao.updateNotCurrent(event.getSource(), challengeChange.getId());
         challengeDao.save(challenge);
-        log.info("Identity challenge status have been changed, eventId={}, walletId={}, challengeId={}, status={}", event.getId(), event.getSource(), challengeChange.getId(), status);
+        log.info("Identity challenge status have been changed, eventId={}, identityId={}, challengeId={}, status={}", event.getId(), event.getSource(), challengeChange.getId(), status);
     }
 
     @Override

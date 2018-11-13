@@ -32,7 +32,7 @@ public class IdentityEffectiveChallengeChangedHandler extends AbstractIdentityHa
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
-        log.info("Start effective identity challenge changed handling, eventId={}, walletId={}, effectiveChallengeId={}", event.getId(), event.getSource(), change.getEffectiveChallengeChanged());
+        log.info("Start effective identity challenge changed handling, eventId={}, identityId={}, effectiveChallengeId={}", event.getId(), event.getSource(), change.getEffectiveChallengeChanged());
         Identity identity = identityDao.get(event.getSource());
 
         identity.setId(null);
@@ -46,7 +46,7 @@ public class IdentityEffectiveChallengeChangedHandler extends AbstractIdentityHa
 
         identityDao.updateNotCurrent(event.getSource());
         identityDao.save(identity);
-        log.info("Effective identity challenge have been changed, eventId={}, walletId={}, effectiveChallengeId={}", event.getId(), event.getSource(), change.getEffectiveChallengeChanged());
+        log.info("Effective identity challenge have been changed, eventId={}, identityId={}, effectiveChallengeId={}", event.getId(), event.getSource(), change.getEffectiveChallengeChanged());
     }
 
     @Override

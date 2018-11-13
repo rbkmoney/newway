@@ -1,5 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.withdrawal;
 
+import com.rbkmoney.fistful.cashflow.FinalCashFlowPosting;
 import com.rbkmoney.fistful.withdrawal.Change;
 import com.rbkmoney.fistful.withdrawal.SinkEvent;
 import com.rbkmoney.geck.common.util.TypeUtil;
@@ -9,6 +10,7 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.withdrawal.iface.FistfulCashFlowDao;
 import com.rbkmoney.newway.dao.withdrawal.iface.WithdrawalDao;
+import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.enums.WithdrawalTransferStatus;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Withdrawal;
@@ -53,10 +55,14 @@ public class WithdrawalTransferCreatedHandler extends AbstractWithdrawalHandler 
         withdrawal.setWithdrawalId(event.getSource());
         withdrawal.setWithdrawalTransferStatus(WithdrawalTransferStatus.created);
 
+        List<FinalCashFlowPosting> postings = change.getTransfer().getCreated().getCashflow().getPostings();
+        withdrawal.setFee(CashFlowUtil.getFistfulFee(postings));
+        withdrawal.setProviderFee(CashFlowUtil.getFistfulProviderFee(postings));
+
         withdrawalDao.updateNotCurrent(event.getSource());
         long id = withdrawalDao.save(withdrawal);
 
-        List<FistfulCashFlow> fistfulCashFlows = CashFlowUtil.convertFistfulCashFlows(change.getTransfer().getCreated().getCashflow().getPostings(), id);
+        List<FistfulCashFlow> fistfulCashFlows = CashFlowUtil.convertFistfulCashFlows(postings, id, FistfulCashFlowChangeType.withdrawal);
         fistfulCashFlowDao.save(fistfulCashFlows);
         log.info("Withdrawal transfer have been saved, eventId={}, walletId={}, transferChange={}", event.getId(), event.getSource(), change.getTransfer());
     }

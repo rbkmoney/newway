@@ -26,14 +26,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Withdrawal implements Serializable {
 
-    private static final long serialVersionUID = 1724026266;
+    private static final long serialVersionUID = 66125705;
 
     private Long                     id;
     private Long                     eventId;
     private LocalDateTime            eventCreatedAt;
     private LocalDateTime            eventOccuredAt;
     private Integer                  sequenceId;
-    private String                   sourceId;
+    private String                   walletId;
     private String                   destinationId;
     private String                   withdrawalId;
     private String                   providerId;
@@ -43,6 +43,8 @@ public class Withdrawal implements Serializable {
     private WithdrawalTransferStatus withdrawalTransferStatus;
     private LocalDateTime            wtime;
     private Boolean                  current;
+    private Long                     fee;
+    private Long                     providerFee;
 
     public Withdrawal() {}
 
@@ -52,7 +54,7 @@ public class Withdrawal implements Serializable {
         this.eventCreatedAt = value.eventCreatedAt;
         this.eventOccuredAt = value.eventOccuredAt;
         this.sequenceId = value.sequenceId;
-        this.sourceId = value.sourceId;
+        this.walletId = value.walletId;
         this.destinationId = value.destinationId;
         this.withdrawalId = value.withdrawalId;
         this.providerId = value.providerId;
@@ -62,6 +64,8 @@ public class Withdrawal implements Serializable {
         this.withdrawalTransferStatus = value.withdrawalTransferStatus;
         this.wtime = value.wtime;
         this.current = value.current;
+        this.fee = value.fee;
+        this.providerFee = value.providerFee;
     }
 
     public Withdrawal(
@@ -70,7 +74,7 @@ public class Withdrawal implements Serializable {
         LocalDateTime            eventCreatedAt,
         LocalDateTime            eventOccuredAt,
         Integer                  sequenceId,
-        String                   sourceId,
+        String                   walletId,
         String                   destinationId,
         String                   withdrawalId,
         String                   providerId,
@@ -79,14 +83,16 @@ public class Withdrawal implements Serializable {
         WithdrawalStatus         withdrawalStatus,
         WithdrawalTransferStatus withdrawalTransferStatus,
         LocalDateTime            wtime,
-        Boolean                  current
+        Boolean                  current,
+        Long                     fee,
+        Long                     providerFee
     ) {
         this.id = id;
         this.eventId = eventId;
         this.eventCreatedAt = eventCreatedAt;
         this.eventOccuredAt = eventOccuredAt;
         this.sequenceId = sequenceId;
-        this.sourceId = sourceId;
+        this.walletId = walletId;
         this.destinationId = destinationId;
         this.withdrawalId = withdrawalId;
         this.providerId = providerId;
@@ -96,6 +102,8 @@ public class Withdrawal implements Serializable {
         this.withdrawalTransferStatus = withdrawalTransferStatus;
         this.wtime = wtime;
         this.current = current;
+        this.fee = fee;
+        this.providerFee = providerFee;
     }
 
     public Long getId() {
@@ -138,12 +146,12 @@ public class Withdrawal implements Serializable {
         this.sequenceId = sequenceId;
     }
 
-    public String getSourceId() {
-        return this.sourceId;
+    public String getWalletId() {
+        return this.walletId;
     }
 
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
+    public void setWalletId(String walletId) {
+        this.walletId = walletId;
     }
 
     public String getDestinationId() {
@@ -218,6 +226,22 @@ public class Withdrawal implements Serializable {
         this.current = current;
     }
 
+    public Long getFee() {
+        return this.fee;
+    }
+
+    public void setFee(Long fee) {
+        this.fee = fee;
+    }
+
+    public Long getProviderFee() {
+        return this.providerFee;
+    }
+
+    public void setProviderFee(Long providerFee) {
+        this.providerFee = providerFee;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -257,11 +281,11 @@ public class Withdrawal implements Serializable {
         }
         else if (!sequenceId.equals(other.sequenceId))
             return false;
-        if (sourceId == null) {
-            if (other.sourceId != null)
+        if (walletId == null) {
+            if (other.walletId != null)
                 return false;
         }
-        else if (!sourceId.equals(other.sourceId))
+        else if (!walletId.equals(other.walletId))
             return false;
         if (destinationId == null) {
             if (other.destinationId != null)
@@ -317,6 +341,18 @@ public class Withdrawal implements Serializable {
         }
         else if (!current.equals(other.current))
             return false;
+        if (fee == null) {
+            if (other.fee != null)
+                return false;
+        }
+        else if (!fee.equals(other.fee))
+            return false;
+        if (providerFee == null) {
+            if (other.providerFee != null)
+                return false;
+        }
+        else if (!providerFee.equals(other.providerFee))
+            return false;
         return true;
     }
 
@@ -329,7 +365,7 @@ public class Withdrawal implements Serializable {
         result = prime * result + ((this.eventCreatedAt == null) ? 0 : this.eventCreatedAt.hashCode());
         result = prime * result + ((this.eventOccuredAt == null) ? 0 : this.eventOccuredAt.hashCode());
         result = prime * result + ((this.sequenceId == null) ? 0 : this.sequenceId.hashCode());
-        result = prime * result + ((this.sourceId == null) ? 0 : this.sourceId.hashCode());
+        result = prime * result + ((this.walletId == null) ? 0 : this.walletId.hashCode());
         result = prime * result + ((this.destinationId == null) ? 0 : this.destinationId.hashCode());
         result = prime * result + ((this.withdrawalId == null) ? 0 : this.withdrawalId.hashCode());
         result = prime * result + ((this.providerId == null) ? 0 : this.providerId.hashCode());
@@ -339,6 +375,8 @@ public class Withdrawal implements Serializable {
         result = prime * result + ((this.withdrawalTransferStatus == null) ? 0 : this.withdrawalTransferStatus.hashCode());
         result = prime * result + ((this.wtime == null) ? 0 : this.wtime.hashCode());
         result = prime * result + ((this.current == null) ? 0 : this.current.hashCode());
+        result = prime * result + ((this.fee == null) ? 0 : this.fee.hashCode());
+        result = prime * result + ((this.providerFee == null) ? 0 : this.providerFee.hashCode());
         return result;
     }
 
@@ -351,7 +389,7 @@ public class Withdrawal implements Serializable {
         sb.append(", ").append(eventCreatedAt);
         sb.append(", ").append(eventOccuredAt);
         sb.append(", ").append(sequenceId);
-        sb.append(", ").append(sourceId);
+        sb.append(", ").append(walletId);
         sb.append(", ").append(destinationId);
         sb.append(", ").append(withdrawalId);
         sb.append(", ").append(providerId);
@@ -361,6 +399,8 @@ public class Withdrawal implements Serializable {
         sb.append(", ").append(withdrawalTransferStatus);
         sb.append(", ").append(wtime);
         sb.append(", ").append(current);
+        sb.append(", ").append(fee);
+        sb.append(", ").append(providerFee);
 
         sb.append(")");
         return sb.toString();
