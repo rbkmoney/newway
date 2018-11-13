@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Withdrawal extends TableImpl<WithdrawalRecord> {
 
-    private static final long serialVersionUID = 501923951;
+    private static final long serialVersionUID = 173695961;
 
     /**
      * The reference instance of <code>nw.withdrawal</code>
@@ -79,9 +79,9 @@ public class Withdrawal extends TableImpl<WithdrawalRecord> {
     public final TableField<WithdrawalRecord, Integer> SEQUENCE_ID = createField("sequence_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>nw.withdrawal.source_id</code>.
+     * The column <code>nw.withdrawal.wallet_id</code>.
      */
-    public final TableField<WithdrawalRecord, String> SOURCE_ID = createField("source_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<WithdrawalRecord, String> WALLET_ID = createField("wallet_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
      * The column <code>nw.withdrawal.destination_id</code>.
@@ -127,6 +127,16 @@ public class Withdrawal extends TableImpl<WithdrawalRecord> {
      * The column <code>nw.withdrawal.current</code>.
      */
     public final TableField<WithdrawalRecord, Boolean> CURRENT = createField("current", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>nw.withdrawal.fee</code>.
+     */
+    public final TableField<WithdrawalRecord, Long> FEE = createField("fee", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>nw.withdrawal.provider_fee</code>.
+     */
+    public final TableField<WithdrawalRecord, Long> PROVIDER_FEE = createField("provider_fee", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>nw.withdrawal</code> table reference

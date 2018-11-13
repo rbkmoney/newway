@@ -13,6 +13,8 @@ import com.rbkmoney.newway.domain.tables.Contract;
 import com.rbkmoney.newway.domain.tables.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.Contractor;
 import com.rbkmoney.newway.domain.tables.Currency;
+import com.rbkmoney.newway.domain.tables.Deposit;
+import com.rbkmoney.newway.domain.tables.Destination;
 import com.rbkmoney.newway.domain.tables.FistfulCashFlow;
 import com.rbkmoney.newway.domain.tables.Identity;
 import com.rbkmoney.newway.domain.tables.Inspector;
@@ -30,6 +32,7 @@ import com.rbkmoney.newway.domain.tables.Provider;
 import com.rbkmoney.newway.domain.tables.Proxy;
 import com.rbkmoney.newway.domain.tables.Refund;
 import com.rbkmoney.newway.domain.tables.Shop;
+import com.rbkmoney.newway.domain.tables.Source;
 import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
 import com.rbkmoney.newway.domain.tables.Terminal;
 import com.rbkmoney.newway.domain.tables.Wallet;
@@ -60,7 +63,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Nw extends SchemaImpl {
 
-    private static final long serialVersionUID = 1744801859;
+    private static final long serialVersionUID = -7498482;
 
     /**
      * The reference instance of <code>nw</code>
@@ -111,6 +114,16 @@ public class Nw extends SchemaImpl {
      * The table <code>nw.currency</code>.
      */
     public final Currency CURRENCY = com.rbkmoney.newway.domain.tables.Currency.CURRENCY;
+
+    /**
+     * The table <code>nw.deposit</code>.
+     */
+    public final Deposit DEPOSIT = com.rbkmoney.newway.domain.tables.Deposit.DEPOSIT;
+
+    /**
+     * The table <code>nw.destination</code>.
+     */
+    public final Destination DESTINATION = com.rbkmoney.newway.domain.tables.Destination.DESTINATION;
 
     /**
      * The table <code>nw.fistful_cash_flow</code>.
@@ -198,6 +211,11 @@ public class Nw extends SchemaImpl {
     public final Shop SHOP = com.rbkmoney.newway.domain.tables.Shop.SHOP;
 
     /**
+     * The table <code>nw.source</code>.
+     */
+    public final Source SOURCE = com.rbkmoney.newway.domain.tables.Source.SOURCE;
+
+    /**
      * The table <code>nw.term_set_hierarchy</code>.
      */
     public final TermSetHierarchy TERM_SET_HIERARCHY = com.rbkmoney.newway.domain.tables.TermSetHierarchy.TERM_SET_HIERARCHY;
@@ -251,6 +269,8 @@ public class Nw extends SchemaImpl {
             Sequences.CONTRACT_ID_SEQ,
             Sequences.CONTRACTOR_ID_SEQ,
             Sequences.CURRENCY_ID_SEQ,
+            Sequences.DEPOSIT_ID_SEQ,
+            Sequences.DESTINATION_ID_SEQ,
             Sequences.FISTFUL_CASH_FLOW_ID_SEQ,
             Sequences.IDENTITY_ID_SEQ,
             Sequences.INSPECTOR_ID_SEQ,
@@ -268,6 +288,7 @@ public class Nw extends SchemaImpl {
             Sequences.PROXY_ID_SEQ,
             Sequences.REFUND_ID_SEQ,
             Sequences.SHOP_ID_SEQ,
+            Sequences.SOURCE_ID_SEQ,
             Sequences.TERM_SET_HIERARCHY_ID_SEQ,
             Sequences.TERMINAL_ID_SEQ,
             Sequences.WALLET_ID_SEQ,
@@ -292,6 +313,8 @@ public class Nw extends SchemaImpl {
             ContractAdjustment.CONTRACT_ADJUSTMENT,
             Contractor.CONTRACTOR,
             Currency.CURRENCY,
+            Deposit.DEPOSIT,
+            Destination.DESTINATION,
             FistfulCashFlow.FISTFUL_CASH_FLOW,
             Identity.IDENTITY,
             Inspector.INSPECTOR,
@@ -309,6 +332,7 @@ public class Nw extends SchemaImpl {
             Proxy.PROXY,
             Refund.REFUND,
             Shop.SHOP,
+            Source.SOURCE,
             TermSetHierarchy.TERM_SET_HIERARCHY,
             Terminal.TERMINAL,
             Wallet.WALLET,

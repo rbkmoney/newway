@@ -123,4 +123,58 @@ public class EventStockConfig {
                 .build();
     }
 
+    @Bean
+    public EventPublisher sourceEventPublisher(
+            SourceEventStockHandler sourceEventStockHandler,
+            @Value("${source.polling.url}") Resource resource,
+            @Value("${source.polling.delay}") int pollDelay,
+            @Value("${source.polling.retryDelay}") int retryDelay,
+            @Value("${source.polling.maxPoolSize}") int maxPoolSize
+    ) throws IOException {
+        return new FistfulPollingEventPublisherBuilder()
+                .withSourceServiceAdapter()
+                .withURI(resource.getURI())
+                .withEventHandler(sourceEventStockHandler)
+                .withMaxPoolSize(maxPoolSize)
+                .withEventRetryDelay(retryDelay)
+                .withPollDelay(pollDelay)
+                .build();
+    }
+
+    @Bean
+    public EventPublisher destinationEventPublisher(
+            DestinationEventStockHandler destinationEventStockHandler,
+            @Value("${destination.polling.url}") Resource resource,
+            @Value("${destination.polling.delay}") int pollDelay,
+            @Value("${destination.polling.retryDelay}") int retryDelay,
+            @Value("${destination.polling.maxPoolSize}") int maxPoolSize
+    ) throws IOException {
+        return new FistfulPollingEventPublisherBuilder()
+                .withDestinationServiceAdapter()
+                .withURI(resource.getURI())
+                .withEventHandler(destinationEventStockHandler)
+                .withMaxPoolSize(maxPoolSize)
+                .withEventRetryDelay(retryDelay)
+                .withPollDelay(pollDelay)
+                .build();
+    }
+
+    @Bean
+    public EventPublisher depositEventPublisher(
+            DepositEventStockHandler depositEventStockHandler,
+            @Value("${deposit.polling.url}") Resource resource,
+            @Value("${deposit.polling.delay}") int pollDelay,
+            @Value("${deposit.polling.retryDelay}") int retryDelay,
+            @Value("${deposit.polling.maxPoolSize}") int maxPoolSize
+    ) throws IOException {
+        return new FistfulPollingEventPublisherBuilder()
+                .withDepositServiceAdapter()
+                .withURI(resource.getURI())
+                .withEventHandler(depositEventStockHandler)
+                .withMaxPoolSize(maxPoolSize)
+                .withEventRetryDelay(retryDelay)
+                .withPollDelay(pollDelay)
+                .build();
+    }
+
 }

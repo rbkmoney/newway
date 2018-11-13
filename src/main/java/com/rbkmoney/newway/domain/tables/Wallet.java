@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Wallet extends TableImpl<WalletRecord> {
 
-    private static final long serialVersionUID = 478620744;
+    private static final long serialVersionUID = -153010580;
 
     /**
      * The reference instance of <code>nw.wallet</code>
@@ -110,6 +110,16 @@ public class Wallet extends TableImpl<WalletRecord> {
      * The column <code>nw.wallet.current</code>.
      */
     public final TableField<WalletRecord, Boolean> CURRENT = createField("current", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>nw.wallet.account_id</code>.
+     */
+    public final TableField<WalletRecord, String> ACCOUNT_ID = createField("account_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.wallet.accounter_account_id</code>.
+     */
+    public final TableField<WalletRecord, Long> ACCOUNTER_ACCOUNT_ID = createField("accounter_account_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>nw.wallet</code> table reference

@@ -9,6 +9,7 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.withdrawal.iface.FistfulCashFlowDao;
 import com.rbkmoney.newway.dao.withdrawal.iface.WithdrawalDao;
+import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Withdrawal;
 import org.slf4j.Logger;
@@ -55,7 +56,7 @@ public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
         withdrawalDao.updateNotCurrent(event.getSource());
         long id = withdrawalDao.save(withdrawal);
 
-        List<FistfulCashFlow> cashFlows = fistfulCashFlowDao.getByObjId(sourceId);
+        List<FistfulCashFlow> cashFlows = fistfulCashFlowDao.getByObjId(sourceId, FistfulCashFlowChangeType.withdrawal);
         cashFlows.forEach(pcf -> {
             pcf.setId(null);
             pcf.setObjId(id);

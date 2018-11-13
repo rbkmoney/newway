@@ -7,6 +7,7 @@ package com.rbkmoney.newway.domain.tables;
 import com.rbkmoney.newway.domain.Keys;
 import com.rbkmoney.newway.domain.Nw;
 import com.rbkmoney.newway.domain.enums.CashFlowAccount;
+import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.tables.records.FistfulCashFlowRecord;
 
 import java.util.Arrays;
@@ -36,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FistfulCashFlow extends TableImpl<FistfulCashFlowRecord> {
 
-    private static final long serialVersionUID = -1066505361;
+    private static final long serialVersionUID = 1894364805;
 
     /**
      * The reference instance of <code>nw.fistful_cash_flow</code>
@@ -105,6 +106,11 @@ public class FistfulCashFlow extends TableImpl<FistfulCashFlowRecord> {
      * The column <code>nw.fistful_cash_flow.details</code>.
      */
     public final TableField<FistfulCashFlowRecord, String> DETAILS = createField("details", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.fistful_cash_flow.obj_type</code>.
+     */
+    public final TableField<FistfulCashFlowRecord, FistfulCashFlowChangeType> OBJ_TYPE = createField("obj_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType.class), this, "");
 
     /**
      * Create a <code>nw.fistful_cash_flow</code> table reference

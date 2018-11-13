@@ -5,6 +5,7 @@ package com.rbkmoney.newway.domain.tables.pojos;
 
 
 import com.rbkmoney.newway.domain.enums.CashFlowAccount;
+import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 
 import java.io.Serializable;
 
@@ -24,19 +25,20 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FistfulCashFlow implements Serializable {
 
-    private static final long serialVersionUID = 1441113303;
+    private static final long serialVersionUID = -40534755;
 
-    private Long            id;
-    private Long            objId;
-    private CashFlowAccount sourceAccountType;
-    private String          sourceAccountTypeValue;
-    private String          sourceAccountId;
-    private CashFlowAccount destinationAccountType;
-    private String          destinationAccountTypeValue;
-    private String          destinationAccountId;
-    private Long            amount;
-    private String          currencyCode;
-    private String          details;
+    private Long                      id;
+    private Long                      objId;
+    private CashFlowAccount           sourceAccountType;
+    private String                    sourceAccountTypeValue;
+    private String                    sourceAccountId;
+    private CashFlowAccount           destinationAccountType;
+    private String                    destinationAccountTypeValue;
+    private String                    destinationAccountId;
+    private Long                      amount;
+    private String                    currencyCode;
+    private String                    details;
+    private FistfulCashFlowChangeType objType;
 
     public FistfulCashFlow() {}
 
@@ -52,20 +54,22 @@ public class FistfulCashFlow implements Serializable {
         this.amount = value.amount;
         this.currencyCode = value.currencyCode;
         this.details = value.details;
+        this.objType = value.objType;
     }
 
     public FistfulCashFlow(
-        Long            id,
-        Long            objId,
-        CashFlowAccount sourceAccountType,
-        String          sourceAccountTypeValue,
-        String          sourceAccountId,
-        CashFlowAccount destinationAccountType,
-        String          destinationAccountTypeValue,
-        String          destinationAccountId,
-        Long            amount,
-        String          currencyCode,
-        String          details
+        Long                      id,
+        Long                      objId,
+        CashFlowAccount           sourceAccountType,
+        String                    sourceAccountTypeValue,
+        String                    sourceAccountId,
+        CashFlowAccount           destinationAccountType,
+        String                    destinationAccountTypeValue,
+        String                    destinationAccountId,
+        Long                      amount,
+        String                    currencyCode,
+        String                    details,
+        FistfulCashFlowChangeType objType
     ) {
         this.id = id;
         this.objId = objId;
@@ -78,6 +82,7 @@ public class FistfulCashFlow implements Serializable {
         this.amount = amount;
         this.currencyCode = currencyCode;
         this.details = details;
+        this.objType = objType;
     }
 
     public Long getId() {
@@ -168,6 +173,14 @@ public class FistfulCashFlow implements Serializable {
         this.details = details;
     }
 
+    public FistfulCashFlowChangeType getObjType() {
+        return this.objType;
+    }
+
+    public void setObjType(FistfulCashFlowChangeType objType) {
+        this.objType = objType;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -243,6 +256,12 @@ public class FistfulCashFlow implements Serializable {
         }
         else if (!details.equals(other.details))
             return false;
+        if (objType == null) {
+            if (other.objType != null)
+                return false;
+        }
+        else if (!objType.equals(other.objType))
+            return false;
         return true;
     }
 
@@ -261,6 +280,7 @@ public class FistfulCashFlow implements Serializable {
         result = prime * result + ((this.amount == null) ? 0 : this.amount.hashCode());
         result = prime * result + ((this.currencyCode == null) ? 0 : this.currencyCode.hashCode());
         result = prime * result + ((this.details == null) ? 0 : this.details.hashCode());
+        result = prime * result + ((this.objType == null) ? 0 : this.objType.hashCode());
         return result;
     }
 
@@ -279,6 +299,7 @@ public class FistfulCashFlow implements Serializable {
         sb.append(", ").append(amount);
         sb.append(", ").append(currencyCode);
         sb.append(", ").append(details);
+        sb.append(", ").append(objType);
 
         sb.append(")");
         return sb.toString();

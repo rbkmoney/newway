@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.wallet;
 
-import com.rbkmoney.fistful.wallet.Account;
+import com.rbkmoney.fistful.account.Account;
 import com.rbkmoney.fistful.wallet.Change;
 import com.rbkmoney.fistful.wallet.SinkEvent;
 import com.rbkmoney.geck.common.util.TypeUtil;
@@ -58,8 +58,10 @@ public class WalletAccountCreatedHandler extends AbstractWalletHandler {
         wallet.setSequenceId(event.getPayload().getSequence());
         wallet.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         wallet.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
+        wallet.setAccountId(account.getId());
         wallet.setIdentityId(account.getIdentity());
         wallet.setPartyId(identity.getPartyId());
+        wallet.setAccounterAccountId(account.getAccounterAccountId());
         wallet.setCurrencyCode(account.getCurrency().getSymbolicCode());
 
         walletDao.updateNotCurrent(event.getSource());

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Wallet implements Serializable {
 
-    private static final long serialVersionUID = -345022285;
+    private static final long serialVersionUID = 1502128557;
 
     private Long          id;
     private Long          eventId;
@@ -37,6 +37,8 @@ public class Wallet implements Serializable {
     private String        currencyCode;
     private LocalDateTime wtime;
     private Boolean       current;
+    private String        accountId;
+    private Long          accounterAccountId;
 
     public Wallet() {}
 
@@ -53,6 +55,8 @@ public class Wallet implements Serializable {
         this.currencyCode = value.currencyCode;
         this.wtime = value.wtime;
         this.current = value.current;
+        this.accountId = value.accountId;
+        this.accounterAccountId = value.accounterAccountId;
     }
 
     public Wallet(
@@ -67,7 +71,9 @@ public class Wallet implements Serializable {
         String        partyId,
         String        currencyCode,
         LocalDateTime wtime,
-        Boolean       current
+        Boolean       current,
+        String        accountId,
+        Long          accounterAccountId
     ) {
         this.id = id;
         this.eventId = eventId;
@@ -81,6 +87,8 @@ public class Wallet implements Serializable {
         this.currencyCode = currencyCode;
         this.wtime = wtime;
         this.current = current;
+        this.accountId = accountId;
+        this.accounterAccountId = accounterAccountId;
     }
 
     public Long getId() {
@@ -179,6 +187,22 @@ public class Wallet implements Serializable {
         this.current = current;
     }
 
+    public String getAccountId() {
+        return this.accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
+    }
+
+    public Long getAccounterAccountId() {
+        return this.accounterAccountId;
+    }
+
+    public void setAccounterAccountId(Long accounterAccountId) {
+        this.accounterAccountId = accounterAccountId;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -260,6 +284,18 @@ public class Wallet implements Serializable {
         }
         else if (!current.equals(other.current))
             return false;
+        if (accountId == null) {
+            if (other.accountId != null)
+                return false;
+        }
+        else if (!accountId.equals(other.accountId))
+            return false;
+        if (accounterAccountId == null) {
+            if (other.accounterAccountId != null)
+                return false;
+        }
+        else if (!accounterAccountId.equals(other.accounterAccountId))
+            return false;
         return true;
     }
 
@@ -279,6 +315,8 @@ public class Wallet implements Serializable {
         result = prime * result + ((this.currencyCode == null) ? 0 : this.currencyCode.hashCode());
         result = prime * result + ((this.wtime == null) ? 0 : this.wtime.hashCode());
         result = prime * result + ((this.current == null) ? 0 : this.current.hashCode());
+        result = prime * result + ((this.accountId == null) ? 0 : this.accountId.hashCode());
+        result = prime * result + ((this.accounterAccountId == null) ? 0 : this.accounterAccountId.hashCode());
         return result;
     }
 
@@ -298,6 +336,8 @@ public class Wallet implements Serializable {
         sb.append(", ").append(currencyCode);
         sb.append(", ").append(wtime);
         sb.append(", ").append(current);
+        sb.append(", ").append(accountId);
+        sb.append(", ").append(accounterAccountId);
 
         sb.append(")");
         return sb.toString();
