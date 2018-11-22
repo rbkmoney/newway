@@ -38,9 +38,6 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     @Value("${bm.pollingEnabled}")
     private boolean pollingEnabled;
 
-    @Value("${withdrawal.polling.lastEventId}")
-    private Long withdrawalLastEventId;
-
     public OnStart(EventPublisher partyManagementEventPublisher,
                    EventPublisher invoicingEventPublisher,
                    EventPublisher payoutEventPublisher,
