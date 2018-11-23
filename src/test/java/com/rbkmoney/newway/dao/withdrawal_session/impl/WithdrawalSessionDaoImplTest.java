@@ -17,12 +17,12 @@ public class WithdrawalSessionDaoImplTest extends AbstractIntegrationTest {
 
     @Test
     public void test() {
-		WithdrawalSession withdrawalSession = random(WithdrawalSession.class);
+        WithdrawalSession withdrawalSession = random(WithdrawalSession.class);
         withdrawalSession.setCurrent(true);
         Long id = withdrawalSessionDao.save(withdrawalSession);
         withdrawalSession.setId(id);
         assertEquals(withdrawalSession, withdrawalSessionDao.get(withdrawalSession.getWithdrawalSessionId()));
-		withdrawalSessionDao.updateNotCurrent(withdrawalSession.getWithdrawalSessionId());
+        withdrawalSessionDao.updateNotCurrent(withdrawalSession.getWithdrawalSessionId());
         assertNull(withdrawalSessionDao.get(withdrawalSession.getWithdrawalSessionId()));
     }
 

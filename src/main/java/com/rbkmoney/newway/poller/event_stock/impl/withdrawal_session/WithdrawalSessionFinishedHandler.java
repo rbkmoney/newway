@@ -44,17 +44,17 @@ public class WithdrawalSessionFinishedHandler extends AbstractWithdrawalSessionH
         withdrawalSession.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawalSession.setWithdrawalSessionId(event.getSource());
 
-		if (change.getFinished().isSetFailed()) {
-			withdrawalSession.setWithdrawalSessionStatus(WithdrawalSessionStatus.failed);
-		} else if (change.getFinished().isSetSuccess()) {
-			withdrawalSession.setWithdrawalSessionStatus(WithdrawalSessionStatus.success);
-		}
+        if (change.getFinished().isSetFailed()) {
+            withdrawalSession.setWithdrawalSessionStatus(WithdrawalSessionStatus.failed);
+        } else if (change.getFinished().isSetSuccess()) {
+            withdrawalSession.setWithdrawalSessionStatus(WithdrawalSessionStatus.success);
+        }
 
         withdrawalSessionDao.updateNotCurrent(event.getSource());
-		long id = withdrawalSessionDao.save(withdrawalSession);
+        long id = withdrawalSessionDao.save(withdrawalSession);
 
         log.info("Withdrawal session state have been changed (Id={}, eventId={}, sourceId={}, status={})",
-				id, event.getId(), event.getSource(), withdrawalSession.getWithdrawalSessionStatus());
+                id, event.getId(), event.getSource(), withdrawalSession.getWithdrawalSessionStatus());
     }
 
     @Override

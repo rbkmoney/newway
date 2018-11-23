@@ -43,12 +43,12 @@ public class WithdrawalSessionNextStateHandler extends AbstractWithdrawalSession
         withdrawalSession.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         withdrawalSession.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawalSession.setWithdrawalSessionId(event.getSource());
-		withdrawalSession.setAdapterState(JsonUtil.objectToJsonString(change.getNextState()));
+        withdrawalSession.setAdapterState(JsonUtil.objectToJsonString(change.getNextState()));
 
         withdrawalSessionDao.updateNotCurrent(event.getSource());
-		Long id = withdrawalSessionDao.save(withdrawalSession);
+        Long id = withdrawalSessionDao.save(withdrawalSession);
 
-		log.info("Adapter state for withdrawal session have been changed (id={}, eventId={}, sourceId={})",
+        log.info("Adapter state for withdrawal session have been changed (id={}, eventId={}, sourceId={})",
                 id, event.getId(), event.getSource());
     }
 

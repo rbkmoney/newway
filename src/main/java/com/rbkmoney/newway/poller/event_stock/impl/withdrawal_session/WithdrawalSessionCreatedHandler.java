@@ -61,10 +61,10 @@ public class WithdrawalSessionCreatedHandler extends AbstractWithdrawalSessionHa
         withdrawalSession.setAmount(cash.getAmount());
         withdrawalSession.setCurrencyCode(cash.getCurrency().getSymbolicCode());
 
-		Long id = withdrawalSessionDao.save(withdrawalSession);
+        Long id = withdrawalSessionDao.save(withdrawalSession);
 
-		log.info("Withdrawal session have been saved: id={}, eventId={}, sessionId={}",
-				id, event.getId(), event.getSource());
+        log.info("Withdrawal session have been saved: id={}, eventId={}, sessionId={}",
+                id, event.getId(), event.getSource());
     }
 
     @Override

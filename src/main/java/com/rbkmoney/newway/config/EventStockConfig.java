@@ -186,7 +186,7 @@ public class EventStockConfig {
             @Value("${withdrawal_session.polling.maxPoolSize}") int maxPoolSize
     ) throws IOException {
         return new FistfulPollingEventPublisherBuilder()
-                .withDepositServiceAdapter()
+                .withWithdrawalSessionServiceAdapter()
                 .withURI(resource.getURI())
                 .withEventHandler(withdrawalSessionEventStockHandler)
                 .withMaxPoolSize(maxPoolSize)
