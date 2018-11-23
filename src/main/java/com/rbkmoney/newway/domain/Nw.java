@@ -37,6 +37,7 @@ import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
 import com.rbkmoney.newway.domain.tables.Terminal;
 import com.rbkmoney.newway.domain.tables.Wallet;
 import com.rbkmoney.newway.domain.tables.Withdrawal;
+import com.rbkmoney.newway.domain.tables.WithdrawalSession;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,7 +64,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Nw extends SchemaImpl {
 
-    private static final long serialVersionUID = -7498482;
+    private static final long serialVersionUID = -1494886574;
 
     /**
      * The reference instance of <code>nw</code>
@@ -236,6 +237,11 @@ public class Nw extends SchemaImpl {
     public final Withdrawal WITHDRAWAL = com.rbkmoney.newway.domain.tables.Withdrawal.WITHDRAWAL;
 
     /**
+     * The table <code>nw.withdrawal_session</code>.
+     */
+    public final WithdrawalSession WITHDRAWAL_SESSION = com.rbkmoney.newway.domain.tables.WithdrawalSession.WITHDRAWAL_SESSION;
+
+    /**
      * No further instances allowed
      */
     private Nw() {
@@ -292,7 +298,8 @@ public class Nw extends SchemaImpl {
             Sequences.TERM_SET_HIERARCHY_ID_SEQ,
             Sequences.TERMINAL_ID_SEQ,
             Sequences.WALLET_ID_SEQ,
-            Sequences.WITHDRAWAL_ID_SEQ);
+            Sequences.WITHDRAWAL_ID_SEQ,
+            Sequences.WITHDRAWAL_SESSION_ID_SEQ);
     }
 
     @Override
@@ -336,6 +343,7 @@ public class Nw extends SchemaImpl {
             TermSetHierarchy.TERM_SET_HIERARCHY,
             Terminal.TERMINAL,
             Wallet.WALLET,
-            Withdrawal.WITHDRAWAL);
+            Withdrawal.WITHDRAWAL,
+            WithdrawalSession.WITHDRAWAL_SESSION);
     }
 }

@@ -37,6 +37,7 @@ import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
 import com.rbkmoney.newway.domain.tables.Terminal;
 import com.rbkmoney.newway.domain.tables.Wallet;
 import com.rbkmoney.newway.domain.tables.Withdrawal;
+import com.rbkmoney.newway.domain.tables.WithdrawalSession;
 
 import javax.annotation.Generated;
 
@@ -218,4 +219,9 @@ public class Tables {
      * The table <code>nw.withdrawal</code>.
      */
     public static final Withdrawal WITHDRAWAL = com.rbkmoney.newway.domain.tables.Withdrawal.WITHDRAWAL;
+
+    /**
+     * The table <code>nw.withdrawal_session</code>.
+     */
+    public static final WithdrawalSession WITHDRAWAL_SESSION = com.rbkmoney.newway.domain.tables.WithdrawalSession.WITHDRAWAL_SESSION;
 }

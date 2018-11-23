@@ -36,6 +36,7 @@ import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
 import com.rbkmoney.newway.domain.tables.Terminal;
 import com.rbkmoney.newway.domain.tables.Wallet;
 import com.rbkmoney.newway.domain.tables.Withdrawal;
+import com.rbkmoney.newway.domain.tables.WithdrawalSession;
 import com.rbkmoney.newway.domain.tables.records.AdjustmentRecord;
 import com.rbkmoney.newway.domain.tables.records.CalendarRecord;
 import com.rbkmoney.newway.domain.tables.records.CashFlowRecord;
@@ -69,6 +70,7 @@ import com.rbkmoney.newway.domain.tables.records.TermSetHierarchyRecord;
 import com.rbkmoney.newway.domain.tables.records.TerminalRecord;
 import com.rbkmoney.newway.domain.tables.records.WalletRecord;
 import com.rbkmoney.newway.domain.tables.records.WithdrawalRecord;
+import com.rbkmoney.newway.domain.tables.records.WithdrawalSessionRecord;
 
 import javax.annotation.Generated;
 
@@ -129,6 +131,7 @@ public class Keys {
     public static final Identity<TerminalRecord, Long> IDENTITY_TERMINAL = Identities0.IDENTITY_TERMINAL;
     public static final Identity<WalletRecord, Long> IDENTITY_WALLET = Identities0.IDENTITY_WALLET;
     public static final Identity<WithdrawalRecord, Long> IDENTITY_WITHDRAWAL = Identities0.IDENTITY_WITHDRAWAL;
+    public static final Identity<WithdrawalSessionRecord, Long> IDENTITY_WITHDRAWAL_SESSION = Identities0.IDENTITY_WITHDRAWAL_SESSION;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -167,6 +170,7 @@ public class Keys {
     public static final UniqueKey<TerminalRecord> TERMINAL_PKEY = UniqueKeys0.TERMINAL_PKEY;
     public static final UniqueKey<WalletRecord> WALLET_PKEY = UniqueKeys0.WALLET_PKEY;
     public static final UniqueKey<WithdrawalRecord> WITHDRAWAL_PKEY = UniqueKeys0.WITHDRAWAL_PKEY;
+    public static final UniqueKey<WithdrawalSessionRecord> WITHDRAWAL_SESSION_PK = UniqueKeys0.WITHDRAWAL_SESSION_PK;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -215,6 +219,7 @@ public class Keys {
         public static Identity<TerminalRecord, Long> IDENTITY_TERMINAL = createIdentity(Terminal.TERMINAL, Terminal.TERMINAL.ID);
         public static Identity<WalletRecord, Long> IDENTITY_WALLET = createIdentity(Wallet.WALLET, Wallet.WALLET.ID);
         public static Identity<WithdrawalRecord, Long> IDENTITY_WITHDRAWAL = createIdentity(Withdrawal.WITHDRAWAL, Withdrawal.WITHDRAWAL.ID);
+        public static Identity<WithdrawalSessionRecord, Long> IDENTITY_WITHDRAWAL_SESSION = createIdentity(WithdrawalSession.WITHDRAWAL_SESSION, WithdrawalSession.WITHDRAWAL_SESSION.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -251,6 +256,7 @@ public class Keys {
         public static final UniqueKey<TerminalRecord> TERMINAL_PKEY = createUniqueKey(Terminal.TERMINAL, "terminal_pkey", Terminal.TERMINAL.ID);
         public static final UniqueKey<WalletRecord> WALLET_PKEY = createUniqueKey(Wallet.WALLET, "wallet_pkey", Wallet.WALLET.ID);
         public static final UniqueKey<WithdrawalRecord> WITHDRAWAL_PKEY = createUniqueKey(Withdrawal.WITHDRAWAL, "withdrawal_pkey", Withdrawal.WITHDRAWAL.ID);
+        public static final UniqueKey<WithdrawalSessionRecord> WITHDRAWAL_SESSION_PK = createUniqueKey(WithdrawalSession.WITHDRAWAL_SESSION, "withdrawal_session_pk", WithdrawalSession.WITHDRAWAL_SESSION.ID);
     }
 
     private static class ForeignKeys0 extends AbstractKeys {

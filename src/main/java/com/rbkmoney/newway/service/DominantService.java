@@ -21,6 +21,7 @@ public class DominantService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final DominantDao dominantDao;
+
     private final List<DominantHandler> handlers;
 
     public DominantService(DominantDao dominantDao, List<DominantHandler> handlers) {

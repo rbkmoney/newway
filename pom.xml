@@ -30,7 +30,7 @@
         <db.schema>nw</db.schema>
         <flyway.version>4.2.0</flyway.version>
         <damsel.version>1.267-5711f53</damsel.version>
-        <fistful-proto.version>1.7-46b0949</fistful-proto.version>
+        <fistful-proto.version>1.8-37ccefb</fistful-proto.version>
     </properties>
 
     <dependencies>

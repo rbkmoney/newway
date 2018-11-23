@@ -177,4 +177,22 @@ public class EventStockConfig {
                 .build();
     }
 
+    @Bean
+    public EventPublisher withdrawalSessionEventPublisher(
+            WithdrawalSessionEventStockHandler withdrawalSessionEventStockHandler,
+            @Value("${withdrawal_session.polling.url}") Resource resource,
+            @Value("${withdrawal_session.polling.delay}") int pollDelay,
+            @Value("${withdrawal_session.polling.retryDelay}") int retryDelay,
+            @Value("${withdrawal_session.polling.maxPoolSize}") int maxPoolSize
+    ) throws IOException {
+        return new FistfulPollingEventPublisherBuilder()
+                .withDepositServiceAdapter()
+                .withURI(resource.getURI())
+                .withEventHandler(withdrawalSessionEventStockHandler)
+                .withMaxPoolSize(maxPoolSize)
+                .withEventRetryDelay(retryDelay)
+                .withPollDelay(pollDelay)
+                .build();
+    }
+
 }
