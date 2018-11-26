@@ -40,10 +40,9 @@ public class WithdrawalSessionCreatedHandler extends AbstractWithdrawalSessionHa
         withdrawalSession.setSequenceId(event.getPayload().getSequence());
         withdrawalSession.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         withdrawalSession.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
-        withdrawalSession.setSourceId(event.getSource());
 
         Session session = change.getCreated();
-        withdrawalSession.setWithdrawalSessionId(session.getId());
+        withdrawalSession.setWithdrawalSessionId(event.getSource());
         withdrawalSession.setProviderId(session.getProvider());
         withdrawalSession.setWithdrawalSessionStatus(active);
 

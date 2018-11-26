@@ -14,7 +14,6 @@ CREATE TABLE nw.withdrawal_session (
   event_created_at                  TIMESTAMP WITHOUT TIME ZONE  NOT NULL,
   event_occured_at                  TIMESTAMP WITHOUT TIME ZONE  NOT NULL,
   sequence_id                       INT                          NOT NULL,
-  source_id                         CHARACTER VARYING            NOT NULL,
   withdrawal_session_id             CHARACTER VARYING            NOT NULL,
   withdrawal_session_status         WITHDRAWAL_SESSION_STATUS    NOT NULL,
   provider_id                       CHARACTER VARYING            NOT NULL,

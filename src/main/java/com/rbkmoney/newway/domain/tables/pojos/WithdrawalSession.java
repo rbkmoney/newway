@@ -26,14 +26,13 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WithdrawalSession implements Serializable {
 
-    private static final long serialVersionUID = 669120512;
+    private static final long serialVersionUID = 1345427918;
 
     private Long                    id;
     private Long                    eventId;
     private LocalDateTime           eventCreatedAt;
     private LocalDateTime           eventOccuredAt;
     private Integer                 sequenceId;
-    private String                  sourceId;
     private String                  withdrawalSessionId;
     private WithdrawalSessionStatus withdrawalSessionStatus;
     private String                  providerId;
@@ -68,7 +67,6 @@ public class WithdrawalSession implements Serializable {
         this.eventCreatedAt = value.eventCreatedAt;
         this.eventOccuredAt = value.eventOccuredAt;
         this.sequenceId = value.sequenceId;
-        this.sourceId = value.sourceId;
         this.withdrawalSessionId = value.withdrawalSessionId;
         this.withdrawalSessionStatus = value.withdrawalSessionStatus;
         this.providerId = value.providerId;
@@ -102,7 +100,6 @@ public class WithdrawalSession implements Serializable {
         LocalDateTime           eventCreatedAt,
         LocalDateTime           eventOccuredAt,
         Integer                 sequenceId,
-        String                  sourceId,
         String                  withdrawalSessionId,
         WithdrawalSessionStatus withdrawalSessionStatus,
         String                  providerId,
@@ -134,7 +131,6 @@ public class WithdrawalSession implements Serializable {
         this.eventCreatedAt = eventCreatedAt;
         this.eventOccuredAt = eventOccuredAt;
         this.sequenceId = sequenceId;
-        this.sourceId = sourceId;
         this.withdrawalSessionId = withdrawalSessionId;
         this.withdrawalSessionStatus = withdrawalSessionStatus;
         this.providerId = providerId;
@@ -200,14 +196,6 @@ public class WithdrawalSession implements Serializable {
 
     public void setSequenceId(Integer sequenceId) {
         this.sequenceId = sequenceId;
-    }
-
-    public String getSourceId() {
-        return this.sourceId;
-    }
-
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
     }
 
     public String getWithdrawalSessionId() {
@@ -449,12 +437,6 @@ public class WithdrawalSession implements Serializable {
         }
         else if (!sequenceId.equals(other.sequenceId))
             return false;
-        if (sourceId == null) {
-            if (other.sourceId != null)
-                return false;
-        }
-        else if (!sourceId.equals(other.sourceId))
-            return false;
         if (withdrawalSessionId == null) {
             if (other.withdrawalSessionId != null)
                 return false;
@@ -617,7 +599,6 @@ public class WithdrawalSession implements Serializable {
         result = prime * result + ((this.eventCreatedAt == null) ? 0 : this.eventCreatedAt.hashCode());
         result = prime * result + ((this.eventOccuredAt == null) ? 0 : this.eventOccuredAt.hashCode());
         result = prime * result + ((this.sequenceId == null) ? 0 : this.sequenceId.hashCode());
-        result = prime * result + ((this.sourceId == null) ? 0 : this.sourceId.hashCode());
         result = prime * result + ((this.withdrawalSessionId == null) ? 0 : this.withdrawalSessionId.hashCode());
         result = prime * result + ((this.withdrawalSessionStatus == null) ? 0 : this.withdrawalSessionStatus.hashCode());
         result = prime * result + ((this.providerId == null) ? 0 : this.providerId.hashCode());
@@ -655,7 +636,6 @@ public class WithdrawalSession implements Serializable {
         sb.append(", ").append(eventCreatedAt);
         sb.append(", ").append(eventOccuredAt);
         sb.append(", ").append(sequenceId);
-        sb.append(", ").append(sourceId);
         sb.append(", ").append(withdrawalSessionId);
         sb.append(", ").append(withdrawalSessionStatus);
         sb.append(", ").append(providerId);

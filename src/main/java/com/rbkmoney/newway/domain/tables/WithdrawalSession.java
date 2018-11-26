@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WithdrawalSession extends TableImpl<WithdrawalSessionRecord> {
 
-    private static final long serialVersionUID = 1801407835;
+    private static final long serialVersionUID = 1576349985;
 
     /**
      * The reference instance of <code>nw.withdrawal_session</code>
@@ -77,11 +77,6 @@ public class WithdrawalSession extends TableImpl<WithdrawalSessionRecord> {
      * The column <code>nw.withdrawal_session.sequence_id</code>.
      */
     public final TableField<WithdrawalSessionRecord, Integer> SEQUENCE_ID = createField("sequence_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>nw.withdrawal_session.source_id</code>.
-     */
-    public final TableField<WithdrawalSessionRecord, String> SOURCE_ID = createField("source_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
      * The column <code>nw.withdrawal_session.withdrawal_session_id</code>.
