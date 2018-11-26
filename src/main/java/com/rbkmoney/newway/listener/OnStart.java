@@ -24,6 +24,7 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private final EventPublisher depositEventPublisher;
     private final EventPublisher sourceEventPublisher;
     private final EventPublisher destinationEventPublisher;
+    private final EventPublisher withdrawalSessionEventPublisher;
 
     private final PartyManagementService partyManagementService;
     private final InvoicingService invoicingService;
@@ -34,6 +35,7 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private final SourceService sourceService;
     private final DestinationService destinationService;
     private final DepositService depositService;
+    private final WithdrawalSessionService withdrawalSessionService;
 
     @Value("${bm.pollingEnabled}")
     private boolean pollingEnabled;
@@ -47,6 +49,8 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
                    EventPublisher sourceEventPublisher,
                    EventPublisher destinationEventPublisher,
                    EventPublisher depositEventPublisher,
+                   EventPublisher withdrawalSessionEventPublisher,
+
                    PartyManagementService partyManagementService,
                    InvoicingService invoicingService,
                    PayoutService payoutService,
@@ -55,7 +59,8 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
                    WithdrawalService withdrawalService,
                    SourceService sourceService,
                    DestinationService destinationService,
-                   DepositService depositService) {
+                   DepositService depositService,
+                   WithdrawalSessionService withdrawalSessionService) {
         this.partyManagementEventPublisher = partyManagementEventPublisher;
         this.invoicingEventPublisher = invoicingEventPublisher;
         this.payoutEventPublisher = payoutEventPublisher;
@@ -65,6 +70,7 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
         this.depositEventPublisher = depositEventPublisher;
         this.sourceEventPublisher = sourceEventPublisher;
         this.destinationEventPublisher = destinationEventPublisher;
+        this.withdrawalSessionEventPublisher = withdrawalSessionEventPublisher;
 
         this.partyManagementService = partyManagementService;
         this.invoicingService = invoicingService;
@@ -75,6 +81,7 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
         this.sourceService = sourceService;
         this.destinationService = destinationService;
         this.depositService = depositService;
+        this.withdrawalSessionService = withdrawalSessionService;
     }
 
     @Override
@@ -89,7 +96,8 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
             destinationEventPublisher.subscribe(buildSubscriberConfig(destinationService.getLastEventId()));
             depositEventPublisher.subscribe(buildSubscriberConfig(depositService.getLastEventId()));
             withdrawalEventPublisher.subscribe(buildSubscriberConfig(withdrawalService.getLastEventId()));
-        }
+			withdrawalSessionEventPublisher.subscribe(buildSubscriberConfig(withdrawalSessionService.getLastEventId()));
+		}
     }
 
     private SubscriberConfig buildSubscriberConfig(Optional<Long> lastEventIdOptional) {

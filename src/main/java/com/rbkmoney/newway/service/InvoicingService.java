@@ -20,6 +20,7 @@ public class InvoicingService implements EventService<Event, EventPayload> {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final InvoiceDao invoiceDao;
+
     private final List<AbstractInvoicingHandler> invoicingHandlers;
 
     public InvoicingService(InvoiceDao invoiceDao, List<AbstractInvoicingHandler> invoicingHandlers) {
