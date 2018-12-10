@@ -4,80 +4,14 @@
 package com.rbkmoney.newway.domain;
 
 
-import com.rbkmoney.newway.domain.tables.Adjustment;
-import com.rbkmoney.newway.domain.tables.Calendar;
-import com.rbkmoney.newway.domain.tables.CashFlow;
-import com.rbkmoney.newway.domain.tables.Category;
-import com.rbkmoney.newway.domain.tables.Challenge;
-import com.rbkmoney.newway.domain.tables.Contract;
-import com.rbkmoney.newway.domain.tables.ContractAdjustment;
-import com.rbkmoney.newway.domain.tables.Contractor;
-import com.rbkmoney.newway.domain.tables.Currency;
-import com.rbkmoney.newway.domain.tables.Deposit;
-import com.rbkmoney.newway.domain.tables.Destination;
-import com.rbkmoney.newway.domain.tables.FistfulCashFlow;
-import com.rbkmoney.newway.domain.tables.Inspector;
-import com.rbkmoney.newway.domain.tables.Invoice;
-import com.rbkmoney.newway.domain.tables.InvoiceCart;
-import com.rbkmoney.newway.domain.tables.Party;
-import com.rbkmoney.newway.domain.tables.Payment;
-import com.rbkmoney.newway.domain.tables.PaymentInstitution;
-import com.rbkmoney.newway.domain.tables.PaymentMethod;
-import com.rbkmoney.newway.domain.tables.Payout;
-import com.rbkmoney.newway.domain.tables.PayoutMethod;
-import com.rbkmoney.newway.domain.tables.PayoutSummary;
-import com.rbkmoney.newway.domain.tables.PayoutTool;
-import com.rbkmoney.newway.domain.tables.Provider;
-import com.rbkmoney.newway.domain.tables.Proxy;
-import com.rbkmoney.newway.domain.tables.Refund;
-import com.rbkmoney.newway.domain.tables.Shop;
-import com.rbkmoney.newway.domain.tables.Source;
-import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
-import com.rbkmoney.newway.domain.tables.Terminal;
-import com.rbkmoney.newway.domain.tables.Wallet;
-import com.rbkmoney.newway.domain.tables.Withdrawal;
-import com.rbkmoney.newway.domain.tables.WithdrawalSession;
-import com.rbkmoney.newway.domain.tables.records.AdjustmentRecord;
-import com.rbkmoney.newway.domain.tables.records.CalendarRecord;
-import com.rbkmoney.newway.domain.tables.records.CashFlowRecord;
-import com.rbkmoney.newway.domain.tables.records.CategoryRecord;
-import com.rbkmoney.newway.domain.tables.records.ChallengeRecord;
-import com.rbkmoney.newway.domain.tables.records.ContractAdjustmentRecord;
-import com.rbkmoney.newway.domain.tables.records.ContractRecord;
-import com.rbkmoney.newway.domain.tables.records.ContractorRecord;
-import com.rbkmoney.newway.domain.tables.records.CurrencyRecord;
-import com.rbkmoney.newway.domain.tables.records.DepositRecord;
-import com.rbkmoney.newway.domain.tables.records.DestinationRecord;
-import com.rbkmoney.newway.domain.tables.records.FistfulCashFlowRecord;
-import com.rbkmoney.newway.domain.tables.records.IdentityRecord;
-import com.rbkmoney.newway.domain.tables.records.InspectorRecord;
-import com.rbkmoney.newway.domain.tables.records.InvoiceCartRecord;
-import com.rbkmoney.newway.domain.tables.records.InvoiceRecord;
-import com.rbkmoney.newway.domain.tables.records.PartyRecord;
-import com.rbkmoney.newway.domain.tables.records.PaymentInstitutionRecord;
-import com.rbkmoney.newway.domain.tables.records.PaymentMethodRecord;
-import com.rbkmoney.newway.domain.tables.records.PaymentRecord;
-import com.rbkmoney.newway.domain.tables.records.PayoutMethodRecord;
-import com.rbkmoney.newway.domain.tables.records.PayoutRecord;
-import com.rbkmoney.newway.domain.tables.records.PayoutSummaryRecord;
-import com.rbkmoney.newway.domain.tables.records.PayoutToolRecord;
-import com.rbkmoney.newway.domain.tables.records.ProviderRecord;
-import com.rbkmoney.newway.domain.tables.records.ProxyRecord;
-import com.rbkmoney.newway.domain.tables.records.RefundRecord;
-import com.rbkmoney.newway.domain.tables.records.ShopRecord;
-import com.rbkmoney.newway.domain.tables.records.SourceRecord;
-import com.rbkmoney.newway.domain.tables.records.TermSetHierarchyRecord;
-import com.rbkmoney.newway.domain.tables.records.TerminalRecord;
-import com.rbkmoney.newway.domain.tables.records.WalletRecord;
-import com.rbkmoney.newway.domain.tables.records.WithdrawalRecord;
-import com.rbkmoney.newway.domain.tables.records.WithdrawalSessionRecord;
-
-import javax.annotation.Generated;
-
+import com.rbkmoney.newway.domain.tables.*;
+import com.rbkmoney.newway.domain.tables.records.*;
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.AbstractKeys;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -124,6 +58,7 @@ public class Keys {
     public static final Identity<PayoutToolRecord, Long> IDENTITY_PAYOUT_TOOL = Identities0.IDENTITY_PAYOUT_TOOL;
     public static final Identity<ProviderRecord, Long> IDENTITY_PROVIDER = Identities0.IDENTITY_PROVIDER;
     public static final Identity<ProxyRecord, Long> IDENTITY_PROXY = Identities0.IDENTITY_PROXY;
+    public static final Identity<RateRecord, Long> IDENTITY_RATE = Identities0.IDENTITY_RATE;
     public static final Identity<RefundRecord, Long> IDENTITY_REFUND = Identities0.IDENTITY_REFUND;
     public static final Identity<ShopRecord, Long> IDENTITY_SHOP = Identities0.IDENTITY_SHOP;
     public static final Identity<SourceRecord, Long> IDENTITY_SOURCE = Identities0.IDENTITY_SOURCE;
@@ -163,6 +98,7 @@ public class Keys {
     public static final UniqueKey<PayoutToolRecord> PAYOUT_TOOL_PKEY = UniqueKeys0.PAYOUT_TOOL_PKEY;
     public static final UniqueKey<ProviderRecord> PROVIDER_PKEY = UniqueKeys0.PROVIDER_PKEY;
     public static final UniqueKey<ProxyRecord> PROXY_PKEY = UniqueKeys0.PROXY_PKEY;
+    public static final UniqueKey<RateRecord> RATE_PKEY = UniqueKeys0.RATE_PKEY;
     public static final UniqueKey<RefundRecord> REFUND_PKEY = UniqueKeys0.REFUND_PKEY;
     public static final UniqueKey<ShopRecord> SHOP_PKEY = UniqueKeys0.SHOP_PKEY;
     public static final UniqueKey<SourceRecord> SOURCE_PKEY = UniqueKeys0.SOURCE_PKEY;
@@ -212,6 +148,7 @@ public class Keys {
         public static Identity<PayoutToolRecord, Long> IDENTITY_PAYOUT_TOOL = createIdentity(PayoutTool.PAYOUT_TOOL, PayoutTool.PAYOUT_TOOL.ID);
         public static Identity<ProviderRecord, Long> IDENTITY_PROVIDER = createIdentity(Provider.PROVIDER, Provider.PROVIDER.ID);
         public static Identity<ProxyRecord, Long> IDENTITY_PROXY = createIdentity(Proxy.PROXY, Proxy.PROXY.ID);
+        public static Identity<RateRecord, Long> IDENTITY_RATE = createIdentity(Rate.RATE, Rate.RATE.ID);
         public static Identity<RefundRecord, Long> IDENTITY_REFUND = createIdentity(Refund.REFUND, Refund.REFUND.ID);
         public static Identity<ShopRecord, Long> IDENTITY_SHOP = createIdentity(Shop.SHOP, Shop.SHOP.ID);
         public static Identity<SourceRecord, Long> IDENTITY_SOURCE = createIdentity(Source.SOURCE, Source.SOURCE.ID);
@@ -249,6 +186,7 @@ public class Keys {
         public static final UniqueKey<PayoutToolRecord> PAYOUT_TOOL_PKEY = createUniqueKey(PayoutTool.PAYOUT_TOOL, "payout_tool_pkey", PayoutTool.PAYOUT_TOOL.ID);
         public static final UniqueKey<ProviderRecord> PROVIDER_PKEY = createUniqueKey(Provider.PROVIDER, "provider_pkey", Provider.PROVIDER.ID);
         public static final UniqueKey<ProxyRecord> PROXY_PKEY = createUniqueKey(Proxy.PROXY, "proxy_pkey", Proxy.PROXY.ID);
+        public static final UniqueKey<RateRecord> RATE_PKEY = createUniqueKey(Rate.RATE, "rate_pkey", Rate.RATE.ID);
         public static final UniqueKey<RefundRecord> REFUND_PKEY = createUniqueKey(Refund.REFUND, "refund_pkey", Refund.REFUND.ID);
         public static final UniqueKey<ShopRecord> SHOP_PKEY = createUniqueKey(Shop.SHOP, "shop_pkey", Shop.SHOP.ID);
         public static final UniqueKey<SourceRecord> SOURCE_PKEY = createUniqueKey(Source.SOURCE, "source_pkey", Source.SOURCE.ID);
