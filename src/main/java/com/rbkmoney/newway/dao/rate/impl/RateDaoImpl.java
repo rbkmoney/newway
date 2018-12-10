@@ -37,7 +37,7 @@ public class RateDaoImpl extends AbstractGenericDao implements RateDao {
 
     @Override
     public Long save(Rate rate) throws DaoException {
-        RateRecord record = getDslContext().newRecord(RATE, rateRowMapper);
+        RateRecord record = getDslContext().newRecord(RATE, rate);
         Query query = getDslContext().insertInto(RATE).set(record).returning(RATE.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();

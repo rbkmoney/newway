@@ -1,5 +1,3 @@
--- CREATE TYPE nw.WITHDRAWAL_SESSION_STATUS AS ENUM ('active', 'success', 'failed');
-
 CREATE TABLE nw.rate (
   id                        BIGSERIAL                   NOT NULL,
   event_id                  BIGINT                      NOT NULL,

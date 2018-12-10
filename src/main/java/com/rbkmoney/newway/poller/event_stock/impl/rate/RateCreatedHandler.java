@@ -52,7 +52,6 @@ public class RateCreatedHandler extends AbstractRateHandler {
         rate.setLowerBoundInclusive(TypeUtil.stringToLocalDateTime(interval.getLowerBoundInclusive()));
         rate.setUpperBoundExclusive(TypeUtil.stringToLocalDateTime(interval.getUpperBoundExclusive()));
 
-        // todo норм? или надо в отдельную таблицу
         exchangeRateData.getQuotes().forEach(
                 quote -> {
                     // Quote
