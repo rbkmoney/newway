@@ -3,7 +3,6 @@ package com.rbkmoney.newway.service;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.AbstractIntegrationTest;
 import com.rbkmoney.newway.domain.tables.pojos.Rate;
-import com.rbkmoney.xrates.base.Rational;
 import com.rbkmoney.xrates.base.TimestampInterval;
 import com.rbkmoney.xrates.rate.*;
 import org.junit.Test;
@@ -17,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
+import static io.github.benas.randombeans.api.EnhancedRandom.randomListOf;
 import static org.junit.Assert.assertEquals;
 
 public class RateServiceTest extends AbstractIntegrationTest {
@@ -29,12 +29,8 @@ public class RateServiceTest extends AbstractIntegrationTest {
 
     @Test
     public void test() {
-        Rational rational = random(Rational.class);
         List<Quote> quotes = new ArrayList<Quote>() {{
-            add(new Quote(generateCurrency(), generateCurrency(), rational));
-            add(new Quote(generateCurrency(), generateCurrency(), rational));
-            add(new Quote(generateCurrency(), generateCurrency(), rational));
-            add(new Quote(generateCurrency(), generateCurrency(), rational));
+            addAll(randomListOf(4, Quote.class));
         }};
 
         Event event = new Event(
@@ -70,9 +66,5 @@ public class RateServiceTest extends AbstractIntegrationTest {
                 new BeanPropertyRowMapper(Rate.class)
         );
         assertEquals(4, rates.size());
-    }
-
-    private Currency generateCurrency() {
-        return random(Currency.class);
     }
 }

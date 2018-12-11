@@ -20,5 +20,5 @@ CREATE INDEX rate_event_id_idx
   ON nw.rate (event_id);
 CREATE INDEX rate_event_created_at_idx
   ON nw.rate (event_created_at);
-CREATE INDEX rate_event_source_id_idx
+CREATE INDEX rate_source_id_idx
   ON nw.rate (source_id);

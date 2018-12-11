@@ -30,6 +30,11 @@ public class RateCreatedHandler extends AbstractRateHandler {
 
     @Override
     public void handle(Change change, SinkEvent event) {
+        if (change.getCreated().getExchangeRateData().getQuotes().isEmpty()) {
+            log.warn("Quotes is empty, SinkEvent will not be saved");
+            return;
+        }
+
         log.info("Start rate created handling, eventId={}, walletId={}", event.getId(), event.getSource());
         Rate rate = new Rate();
 
@@ -52,32 +57,28 @@ public class RateCreatedHandler extends AbstractRateHandler {
         rate.setLowerBoundInclusive(TypeUtil.stringToLocalDateTime(interval.getLowerBoundInclusive()));
         rate.setUpperBoundExclusive(TypeUtil.stringToLocalDateTime(interval.getUpperBoundExclusive()));
 
-        if (!exchangeRateData.getQuotes().isEmpty()) {
-            rateDao.updateNotCurrent(event.getSource());
-            exchangeRateData.getQuotes().forEach(
-                    quote -> {
-                        // Quote
-                        Currency source = quote.getSource();
-                        Currency destination = quote.getDestination();
-                        Rational exchangeRate = quote.getExchangeRate();
+        rateDao.updateNotCurrent(event.getSource());
+        exchangeRateData.getQuotes().forEach(
+                quote -> {
+                    // Quote
+                    Currency source = quote.getSource();
+                    Currency destination = quote.getDestination();
+                    Rational exchangeRate = quote.getExchangeRate();
 
-                        // Currency
-                        rate.setSourceSymbolicCode(source.getSymbolicCode());
-                        rate.setSourceExponent(source.getExponent());
-                        rate.setDestinationSymbolicCode(destination.getSymbolicCode());
-                        rate.setDestinationExponent(destination.getExponent());
+                    // Currency
+                    rate.setSourceSymbolicCode(source.getSymbolicCode());
+                    rate.setSourceExponent(source.getExponent());
+                    rate.setDestinationSymbolicCode(destination.getSymbolicCode());
+                    rate.setDestinationExponent(destination.getExponent());
 
-                        // ExchangeRate
-                        rate.setExchangeRateRationalP(exchangeRate.getP());
-                        rate.setExchangeRateRationalQ(exchangeRate.getQ());
+                    // ExchangeRate
+                    rate.setExchangeRateRationalP(exchangeRate.getP());
+                    rate.setExchangeRateRationalQ(exchangeRate.getQ());
 
-                        rateDao.save(rate);
-                    }
-            );
-            log.info("Rate have been saved, eventId={}, walletId={}", event.getId(), event.getSource());
-        } else {
-            log.warn("Quotes is empty, SinkEvent will not be saved");
-        }
+                    rateDao.save(rate);
+                }
+        );
+        log.info("Rate have been saved, eventId={}, walletId={}", event.getId(), event.getSource());
     }
 
     @Override

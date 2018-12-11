@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class RateDaoImplTest extends AbstractIntegrationTest {
 
@@ -20,7 +20,7 @@ public class RateDaoImplTest extends AbstractIntegrationTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Test(expected = EmptyResultDataAccessException.class)
+    @Test
     public void test() {
         Rate rate = random(Rate.class);
         rate.setCurrent(true);
@@ -37,10 +37,15 @@ public class RateDaoImplTest extends AbstractIntegrationTest {
         );
 
         rateDao.updateNotCurrent(rate.getSourceId());
-        jdbcTemplate.queryForObject(
-                "SELECT * FROM nw.rate AS rate WHERE rate.id = ? AND rate.current",
-                new Object[]{id},
-                new BeanPropertyRowMapper(Rate.class)
-        );
+        try {
+            jdbcTemplate.queryForObject(
+                    "SELECT * FROM nw.rate AS rate WHERE rate.id = ? AND rate.current",
+                    new Object[]{id},
+                    new BeanPropertyRowMapper(Rate.class)
+            );
+            fail();
+        } catch (Exception e) {
+            assertTrue(e instanceof EmptyResultDataAccessException);
+        }
     }
 }
