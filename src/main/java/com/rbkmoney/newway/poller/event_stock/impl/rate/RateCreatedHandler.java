@@ -35,7 +35,7 @@ public class RateCreatedHandler extends AbstractRateHandler {
             return;
         }
 
-        log.info("Start rate created handling, eventId={}, walletId={}", event.getId(), event.getSource());
+        log.info("Start rate created handling, eventId={}, sourceId={}", event.getId(), event.getSource());
         Rate rate = new Rate();
 
         // SinkEvent
