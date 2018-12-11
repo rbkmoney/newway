@@ -4,51 +4,16 @@
 package com.rbkmoney.newway.domain;
 
 
-import com.rbkmoney.newway.domain.tables.Adjustment;
-import com.rbkmoney.newway.domain.tables.Calendar;
-import com.rbkmoney.newway.domain.tables.CashFlow;
-import com.rbkmoney.newway.domain.tables.Category;
-import com.rbkmoney.newway.domain.tables.Challenge;
-import com.rbkmoney.newway.domain.tables.Contract;
-import com.rbkmoney.newway.domain.tables.ContractAdjustment;
-import com.rbkmoney.newway.domain.tables.Contractor;
-import com.rbkmoney.newway.domain.tables.Currency;
-import com.rbkmoney.newway.domain.tables.Deposit;
-import com.rbkmoney.newway.domain.tables.Destination;
-import com.rbkmoney.newway.domain.tables.FistfulCashFlow;
-import com.rbkmoney.newway.domain.tables.Identity;
-import com.rbkmoney.newway.domain.tables.Inspector;
-import com.rbkmoney.newway.domain.tables.Invoice;
-import com.rbkmoney.newway.domain.tables.InvoiceCart;
-import com.rbkmoney.newway.domain.tables.Party;
-import com.rbkmoney.newway.domain.tables.Payment;
-import com.rbkmoney.newway.domain.tables.PaymentInstitution;
-import com.rbkmoney.newway.domain.tables.PaymentMethod;
-import com.rbkmoney.newway.domain.tables.Payout;
-import com.rbkmoney.newway.domain.tables.PayoutMethod;
-import com.rbkmoney.newway.domain.tables.PayoutSummary;
-import com.rbkmoney.newway.domain.tables.PayoutTool;
-import com.rbkmoney.newway.domain.tables.Provider;
-import com.rbkmoney.newway.domain.tables.Proxy;
-import com.rbkmoney.newway.domain.tables.Refund;
-import com.rbkmoney.newway.domain.tables.Shop;
-import com.rbkmoney.newway.domain.tables.Source;
-import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
-import com.rbkmoney.newway.domain.tables.Terminal;
-import com.rbkmoney.newway.domain.tables.Wallet;
-import com.rbkmoney.newway.domain.tables.Withdrawal;
-import com.rbkmoney.newway.domain.tables.WithdrawalSession;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
+import com.rbkmoney.newway.domain.tables.*;
 import org.jooq.Catalog;
 import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
+
+import javax.annotation.Generated;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -64,7 +29,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Nw extends SchemaImpl {
 
-    private static final long serialVersionUID = -1494886574;
+    private static final long serialVersionUID = 177296288;
 
     /**
      * The reference instance of <code>nw</code>
@@ -202,6 +167,11 @@ public class Nw extends SchemaImpl {
     public final Proxy PROXY = com.rbkmoney.newway.domain.tables.Proxy.PROXY;
 
     /**
+     * The table <code>nw.rate</code>.
+     */
+    public final Rate RATE = com.rbkmoney.newway.domain.tables.Rate.RATE;
+
+    /**
      * The table <code>nw.refund</code>.
      */
     public final Refund REFUND = com.rbkmoney.newway.domain.tables.Refund.REFUND;
@@ -292,11 +262,12 @@ public class Nw extends SchemaImpl {
             Sequences.PAYOUT_TOOL_ID_SEQ,
             Sequences.PROVIDER_ID_SEQ,
             Sequences.PROXY_ID_SEQ,
+                Sequences.RATE_ID_SEQ,
             Sequences.REFUND_ID_SEQ,
             Sequences.SHOP_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
-            Sequences.TERM_SET_HIERARCHY_ID_SEQ,
             Sequences.TERMINAL_ID_SEQ,
+                Sequences.TERM_SET_HIERARCHY_ID_SEQ,
             Sequences.WALLET_ID_SEQ,
             Sequences.WITHDRAWAL_ID_SEQ,
             Sequences.WITHDRAWAL_SESSION_ID_SEQ);
@@ -337,6 +308,7 @@ public class Nw extends SchemaImpl {
             PayoutTool.PAYOUT_TOOL,
             Provider.PROVIDER,
             Proxy.PROXY,
+                Rate.RATE,
             Refund.REFUND,
             Shop.SHOP,
             Source.SOURCE,

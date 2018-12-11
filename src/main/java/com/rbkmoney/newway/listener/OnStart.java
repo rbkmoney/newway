@@ -25,6 +25,7 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private final EventPublisher sourceEventPublisher;
     private final EventPublisher destinationEventPublisher;
     private final EventPublisher withdrawalSessionEventPublisher;
+    private final EventPublisher rateEventPublisher;
 
     private final PartyManagementService partyManagementService;
     private final InvoicingService invoicingService;
@@ -36,6 +37,7 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private final DestinationService destinationService;
     private final DepositService depositService;
     private final WithdrawalSessionService withdrawalSessionService;
+    private final RateService rateService;
 
     @Value("${bm.pollingEnabled}")
     private boolean pollingEnabled;
@@ -50,6 +52,7 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
                    EventPublisher destinationEventPublisher,
                    EventPublisher depositEventPublisher,
                    EventPublisher withdrawalSessionEventPublisher,
+                   EventPublisher rateEventPublisher,
 
                    PartyManagementService partyManagementService,
                    InvoicingService invoicingService,
@@ -60,7 +63,8 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
                    SourceService sourceService,
                    DestinationService destinationService,
                    DepositService depositService,
-                   WithdrawalSessionService withdrawalSessionService) {
+                   WithdrawalSessionService withdrawalSessionService,
+                   RateService rateService) {
         this.partyManagementEventPublisher = partyManagementEventPublisher;
         this.invoicingEventPublisher = invoicingEventPublisher;
         this.payoutEventPublisher = payoutEventPublisher;
@@ -71,6 +75,7 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
         this.sourceEventPublisher = sourceEventPublisher;
         this.destinationEventPublisher = destinationEventPublisher;
         this.withdrawalSessionEventPublisher = withdrawalSessionEventPublisher;
+        this.rateEventPublisher = rateEventPublisher;
 
         this.partyManagementService = partyManagementService;
         this.invoicingService = invoicingService;
@@ -82,6 +87,7 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
         this.destinationService = destinationService;
         this.depositService = depositService;
         this.withdrawalSessionService = withdrawalSessionService;
+        this.rateService = rateService;
     }
 
     @Override
@@ -96,8 +102,9 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
             destinationEventPublisher.subscribe(buildSubscriberConfig(destinationService.getLastEventId()));
             depositEventPublisher.subscribe(buildSubscriberConfig(depositService.getLastEventId()));
             withdrawalEventPublisher.subscribe(buildSubscriberConfig(withdrawalService.getLastEventId()));
-			withdrawalSessionEventPublisher.subscribe(buildSubscriberConfig(withdrawalSessionService.getLastEventId()));
-		}
+            withdrawalSessionEventPublisher.subscribe(buildSubscriberConfig(withdrawalSessionService.getLastEventId()));
+            rateEventPublisher.subscribe(buildSubscriberConfig(rateService.getLastEventId()));
+        }
     }
 
     private SubscriberConfig buildSubscriberConfig(Optional<Long> lastEventIdOptional) {
