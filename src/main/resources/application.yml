@@ -74,7 +74,7 @@ withdrawal:
     maxPoolSize: 1
 rate:
   polling:
-    url: http://wapi:8022/v1/eventsink/rate
+    url: http://xrates:8022/v1/event_sink
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1

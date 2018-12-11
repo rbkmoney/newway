@@ -30,7 +30,7 @@ import java.util.List;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class Rate extends TableImpl<RateRecord> {
 
-    private static final long serialVersionUID = 1868712668;
+    private static final long serialVersionUID = -2029745769;
 
     /**
      * The reference instance of <code>nw.rate</code>
@@ -61,9 +61,9 @@ public class Rate extends TableImpl<RateRecord> {
     public final TableField<RateRecord, LocalDateTime> EVENT_CREATED_AT = createField("event_created_at", org.jooq.impl.SQLDataType.LOCALDATETIME.nullable(false), this, "");
 
     /**
-     * The column <code>nw.rate.event_source_id</code>.
+     * The column <code>nw.rate.source_id</code>.
      */
-    public final TableField<RateRecord, String> EVENT_SOURCE_ID = createField("event_source_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<RateRecord, String> SOURCE_ID = createField("source_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
 
     /**
      * The column <code>nw.rate.lower_bound_inclusive</code>.

@@ -22,12 +22,12 @@ import java.time.LocalDateTime;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class Rate implements Serializable {
 
-    private static final long serialVersionUID = 1076534109;
+    private static final long serialVersionUID = -2017113849;
 
     private Long id;
     private Long eventId;
     private LocalDateTime eventCreatedAt;
-    private String eventSourceId;
+    private String sourceId;
     private LocalDateTime lowerBoundInclusive;
     private LocalDateTime upperBoundExclusive;
     private String sourceSymbolicCode;
@@ -46,7 +46,7 @@ public class Rate implements Serializable {
         this.id = value.id;
         this.eventId = value.eventId;
         this.eventCreatedAt = value.eventCreatedAt;
-        this.eventSourceId = value.eventSourceId;
+        this.sourceId = value.sourceId;
         this.lowerBoundInclusive = value.lowerBoundInclusive;
         this.upperBoundExclusive = value.upperBoundExclusive;
         this.sourceSymbolicCode = value.sourceSymbolicCode;
@@ -63,7 +63,7 @@ public class Rate implements Serializable {
             Long id,
             Long eventId,
             LocalDateTime eventCreatedAt,
-            String eventSourceId,
+            String sourceId,
             LocalDateTime lowerBoundInclusive,
             LocalDateTime upperBoundExclusive,
             String sourceSymbolicCode,
@@ -78,7 +78,7 @@ public class Rate implements Serializable {
         this.id = id;
         this.eventId = eventId;
         this.eventCreatedAt = eventCreatedAt;
-        this.eventSourceId = eventSourceId;
+        this.sourceId = sourceId;
         this.lowerBoundInclusive = lowerBoundInclusive;
         this.upperBoundExclusive = upperBoundExclusive;
         this.sourceSymbolicCode = sourceSymbolicCode;
@@ -115,12 +115,12 @@ public class Rate implements Serializable {
         this.eventCreatedAt = eventCreatedAt;
     }
 
-    public String getEventSourceId() {
-        return this.eventSourceId;
+    public String getSourceId() {
+        return this.sourceId;
     }
 
-    public void setEventSourceId(String eventSourceId) {
-        this.eventSourceId = eventSourceId;
+    public void setSourceId(String sourceId) {
+        this.sourceId = sourceId;
     }
 
     public LocalDateTime getLowerBoundInclusive() {
@@ -227,10 +227,10 @@ public class Rate implements Serializable {
                 return false;
         } else if (!eventCreatedAt.equals(other.eventCreatedAt))
             return false;
-        if (eventSourceId == null) {
-            if (other.eventSourceId != null)
+        if (sourceId == null) {
+            if (other.sourceId != null)
                 return false;
-        } else if (!eventSourceId.equals(other.eventSourceId))
+        } else if (!sourceId.equals(other.sourceId))
             return false;
         if (lowerBoundInclusive == null) {
             if (other.lowerBoundInclusive != null)
@@ -292,7 +292,7 @@ public class Rate implements Serializable {
         result = prime * result + ((this.id == null) ? 0 : this.id.hashCode());
         result = prime * result + ((this.eventId == null) ? 0 : this.eventId.hashCode());
         result = prime * result + ((this.eventCreatedAt == null) ? 0 : this.eventCreatedAt.hashCode());
-        result = prime * result + ((this.eventSourceId == null) ? 0 : this.eventSourceId.hashCode());
+        result = prime * result + ((this.sourceId == null) ? 0 : this.sourceId.hashCode());
         result = prime * result + ((this.lowerBoundInclusive == null) ? 0 : this.lowerBoundInclusive.hashCode());
         result = prime * result + ((this.upperBoundExclusive == null) ? 0 : this.upperBoundExclusive.hashCode());
         result = prime * result + ((this.sourceSymbolicCode == null) ? 0 : this.sourceSymbolicCode.hashCode());
@@ -313,7 +313,7 @@ public class Rate implements Serializable {
         sb.append(id);
         sb.append(", ").append(eventId);
         sb.append(", ").append(eventCreatedAt);
-        sb.append(", ").append(eventSourceId);
+        sb.append(", ").append(sourceId);
         sb.append(", ").append(lowerBoundInclusive);
         sb.append(", ").append(upperBoundExclusive);
         sb.append(", ").append(sourceSymbolicCode);

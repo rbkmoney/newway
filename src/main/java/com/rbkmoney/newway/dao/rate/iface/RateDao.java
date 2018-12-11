@@ -10,7 +10,5 @@ public interface RateDao extends GenericDao {
 
     Long save(Rate rate) throws DaoException;
 
-    Rate get(String rateId) throws DaoException;
-
-    void updateNotCurrent(String rateId) throws DaoException;
+    void updateNotCurrent(String sourceId) throws DaoException;
 }

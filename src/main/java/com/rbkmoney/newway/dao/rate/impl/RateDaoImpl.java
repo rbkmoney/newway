@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.dao.rate.impl;
 
 import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.rate.iface.RateDao;
 import com.rbkmoney.newway.domain.tables.pojos.Rate;
 import com.rbkmoney.newway.domain.tables.records.RateRecord;
@@ -10,7 +9,6 @@ import org.jooq.Query;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
@@ -21,12 +19,9 @@ import static com.rbkmoney.newway.domain.tables.Rate.RATE;
 @Component
 public class RateDaoImpl extends AbstractGenericDao implements RateDao {
 
-    private final RowMapper<Rate> rateRowMapper;
-
     @Autowired
     public RateDaoImpl(@Qualifier("dataSource") DataSource dataSource) {
         super(dataSource);
-        rateRowMapper = new RecordRowMapper<>(RATE, Rate.class);
     }
 
     @Override
@@ -46,16 +41,10 @@ public class RateDaoImpl extends AbstractGenericDao implements RateDao {
     }
 
     @Override
-    public Rate get(String eventSourceId) throws DaoException {
-        Query query = getDslContext().selectFrom(RATE)
-                .where(RATE.EVENT_SOURCE_ID.eq(eventSourceId).and(RATE.CURRENT));
-        return fetchOne(query, rateRowMapper);
-    }
-
-    @Override
-    public void updateNotCurrent(String eventSourceId) throws DaoException {
+    public void updateNotCurrent(String sourceId) throws DaoException {
         Query query = getDslContext().update(RATE).set(RATE.CURRENT, false)
-                .where(RATE.EVENT_SOURCE_ID.eq(eventSourceId).and(RATE.CURRENT));
-        executeOne(query);
+                .where(RATE.SOURCE_ID.eq(sourceId).and(RATE.CURRENT));
+        // rate может и не быть, поэтому не executeOne
+        execute(query);
     }
 }

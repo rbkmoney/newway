@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 @SuppressWarnings({"all", "unchecked", "rawtypes"})
 public class RateRecord extends UpdatableRecordImpl<RateRecord> implements Record14<Long, Long, LocalDateTime, String, LocalDateTime, LocalDateTime, String, Short, String, Short, Long, Long, LocalDateTime, Boolean> {
 
-    private static final long serialVersionUID = 1962218247;
+    private static final long serialVersionUID = 1503426818;
 
     /**
      * Setter for <code>nw.rate.id</code>.
@@ -73,16 +73,16 @@ public class RateRecord extends UpdatableRecordImpl<RateRecord> implements Recor
     }
 
     /**
-     * Setter for <code>nw.rate.event_source_id</code>.
+     * Setter for <code>nw.rate.source_id</code>.
      */
-    public void setEventSourceId(String value) {
+    public void setSourceId(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>nw.rate.event_source_id</code>.
+     * Getter for <code>nw.rate.source_id</code>.
      */
-    public String getEventSourceId() {
+    public String getSourceId() {
         return (String) get(3);
     }
 
@@ -287,7 +287,7 @@ public class RateRecord extends UpdatableRecordImpl<RateRecord> implements Recor
      */
     @Override
     public Field<String> field4() {
-        return Rate.RATE.EVENT_SOURCE_ID;
+        return Rate.RATE.SOURCE_ID;
     }
 
     /**
@@ -399,7 +399,7 @@ public class RateRecord extends UpdatableRecordImpl<RateRecord> implements Recor
      */
     @Override
     public String value4() {
-        return getEventSourceId();
+        return getSourceId();
     }
 
     /**
@@ -514,7 +514,7 @@ public class RateRecord extends UpdatableRecordImpl<RateRecord> implements Recor
      */
     @Override
     public RateRecord value4(String value) {
-        setEventSourceId(value);
+        setSourceId(value);
         return this;
     }
 
@@ -644,13 +644,13 @@ public class RateRecord extends UpdatableRecordImpl<RateRecord> implements Recor
     /**
      * Create a detached, initialised RateRecord
      */
-    public RateRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String eventSourceId, LocalDateTime lowerBoundInclusive, LocalDateTime upperBoundExclusive, String sourceSymbolicCode, Short sourceExponent, String destinationSymbolicCode, Short destinationExponent, Long exchangeRateRationalP, Long exchangeRateRationalQ, LocalDateTime wtime, Boolean current) {
+    public RateRecord(Long id, Long eventId, LocalDateTime eventCreatedAt, String sourceId, LocalDateTime lowerBoundInclusive, LocalDateTime upperBoundExclusive, String sourceSymbolicCode, Short sourceExponent, String destinationSymbolicCode, Short destinationExponent, Long exchangeRateRationalP, Long exchangeRateRationalQ, LocalDateTime wtime, Boolean current) {
         super(Rate.RATE);
 
         set(0, id);
         set(1, eventId);
         set(2, eventCreatedAt);
-        set(3, eventSourceId);
+        set(3, sourceId);
         set(4, lowerBoundInclusive);
         set(5, upperBoundExclusive);
         set(6, sourceSymbolicCode);

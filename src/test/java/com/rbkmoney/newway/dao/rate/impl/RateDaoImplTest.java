@@ -5,9 +5,11 @@ import com.rbkmoney.newway.dao.rate.iface.RateDao;
 import com.rbkmoney.newway.domain.tables.pojos.Rate;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
-import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 
 public class RateDaoImplTest extends AbstractIntegrationTest {
@@ -15,15 +17,30 @@ public class RateDaoImplTest extends AbstractIntegrationTest {
     @Autowired
     private RateDao rateDao;
 
-    @Test
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Test(expected = EmptyResultDataAccessException.class)
     public void test() {
         Rate rate = random(Rate.class);
         rate.setCurrent(true);
+
         Long id = rateDao.save(rate);
         rate.setId(id);
-        assertEquals(rate, rateDao.get(rate.getEventSourceId()));
+        assertEquals(
+                rate,
+                jdbcTemplate.queryForObject(
+                        "SELECT * FROM nw.rate WHERE id = ? ",
+                        new Object[]{id},
+                        new BeanPropertyRowMapper(Rate.class)
+                )
+        );
 
-        rateDao.updateNotCurrent(rate.getEventSourceId());
-        assertNull(rateDao.get(rate.getEventSourceId()));
+        rateDao.updateNotCurrent(rate.getSourceId());
+        jdbcTemplate.queryForObject(
+                "SELECT * FROM nw.rate AS rate WHERE rate.id = ? AND rate.current",
+                new Object[]{id},
+                new BeanPropertyRowMapper(Rate.class)
+        );
     }
 }
