@@ -31,7 +31,7 @@ public class RateCreatedHandler extends AbstractRateHandler {
     @Override
     public void handle(Change change, SinkEvent event) {
         if (change.getCreated().getExchangeRateData().getQuotes().isEmpty()) {
-            log.warn("Quotes is empty, SinkEvent will not be saved");
+            log.warn("Quotes is empty, SinkEvent will not be saved, eventId={}, sourceId={}", event.getId(), event.getSource());
             return;
         }
 
@@ -78,7 +78,7 @@ public class RateCreatedHandler extends AbstractRateHandler {
                     rateDao.save(rate);
                 }
         );
-        log.info("Rate have been saved, eventId={}, walletId={}", event.getId(), event.getSource());
+        log.info("Rate have been saved, eventId={}, sourceId={}", event.getId(), event.getSource());
     }
 
     @Override
