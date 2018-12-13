@@ -13,11 +13,15 @@ import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractClaimCha
 import com.rbkmoney.newway.util.ContractorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+
 @Component
+@Order(HIGHEST_PRECEDENCE)
 public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
