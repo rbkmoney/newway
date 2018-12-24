@@ -4,7 +4,41 @@
 package com.rbkmoney.newway.domain;
 
 
-import com.rbkmoney.newway.domain.tables.*;
+import com.rbkmoney.newway.domain.tables.Adjustment;
+import com.rbkmoney.newway.domain.tables.Calendar;
+import com.rbkmoney.newway.domain.tables.CashFlow;
+import com.rbkmoney.newway.domain.tables.Category;
+import com.rbkmoney.newway.domain.tables.Challenge;
+import com.rbkmoney.newway.domain.tables.Contract;
+import com.rbkmoney.newway.domain.tables.ContractAdjustment;
+import com.rbkmoney.newway.domain.tables.Contractor;
+import com.rbkmoney.newway.domain.tables.Currency;
+import com.rbkmoney.newway.domain.tables.Deposit;
+import com.rbkmoney.newway.domain.tables.Destination;
+import com.rbkmoney.newway.domain.tables.FistfulCashFlow;
+import com.rbkmoney.newway.domain.tables.Identity;
+import com.rbkmoney.newway.domain.tables.Inspector;
+import com.rbkmoney.newway.domain.tables.Invoice;
+import com.rbkmoney.newway.domain.tables.InvoiceCart;
+import com.rbkmoney.newway.domain.tables.Party;
+import com.rbkmoney.newway.domain.tables.Payment;
+import com.rbkmoney.newway.domain.tables.PaymentInstitution;
+import com.rbkmoney.newway.domain.tables.PaymentMethod;
+import com.rbkmoney.newway.domain.tables.Payout;
+import com.rbkmoney.newway.domain.tables.PayoutMethod;
+import com.rbkmoney.newway.domain.tables.PayoutSummary;
+import com.rbkmoney.newway.domain.tables.PayoutTool;
+import com.rbkmoney.newway.domain.tables.Provider;
+import com.rbkmoney.newway.domain.tables.Proxy;
+import com.rbkmoney.newway.domain.tables.Rate;
+import com.rbkmoney.newway.domain.tables.Refund;
+import com.rbkmoney.newway.domain.tables.Shop;
+import com.rbkmoney.newway.domain.tables.Source;
+import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
+import com.rbkmoney.newway.domain.tables.Terminal;
+import com.rbkmoney.newway.domain.tables.Wallet;
+import com.rbkmoney.newway.domain.tables.Withdrawal;
+import com.rbkmoney.newway.domain.tables.WithdrawalSession;
 
 import javax.annotation.Generated;
 

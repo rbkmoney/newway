@@ -4,10 +4,10 @@
 package com.rbkmoney.newway.domain;
 
 
+import javax.annotation.Generated;
+
 import org.jooq.Sequence;
 import org.jooq.impl.SequenceImpl;
-
-import javax.annotation.Generated;
 
 
 /**
@@ -174,14 +174,14 @@ public class Sequences {
     public static final Sequence<Long> SOURCE_ID_SEQ = new SequenceImpl<Long>("source_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
-     * The sequence <code>nw.terminal_id_seq</code>
-     */
-    public static final Sequence<Long> TERMINAL_ID_SEQ = new SequenceImpl<Long>("terminal_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
      * The sequence <code>nw.term_set_hierarchy_id_seq</code>
      */
     public static final Sequence<Long> TERM_SET_HIERARCHY_ID_SEQ = new SequenceImpl<Long>("term_set_hierarchy_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>nw.terminal_id_seq</code>
+     */
+    public static final Sequence<Long> TERMINAL_ID_SEQ = new SequenceImpl<Long>("terminal_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>nw.wallet_id_seq</code>
