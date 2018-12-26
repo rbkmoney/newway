@@ -4,14 +4,82 @@
 package com.rbkmoney.newway.domain;
 
 
-import com.rbkmoney.newway.domain.tables.*;
-import com.rbkmoney.newway.domain.tables.records.*;
+import com.rbkmoney.newway.domain.tables.Adjustment;
+import com.rbkmoney.newway.domain.tables.Calendar;
+import com.rbkmoney.newway.domain.tables.CashFlow;
+import com.rbkmoney.newway.domain.tables.Category;
+import com.rbkmoney.newway.domain.tables.Challenge;
+import com.rbkmoney.newway.domain.tables.Contract;
+import com.rbkmoney.newway.domain.tables.ContractAdjustment;
+import com.rbkmoney.newway.domain.tables.Contractor;
+import com.rbkmoney.newway.domain.tables.Currency;
+import com.rbkmoney.newway.domain.tables.Deposit;
+import com.rbkmoney.newway.domain.tables.Destination;
+import com.rbkmoney.newway.domain.tables.FistfulCashFlow;
+import com.rbkmoney.newway.domain.tables.Inspector;
+import com.rbkmoney.newway.domain.tables.Invoice;
+import com.rbkmoney.newway.domain.tables.InvoiceCart;
+import com.rbkmoney.newway.domain.tables.Party;
+import com.rbkmoney.newway.domain.tables.Payment;
+import com.rbkmoney.newway.domain.tables.PaymentInstitution;
+import com.rbkmoney.newway.domain.tables.PaymentMethod;
+import com.rbkmoney.newway.domain.tables.Payout;
+import com.rbkmoney.newway.domain.tables.PayoutMethod;
+import com.rbkmoney.newway.domain.tables.PayoutSummary;
+import com.rbkmoney.newway.domain.tables.PayoutTool;
+import com.rbkmoney.newway.domain.tables.Provider;
+import com.rbkmoney.newway.domain.tables.Proxy;
+import com.rbkmoney.newway.domain.tables.Rate;
+import com.rbkmoney.newway.domain.tables.Refund;
+import com.rbkmoney.newway.domain.tables.Shop;
+import com.rbkmoney.newway.domain.tables.Source;
+import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
+import com.rbkmoney.newway.domain.tables.Terminal;
+import com.rbkmoney.newway.domain.tables.Wallet;
+import com.rbkmoney.newway.domain.tables.Withdrawal;
+import com.rbkmoney.newway.domain.tables.WithdrawalSession;
+import com.rbkmoney.newway.domain.tables.records.AdjustmentRecord;
+import com.rbkmoney.newway.domain.tables.records.CalendarRecord;
+import com.rbkmoney.newway.domain.tables.records.CashFlowRecord;
+import com.rbkmoney.newway.domain.tables.records.CategoryRecord;
+import com.rbkmoney.newway.domain.tables.records.ChallengeRecord;
+import com.rbkmoney.newway.domain.tables.records.ContractAdjustmentRecord;
+import com.rbkmoney.newway.domain.tables.records.ContractRecord;
+import com.rbkmoney.newway.domain.tables.records.ContractorRecord;
+import com.rbkmoney.newway.domain.tables.records.CurrencyRecord;
+import com.rbkmoney.newway.domain.tables.records.DepositRecord;
+import com.rbkmoney.newway.domain.tables.records.DestinationRecord;
+import com.rbkmoney.newway.domain.tables.records.FistfulCashFlowRecord;
+import com.rbkmoney.newway.domain.tables.records.IdentityRecord;
+import com.rbkmoney.newway.domain.tables.records.InspectorRecord;
+import com.rbkmoney.newway.domain.tables.records.InvoiceCartRecord;
+import com.rbkmoney.newway.domain.tables.records.InvoiceRecord;
+import com.rbkmoney.newway.domain.tables.records.PartyRecord;
+import com.rbkmoney.newway.domain.tables.records.PaymentInstitutionRecord;
+import com.rbkmoney.newway.domain.tables.records.PaymentMethodRecord;
+import com.rbkmoney.newway.domain.tables.records.PaymentRecord;
+import com.rbkmoney.newway.domain.tables.records.PayoutMethodRecord;
+import com.rbkmoney.newway.domain.tables.records.PayoutRecord;
+import com.rbkmoney.newway.domain.tables.records.PayoutSummaryRecord;
+import com.rbkmoney.newway.domain.tables.records.PayoutToolRecord;
+import com.rbkmoney.newway.domain.tables.records.ProviderRecord;
+import com.rbkmoney.newway.domain.tables.records.ProxyRecord;
+import com.rbkmoney.newway.domain.tables.records.RateRecord;
+import com.rbkmoney.newway.domain.tables.records.RefundRecord;
+import com.rbkmoney.newway.domain.tables.records.ShopRecord;
+import com.rbkmoney.newway.domain.tables.records.SourceRecord;
+import com.rbkmoney.newway.domain.tables.records.TermSetHierarchyRecord;
+import com.rbkmoney.newway.domain.tables.records.TerminalRecord;
+import com.rbkmoney.newway.domain.tables.records.WalletRecord;
+import com.rbkmoney.newway.domain.tables.records.WithdrawalRecord;
+import com.rbkmoney.newway.domain.tables.records.WithdrawalSessionRecord;
+
+import javax.annotation.Generated;
+
 import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.AbstractKeys;
-
-import javax.annotation.Generated;
 
 
 /**

@@ -1,6 +1,5 @@
 package com.rbkmoney.newway.poller.event_stock.impl.payout;
 
-import com.rbkmoney.damsel.domain.BankCard;
 import com.rbkmoney.damsel.domain.InternationalBankAccount;
 import com.rbkmoney.damsel.domain.InternationalBankDetails;
 import com.rbkmoney.damsel.domain.RussianBankAccount;
@@ -13,10 +12,9 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
 import com.rbkmoney.newway.dao.payout.iface.PayoutSummaryDao;
-import com.rbkmoney.newway.domain.enums.*;
+import com.rbkmoney.newway.domain.enums.PayoutAccountType;
 import com.rbkmoney.newway.domain.enums.PayoutStatus;
 import com.rbkmoney.newway.domain.enums.PayoutType;
-import com.rbkmoney.newway.domain.enums.UserType;
 import com.rbkmoney.newway.domain.tables.pojos.Payout;
 import com.rbkmoney.newway.domain.tables.pojos.PayoutSummary;
 import com.rbkmoney.newway.util.PayoutUtil;
@@ -64,31 +62,18 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
         payout.setContractId(payoutCreated.getContractId());
         payout.setCreatedAt(TypeUtil.stringToLocalDateTime(payoutCreated.getCreatedAt()));
         payout.setStatus(TBaseUtil.unionFieldToEnum(payoutCreated.getStatus(), PayoutStatus.class));
-        if (payoutCreated.getStatus().isSetPaid()) {
-            PaidDetails details = payoutCreated.getStatus().getPaid().getDetails();
-            payout.setStatusPaidDetails(TBaseUtil.unionFieldToEnum(details, PayoutPaidStatusDetails.class));
-            if (details.isSetCardDetails()) {
-                payout.setStatusPaidDetailsCardProviderName(details.getCardDetails().getProviderDetails().getName());
-                payout.setStatusPaidDetailsCardProviderTransactionId(details.getCardDetails().getProviderDetails().getTransactionId());
-            }
-        } else if (payoutCreated.getStatus().isSetCancelled()) {
+        payout.setAmount(payoutCreated.getAmount());
+        payout.setFee(payoutCreated.getFee());
+        payout.setCurrencyCode(payoutCreated.getCurrency().getSymbolicCode());
+        if (payoutCreated.getStatus().isSetCancelled()) {
             PayoutCancelled cancelled = payoutCreated.getStatus().getCancelled();
-            payout.setStatusCancelledUserInfoId(cancelled.getUserInfo().getId());
-            payout.setStatusCancelledUserInfoType(TBaseUtil.unionFieldToEnum(cancelled.getUserInfo().getType(), UserType.class));
             payout.setStatusCancelledDetails(cancelled.getDetails());
-        } else if (payoutCreated.getStatus().isSetConfirmed()) {
-            UserInfo confirmedUserInfo = payoutCreated.getStatus().getConfirmed().getUserInfo();
-            payout.setStatusConfirmedUserInfoType(TBaseUtil.unionFieldToEnum(confirmedUserInfo.getType(), UserType.class));
         }
         PayoutType payoutType = TBaseUtil.unionFieldToEnum(payoutCreated.getType(), PayoutType.class);
         payout.setType(payoutType);
-        if (payoutCreated.getType().isSetBankCard()) {
-            BankCard card = payoutCreated.getType().getBankCard().getCard();
-            payout.setTypeCardToken(card.getToken());
-            payout.setTypeCardPaymentSystem(card.getPaymentSystem().name());
-            payout.setTypeCardBin(card.getBin());
-            payout.setTypeCardMaskedPan(card.getMaskedPan());
-            payout.setTypeCardTokenProvider(card.getTokenProvider().name());
+        if (payoutCreated.getType().isSetWallet()) {
+            String walletId = payoutCreated.getType().getWallet().getWalletId();
+            payout.setWalletId(walletId);
         } else if (payoutCreated.getType().isSetBankAccount()) {
             PayoutAccount payoutAccount = payoutCreated.getType().getBankAccount();
             payout.setTypeAccountType(TBaseUtil.unionFieldToEnum(payoutAccount, PayoutAccountType.class));
@@ -159,8 +144,6 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
                 }
             }
         }
-        payout.setInitiatorId(change.getPayoutCreated().getInitiator().getId());
-        payout.setInitiatorType(TBaseUtil.unionFieldToEnum(change.getPayoutCreated().getInitiator().getType(), UserType.class));
         long pytId = payoutDao.save(payout);
         if (payoutCreated.isSetSummary()) {
             List<PayoutSummary> payoutSummaries = PayoutUtil.convertPayoutSummaries(payoutCreated, pytId);

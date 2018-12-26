@@ -29,7 +29,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payout implements Serializable {
 
-    private static final long serialVersionUID = 799667123;
+    private static final long serialVersionUID = -2036593003;
 
     private Long                    id;
     private Long                    eventId;
@@ -90,6 +90,10 @@ public class Payout implements Serializable {
     private String                  typeAccountInternationalCorrespondentBankIban;
     private String                  typeAccountInternationalCorrespondentBankAbaRtn;
     private String                  typeAccountInternationalCorrespondentBankCountryCode;
+    private Long                    amount;
+    private Long                    fee;
+    private String                  currencyCode;
+    private String                  walletId;
 
     public Payout() {}
 
@@ -153,6 +157,10 @@ public class Payout implements Serializable {
         this.typeAccountInternationalCorrespondentBankIban = value.typeAccountInternationalCorrespondentBankIban;
         this.typeAccountInternationalCorrespondentBankAbaRtn = value.typeAccountInternationalCorrespondentBankAbaRtn;
         this.typeAccountInternationalCorrespondentBankCountryCode = value.typeAccountInternationalCorrespondentBankCountryCode;
+        this.amount = value.amount;
+        this.fee = value.fee;
+        this.currencyCode = value.currencyCode;
+        this.walletId = value.walletId;
     }
 
     public Payout(
@@ -214,7 +222,11 @@ public class Payout implements Serializable {
         String                  typeAccountInternationalCorrespondentBankBic,
         String                  typeAccountInternationalCorrespondentBankIban,
         String                  typeAccountInternationalCorrespondentBankAbaRtn,
-        String                  typeAccountInternationalCorrespondentBankCountryCode
+        String                  typeAccountInternationalCorrespondentBankCountryCode,
+        Long                    amount,
+        Long                    fee,
+        String                  currencyCode,
+        String                  walletId
     ) {
         this.id = id;
         this.eventId = eventId;
@@ -275,6 +287,10 @@ public class Payout implements Serializable {
         this.typeAccountInternationalCorrespondentBankIban = typeAccountInternationalCorrespondentBankIban;
         this.typeAccountInternationalCorrespondentBankAbaRtn = typeAccountInternationalCorrespondentBankAbaRtn;
         this.typeAccountInternationalCorrespondentBankCountryCode = typeAccountInternationalCorrespondentBankCountryCode;
+        this.amount = amount;
+        this.fee = fee;
+        this.currencyCode = currencyCode;
+        this.walletId = walletId;
     }
 
     public Long getId() {
@@ -749,6 +765,38 @@ public class Payout implements Serializable {
         this.typeAccountInternationalCorrespondentBankCountryCode = typeAccountInternationalCorrespondentBankCountryCode;
     }
 
+    public Long getAmount() {
+        return this.amount;
+    }
+
+    public void setAmount(Long amount) {
+        this.amount = amount;
+    }
+
+    public Long getFee() {
+        return this.fee;
+    }
+
+    public void setFee(Long fee) {
+        this.fee = fee;
+    }
+
+    public String getCurrencyCode() {
+        return this.currencyCode;
+    }
+
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
+    }
+
+    public String getWalletId() {
+        return this.walletId;
+    }
+
+    public void setWalletId(String walletId) {
+        this.walletId = walletId;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -1112,6 +1160,30 @@ public class Payout implements Serializable {
         }
         else if (!typeAccountInternationalCorrespondentBankCountryCode.equals(other.typeAccountInternationalCorrespondentBankCountryCode))
             return false;
+        if (amount == null) {
+            if (other.amount != null)
+                return false;
+        }
+        else if (!amount.equals(other.amount))
+            return false;
+        if (fee == null) {
+            if (other.fee != null)
+                return false;
+        }
+        else if (!fee.equals(other.fee))
+            return false;
+        if (currencyCode == null) {
+            if (other.currencyCode != null)
+                return false;
+        }
+        else if (!currencyCode.equals(other.currencyCode))
+            return false;
+        if (walletId == null) {
+            if (other.walletId != null)
+                return false;
+        }
+        else if (!walletId.equals(other.walletId))
+            return false;
         return true;
     }
 
@@ -1178,6 +1250,10 @@ public class Payout implements Serializable {
         result = prime * result + ((this.typeAccountInternationalCorrespondentBankIban == null) ? 0 : this.typeAccountInternationalCorrespondentBankIban.hashCode());
         result = prime * result + ((this.typeAccountInternationalCorrespondentBankAbaRtn == null) ? 0 : this.typeAccountInternationalCorrespondentBankAbaRtn.hashCode());
         result = prime * result + ((this.typeAccountInternationalCorrespondentBankCountryCode == null) ? 0 : this.typeAccountInternationalCorrespondentBankCountryCode.hashCode());
+        result = prime * result + ((this.amount == null) ? 0 : this.amount.hashCode());
+        result = prime * result + ((this.fee == null) ? 0 : this.fee.hashCode());
+        result = prime * result + ((this.currencyCode == null) ? 0 : this.currencyCode.hashCode());
+        result = prime * result + ((this.walletId == null) ? 0 : this.walletId.hashCode());
         return result;
     }
 
@@ -1244,6 +1320,10 @@ public class Payout implements Serializable {
         sb.append(", ").append(typeAccountInternationalCorrespondentBankIban);
         sb.append(", ").append(typeAccountInternationalCorrespondentBankAbaRtn);
         sb.append(", ").append(typeAccountInternationalCorrespondentBankCountryCode);
+        sb.append(", ").append(amount);
+        sb.append(", ").append(fee);
+        sb.append(", ").append(currencyCode);
+        sb.append(", ").append(walletId);
 
         sb.append(")");
         return sb.toString();
