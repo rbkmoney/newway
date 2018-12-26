@@ -1,5 +1,4 @@
-delete from nw.payout;
-delete from nw.payout_summary;
+truncate nw.payout cascade;
 
 alter table nw.payout add column amount bigint;
 alter table nw.payout add column fee bigint;
