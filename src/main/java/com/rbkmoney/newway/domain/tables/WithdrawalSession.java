@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WithdrawalSession extends TableImpl<WithdrawalSessionRecord> {
 
-    private static final long serialVersionUID = 1576349985;
+    private static final long serialVersionUID = 1449301219;
 
     /**
      * The reference instance of <code>nw.withdrawal_session</code>
@@ -136,17 +136,17 @@ public class WithdrawalSession extends TableImpl<WithdrawalSessionRecord> {
     /**
      * The column <code>nw.withdrawal_session.sender_party_id</code>.
      */
-    public final TableField<WithdrawalSessionRecord, String> SENDER_PARTY_ID = createField("sender_party_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<WithdrawalSessionRecord, String> SENDER_PARTY_ID = createField("sender_party_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>nw.withdrawal_session.sender_provider_id</code>.
      */
-    public final TableField<WithdrawalSessionRecord, String> SENDER_PROVIDER_ID = createField("sender_provider_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<WithdrawalSessionRecord, String> SENDER_PROVIDER_ID = createField("sender_provider_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>nw.withdrawal_session.sender_class_id</code>.
      */
-    public final TableField<WithdrawalSessionRecord, String> SENDER_CLASS_ID = createField("sender_class_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<WithdrawalSessionRecord, String> SENDER_CLASS_ID = createField("sender_class_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>nw.withdrawal_session.sender_contract_id</code>.
@@ -156,17 +156,17 @@ public class WithdrawalSession extends TableImpl<WithdrawalSessionRecord> {
     /**
      * The column <code>nw.withdrawal_session.receiver_party_id</code>.
      */
-    public final TableField<WithdrawalSessionRecord, String> RECEIVER_PARTY_ID = createField("receiver_party_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<WithdrawalSessionRecord, String> RECEIVER_PARTY_ID = createField("receiver_party_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>nw.withdrawal_session.receiver_provider_id</code>.
      */
-    public final TableField<WithdrawalSessionRecord, String> RECEIVER_PROVIDER_ID = createField("receiver_provider_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<WithdrawalSessionRecord, String> RECEIVER_PROVIDER_ID = createField("receiver_provider_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>nw.withdrawal_session.receiver_class_id</code>.
      */
-    public final TableField<WithdrawalSessionRecord, String> RECEIVER_CLASS_ID = createField("receiver_class_id", org.jooq.impl.SQLDataType.VARCHAR.nullable(false), this, "");
+    public final TableField<WithdrawalSessionRecord, String> RECEIVER_CLASS_ID = createField("receiver_class_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * The column <code>nw.withdrawal_session.receiver_contract_id</code>.
