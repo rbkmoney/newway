@@ -2,8 +2,6 @@ package com.rbkmoney.newway;
 
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.EnvironmentTestUtils;
 import org.springframework.context.ApplicationContextInitializer;
@@ -28,6 +26,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @ContextConfiguration(classes = NewwayApplication.class, initializers = AbstractIntegrationTest.Initializer.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class AbstractIntegrationTest {
+
     @ClassRule
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer("postgres:9.6")
             .withStartupTimeout(Duration.ofMinutes(5));
@@ -45,5 +44,4 @@ public class AbstractIntegrationTest {
             );
         }
     }
-
 }

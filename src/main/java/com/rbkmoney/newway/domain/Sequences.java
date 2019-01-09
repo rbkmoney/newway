@@ -154,6 +154,11 @@ public class Sequences {
     public static final Sequence<Long> PROXY_ID_SEQ = new SequenceImpl<Long>("proxy_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>nw.rate_id_seq</code>
+     */
+    public static final Sequence<Long> RATE_ID_SEQ = new SequenceImpl<Long>("rate_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>nw.refund_id_seq</code>
      */
     public static final Sequence<Long> REFUND_ID_SEQ = new SequenceImpl<Long>("refund_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -187,4 +192,9 @@ public class Sequences {
      * The sequence <code>nw.withdrawal_id_seq</code>
      */
     public static final Sequence<Long> WITHDRAWAL_ID_SEQ = new SequenceImpl<Long>("withdrawal_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>nw.withdrawal_session_id_seq</code>
+     */
+    public static final Sequence<Long> WITHDRAWAL_SESSION_ID_SEQ = new SequenceImpl<Long>("withdrawal_session_id_seq", Nw.NW, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 }

@@ -30,6 +30,7 @@ import com.rbkmoney.newway.domain.tables.PayoutSummary;
 import com.rbkmoney.newway.domain.tables.PayoutTool;
 import com.rbkmoney.newway.domain.tables.Provider;
 import com.rbkmoney.newway.domain.tables.Proxy;
+import com.rbkmoney.newway.domain.tables.Rate;
 import com.rbkmoney.newway.domain.tables.Refund;
 import com.rbkmoney.newway.domain.tables.Shop;
 import com.rbkmoney.newway.domain.tables.Source;
@@ -37,6 +38,7 @@ import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
 import com.rbkmoney.newway.domain.tables.Terminal;
 import com.rbkmoney.newway.domain.tables.Wallet;
 import com.rbkmoney.newway.domain.tables.Withdrawal;
+import com.rbkmoney.newway.domain.tables.WithdrawalSession;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,7 +65,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Nw extends SchemaImpl {
 
-    private static final long serialVersionUID = -7498482;
+    private static final long serialVersionUID = 1975238034;
 
     /**
      * The reference instance of <code>nw</code>
@@ -201,6 +203,11 @@ public class Nw extends SchemaImpl {
     public final Proxy PROXY = com.rbkmoney.newway.domain.tables.Proxy.PROXY;
 
     /**
+     * The table <code>nw.rate</code>.
+     */
+    public final Rate RATE = com.rbkmoney.newway.domain.tables.Rate.RATE;
+
+    /**
      * The table <code>nw.refund</code>.
      */
     public final Refund REFUND = com.rbkmoney.newway.domain.tables.Refund.REFUND;
@@ -234,6 +241,11 @@ public class Nw extends SchemaImpl {
      * The table <code>nw.withdrawal</code>.
      */
     public final Withdrawal WITHDRAWAL = com.rbkmoney.newway.domain.tables.Withdrawal.WITHDRAWAL;
+
+    /**
+     * The table <code>nw.withdrawal_session</code>.
+     */
+    public final WithdrawalSession WITHDRAWAL_SESSION = com.rbkmoney.newway.domain.tables.WithdrawalSession.WITHDRAWAL_SESSION;
 
     /**
      * No further instances allowed
@@ -286,13 +298,15 @@ public class Nw extends SchemaImpl {
             Sequences.PAYOUT_TOOL_ID_SEQ,
             Sequences.PROVIDER_ID_SEQ,
             Sequences.PROXY_ID_SEQ,
+            Sequences.RATE_ID_SEQ,
             Sequences.REFUND_ID_SEQ,
             Sequences.SHOP_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
             Sequences.TERM_SET_HIERARCHY_ID_SEQ,
             Sequences.TERMINAL_ID_SEQ,
             Sequences.WALLET_ID_SEQ,
-            Sequences.WITHDRAWAL_ID_SEQ);
+            Sequences.WITHDRAWAL_ID_SEQ,
+            Sequences.WITHDRAWAL_SESSION_ID_SEQ);
     }
 
     @Override
@@ -330,12 +344,14 @@ public class Nw extends SchemaImpl {
             PayoutTool.PAYOUT_TOOL,
             Provider.PROVIDER,
             Proxy.PROXY,
+            Rate.RATE,
             Refund.REFUND,
             Shop.SHOP,
             Source.SOURCE,
             TermSetHierarchy.TERM_SET_HIERARCHY,
             Terminal.TERMINAL,
             Wallet.WALLET,
-            Withdrawal.WITHDRAWAL);
+            Withdrawal.WITHDRAWAL,
+            WithdrawalSession.WITHDRAWAL_SESSION);
     }
 }

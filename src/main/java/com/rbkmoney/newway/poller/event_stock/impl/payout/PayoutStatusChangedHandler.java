@@ -60,12 +60,6 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
         payoutSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         payoutSource.setStatus(TBaseUtil.unionFieldToEnum(payoutStatus, com.rbkmoney.newway.domain.enums.PayoutStatus.class));
         if (payoutStatus.isSetPaid()) {
-            PaidDetails details = payoutStatus.getPaid().getDetails();
-            payoutSource.setStatusPaidDetails(TBaseUtil.unionFieldToEnum(details, PayoutPaidStatusDetails.class));
-            if (details.isSetCardDetails()) {
-                payoutSource.setStatusPaidDetailsCardProviderName(details.getCardDetails().getProviderDetails().getName());
-                payoutSource.setStatusPaidDetailsCardProviderTransactionId(details.getCardDetails().getProviderDetails().getTransactionId());
-            }
             payoutSource.setStatusCancelledUserInfoId(null);
             payoutSource.setStatusCancelledUserInfoType(null);
             payoutSource.setStatusCancelledDetails(null);
@@ -75,8 +69,6 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
             payoutSource.setStatusPaidDetailsCardProviderName(null);
             payoutSource.setStatusPaidDetailsCardProviderTransactionId(null);
             PayoutCancelled cancelled = payoutStatus.getCancelled();
-            payoutSource.setStatusCancelledUserInfoId(cancelled.getUserInfo().getId());
-            payoutSource.setStatusCancelledUserInfoType(TBaseUtil.unionFieldToEnum(cancelled.getUserInfo().getType(), UserType.class));
             payoutSource.setStatusCancelledDetails(cancelled.getDetails());
             payoutSource.setStatusConfirmedUserInfoType(null);
         } if (payoutStatus.isSetConfirmed()) {
@@ -86,8 +78,6 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
             payoutSource.setStatusCancelledUserInfoId(null);
             payoutSource.setStatusCancelledUserInfoType(null);
             payoutSource.setStatusCancelledDetails(null);
-            UserInfo confirmedUserInfo = payoutStatus.getConfirmed().getUserInfo();
-            payoutSource.setStatusConfirmedUserInfoType(TBaseUtil.unionFieldToEnum(confirmedUserInfo.getType(), UserType.class));
         }
         payoutDao.updateNotCurrent(payoutSource.getPayoutId());
         long pytId = payoutDao.save(payoutSource);

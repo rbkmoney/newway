@@ -29,6 +29,7 @@ import com.rbkmoney.newway.domain.tables.PayoutSummary;
 import com.rbkmoney.newway.domain.tables.PayoutTool;
 import com.rbkmoney.newway.domain.tables.Provider;
 import com.rbkmoney.newway.domain.tables.Proxy;
+import com.rbkmoney.newway.domain.tables.Rate;
 import com.rbkmoney.newway.domain.tables.Refund;
 import com.rbkmoney.newway.domain.tables.Shop;
 import com.rbkmoney.newway.domain.tables.Source;
@@ -36,6 +37,7 @@ import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
 import com.rbkmoney.newway.domain.tables.Terminal;
 import com.rbkmoney.newway.domain.tables.Wallet;
 import com.rbkmoney.newway.domain.tables.Withdrawal;
+import com.rbkmoney.newway.domain.tables.WithdrawalSession;
 import com.rbkmoney.newway.domain.tables.records.AdjustmentRecord;
 import com.rbkmoney.newway.domain.tables.records.CalendarRecord;
 import com.rbkmoney.newway.domain.tables.records.CashFlowRecord;
@@ -62,6 +64,7 @@ import com.rbkmoney.newway.domain.tables.records.PayoutSummaryRecord;
 import com.rbkmoney.newway.domain.tables.records.PayoutToolRecord;
 import com.rbkmoney.newway.domain.tables.records.ProviderRecord;
 import com.rbkmoney.newway.domain.tables.records.ProxyRecord;
+import com.rbkmoney.newway.domain.tables.records.RateRecord;
 import com.rbkmoney.newway.domain.tables.records.RefundRecord;
 import com.rbkmoney.newway.domain.tables.records.ShopRecord;
 import com.rbkmoney.newway.domain.tables.records.SourceRecord;
@@ -69,6 +72,7 @@ import com.rbkmoney.newway.domain.tables.records.TermSetHierarchyRecord;
 import com.rbkmoney.newway.domain.tables.records.TerminalRecord;
 import com.rbkmoney.newway.domain.tables.records.WalletRecord;
 import com.rbkmoney.newway.domain.tables.records.WithdrawalRecord;
+import com.rbkmoney.newway.domain.tables.records.WithdrawalSessionRecord;
 
 import javax.annotation.Generated;
 
@@ -122,6 +126,7 @@ public class Keys {
     public static final Identity<PayoutToolRecord, Long> IDENTITY_PAYOUT_TOOL = Identities0.IDENTITY_PAYOUT_TOOL;
     public static final Identity<ProviderRecord, Long> IDENTITY_PROVIDER = Identities0.IDENTITY_PROVIDER;
     public static final Identity<ProxyRecord, Long> IDENTITY_PROXY = Identities0.IDENTITY_PROXY;
+    public static final Identity<RateRecord, Long> IDENTITY_RATE = Identities0.IDENTITY_RATE;
     public static final Identity<RefundRecord, Long> IDENTITY_REFUND = Identities0.IDENTITY_REFUND;
     public static final Identity<ShopRecord, Long> IDENTITY_SHOP = Identities0.IDENTITY_SHOP;
     public static final Identity<SourceRecord, Long> IDENTITY_SOURCE = Identities0.IDENTITY_SOURCE;
@@ -129,6 +134,7 @@ public class Keys {
     public static final Identity<TerminalRecord, Long> IDENTITY_TERMINAL = Identities0.IDENTITY_TERMINAL;
     public static final Identity<WalletRecord, Long> IDENTITY_WALLET = Identities0.IDENTITY_WALLET;
     public static final Identity<WithdrawalRecord, Long> IDENTITY_WITHDRAWAL = Identities0.IDENTITY_WITHDRAWAL;
+    public static final Identity<WithdrawalSessionRecord, Long> IDENTITY_WITHDRAWAL_SESSION = Identities0.IDENTITY_WITHDRAWAL_SESSION;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -160,6 +166,7 @@ public class Keys {
     public static final UniqueKey<PayoutToolRecord> PAYOUT_TOOL_PKEY = UniqueKeys0.PAYOUT_TOOL_PKEY;
     public static final UniqueKey<ProviderRecord> PROVIDER_PKEY = UniqueKeys0.PROVIDER_PKEY;
     public static final UniqueKey<ProxyRecord> PROXY_PKEY = UniqueKeys0.PROXY_PKEY;
+    public static final UniqueKey<RateRecord> RATE_PKEY = UniqueKeys0.RATE_PKEY;
     public static final UniqueKey<RefundRecord> REFUND_PKEY = UniqueKeys0.REFUND_PKEY;
     public static final UniqueKey<ShopRecord> SHOP_PKEY = UniqueKeys0.SHOP_PKEY;
     public static final UniqueKey<SourceRecord> SOURCE_PKEY = UniqueKeys0.SOURCE_PKEY;
@@ -167,6 +174,7 @@ public class Keys {
     public static final UniqueKey<TerminalRecord> TERMINAL_PKEY = UniqueKeys0.TERMINAL_PKEY;
     public static final UniqueKey<WalletRecord> WALLET_PKEY = UniqueKeys0.WALLET_PKEY;
     public static final UniqueKey<WithdrawalRecord> WITHDRAWAL_PKEY = UniqueKeys0.WITHDRAWAL_PKEY;
+    public static final UniqueKey<WithdrawalSessionRecord> WITHDRAWAL_SESSION_PK = UniqueKeys0.WITHDRAWAL_SESSION_PK;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -208,6 +216,7 @@ public class Keys {
         public static Identity<PayoutToolRecord, Long> IDENTITY_PAYOUT_TOOL = createIdentity(PayoutTool.PAYOUT_TOOL, PayoutTool.PAYOUT_TOOL.ID);
         public static Identity<ProviderRecord, Long> IDENTITY_PROVIDER = createIdentity(Provider.PROVIDER, Provider.PROVIDER.ID);
         public static Identity<ProxyRecord, Long> IDENTITY_PROXY = createIdentity(Proxy.PROXY, Proxy.PROXY.ID);
+        public static Identity<RateRecord, Long> IDENTITY_RATE = createIdentity(Rate.RATE, Rate.RATE.ID);
         public static Identity<RefundRecord, Long> IDENTITY_REFUND = createIdentity(Refund.REFUND, Refund.REFUND.ID);
         public static Identity<ShopRecord, Long> IDENTITY_SHOP = createIdentity(Shop.SHOP, Shop.SHOP.ID);
         public static Identity<SourceRecord, Long> IDENTITY_SOURCE = createIdentity(Source.SOURCE, Source.SOURCE.ID);
@@ -215,6 +224,7 @@ public class Keys {
         public static Identity<TerminalRecord, Long> IDENTITY_TERMINAL = createIdentity(Terminal.TERMINAL, Terminal.TERMINAL.ID);
         public static Identity<WalletRecord, Long> IDENTITY_WALLET = createIdentity(Wallet.WALLET, Wallet.WALLET.ID);
         public static Identity<WithdrawalRecord, Long> IDENTITY_WITHDRAWAL = createIdentity(Withdrawal.WITHDRAWAL, Withdrawal.WITHDRAWAL.ID);
+        public static Identity<WithdrawalSessionRecord, Long> IDENTITY_WITHDRAWAL_SESSION = createIdentity(WithdrawalSession.WITHDRAWAL_SESSION, WithdrawalSession.WITHDRAWAL_SESSION.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -244,6 +254,7 @@ public class Keys {
         public static final UniqueKey<PayoutToolRecord> PAYOUT_TOOL_PKEY = createUniqueKey(PayoutTool.PAYOUT_TOOL, "payout_tool_pkey", PayoutTool.PAYOUT_TOOL.ID);
         public static final UniqueKey<ProviderRecord> PROVIDER_PKEY = createUniqueKey(Provider.PROVIDER, "provider_pkey", Provider.PROVIDER.ID);
         public static final UniqueKey<ProxyRecord> PROXY_PKEY = createUniqueKey(Proxy.PROXY, "proxy_pkey", Proxy.PROXY.ID);
+        public static final UniqueKey<RateRecord> RATE_PKEY = createUniqueKey(Rate.RATE, "rate_pkey", Rate.RATE.ID);
         public static final UniqueKey<RefundRecord> REFUND_PKEY = createUniqueKey(Refund.REFUND, "refund_pkey", Refund.REFUND.ID);
         public static final UniqueKey<ShopRecord> SHOP_PKEY = createUniqueKey(Shop.SHOP, "shop_pkey", Shop.SHOP.ID);
         public static final UniqueKey<SourceRecord> SOURCE_PKEY = createUniqueKey(Source.SOURCE, "source_pkey", Source.SOURCE.ID);
@@ -251,6 +262,7 @@ public class Keys {
         public static final UniqueKey<TerminalRecord> TERMINAL_PKEY = createUniqueKey(Terminal.TERMINAL, "terminal_pkey", Terminal.TERMINAL.ID);
         public static final UniqueKey<WalletRecord> WALLET_PKEY = createUniqueKey(Wallet.WALLET, "wallet_pkey", Wallet.WALLET.ID);
         public static final UniqueKey<WithdrawalRecord> WITHDRAWAL_PKEY = createUniqueKey(Withdrawal.WITHDRAWAL, "withdrawal_pkey", Withdrawal.WITHDRAWAL.ID);
+        public static final UniqueKey<WithdrawalSessionRecord> WITHDRAWAL_SESSION_PK = createUniqueKey(WithdrawalSession.WITHDRAWAL_SESSION, "withdrawal_session_pk", WithdrawalSession.WITHDRAWAL_SESSION.ID);
     }
 
     private static class ForeignKeys0 extends AbstractKeys {

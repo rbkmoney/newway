@@ -30,6 +30,7 @@ import com.rbkmoney.newway.domain.tables.PayoutSummary;
 import com.rbkmoney.newway.domain.tables.PayoutTool;
 import com.rbkmoney.newway.domain.tables.Provider;
 import com.rbkmoney.newway.domain.tables.Proxy;
+import com.rbkmoney.newway.domain.tables.Rate;
 import com.rbkmoney.newway.domain.tables.Refund;
 import com.rbkmoney.newway.domain.tables.Shop;
 import com.rbkmoney.newway.domain.tables.Source;
@@ -37,6 +38,7 @@ import com.rbkmoney.newway.domain.tables.TermSetHierarchy;
 import com.rbkmoney.newway.domain.tables.Terminal;
 import com.rbkmoney.newway.domain.tables.Wallet;
 import com.rbkmoney.newway.domain.tables.Withdrawal;
+import com.rbkmoney.newway.domain.tables.WithdrawalSession;
 
 import javax.annotation.Generated;
 
@@ -185,6 +187,11 @@ public class Tables {
     public static final Proxy PROXY = com.rbkmoney.newway.domain.tables.Proxy.PROXY;
 
     /**
+     * The table <code>nw.rate</code>.
+     */
+    public static final Rate RATE = com.rbkmoney.newway.domain.tables.Rate.RATE;
+
+    /**
      * The table <code>nw.refund</code>.
      */
     public static final Refund REFUND = com.rbkmoney.newway.domain.tables.Refund.REFUND;
@@ -218,4 +225,9 @@ public class Tables {
      * The table <code>nw.withdrawal</code>.
      */
     public static final Withdrawal WITHDRAWAL = com.rbkmoney.newway.domain.tables.Withdrawal.WITHDRAWAL;
+
+    /**
+     * The table <code>nw.withdrawal_session</code>.
+     */
+    public static final WithdrawalSession WITHDRAWAL_SESSION = com.rbkmoney.newway.domain.tables.WithdrawalSession.WITHDRAWAL_SESSION;
 }

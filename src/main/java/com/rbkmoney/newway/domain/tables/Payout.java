@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Payout extends TableImpl<PayoutRecord> {
 
-    private static final long serialVersionUID = -308859389;
+    private static final long serialVersionUID = 860732913;
 
     /**
      * The reference instance of <code>nw.payout</code>
@@ -350,6 +350,26 @@ public class Payout extends TableImpl<PayoutRecord> {
      * The column <code>nw.payout.type_account_international_correspondent_bank_country_code</code>.
      */
     public final TableField<PayoutRecord, String> TYPE_ACCOUNT_INTERNATIONAL_CORRESPONDENT_BANK_COUNTRY_CODE = createField("type_account_international_correspondent_bank_country_code", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payout.amount</code>.
+     */
+    public final TableField<PayoutRecord, Long> AMOUNT = createField("amount", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>nw.payout.fee</code>.
+     */
+    public final TableField<PayoutRecord, Long> FEE = createField("fee", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>nw.payout.currency_code</code>.
+     */
+    public final TableField<PayoutRecord, String> CURRENCY_CODE = createField("currency_code", org.jooq.impl.SQLDataType.VARCHAR, this, "");
+
+    /**
+     * The column <code>nw.payout.wallet_id</code>.
+     */
+    public final TableField<PayoutRecord, String> WALLET_ID = createField("wallet_id", org.jooq.impl.SQLDataType.VARCHAR, this, "");
 
     /**
      * Create a <code>nw.payout</code> table reference

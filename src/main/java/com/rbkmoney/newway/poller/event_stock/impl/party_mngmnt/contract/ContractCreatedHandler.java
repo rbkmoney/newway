@@ -16,6 +16,7 @@ import com.rbkmoney.newway.util.ContractUtil;
 import com.rbkmoney.newway.util.ContractorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+
 @Component
+@Order(HIGHEST_PRECEDENCE)
 public class ContractCreatedHandler extends AbstractClaimChangedHandler {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -91,7 +95,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             } else if (contractCreated.isSetContractor()) {
                 contractorId = UUID.randomUUID().toString();
             }
-            
+
             contract.setContractorId(contractorId);
             long cntrctId = contractDao.save(contract);
 
