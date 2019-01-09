@@ -11,6 +11,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -23,10 +24,10 @@ import static org.springframework.boot.test.util.TestPropertyValues.Type.MAP;
  * Created by jeckep on 08.02.17.
  */
 
-@RunWith(SpringRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @TestPropertySource(properties = {"bm.pollingEnabled=false"})
-@ContextConfiguration(classes = {NewwayApplication.class, ApplicationConfig.class, EventStockConfig.class},
+@ContextConfiguration(classes = {NewwayApplication.class},
         initializers = AbstractIntegrationTest.Initializer.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class AbstractIntegrationTest {
@@ -44,7 +45,7 @@ public abstract class AbstractIntegrationTest {
                     "flyway.url=" + postgres.getJdbcUrl(),
                     "flyway.user=" + postgres.getUsername(),
                     "flyway.password=" + postgres.getPassword())
-                    .applyTo(configurableApplicationContext.getEnvironment(), MAP, "testcontainers");
+                    .applyTo(configurableApplicationContext/*.getEnvironment(), MAP, "testcontainers"*/);
         }
     }
 
