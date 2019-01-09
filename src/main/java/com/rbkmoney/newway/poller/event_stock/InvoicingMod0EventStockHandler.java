@@ -1,9 +1,9 @@
 package com.rbkmoney.newway.poller.event_stock;
 
 import com.rbkmoney.newway.service.InvoicingService;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class InvoicingMod0EventStockHandler extends InvoicingEventStockHandler {
 
     private static final int MODULO = 0;
