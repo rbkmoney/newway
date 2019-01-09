@@ -29,6 +29,11 @@ public class InvoicingService implements EventService<Event, EventPayload> {
     }
 
     @Override
+    public Optional<Long> getLastEventId() {
+        throw new RuntimeException("No longer supported");
+    }
+
+    @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(Event processingEvent, EventPayload payload) {
         if (payload.isSetInvoiceChanges()) {
@@ -40,9 +45,8 @@ public class InvoicingService implements EventService<Event, EventPayload> {
         }
     }
 
-    @Override
-    public Optional<Long> getLastEventId() throws DaoException {
-        Optional<Long> lastEventId = Optional.ofNullable(invoiceDao.getLastEventId());
+    public Optional<Long> getLastEventId(int div, int mod) throws DaoException {
+        Optional<Long> lastEventId = Optional.ofNullable(invoiceDao.getLastEventId(div, mod));
         log.info("Last invoicing eventId={}", lastEventId);
         return lastEventId;
     }
