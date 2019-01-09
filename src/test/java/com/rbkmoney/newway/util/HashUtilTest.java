@@ -15,7 +15,7 @@ public class HashUtilTest extends AbstractIntegrationTest {
     @Test
     public void testGetIntHash() {
         Integer javaHash = HashUtil.getIntHash("kek");
-        Integer posgresHash = jdbcTemplate.queryForObject("select ('x0'||substr(md5('kek'), 1, 7))::bit(32)::int", Integer.class);
-        assertEquals(javaHash, posgresHash);
+        Integer postgresHash = jdbcTemplate.queryForObject("select ('x0'||substr(md5('kek'), 1, 7))::bit(32)::int", Integer.class);
+        assertEquals(javaHash, postgresHash);
     }
 }
