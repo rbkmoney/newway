@@ -3,6 +3,8 @@ package com.rbkmoney.newway.dao.invoicing.impl;
 import com.rbkmoney.newway.AbstractIntegrationTest;
 import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
+import com.rbkmoney.newway.poller.event_stock.InvoicingEventStockHandler;
+import com.rbkmoney.newway.util.HashUtil;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,6 +24,6 @@ public class InvoiceDaoImplTest extends AbstractIntegrationTest {
         Invoice invoiceGet = invoiceDao.get(invoice.getInvoiceId());
         assertEquals(invoice, invoiceGet);
         invoiceDao.updateNotCurrent(invoice.getInvoiceId());
-        assertEquals(invoiceDao.getLastEventId(), invoice.getEventId());
+        assertEquals(invoiceDao.getLastEventId(InvoicingEventStockHandler.DIVIDER, HashUtil.getIntHash(invoice.getInvoiceId()) % 2), invoice.getEventId());
     }
 }
