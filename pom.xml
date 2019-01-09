@@ -99,11 +99,6 @@
         </dependency>
 
         <!--RBK libs-->
-        <!--<dependency>-->
-            <!--<groupId>com.rbkmoney</groupId>-->
-            <!--<artifactId>dbinit</artifactId>-->
-            <!--<version>1.0.9</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>eventstock-client-damsel</artifactId>
