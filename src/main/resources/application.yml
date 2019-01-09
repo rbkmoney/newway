@@ -10,8 +10,9 @@ spring:
     hikari:
       idle-timeout: 30000
       maximum-pool-size: 3
-flyway:
-  schemas: nw
+  flyway:
+    schemas: nw
+
 retry-policy:
   maxAttempts: 10
 bm:

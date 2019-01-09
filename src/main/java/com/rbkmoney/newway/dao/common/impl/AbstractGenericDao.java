@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-@DependsOn("dbInitializer")
+@DependsOn("flywayInitializer")
 public abstract class AbstractGenericDao extends NamedParameterJdbcDaoSupport implements GenericDao {
 
     private final DSLContext dslContext;
