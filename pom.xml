@@ -168,6 +168,7 @@
             <groupId>com.opentable.components</groupId>
             <artifactId>otj-pg-embedded</artifactId>
             <version>0.12.6</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
