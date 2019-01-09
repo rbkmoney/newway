@@ -1,7 +1,6 @@
 package com.rbkmoney.newway;
 
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
@@ -16,7 +15,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.time.Duration;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.boot.test.util.TestPropertyValues.Type.SYSTEM_ENVIRONMENT;
+import static org.springframework.boot.test.util.TestPropertyValues.Type.MAP;
 
 /**
  * Created by jeckep on 08.02.17.
@@ -27,8 +26,7 @@ import static org.springframework.boot.test.util.TestPropertyValues.Type.SYSTEM_
 @TestPropertySource(properties = {"bm.pollingEnabled=false"})
 @ContextConfiguration(classes = NewwayApplication.class, initializers = AbstractIntegrationTest.Initializer.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@Ignore
-public class AbstractIntegrationTest {
+public abstract class AbstractIntegrationTest {
 
     @ClassRule
     public static PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer("postgres:9.6")
@@ -43,7 +41,8 @@ public class AbstractIntegrationTest {
                     "flyway.url=" + postgres.getJdbcUrl(),
                     "flyway.user=" + postgres.getUsername(),
                     "flyway.password=" + postgres.getPassword())
-                    .applyTo(configurableApplicationContext.getEnvironment(), SYSTEM_ENVIRONMENT, "testcontainers");
+                    .applyTo(configurableApplicationContext.getEnvironment(), MAP, "testcontainers");
         }
     }
+
 }
