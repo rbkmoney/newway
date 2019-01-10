@@ -1,19 +1,20 @@
 package com.rbkmoney.newway.poller.event_stock;
 
 import com.rbkmoney.newway.service.InvoicingService;
+
 import org.springframework.stereotype.Component;
 
 @Component
-public class InvoicingMod0EventStockHandler extends InvoicingEventStockHandler {
+public class InvoicingEventStockHandlerMod1 extends InvoicingEventStockHandler {
 
-    private static final int MODULO = 0;
+    private static final int MOD_1 = 1;
 
-    public InvoicingMod0EventStockHandler(InvoicingService invoicingService) {
+    public InvoicingEventStockHandlerMod1(InvoicingService invoicingService) {
         super(invoicingService);
     }
 
     @Override
     public int getMod() {
-        return MODULO;
+        return MOD_1;
     }
 }
