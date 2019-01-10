@@ -24,7 +24,7 @@ import static org.springframework.boot.test.util.TestPropertyValues.Type.MAP;
  * Created by jeckep on 08.02.17.
  */
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @TestPropertySource(properties = {"bm.pollingEnabled=false"})
 @ContextConfiguration(classes = {NewwayApplication.class},
@@ -45,7 +45,7 @@ public abstract class AbstractIntegrationTest {
                     "flyway.url=" + postgres.getJdbcUrl(),
                     "flyway.user=" + postgres.getUsername(),
                     "flyway.password=" + postgres.getPassword())
-                    .applyTo(configurableApplicationContext/*.getEnvironment(), MAP, "testcontainers"*/);
+                    .applyTo(configurableApplicationContext.getEnvironment(), MAP, "testcontainers");
         }
     }
 
