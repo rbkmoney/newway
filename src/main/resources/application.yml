@@ -1,6 +1,8 @@
 server:
   port: @server.port@
 spring:
+  application:
+    name: @project.name@
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.postgresql.Driver
@@ -10,8 +12,9 @@ spring:
     hikari:
       idle-timeout: 30000
       maximum-pool-size: 3
-flyway:
-  schemas: nw
+  flyway:
+    schemas: nw
+
 retry-policy:
   maxAttempts: 10
 bm:
@@ -91,3 +94,4 @@ dmt:
     delay: 3000
     maxQuerySize: 10
 
+management.metrics.export.statsd.flavor: etsy

@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Component
-@DependsOn("dbInitializer")
+@DependsOn("flywayInitializer")
 public class DominantPoller {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());

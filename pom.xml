@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>newway</artifactId>
-    <version>1.0.29-SNAPSHOT</version>
+    <version>1.0.30-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
@@ -13,22 +13,24 @@
     <parent>
         <groupId>com.rbkmoney</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.10.RELEASE</version>
+        <version>2.1.1.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
         <project.maintainer>Inal Arsanukaev &lt;i.arsanukaev@rbkmoney.com&gt;</project.maintainer>
-        <shared.resources.version>0.2.1</shared.resources.version>
+        <shared.resources.version>0.3.3</shared.resources.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <postgresql.jdbc.version>42.2.5</postgresql.jdbc.version>
         <dockerfile.base.service.tag>2a8b44ac628c1bdb729abd04ed7a2a54676e574b</dockerfile.base.service.tag>
         <server.port>8022</server.port>
+        <exposed.ports>${server.port}</exposed.ports>
         <db.url>jdbc:postgresql://localhost:5432/newway</db.url>
         <db.user>postgres</db.user>
         <db.password>postgres</db.password>
+        <db.name>newway</db.name>
         <db.schema>nw</db.schema>
-        <flyway.version>4.2.0</flyway.version>
+        <local.pg.url>jdbc:postgresql://localhost:15432/newway</local.pg.url>
+        <local.pg.port>15432</local.pg.port>
         <damsel.version>1.271-0fca200</damsel.version>
         <fistful-proto.version>1.8-37ccefb</fistful-proto.version>
     </properties>
@@ -50,9 +52,14 @@
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>spring-boot-starter-metrics-statsd</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${postgresql.jdbc.version}</version>
+            <version>${postgresql.version}</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -72,17 +79,17 @@
         <dependency>
             <groupId>de.codecentric</groupId>
             <artifactId>spring-boot-admin-starter-client</artifactId>
-            <version>1.4.1</version>
+            <version>2.1.1</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney.logback</groupId>
             <artifactId>nop-rolling</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>4.6</version>
+            <version>5.2</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -96,11 +103,6 @@
         </dependency>
 
         <!--RBK libs-->
-        <dependency>
-            <groupId>com.rbkmoney</groupId>
-            <artifactId>dbinit</artifactId>
-            <version>1.0.9</version>
-        </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>eventstock-client-damsel</artifactId>
@@ -151,19 +153,25 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.8.3</version>
+            <version>1.10.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.github.benas</groupId>
             <artifactId>random-beans</artifactId>
-            <version>3.6.0</version>
+            <version>3.7.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney.hg-mock</groupId>
             <artifactId>generator</artifactId>
             <version>0.9.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.opentable.components</groupId>
+            <artifactId>otj-pg-embedded</artifactId>
+            <version>0.12.6</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -196,22 +204,59 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>com.rbkmoney.maven.plugins</groupId>
+                <artifactId>pg-embedded-plugin</artifactId>
+                <version>1.4</version>
+                <configuration>
+                    <port>${local.pg.port}</port>
+                    <dbName>newway</dbName>
+                    <schemas>
+                        <schema>${db.schema}</schema>
+                    </schemas>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>PG_server_start</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>PG_server_stop</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>${flyway.version}</version>
                 <configuration>
-                    <url>${db.url}</url>
+                    <url>${local.pg.url}</url>
                     <user>${db.user}</user>
                     <password>${db.password}</password>
                     <schemas>
                         <schema>${db.schema}</schema>
                     </schemas>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>migrate</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>migrate</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <dependencies>
                     <dependency>
                         <groupId>org.postgresql</groupId>
                         <artifactId>postgresql</artifactId>
-                        <version>${postgresql.jdbc.version}</version>
+                        <version>${postgresql.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -222,7 +267,7 @@
                 <configuration>
                     <jdbc>
                         <driver>org.postgresql.Driver</driver>
-                        <url>${db.url}</url>
+                        <url>${local.pg.url}</url>
                         <user>${db.user}</user>
                         <password>${db.password}</password>
                     </jdbc>
@@ -234,17 +279,26 @@
                             <pojosToString>true</pojosToString>
                         </generate>
                         <database>
-                            <name>org.jooq.util.postgres.PostgresDatabase</name>
+                            <name>org.jooq.meta.postgres.PostgresDatabase</name>
                             <includes>.*</includes>
                             <excludes>schema_version|.*func|get_adjustment.*|get_cashflow.*|get_payment.*|get_payout.*|get_refund.*</excludes>
                             <inputSchema>${db.schema}</inputSchema>
                         </database>
                         <target>
                             <packageName>com.rbkmoney.newway.domain</packageName>
-                            <directory>src/main/java/</directory>
+                            <directory>target/generated-sources/</directory>
                         </target>
                     </generator>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>gen-src</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

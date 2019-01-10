@@ -2,6 +2,7 @@
 build('newway', 'java-maven') {
     checkoutRepo()
 
+    env.JAVA_HOME = "JAVA_HOME=/opt/openjdk-bin-11.0.1_p13 "
     def serviceName = env.REPO_NAME
     def baseImageTag = "f26fcc19d1941ab74f1c72dd8a408be17a769333"
     def mvnArgs = '-DjvmArgs="-Xmx256m"'
@@ -13,9 +14,9 @@ build('newway', 'java-maven') {
                     " -Dgit.branch=${env.BRANCH_NAME} " +
                     " ${mvnArgs}"
             if (env.BRANCH_NAME == 'master') {
-                sh 'mvn deploy' + mvn_command_arguments
+                sh env.JAVA_HOME + 'mvn deploy' + mvn_command_arguments
             } else {
-                sh 'mvn package' + mvn_command_arguments
+                sh env.JAVA_HOME + 'mvn package' + mvn_command_arguments
             }
         }
     }

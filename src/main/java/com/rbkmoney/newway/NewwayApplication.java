@@ -7,7 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @ServletComponentScan
-@SpringBootApplication(scanBasePackages = {"com.rbkmoney.newway", "com.rbkmoney.dbinit"})
+@SpringBootApplication(scanBasePackages = {"com.rbkmoney.newway"})
 public class NewwayApplication {
 
     public static void main(String[] args) {
