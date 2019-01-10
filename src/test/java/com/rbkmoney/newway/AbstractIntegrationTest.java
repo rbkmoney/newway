@@ -1,7 +1,5 @@
 package com.rbkmoney.newway;
 
-import com.rbkmoney.newway.config.ApplicationConfig;
-import com.rbkmoney.newway.config.EventStockConfig;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +9,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
 
@@ -27,8 +24,7 @@ import static org.springframework.boot.test.util.TestPropertyValues.Type.MAP;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @TestPropertySource(properties = {"bm.pollingEnabled=false"})
-@ContextConfiguration(classes = {NewwayApplication.class},
-        initializers = AbstractIntegrationTest.Initializer.class)
+@ContextConfiguration(classes = {NewwayApplication.class}, initializers = AbstractIntegrationTest.Initializer.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class AbstractIntegrationTest {
 
