@@ -6,7 +6,7 @@ import com.rbkmoney.newway.exception.DaoException;
 
 public interface InvoiceDao extends GenericDao {
 
-    Long getLastEventId() throws DaoException;
+    Long getLastEventId(int div, int mod) throws DaoException;
 
     Long save(Invoice invoice) throws DaoException;
 

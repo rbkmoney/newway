@@ -5,6 +5,9 @@ import com.rbkmoney.eventstock.client.EventConstraint;
 import com.rbkmoney.eventstock.client.EventPublisher;
 import com.rbkmoney.eventstock.client.SubscriberConfig;
 import com.rbkmoney.eventstock.client.poll.EventFlowFilter;
+import com.rbkmoney.newway.poller.event_stock.InvoicingEventStockHandler;
+import com.rbkmoney.newway.poller.event_stock.InvoicingEventStockHandlerMod0;
+import com.rbkmoney.newway.poller.event_stock.InvoicingEventStockHandlerMod1;
 import com.rbkmoney.newway.service.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -16,7 +19,8 @@ import java.util.Optional;
 @Component
 public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private final EventPublisher partyManagementEventPublisher;
-    private final EventPublisher invoicingEventPublisher;
+    private final EventPublisher invoicingEventPublisherMod0;
+    private final EventPublisher invoicingEventPublisherMod1;
     private final EventPublisher payoutEventPublisher;
     private final EventPublisher identityEventPublisher;
     private final EventPublisher withdrawalEventPublisher;
@@ -39,11 +43,15 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private final WithdrawalSessionService withdrawalSessionService;
     private final RateService rateService;
 
+    private final InvoicingEventStockHandlerMod0 invoicingEventStockHandlerMod0;
+    private final InvoicingEventStockHandlerMod1 invoicingEventStockHandlerMod1;
+
     @Value("${bm.pollingEnabled}")
     private boolean pollingEnabled;
 
     public OnStart(EventPublisher partyManagementEventPublisher,
-                   EventPublisher invoicingEventPublisher,
+                   EventPublisher invoicingEventPublisherMod0,
+                   EventPublisher invoicingEventPublisherMod1,
                    EventPublisher payoutEventPublisher,
                    EventPublisher identityEventPublisher,
                    EventPublisher withdrawalEventPublisher,
@@ -64,9 +72,12 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
                    DestinationService destinationService,
                    DepositService depositService,
                    WithdrawalSessionService withdrawalSessionService,
-                   RateService rateService) {
+                   RateService rateService,
+                   InvoicingEventStockHandlerMod0 invoicingEventStockHandlerMod0,
+                   InvoicingEventStockHandlerMod1 invoicingEventStockHandlerMod1) {
         this.partyManagementEventPublisher = partyManagementEventPublisher;
-        this.invoicingEventPublisher = invoicingEventPublisher;
+        this.invoicingEventPublisherMod0 = invoicingEventPublisherMod0;
+        this.invoicingEventPublisherMod1 = invoicingEventPublisherMod1;
         this.payoutEventPublisher = payoutEventPublisher;
         this.identityEventPublisher = identityEventPublisher;
         this.walletEventPublisher = walletEventPublisher;
@@ -88,13 +99,16 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
         this.depositService = depositService;
         this.withdrawalSessionService = withdrawalSessionService;
         this.rateService = rateService;
+        this.invoicingEventStockHandlerMod0 = invoicingEventStockHandlerMod0;
+        this.invoicingEventStockHandlerMod1 = invoicingEventStockHandlerMod1;
     }
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         if (pollingEnabled) {
             partyManagementEventPublisher.subscribe(buildSubscriberConfig(partyManagementService.getLastEventId()));
-            invoicingEventPublisher.subscribe(buildSubscriberConfig(invoicingService.getLastEventId()));
+            invoicingEventPublisherMod0.subscribe(buildSubscriberConfig(invoicingService.getLastEventId(InvoicingEventStockHandler.DIVIDER, invoicingEventStockHandlerMod0.getMod())));
+            invoicingEventPublisherMod1.subscribe(buildSubscriberConfig(invoicingService.getLastEventId(InvoicingEventStockHandler.DIVIDER, invoicingEventStockHandlerMod1.getMod())));
             payoutEventPublisher.subscribe(buildSubscriberConfig(payoutService.getLastEventId()));
             identityEventPublisher.subscribe(buildSubscriberConfig(identityService.getLastEventId()));
             walletEventPublisher.subscribe(buildSubscriberConfig(walletService.getLastEventId()));

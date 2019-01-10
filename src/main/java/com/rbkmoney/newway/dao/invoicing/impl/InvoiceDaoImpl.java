@@ -10,15 +10,12 @@ import org.jooq.Query;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-
-import static com.rbkmoney.newway.domain.Tables.ADJUSTMENT;
-import static com.rbkmoney.newway.domain.Tables.PAYMENT;
 import static com.rbkmoney.newway.domain.tables.Invoice.INVOICE;
-import static com.rbkmoney.newway.domain.tables.Refund.REFUND;
 
 @Component
 public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
@@ -32,14 +29,19 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
     }
 
     @Override
-    public Long getLastEventId() throws DaoException {
-        Query query = getDslContext().select(DSL.max(DSL.field("event_id"))).from(
-                getDslContext().select(INVOICE.EVENT_ID.max().as("event_id")).from(INVOICE)
-                        .unionAll(getDslContext().select(PAYMENT.EVENT_ID.max().as("event_id")).from(PAYMENT))
-                        .unionAll(getDslContext().select(REFUND.EVENT_ID.max().as("event_id")).from(REFUND))
-                        .unionAll(getDslContext().select(ADJUSTMENT.EVENT_ID.max().as("event_id")).from(ADJUSTMENT))
-        );
-        return fetchOne(query, Long.class);
+    public Long getLastEventId(int div, int mod) throws DaoException {
+        String sql = "with event_ids as (" +
+                "(select event_id from nw.invoice where ('x0'||substr(md5(invoice_id), 1, 7))::bit(32)::int % :div = :mod order by event_id desc limit 1) " +
+                "union all " +
+                "(select event_id from nw.payment where ('x0'||substr(md5(invoice_id), 1, 7))::bit(32)::int % :div = :mod order by event_id desc limit 1) " +
+                "union all " +
+                "(select event_id from nw.refund where ('x0'||substr(md5(invoice_id), 1, 7))::bit(32)::int % :div = :mod order by event_id desc limit 1) " +
+                "union all " +
+                "(select event_id from nw.adjustment where ('x0'||substr(md5(invoice_id), 1, 7))::bit(32)::int % :div = :mod order by event_id desc limit 1) " +
+                ") " +
+                "select max(event_id) from event_ids";
+
+        return getNamedParameterJdbcTemplate().queryForObject(sql, new MapSqlParameterSource("div", div).addValue("mod", mod), Long.class);
     }
 
     @Override
