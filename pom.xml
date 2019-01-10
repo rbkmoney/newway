@@ -19,12 +19,11 @@
 
     <properties>
         <project.maintainer>Inal Arsanukaev &lt;i.arsanukaev@rbkmoney.com&gt;</project.maintainer>
-        <shared.resources.version>0.3.3-test</shared.resources.version>
+        <shared.resources.version>0.3.3</shared.resources.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <postgresql.jdbc.version>42.2.5</postgresql.jdbc.version>
         <dockerfile.base.service.tag>2a8b44ac628c1bdb729abd04ed7a2a54676e574b</dockerfile.base.service.tag>
         <server.port>8022</server.port>
-        <exposed.ports>8022</exposed.ports>
+        <exposed.ports>${server.port}</exposed.ports>
         <db.url>jdbc:postgresql://localhost:5432/newway</db.url>
         <db.user>postgres</db.user>
         <db.password>postgres</db.password>
@@ -32,7 +31,6 @@
         <db.schema>nw</db.schema>
         <local.pg.url>jdbc:postgresql://localhost:15432/newway</local.pg.url>
         <local.pg.port>15432</local.pg.port>
-        <flyway.version>5.2.4</flyway.version>
         <damsel.version>1.271-0fca200</damsel.version>
         <fistful-proto.version>1.8-37ccefb</fistful-proto.version>
     </properties>
@@ -54,9 +52,14 @@
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>spring-boot-starter-metrics-statsd</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${postgresql.jdbc.version}</version>
+            <version>${postgresql.version}</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -253,7 +256,7 @@
                     <dependency>
                         <groupId>org.postgresql</groupId>
                         <artifactId>postgresql</artifactId>
-                        <version>${postgresql.jdbc.version}</version>
+                        <version>${postgresql.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
