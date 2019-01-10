@@ -35,8 +35,8 @@ public class EventStockConfig {
     }
 
     @Bean
-    public EventPublisher invoicingMod0EventPublisher(
-            InvoicingMod0EventStockHandler invoicingMod0EventStockHandler,
+    public EventPublisher invoicingEventPublisherMod0(
+            InvoicingEventStockHandlerMod0 invoicingEventStockHandlerMod0,
             @Value("${bm.invoicing.url}") Resource resource,
             @Value("${bm.invoicing.polling.delay}") int pollDelay,
             @Value("${bm.invoicing.polling.retryDelay}") int retryDelay,
@@ -45,7 +45,7 @@ public class EventStockConfig {
     ) throws IOException {
         return new PollingEventPublisherBuilder()
                 .withURI(resource.getURI())
-                .withEventHandler(invoicingMod0EventStockHandler)
+                .withEventHandler(invoicingEventStockHandlerMod0)
                 .withMaxPoolSize(maxPoolSize)
                 .withEventRetryDelay(retryDelay)
                 .withPollDelay(pollDelay)
@@ -54,8 +54,8 @@ public class EventStockConfig {
     }
 
     @Bean
-    public EventPublisher invoicingMod1EventPublisher(
-            InvoicingMod1EventStockHandler invoicingMod1EventStockHandler,
+    public EventPublisher invoicingEventPublisherMod1(
+            InvoicingEventStockHandlerMod1 invoicingEventStockHandlerMod1,
             @Value("${bm.invoicing.url}") Resource resource,
             @Value("${bm.invoicing.polling.delay}") int pollDelay,
             @Value("${bm.invoicing.polling.retryDelay}") int retryDelay,
@@ -64,7 +64,7 @@ public class EventStockConfig {
     ) throws IOException {
         return new PollingEventPublisherBuilder()
                 .withURI(resource.getURI())
-                .withEventHandler(invoicingMod1EventStockHandler)
+                .withEventHandler(invoicingEventStockHandlerMod1)
                 .withMaxPoolSize(maxPoolSize)
                 .withEventRetryDelay(retryDelay)
                 .withPollDelay(pollDelay)
