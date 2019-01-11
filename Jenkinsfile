@@ -14,9 +14,9 @@ build('newway', 'java-maven') {
                     " -Dgit.branch=${env.BRANCH_NAME} " +
                     " ${mvnArgs}"
             if (env.BRANCH_NAME == 'master') {
-                sh env.JAVA_HOME + 'mvn deploy' + mvn_command_arguments
+                sh 'mvn deploy' + mvn_command_arguments
             } else {
-                sh env.JAVA_HOME + 'mvn package' + mvn_command_arguments
+                sh 'mvn package' + mvn_command_arguments
             }
         }
     }
