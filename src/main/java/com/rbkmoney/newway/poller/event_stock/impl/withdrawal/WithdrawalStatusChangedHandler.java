@@ -58,7 +58,7 @@ public class WithdrawalStatusChangedHandler extends AbstractWithdrawalHandler {
         withdrawalDao.updateNotCurrent(event.getSource());
         long id = withdrawalDao.save(withdrawal);
 
-        List<FistfulCashFlow> cashFlows = fistfulCashFlowDao.getByObjId(sourceId, FistfulCashFlowChangeType.deposit);
+        List<FistfulCashFlow> cashFlows = fistfulCashFlowDao.getByObjId(sourceId, FistfulCashFlowChangeType.withdrawal);
         cashFlows.forEach(pcf -> {
             pcf.setId(null);
             pcf.setObjId(id);
