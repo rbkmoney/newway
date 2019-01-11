@@ -2,7 +2,6 @@
 build('newway', 'java-maven') {
     checkoutRepo()
 
-    env.JAVA_HOME = "JAVA_HOME=/opt/openjdk-bin-11.0.1_p13 "
     def serviceName = env.REPO_NAME
     def baseImageTag = "f26fcc19d1941ab74f1c72dd8a408be17a769333"
     def mvnArgs = '-DjvmArgs="-Xmx256m"'
