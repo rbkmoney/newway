@@ -10,16 +10,27 @@ import com.rbkmoney.newway.util.HashUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class InvoicingEventStockHandler implements EventHandler<StockEvent> {
-
-    public static final int DIVIDER = 2;
+public class InvoicingEventStockHandler implements EventHandler<StockEvent> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final InvoicingService invoicingService;
 
-    public InvoicingEventStockHandler(InvoicingService invoicingService) {
+    private final int divider;
+    private final int mod;
+
+    public InvoicingEventStockHandler(InvoicingService invoicingService, int divider, int mod) {
         this.invoicingService = invoicingService;
+        this.divider = divider;
+        this.mod = mod;
+    }
+
+    public int getDivider() {
+        return divider;
+    }
+
+    public int getMod() {
+        return mod;
     }
 
     @Override
@@ -27,7 +38,7 @@ public abstract class InvoicingEventStockHandler implements EventHandler<StockEv
         Event processingEvent = stockEvent.getSourceEvent().getProcessingEvent();
         EventPayload payload = processingEvent.getPayload();
         if (payload.isSetInvoiceChanges()) {
-            if (HashUtil.checkHashMod(processingEvent.getSource().getInvoiceId(), DIVIDER, getMod())) {
+            if (HashUtil.checkHashMod(processingEvent.getSource().getInvoiceId(), divider, mod)) {
                 try {
                     invoicingService.handleEvents(processingEvent, payload);
                 } catch (RuntimeException e) {
@@ -38,6 +49,4 @@ public abstract class InvoicingEventStockHandler implements EventHandler<StockEv
         }
         return EventAction.CONTINUE;
     }
-
-    protected abstract int getMod();
 }
