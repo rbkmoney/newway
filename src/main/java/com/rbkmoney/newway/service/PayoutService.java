@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class PayoutService implements EventService<Event,EventPayload > {
+public class PayoutService implements EventService<Event,EventPayload> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
