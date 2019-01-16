@@ -1,0 +1,3 @@
+ALTER TABLE nw.contract ALTER COLUMN revision DROP NOT NULL;
+ALTER TABLE nw.contractor ALTER COLUMN revision DROP NOT NULL;
+ALTER TABLE nw.shop ALTER COLUMN revision DROP NOT NULL;
