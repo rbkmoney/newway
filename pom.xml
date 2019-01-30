@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>newway</artifactId>
-    <version>1.0.35-SNAPSHOT</version>
+    <version>1.0.36-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
@@ -29,9 +29,9 @@
         <db.password>postgres</db.password>
         <db.name>newway</db.name>
         <db.schema>nw</db.schema>
-        <local.pg.url>jdbc:postgresql://localhost:15432/newway</local.pg.url>
-        <local.pg.port>15432</local.pg.port>
-        <damsel.version>1.271-0fca200</damsel.version>
+        <local.pg.url>jdbc:postgresql://localhost:5432/newway</local.pg.url>
+        <local.pg.port>5432</local.pg.port>
+        <damsel.version>1.276-9914f71</damsel.version>
         <fistful-proto.version>1.8-37ccefb</fistful-proto.version>
     </properties>
 
