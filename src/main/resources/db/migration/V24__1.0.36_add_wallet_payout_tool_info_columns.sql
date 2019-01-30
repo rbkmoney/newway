@@ -1,0 +1,1 @@
+ALTER TABLE nw.payout_tool ADD COLUMN payout_tool_info_wallet_info_wallet_id CHARACTER VARYING;
