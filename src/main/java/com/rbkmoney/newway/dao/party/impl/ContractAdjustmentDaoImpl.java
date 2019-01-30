@@ -38,7 +38,8 @@ public class ContractAdjustmentDaoImpl extends AbstractGenericDao implements Con
     @Override
     public List<ContractAdjustment> getByCntrctId(Long cntrctId) throws DaoException {
         Query query = getDslContext().selectFrom(CONTRACT_ADJUSTMENT)
-                .where(CONTRACT_ADJUSTMENT.CNTRCT_ID.eq(cntrctId));
+                .where(CONTRACT_ADJUSTMENT.CNTRCT_ID.eq(cntrctId))
+                .orderBy(CONTRACT_ADJUSTMENT.ID.asc());
         return fetch(query, contractAdjustmentRowMapper);
     }
 }
