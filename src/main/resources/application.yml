@@ -14,7 +14,12 @@ spring:
       maximum-pool-size: 10
   flyway:
     schemas: nw
-
+management:
+  metrics:
+    export:
+      statsd:
+        flavor: etsy
+        enabled: false
 retry-policy:
   maxAttempts: 10
 bm:
@@ -94,5 +99,3 @@ dmt:
   polling:
     delay: 3000
     maxQuerySize: 10
-
-management.metrics.export.statsd.flavor: etsy
