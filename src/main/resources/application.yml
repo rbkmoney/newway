@@ -99,3 +99,4 @@ dmt:
   polling:
     delay: 3000
     maxQuerySize: 10
+    enable: true

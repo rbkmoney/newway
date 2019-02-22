@@ -1,14 +1,9 @@
-package com.rbkmoney.newway.service;
+package com.rbkmoney.newway.utils;
 
+import com.rbkmoney.AbstractTestUtils;
 import com.rbkmoney.geck.common.util.TypeUtil;
-import com.rbkmoney.newway.AbstractIntegrationTest;
-import com.rbkmoney.newway.domain.tables.pojos.Rate;
 import com.rbkmoney.xrates.base.TimestampInterval;
 import com.rbkmoney.xrates.rate.*;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,18 +12,10 @@ import java.util.List;
 
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
 import static io.github.benas.randombeans.api.EnhancedRandom.randomListOf;
-import static org.junit.Assert.assertEquals;
 
-public class RateServiceTest extends AbstractIntegrationTest {
+public class RateSinkEventTestUtils extends AbstractTestUtils {
 
-    @Autowired
-    private RateService rateService;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Test
-    public void test() {
+    public static Dto create(String sourceId) {
         List<Quote> quotes = new ArrayList<Quote>() {{
             addAll(randomListOf(4, Quote.class));
         }};
@@ -49,22 +36,31 @@ public class RateServiceTest extends AbstractIntegrationTest {
                 )
         );
 
-        String sourceId = "CBR";
-
         SinkEvent sinkEvent = new SinkEvent(
                 random(Long.class),
                 TypeUtil.temporalToString(random(LocalDateTime.class)),
                 sourceId,
                 event
         );
+        return new Dto(event, sinkEvent);
+    }
 
-        rateService.handleEvents(sinkEvent, event);
+    public static class Dto {
 
-        List<Rate> rates = jdbcTemplate.query(
-                "SELECT * FROM nw.rate AS rate WHERE rate.source_id = ? AND rate.current",
-                new Object[]{sourceId},
-                new BeanPropertyRowMapper(Rate.class)
-        );
-        assertEquals(4, rates.size());
+        private Event event;
+        private SinkEvent sinkEvent;
+
+        public Dto(Event event, SinkEvent sinkEvent) {
+            this.event = event;
+            this.sinkEvent = sinkEvent;
+        }
+
+        public Event getEvent() {
+            return event;
+        }
+
+        public SinkEvent getSinkEvent() {
+            return sinkEvent;
+        }
     }
 }
