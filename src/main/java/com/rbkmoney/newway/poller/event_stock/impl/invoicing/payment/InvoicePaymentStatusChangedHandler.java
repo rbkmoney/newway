@@ -1,5 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.invoicing.payment;
 
+import com.rbkmoney.damsel.domain.InvoicePaymentCaptured;
 import com.rbkmoney.damsel.domain.InvoicePaymentStatus;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
@@ -72,7 +73,12 @@ public class InvoicePaymentStatusChangedHandler extends AbstractInvoicingHandler
             paymentSource.setStatusFailedFailure(null);
         } else if (invoicePaymentStatus.isSetCaptured()) {
             paymentSource.setStatusCancelledReason(null);
-            paymentSource.setStatusCapturedReason(invoicePaymentStatus.getCaptured().getReason());
+            InvoicePaymentCaptured invoicePaymentCaptured = invoicePaymentStatus.getCaptured();
+            paymentSource.setStatusCapturedReason(invoicePaymentCaptured.getReason());
+            if (invoicePaymentCaptured.isSetCost()) {
+                paymentSource.setAmount(invoicePaymentCaptured.getCost().getAmount());
+                paymentSource.setCurrencyCode(invoicePaymentCaptured.getCost().getCurrency().getSymbolicCode());
+            }
             paymentSource.setStatusFailedFailure(null);
         } else if (invoicePaymentStatus.isSetFailed()) {
             paymentSource.setStatusCancelledReason(null);
