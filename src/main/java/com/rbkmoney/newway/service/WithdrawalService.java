@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.service;
 
-import com.rbkmoney.fistful.withdrawal.Event;
+import com.rbkmoney.fistful.withdrawal.EventSinkPayload;
 import com.rbkmoney.fistful.withdrawal.SinkEvent;
 import com.rbkmoney.newway.dao.withdrawal.iface.WithdrawalDao;
 import com.rbkmoney.newway.exception.DaoException;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class WithdrawalService implements EventService<SinkEvent, Event> {
+public class WithdrawalService implements EventService<SinkEvent, EventSinkPayload> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -30,7 +30,7 @@ public class WithdrawalService implements EventService<SinkEvent, Event> {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handleEvents(SinkEvent sinkEvent, Event payload) {
+    public void handleEvents(SinkEvent sinkEvent, EventSinkPayload payload) {
         payload.getChanges().forEach(cc -> withdrawalHandlers.forEach(ph -> {
             if (ph.accept(cc)) {
                 ph.handle(cc, sinkEvent);
