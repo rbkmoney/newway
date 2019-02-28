@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>newway</artifactId>
-    <version>1.0.38-SNAPSHOT</version>
+    <version>1.0.39-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
@@ -32,7 +32,7 @@
         <local.pg.url>jdbc:postgresql://localhost:5432/newway</local.pg.url>
         <local.pg.port>5432</local.pg.port>
         <damsel.version>1.278-3abdcb4</damsel.version>
-        <fistful-proto.version>1.8-37ccefb</fistful-proto.version>
+        <fistful-proto.version>1.21-d96f1ce</fistful-proto.version>
     </properties>
 
     <dependencies>
