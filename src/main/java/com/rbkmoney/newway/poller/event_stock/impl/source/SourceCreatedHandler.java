@@ -41,6 +41,7 @@ public class SourceCreatedHandler extends AbstractSourceHandler {
         source.setSourceId(event.getSource());
         source.setSourceName(change.getCreated().getName());
         source.setSourceStatus(SourceStatus.unauthorized);
+        source.setExternalId(change.getCreated().getExternalId());
 
         Resource resource = change.getCreated().getResource();
         if (resource.isSetInternal()) {

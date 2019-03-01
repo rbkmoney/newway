@@ -2,6 +2,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.withdrawal_session;
 
 import com.rbkmoney.fistful.withdrawal_session.Change;
 import com.rbkmoney.fistful.withdrawal_session.SinkEvent;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -9,7 +10,9 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.withdrawal_session.iface.WithdrawalSessionDao;
 import com.rbkmoney.newway.domain.enums.WithdrawalSessionStatus;
+import com.rbkmoney.newway.domain.enums.WithdrawalStatus;
 import com.rbkmoney.newway.domain.tables.pojos.WithdrawalSession;
+import com.rbkmoney.newway.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -44,10 +47,13 @@ public class WithdrawalSessionFinishedHandler extends AbstractWithdrawalSessionH
         withdrawalSession.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawalSession.setWithdrawalSessionId(event.getSource());
 
+        withdrawalSession.setWithdrawalSessionStatus(TBaseUtil.unionFieldToEnum(change.getFinished(), WithdrawalSessionStatus.class));
         if (change.getFinished().isSetFailed()) {
-            withdrawalSession.setWithdrawalSessionStatus(WithdrawalSessionStatus.failed);
+            withdrawalSession.setFailureJson(JsonUtil.tBaseToJsonString(change.getFinished().getFailed()));
         } else if (change.getFinished().isSetSuccess()) {
-            withdrawalSession.setWithdrawalSessionStatus(WithdrawalSessionStatus.success);
+            withdrawalSession.setTranInfoId(change.getFinished().getSuccess().getTrxInfo().getId());
+            withdrawalSession.setTranInfoTimestamp(TypeUtil.stringToLocalDateTime(change.getFinished().getSuccess().getTrxInfo().getTimestamp()));
+            withdrawalSession.setTranInfoJson(JsonUtil.objectToJsonString(change.getFinished().getSuccess().getTrxInfo().getExtra()));
         }
 
         withdrawalSessionDao.updateNotCurrent(event.getSource());
