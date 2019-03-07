@@ -1,5 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.withdrawal_session;
 
+import com.rbkmoney.fistful.base.TransactionInfo;
 import com.rbkmoney.fistful.withdrawal_session.Change;
 import com.rbkmoney.fistful.withdrawal_session.SinkEvent;
 import com.rbkmoney.geck.common.util.TBaseUtil;
@@ -51,9 +52,12 @@ public class WithdrawalSessionFinishedHandler extends AbstractWithdrawalSessionH
         if (change.getFinished().isSetFailed()) {
             withdrawalSession.setFailureJson(JsonUtil.tBaseToJsonString(change.getFinished().getFailed()));
         } else if (change.getFinished().isSetSuccess()) {
-            withdrawalSession.setTranInfoId(change.getFinished().getSuccess().getTrxInfo().getId());
-            withdrawalSession.setTranInfoTimestamp(TypeUtil.stringToLocalDateTime(change.getFinished().getSuccess().getTrxInfo().getTimestamp()));
-            withdrawalSession.setTranInfoJson(JsonUtil.objectToJsonString(change.getFinished().getSuccess().getTrxInfo().getExtra()));
+            TransactionInfo trxInfo = change.getFinished().getSuccess().getTrxInfo();
+            withdrawalSession.setTranInfoId(trxInfo.getId());
+            if (trxInfo.isSetTimestamp()) {
+                withdrawalSession.setTranInfoTimestamp(TypeUtil.stringToLocalDateTime(trxInfo.getTimestamp()));
+            }
+            withdrawalSession.setTranInfoJson(JsonUtil.objectToJsonString(trxInfo.getExtra()));
         }
 
         withdrawalSessionDao.updateNotCurrent(event.getSource());
