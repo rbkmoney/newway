@@ -64,6 +64,6 @@ public class IdentityDaoImpl extends AbstractGenericDao implements IdentityDao {
                         IDENTITY.IDENTITY_ID.eq(identityId)
                                 .and(IDENTITY.CURRENT)
                 );
-        executeOne(query);
+        execute(query);
     }
 }

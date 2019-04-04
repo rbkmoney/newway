@@ -60,7 +60,7 @@ public class WalletDaoImpl extends AbstractGenericDao implements WalletDao {
                         WALLET.WALLET_ID.eq(walletId)
                                 .and(WALLET.CURRENT)
                 );
-        executeOne(query);
+        execute(query);
     }
 
 }

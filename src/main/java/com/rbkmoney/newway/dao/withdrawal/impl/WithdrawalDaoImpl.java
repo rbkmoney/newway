@@ -60,6 +60,6 @@ public class WithdrawalDaoImpl extends AbstractGenericDao implements WithdrawalD
                         WITHDRAWAL.WITHDRAWAL_ID.eq(withdrawalId)
                                 .and(WITHDRAWAL.CURRENT)
                 );
-        executeOne(query);
+        execute(query);
     }
 }

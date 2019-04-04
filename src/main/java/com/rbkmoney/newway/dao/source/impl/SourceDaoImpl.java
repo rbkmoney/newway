@@ -59,6 +59,6 @@ public class SourceDaoImpl extends AbstractGenericDao implements SourceDao {
                         SOURCE.SOURCE_ID.eq(sourceId)
                                 .and(SOURCE.CURRENT)
                 );
-        executeOne(query);
+        execute(query);
     }
 }

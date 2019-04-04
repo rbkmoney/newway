@@ -60,6 +60,6 @@ public class DepositDaoImpl extends AbstractGenericDao implements DepositDao {
                         DEPOSIT.DEPOSIT_ID.eq(depositId)
                                 .and(DEPOSIT.CURRENT)
                 );
-        executeOne(query);
+        execute(query);
     }
 }
