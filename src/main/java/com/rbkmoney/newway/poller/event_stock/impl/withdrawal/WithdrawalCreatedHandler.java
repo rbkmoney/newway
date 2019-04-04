@@ -60,6 +60,7 @@ public class WithdrawalCreatedHandler extends AbstractWithdrawalHandler {
         withdrawal.setCurrencyCode(cash.getCurrency().getSymbolicCode());
         withdrawal.setWithdrawalStatus(WithdrawalStatus.pending);
 
+        withdrawalDao.updateNotCurrent(event.getSource());
         withdrawalDao.save(withdrawal);
         log.info("Withdrawal have been saved, eventId={}, walletId={}", event.getId(), event.getSource());
     }

@@ -39,6 +39,7 @@ public class WalletCreatedHandler extends AbstractWalletHandler {
         wallet.setWalletName(change.getCreated().getName());
         wallet.setExternalId(change.getCreated().getExternalId());
 
+        walletDao.updateNotCurrent(event.getSource());
         walletDao.save(wallet);
         log.info("Wallet have been saved, eventId={}, walletId={}", event.getId(), event.getSource());
     }
