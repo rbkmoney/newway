@@ -65,8 +65,7 @@ public class IdentityChallengeCreatedHandler extends AbstractIdentityHandler {
             challenge.setChallengeStatus(ChallengeStatus.pending);
         }
 
-
-
+        challengeDao.updateNotCurrent(event.getSource(), challengeChange.getId());
         challengeDao.save(challenge);
         log.info("Start identity challenge have been created, eventId={}, identityId={}, challengeId={}", event.getId(), event.getSource(), challengeChange.getId());
     }

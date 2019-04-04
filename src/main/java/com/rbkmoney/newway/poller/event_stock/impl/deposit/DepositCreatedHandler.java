@@ -47,6 +47,7 @@ public class DepositCreatedHandler extends AbstractDepositHandler {
         deposit.setDepositStatus(DepositStatus.pending);
         deposit.setExternalId(change.getCreated().getExternalId());
 
+        depositDao.updateNotCurrent(event.getSource());
         depositDao.save(deposit);
         log.info("Deposit have been saved, eventId={}, depositId={}", event.getId(), event.getSource());
     }
