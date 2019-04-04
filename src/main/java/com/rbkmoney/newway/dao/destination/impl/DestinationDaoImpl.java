@@ -59,6 +59,6 @@ public class DestinationDaoImpl extends AbstractGenericDao implements Destinatio
                         DESTINATION.DESTINATION_ID.eq(destinationId)
                                 .and(DESTINATION.CURRENT)
                 );
-        executeOne(query);
+        execute(query);
     }
 }

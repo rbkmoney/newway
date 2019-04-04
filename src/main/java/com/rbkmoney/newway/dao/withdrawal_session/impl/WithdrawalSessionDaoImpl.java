@@ -59,6 +59,6 @@ public class WithdrawalSessionDaoImpl extends AbstractGenericDao implements With
         Query query = getDslContext().update(WITHDRAWAL_SESSION).set(WITHDRAWAL_SESSION.CURRENT, false)
                 .where(WITHDRAWAL_SESSION.WITHDRAWAL_SESSION_ID.eq(sessionId)
                                 .and(WITHDRAWAL_SESSION.CURRENT));
-        executeOne(query);
+        execute(query);
     }
 }
