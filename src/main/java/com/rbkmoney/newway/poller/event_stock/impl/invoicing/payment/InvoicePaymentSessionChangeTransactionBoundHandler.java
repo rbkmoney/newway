@@ -71,7 +71,7 @@ public class InvoicePaymentSessionChangeTransactionBoundHandler extends Abstract
         paymentSource.setSessionPayloadTransactionBoundTrxId(transactionInfo.getId());
         paymentSource.setSessionPayloadTransactionBoundTrxExtraJson(JsonUtil.objectToJsonString(transactionInfo.getExtra()));
 
-        if (transactionInfo.getAdditionalInfo() != null) {
+        if (transactionInfo.isSetAdditionalInfo()) {
             AdditionalTransactionInfo additionalTransactionInfo = transactionInfo.getAdditionalInfo();
             paymentSource.setTrxAdditionalInfoRrn(additionalTransactionInfo.getRrn());
             paymentSource.setTrxAdditionalInfoApprovalCode(additionalTransactionInfo.getApprovalCode());
