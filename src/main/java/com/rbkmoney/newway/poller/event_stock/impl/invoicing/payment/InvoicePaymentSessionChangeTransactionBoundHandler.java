@@ -1,5 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.invoicing.payment;
 
+import com.rbkmoney.damsel.domain.AdditionalTransactionInfo;
 import com.rbkmoney.damsel.domain.TransactionInfo;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
@@ -69,6 +70,23 @@ public class InvoicePaymentSessionChangeTransactionBoundHandler extends Abstract
         TransactionInfo transactionInfo = payload.getSessionTransactionBound().getTrx();
         paymentSource.setSessionPayloadTransactionBoundTrxId(transactionInfo.getId());
         paymentSource.setSessionPayloadTransactionBoundTrxExtraJson(JsonUtil.objectToJsonString(transactionInfo.getExtra()));
+
+        if (transactionInfo.getAdditionalInfo() != null) {
+            AdditionalTransactionInfo additionalTransactionInfo = transactionInfo.getAdditionalInfo();
+            paymentSource.setTrxAdditionalInfoRrn(additionalTransactionInfo.getRrn());
+            paymentSource.setTrxAdditionalInfoApprovalCode(additionalTransactionInfo.getApprovalCode());
+            paymentSource.setTrxAdditionalInfoAcsUrl(additionalTransactionInfo.getAcsUrl());
+            paymentSource.setTrxAdditionalInfoPareq(additionalTransactionInfo.getPareq());
+            paymentSource.setTrxAdditionalInfoMd(additionalTransactionInfo.getMd());
+            paymentSource.setTrxAdditionalInfoTermUrl(additionalTransactionInfo.getTermUrl());
+            paymentSource.setTrxAdditionalInfoPares(additionalTransactionInfo.getPares());
+            paymentSource.setTrxAdditionalInfoEci(additionalTransactionInfo.getEci());
+            paymentSource.setTrxAdditionalInfoCavv(additionalTransactionInfo.getCavv());
+            paymentSource.setTrxAdditionalInfoXid(additionalTransactionInfo.getXid());
+            paymentSource.setTrxAdditionalInfoCavvAlgorithm(additionalTransactionInfo.getCavvAlgorithm());
+            paymentSource.setTrxAdditionalInfoThreeDsVerificaion(additionalTransactionInfo.getThreeDsVerificaion().name());
+        }
+
         paymentDao.updateNotCurrent(invoiceId, paymentId);
         long pmntId = paymentDao.save(paymentSource);
         List<CashFlow> cashFlows = cashFlowDao.getByObjId(paymentSourceId, PaymentChangeType.payment);

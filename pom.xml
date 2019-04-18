@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>newway</artifactId>
-    <version>1.0.43-SNAPSHOT</version>
+    <version>1.0.44-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
@@ -31,7 +31,7 @@
         <db.schema>nw</db.schema>
         <local.pg.url>jdbc:postgresql://localhost:5432/newway</local.pg.url>
         <local.pg.port>5432</local.pg.port>
-        <damsel.version>1.284-e51512a</damsel.version>
+        <damsel.version>1.288-1ca5bcd</damsel.version>
         <fistful-proto.version>1.21-d96f1ce</fistful-proto.version>
     </properties>
 
@@ -100,6 +100,11 @@
             <artifactId>lombok</artifactId>
             <version>1.18.4</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
         </dependency>
 
         <!--RBK libs-->
