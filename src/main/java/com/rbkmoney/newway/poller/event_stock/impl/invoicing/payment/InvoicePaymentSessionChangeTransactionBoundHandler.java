@@ -85,8 +85,8 @@ public class InvoicePaymentSessionChangeTransactionBoundHandler extends Abstract
             paymentSource.setTrxAdditionalInfoXid(additionalTransactionInfo.getXid());
             paymentSource.setTrxAdditionalInfoCavvAlgorithm(additionalTransactionInfo.getCavvAlgorithm());
 
-            if(additionalTransactionInfo.isSetThreeDsVerificaion()) {
-                paymentSource.setTrxAdditionalInfoThreeDsVerificaion(additionalTransactionInfo.getThreeDsVerificaion().name());
+            if(additionalTransactionInfo.isSetThreeDsVerification()) {
+                paymentSource.setTrxAdditionalInfoThreeDsVerificaion(additionalTransactionInfo.getThreeDsVerification().name());
             }
         }
 

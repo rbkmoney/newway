@@ -31,7 +31,7 @@
         <db.schema>nw</db.schema>
         <local.pg.url>jdbc:postgresql://localhost:5432/newway</local.pg.url>
         <local.pg.port>5432</local.pg.port>
-        <damsel.version>1.288-1ca5bcd</damsel.version>
+        <damsel.version>1.289-ef27dd7</damsel.version>
         <fistful-proto.version>1.21-d96f1ce</fistful-proto.version>
     </properties>
 
