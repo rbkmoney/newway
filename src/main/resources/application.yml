@@ -17,14 +17,14 @@ spring:
 
   kafka:
     bootstrap-servers: kenny-kafka1.bst1.rbkmoney.net:9092
-    ssl:
-      trust-store-location: "classpath:cert/truststore.p12"
-      trust-store-password: "kenny12"
-      key-store-location: "classpath:cert/kenny-k.struzhkin.p12"
-      key-store-password: "kenny"
-      key-password: "kenny"
-      key-store-type: PKCS12
-      trust-store-type: PKCS12
+#    ssl:
+#      trust-store-location: "classpath:cert/truststore.p12"
+#      trust-store-password: "kenny12"
+#      key-store-location: "classpath:cert/kenny-k.struzhkin.p12"
+#      key-store-password: "kenny"
+#      key-password: "kenny"
+#      key-store-type: PKCS12
+#      trust-store-type: PKCS12
     consumer:
       group-id: "TestListener"
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -43,7 +43,7 @@ spring:
     client-id: test
     properties:
       security:
-        protocol: SSL
+        protocol: PLAINTEXT
 
 management:
   metrics:
