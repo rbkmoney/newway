@@ -25,7 +25,6 @@ import com.rbkmoney.newway.util.HashUtil;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -87,8 +86,6 @@ public class DaoTests extends AbstractAppDaoTests {
     private InvoiceCartDao invoiceCartDao;
     @Autowired
     private InvoiceDao invoiceDao;
-    @Value("${bm.invoicing.workersCount}")
-    private int workersCount;
     @Autowired
     private RefundDao refundDao;
     @Autowired
@@ -413,21 +410,6 @@ public class DaoTests extends AbstractAppDaoTests {
     }
 
     @Test
-    public void invoiceDaoTest() {
-        jdbcTemplate.execute("truncate table nw.invoice cascade");
-        jdbcTemplate.execute("truncate table nw.payment cascade");
-        jdbcTemplate.execute("truncate table nw.refund cascade");
-        jdbcTemplate.execute("truncate table nw.adjustment cascade");
-        Invoice invoice = random(Invoice.class);
-        invoice.setCurrent(true);
-        Long invId = invoiceDao.save(invoice);
-        Invoice invoiceGet = invoiceDao.get(invoice.getInvoiceId());
-        assertEquals(invoice, invoiceGet);
-        invoiceDao.updateNotCurrent(invoice.getInvoiceId());
-        assertEquals(invoiceDao.getLastEventId(workersCount, HashUtil.getIntHash(invoice.getInvoiceId()) % workersCount), invoice.getEventId());
-    }
-
-    @Test
     public void paymentDaoTest() {
         jdbcTemplate.execute("truncate table nw.payment cascade");
         Payment payment = random(Payment.class);
@@ -646,5 +628,25 @@ public class DaoTests extends AbstractAppDaoTests {
         Integer javaHash = HashUtil.getIntHash("kek");
         Integer postgresHash = jdbcTemplate.queryForObject("select ('x0'||substr(md5('kek'), 1, 7))::bit(32)::int", Integer.class);
         assertEquals(javaHash, postgresHash);
+    }
+
+    @Test
+    public void constraintTests() {
+        jdbcTemplate.execute("truncate table nw.adjustment cascade");
+        Adjustment adjustment = random(Adjustment.class);
+        adjustment.setChangeId(1);
+        adjustment.setSequenceId(1L);
+        adjustment.setInvoiceId("1");
+        adjustment.setPartyId("1");
+        adjustment.setCurrent(true);
+        adjustmentDao.save(adjustment);
+
+        assertEquals("1", adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()).getPartyId());
+
+        adjustment.setPartyId("2");
+
+        adjustmentDao.save(adjustment);
+
+        assertEquals("2", adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()).getPartyId());
     }
 }

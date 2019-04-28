@@ -5,22 +5,17 @@ import com.rbkmoney.eventstock.client.EventConstraint;
 import com.rbkmoney.eventstock.client.EventPublisher;
 import com.rbkmoney.eventstock.client.SubscriberConfig;
 import com.rbkmoney.eventstock.client.poll.EventFlowFilter;
-import com.rbkmoney.newway.poller.event_stock.InvoicingEventStockHandler;
 import com.rbkmoney.newway.service.*;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 
 @Component
 public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private final EventPublisher partyManagementEventPublisher;
-    private final List<EventPublisher> invoicingEventPublishers;
-    private final List<InvoicingEventStockHandler> invoicingEventStockHandlers;
     private final EventPublisher payoutEventPublisher;
     private final EventPublisher identityEventPublisher;
     private final EventPublisher withdrawalEventPublisher;
@@ -47,8 +42,6 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private boolean pollingEnabled;
 
     public OnStart(EventPublisher partyManagementEventPublisher,
-                   @Qualifier("invoicingEventPublishers") List<EventPublisher> invoicingEventPublishers,
-                   List<InvoicingEventStockHandler> invoicingEventStockHandlers,
                    EventPublisher payoutEventPublisher,
                    EventPublisher identityEventPublisher,
                    EventPublisher withdrawalEventPublisher,
@@ -71,8 +64,6 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
                    WithdrawalSessionService withdrawalSessionService,
                    RateService rateService) {
         this.partyManagementEventPublisher = partyManagementEventPublisher;
-        this.invoicingEventPublishers = invoicingEventPublishers;
-        this.invoicingEventStockHandlers = invoicingEventStockHandlers;
         this.payoutEventPublisher = payoutEventPublisher;
         this.identityEventPublisher = identityEventPublisher;
         this.walletEventPublisher = walletEventPublisher;
@@ -99,11 +90,6 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         if (pollingEnabled) {
-            for (int i = 0; i < invoicingEventPublishers.size(); ++i) {
-                InvoicingEventStockHandler invoicingEventStockHandler = invoicingEventStockHandlers.get(i);
-                Optional<Long> lastEventId = invoicingService.getLastEventId(invoicingEventStockHandler.getDivider(), invoicingEventStockHandler.getMod());
-                invoicingEventPublishers.get(i).subscribe(buildSubscriberConfig(lastEventId));
-            }
             partyManagementEventPublisher.subscribe(buildSubscriberConfig(partyManagementService.getLastEventId()));
             payoutEventPublisher.subscribe(buildSubscriberConfig(payoutService.getLastEventId()));
             identityEventPublisher.subscribe(buildSubscriberConfig(identityService.getLastEventId()));
