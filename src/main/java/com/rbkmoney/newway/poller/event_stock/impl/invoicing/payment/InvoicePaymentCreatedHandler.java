@@ -54,15 +54,16 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
         InvoicePayment invoicePayment = invoicePaymentStarted.getPayment();
 
         long sequenceId = event.getEventId();
+        String invoiceId = event.getSourceId();
+
         log.info("Start payment created handling, sequenceId={}, invoiceId={}, paymentId={}",
-                sequenceId, event.getSourceId(), invoicePayment.getId());
+                sequenceId, invoiceId, invoicePayment.getId());
 
         payment.setChangeId(changeId);
         payment.setSequenceId(sequenceId);
         payment.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         payment.setPaymentId(invoicePayment.getId());
         payment.setCreatedAt(TypeUtil.stringToLocalDateTime(invoicePayment.getCreatedAt()));
-        String invoiceId = event.getSourceId();
         payment.setInvoiceId(invoiceId);
 
         Invoice invoice = invoiceDao.get(invoiceId);

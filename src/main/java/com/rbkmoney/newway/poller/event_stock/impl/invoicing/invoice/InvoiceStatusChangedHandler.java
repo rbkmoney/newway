@@ -39,13 +39,14 @@ public class InvoiceStatusChangedHandler extends AbstractInvoicingHandler {
     public void handle(InvoiceChange invoiceChange, MachineEvent event, Integer changeId) throws DaoException {
         InvoiceStatus invoiceStatus = invoiceChange.getInvoiceStatusChanged().getStatus();
         long sequenceId = event.getEventId();
+        String invoiceId = event.getSourceId();
 
         com.rbkmoney.newway.domain.tables.pojos.Invoice invoiceSource = invoiceDao.get(event.getSourceId());
         if (invoiceSource == null) {
             throw new NotFoundException(String.format("Invoice not found, invoiceId='%s'", event.getSourceId()));
         }
         log.info("Start invoice status changed handling, sequenceId={}, invoiceId={}, partyId={}, shopId={}, status={}",
-                sequenceId, invoiceSource.getInvoiceId(), invoiceSource.getPartyId(), invoiceSource.getShopId(), invoiceStatus.getSetField().getFieldName());
+                sequenceId, invoiceId, invoiceSource.getPartyId(), invoiceSource.getShopId(), invoiceStatus.getSetField().getFieldName());
 
         Long invoiceSourceId = invoiceSource.getId();
         invoiceSource.setId(null);
@@ -72,7 +73,7 @@ public class InvoiceStatusChangedHandler extends AbstractInvoicingHandler {
         invoiceCartDao.save(invoiceCartList);
 
         log.info("Invoice has been saved, sequenceId={}, invoiceId={}, partyId={}, shopId={}, status={}",
-                sequenceId, invoiceSource.getInvoiceId(), invoiceSource.getPartyId(), invoiceSource.getShopId(), invoiceStatus.getSetField().getFieldName());
+                sequenceId, invoiceId, invoiceSource.getPartyId(), invoiceSource.getShopId(), invoiceStatus.getSetField().getFieldName());
     }
 
     @Override

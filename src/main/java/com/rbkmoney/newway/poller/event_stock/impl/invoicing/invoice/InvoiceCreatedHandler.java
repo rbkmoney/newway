@@ -44,9 +44,10 @@ public class InvoiceCreatedHandler extends AbstractInvoicingHandler {
     public void handle(InvoiceChange invoiceChange, MachineEvent event, Integer changeId) throws DaoException {
         Invoice invoice = invoiceChange.getInvoiceCreated().getInvoice();
         long sequenceId = event.getEventId();
+        String invoiceId = event.getSourceId();
 
         log.info("Start invoice created handling, sequenceId={}, invoiceId={}, partyId={}, shopId={}",
-                sequenceId, invoice.getId(), invoice.getOwnerId(), invoice.getShopId());
+                sequenceId, invoiceId, invoice.getOwnerId(), invoice.getShopId());
 
         com.rbkmoney.newway.domain.tables.pojos.Invoice invoiceRecord = new com.rbkmoney.newway.domain.tables.pojos.Invoice();
         invoiceRecord.setSequenceId(sequenceId);
@@ -90,7 +91,7 @@ public class InvoiceCreatedHandler extends AbstractInvoicingHandler {
         }
 
         log.info("Invoice has been saved, sequenceId={}, invoiceId={}, partyId={}, shopId={}",
-                sequenceId, invoice.getId(), invoice.getOwnerId(), invoice.getShopId());
+                sequenceId, invoiceId, invoice.getOwnerId(), invoice.getShopId());
     }
 
     @Override
