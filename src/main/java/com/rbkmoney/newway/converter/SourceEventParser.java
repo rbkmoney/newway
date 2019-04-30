@@ -1,6 +1,8 @@
 package com.rbkmoney.newway.converter;
 
 import com.rbkmoney.damsel.payment_processing.EventPayload;
+import com.rbkmoney.kafka.common.converter.BinaryConverter;
+import com.rbkmoney.kafka.common.converter.BinaryConverterImpl;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.exception.ParseException;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SourceEventParser {
 
-    private final BinaryConverter<EventPayload> converter;
+    private final BinaryConverter<EventPayload> converter = new BinaryConverterImpl();
 
     public EventPayload parseEvent(MachineEvent message) {
         try {
