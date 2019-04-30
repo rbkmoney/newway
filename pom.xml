@@ -4,25 +4,25 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>newway</artifactId>
-    <version>1.0.43-SNAPSHOT</version>
+    <version>1.0.44-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
     <description>SQL-views of business objects</description>
-
     <parent>
         <groupId>com.rbkmoney</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.1.1.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
         <project.maintainer>Inal Arsanukaev &lt;i.arsanukaev@rbkmoney.com&gt;</project.maintainer>
-        <shared.resources.version>0.3.3</shared.resources.version>
+        <shared.resources.version>0.3.6</shared.resources.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <dockerfile.base.service.tag>2a8b44ac628c1bdb729abd04ed7a2a54676e574b</dockerfile.base.service.tag>
+        <dockerfile.base.service.tag>bc95d0d6dc13c693acd2b274531a7d604b877bf3</dockerfile.base.service.tag>
+        <dockerfile.registry>${env.REGISTRY}</dockerfile.registry>
         <server.port>8022</server.port>
+        <java.version>11</java.version>
         <exposed.ports>${server.port}</exposed.ports>
         <db.url>jdbc:postgresql://localhost:5432/newway</db.url>
         <db.user>postgres</db.user>
@@ -33,6 +33,8 @@
         <local.pg.port>5432</local.pg.port>
         <damsel.version>1.284-e51512a</damsel.version>
         <fistful-proto.version>1.21-d96f1ce</fistful-proto.version>
+        <sonar.jacoco.reportPath>target/sites/jacoco/jacoco.exec</sonar.jacoco.reportPath>
+        <sonar.cobertura.reportPath>target/site/cobertura/coverage.xml</sonar.cobertura.reportPath>
     </properties>
 
     <dependencies>
@@ -101,12 +103,27 @@
             <version>1.18.4</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>2.2.4.RELEASE</version>
+        </dependency>
 
         <!--RBK libs-->
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>eventstock-client-damsel</artifactId>
             <version>1.2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>kafka-common-lib</artifactId>
+            <version>0.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>machinegun-proto</artifactId>
+            <version>1.12-ebae56f</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
@@ -174,6 +191,17 @@
             <version>0.12.6</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>kafka</artifactId>
+            <version>1.10.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -230,15 +258,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.flywaydb</groupId>
@@ -338,6 +357,35 @@
                     <execution>
                         <goals>
                             <goal>process</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>p12</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.2</version>
+                <configuration>
+                    <destFile>${sonar.jacoco.reportPath}</destFile>
+                    <append>true</append>
+                    <excludes>
+                        <exclude>com/rbkmoney/newway/util/**/*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
                         </goals>
                     </execution>
                 </executions>

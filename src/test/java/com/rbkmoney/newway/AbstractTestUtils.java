@@ -1,4 +1,4 @@
-package com.rbkmoney;
+package com.rbkmoney.newway;
 
 import com.rbkmoney.geck.common.util.TypeUtil;
 import org.testcontainers.shaded.org.apache.commons.io.IOUtils;

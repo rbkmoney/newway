@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.utils;
 
-import com.rbkmoney.TestContainers;
+import com.rbkmoney.newway.TestContainers;
 import org.springframework.boot.test.util.TestPropertyValues;
 
 import java.util.ArrayList;

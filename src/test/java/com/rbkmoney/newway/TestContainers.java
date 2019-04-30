@@ -1,4 +1,4 @@
-package com.rbkmoney;
+package com.rbkmoney.newway;
 
 import lombok.NoArgsConstructor;
 import lombok.Setter;

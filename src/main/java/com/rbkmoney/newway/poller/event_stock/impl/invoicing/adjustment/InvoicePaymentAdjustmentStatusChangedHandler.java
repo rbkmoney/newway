@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.invoicing.adjustment;
 
 import com.rbkmoney.damsel.domain.InvoicePaymentAdjustmentStatus;
-import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentAdjustmentChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentChange;
@@ -11,6 +10,7 @@ import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.invoicing.iface.AdjustmentDao;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
 import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
@@ -19,48 +19,39 @@ import com.rbkmoney.newway.domain.tables.pojos.Adjustment;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class InvoicePaymentAdjustmentStatusChangedHandler extends AbstractInvoicingHandler {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
     private final AdjustmentDao adjustmentDao;
-
     private final CashFlowDao cashFlowDao;
 
-    private final Filter filter;
-
-    @Autowired
-    public InvoicePaymentAdjustmentStatusChangedHandler(AdjustmentDao adjustmentDao, CashFlowDao cashFlowDao) {
-        this.adjustmentDao = adjustmentDao;
-        this.cashFlowDao = cashFlowDao;
-        this.filter = new PathConditionFilter(new PathConditionRule(
-                "invoice_payment_change.payload.invoice_payment_adjustment_change.payload.invoice_payment_adjustment_status_changed",
-                new IsNullCondition().not()));
-    }
+    private Filter filter = new PathConditionFilter(new PathConditionRule(
+            "invoice_payment_change.payload.invoice_payment_adjustment_change.payload.invoice_payment_adjustment_status_changed",
+            new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(InvoiceChange invoiceChange, Event event) {
-        long eventId = event.getId();
-        String invoiceId = event.getSource().getInvoiceId();
+    public void handle(InvoiceChange invoiceChange, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
+        String invoiceId = event.getSourceId();
         InvoicePaymentChange invoicePaymentChange = invoiceChange.getInvoicePaymentChange();
         String paymentId = invoiceChange.getInvoicePaymentChange().getId();
         InvoicePaymentAdjustmentChange invoicePaymentAdjustmentChange = invoicePaymentChange.getPayload().getInvoicePaymentAdjustmentChange();
         InvoicePaymentAdjustmentStatus invoicePaymentAdjustmentStatus = invoicePaymentAdjustmentChange.getPayload().getInvoicePaymentAdjustmentStatusChanged().getStatus();
         String adjustmentId = invoicePaymentAdjustmentChange.getId();
 
-        log.info("Start adjustment status changed handling, eventId={}, invoiceId={}, paymentId={}, adjustmentId={}, status={}",
-                eventId, invoiceId, paymentId, adjustmentId, invoicePaymentAdjustmentStatus.getSetField().getFieldName());
+        log.info("Start adjustment status changed handling, sequenceId={}, invoiceId={}, paymentId={}, adjustmentId={}, status={}",
+                sequenceId, invoiceId, paymentId, adjustmentId, invoicePaymentAdjustmentStatus.getSetField().getFieldName());
         Adjustment adjustmentSource = adjustmentDao.get(invoiceId, paymentId, adjustmentId);
         if (adjustmentSource == null) {
             throw new NotFoundException(String.format("Adjustment not found, invoiceId='%s', paymentId='%s', adjustmentId='%s'",
@@ -69,7 +60,8 @@ public class InvoicePaymentAdjustmentStatusChangedHandler extends AbstractInvoic
         Long adjustmentSourceId = adjustmentSource.getId();
         adjustmentSource.setId(null);
         adjustmentSource.setWtime(null);
-        adjustmentSource.setEventId(eventId);
+        adjustmentSource.setChangeId(changeId);
+        adjustmentSource.setSequenceId(sequenceId);
         adjustmentSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         adjustmentSource.setStatus(TBaseUtil.unionFieldToEnum(invoicePaymentAdjustmentStatus, AdjustmentStatus.class));
         if (invoicePaymentAdjustmentStatus.isSetCaptured()) {
@@ -94,8 +86,8 @@ public class InvoicePaymentAdjustmentStatusChangedHandler extends AbstractInvoic
         });
         cashFlowDao.save(oldCashFlows);
 
-        log.info("Adjustment status change has been saved, eventId={}, invoiceId={}, paymentId={}, adjustmentId={}, status={}",
-                eventId, invoiceId, paymentId, adjustmentId, invoicePaymentAdjustmentStatus.getSetField().getFieldName());
+        log.info("Adjustment status change has been saved, sequenceId={}, invoiceId={}, paymentId={}, adjustmentId={}, status={}",
+                sequenceId, invoiceId, paymentId, adjustmentId, invoicePaymentAdjustmentStatus.getSetField().getFieldName());
     }
 
     @Override

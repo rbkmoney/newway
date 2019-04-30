@@ -31,6 +31,7 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
     public abstract C convertToDatabaseObject(T object, Long versionId, boolean current);
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Operation operation, Long versionId) {
         T object = getObject();
         if (operation.isSetInsert()) {
