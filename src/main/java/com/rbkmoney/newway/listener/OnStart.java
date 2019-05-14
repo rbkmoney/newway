@@ -27,7 +27,6 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private final EventPublisher rateEventPublisher;
 
     private final PartyManagementService partyManagementService;
-    private final InvoicingService invoicingService;
     private final PayoutService payoutService;
     private final WalletService walletService;
     private final IdentityService identityService;
@@ -75,7 +74,6 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
         this.rateEventPublisher = rateEventPublisher;
 
         this.partyManagementService = partyManagementService;
-        this.invoicingService = invoicingService;
         this.payoutService = payoutService;
         this.walletService = walletService;
         this.identityService = identityService;

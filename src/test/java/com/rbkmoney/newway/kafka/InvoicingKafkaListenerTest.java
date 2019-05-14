@@ -32,7 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 public class InvoicingKafkaListenerTest extends AbstractKafkaTest {
 
 
-    @org.springframework.beans.factory.annotation.Value("${invoicing.kafka.topic}")
+    @org.springframework.beans.factory.annotation.Value("${kafka.topics.invoicing}")
     public String topic;
 
     @MockBean

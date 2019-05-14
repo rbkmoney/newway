@@ -53,23 +53,23 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
             NewwayTestPropertyValuesBuilder
                     .build(testContainers)
-                    .and("spring.kafka.bootstrap-servers=" + kafka.getBootstrapServers(),
-                            "spring.kafka.properties.security.protocol=PLAINTEXT",
-                            "spring.kafka.consumer.group-id=TestListener",
-                            "spring.kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer",
-                            "spring.kafka.consumer.value-deserializer=com.rbkmoney.newway.serde.SinkEventDeserializer",
-                            "spring.kafka.consumer.enable-auto-commit=false",
-                            "spring.kafka.consumer.auto-offset-reset=earliest",
-                            "spring.kafka.consumer.client-id=test",
-                            "spring.kafka.listener.type=batch",
-                            "spring.kafka.listener.ack-mode=manual",
-                            "spring.kafka.listener.concurrency=1",
-                            "spring.kafka.listener.poll-timeout=1000",
-                            "spring.kafka.listener.no-poll-threshold=5.0",
-                            "spring.kafka.listener.log-container-config=true",
-                            "spring.kafka.listener.monitor-interval=10s",
-                            "spring.kafka.client-id=test",
-                            "invoicing.kafka.topic=test-topic")
+                    .and("kafka.bootstrap-servers=" + kafka.getBootstrapServers(),
+                            "kafka.ssl.enabled=false",
+                            "kafka.consumer.group-id=TestListener",
+                            "kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer",
+                            "kafka.consumer.value-deserializer=com.rbkmoney.newway.serde.SinkEventDeserializer",
+                            "kafka.consumer.enable-auto-commit=false",
+                            "kafka.consumer.auto-offset-reset=earliest",
+                            "kafka.consumer.client-id=test",
+                            "kafka.listener.type=batch",
+                            "kafka.listener.ack-mode=manual",
+                            "kafka.listener.concurrency=1",
+                            "kafka.listener.poll-timeout=1000",
+                            "kafka.listener.no-poll-threshold=5.0",
+                            "kafka.listener.log-container-config=true",
+                            "kafka.listener.monitor-interval=10s",
+                            "kafka.client-id=test",
+                            "kafka.topics.invoicing=test-topic")
                     .applyTo(configurableApplicationContext);
         }
     }
