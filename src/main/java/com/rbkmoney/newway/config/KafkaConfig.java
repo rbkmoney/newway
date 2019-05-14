@@ -42,7 +42,7 @@ public class KafkaConfig {
     private boolean enableAutoCommit;
     @Value("${kafka.consumer.group-id}")
     private String groupId;
-    @Value("${kafka.consumer.client-id}")
+    @Value("${kafka.client-id}")
     private String clientId;
 
     @Value("${kafka.bootstrap-servers}")
