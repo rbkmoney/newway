@@ -42,6 +42,8 @@ public class KafkaConfig {
     private boolean enableAutoCommit;
     @Value("${kafka.consumer.group-id}")
     private String groupId;
+    @Value("${kafka.consumer.client-id}")
+    private String clientId;
 
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
@@ -60,6 +62,7 @@ public class KafkaConfig {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SinkEventDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        props.put(ConsumerConfig.CLIENT_ID_CONFIG, clientId);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, enableAutoCommit);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
 
