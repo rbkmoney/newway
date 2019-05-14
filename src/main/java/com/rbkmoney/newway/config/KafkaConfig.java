@@ -45,7 +45,7 @@ public class KafkaConfig {
 
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
-    @Value("${kafka.listener.concurrency}")
+    @Value("${kafka.consumer.concurrency}")
     private int concurrency;
 
     private final KafkaSslProperties kafkaSslProperties;
