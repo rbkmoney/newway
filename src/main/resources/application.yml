@@ -34,8 +34,8 @@ kafka:
     key-store-location: "test"
     key-store-password: "test"
     key-password: "test"
-    key-store-type: "test"
-    trust-store-type: "test"
+    key-store-type: PKCS12
+    trust-store-type: PKCS12
   consumer:
     concurrency: 8
     group-id: "NewwayListener"

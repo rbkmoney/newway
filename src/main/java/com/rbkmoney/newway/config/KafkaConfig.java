@@ -105,9 +105,14 @@ public class KafkaConfig {
     }
 
     private ErrorHandler kafkaErrorHandler() {
-        return (thrownException, data) -> log.error("Error while processing:" +
-                "exception: {}, data-key: {}, data-offset: {}, data-partition: {}",
-                thrownException, data.key(), data.offset(), data.partition());
+        return (thrownException, data) -> {
+            if (data != null) {
+                log.error("Error while processing: data-key: {}, data-offset: {}, data-partition: {}",
+                        data.key(), data.offset(), data.partition(), thrownException);
+            } else {
+                log.error("Error while processing", thrownException);
+            }
+        };
     }
 
     @Bean
