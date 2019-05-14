@@ -56,18 +56,9 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
                     .and("kafka.bootstrap-servers=" + kafka.getBootstrapServers(),
                             "kafka.ssl.enabled=false",
                             "kafka.consumer.group-id=TestListener",
-                            "kafka.consumer.key-deserializer=org.apache.kafka.common.serialization.StringDeserializer",
-                            "kafka.consumer.value-deserializer=com.rbkmoney.newway.serde.SinkEventDeserializer",
                             "kafka.consumer.enable-auto-commit=false",
                             "kafka.consumer.auto-offset-reset=earliest",
                             "kafka.consumer.client-id=test",
-                            "kafka.listener.type=batch",
-                            "kafka.listener.ack-mode=manual",
-                            "kafka.listener.concurrency=1",
-                            "kafka.listener.poll-timeout=1000",
-                            "kafka.listener.no-poll-threshold=5.0",
-                            "kafka.listener.log-container-config=true",
-                            "kafka.listener.monitor-interval=10s",
                             "kafka.client-id=test",
                             "kafka.topics.invoicing=test-topic")
                     .applyTo(configurableApplicationContext);
