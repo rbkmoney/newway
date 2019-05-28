@@ -2,7 +2,7 @@ server:
   port: @server.port@
 spring:
   application:
-    name: @project.name@
+    name: newway
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.postgresql.Driver
@@ -14,6 +14,7 @@ spring:
       maximum-pool-size: 10
   flyway:
     schemas: nw
+
 management:
   metrics:
     export:
@@ -22,15 +23,29 @@ management:
         enabled: false
 retry-policy:
   maxAttempts: 10
+
+kafka:
+  bootstrap-servers: kenny-kafka1.bst1.rbkmoney.net:9092
+  client-id: newway
+  ssl:
+    enabled: false
+    trust-store-location: "test"
+    trust-store-password: "test"
+    key-store-location: "test"
+    key-store-password: "test"
+    key-password: "test"
+    key-store-type: PKCS12
+    trust-store-type: PKCS12
+  consumer:
+    concurrency: 8
+    group-id: "NewwayListener"
+    enable-auto-commit: false
+    auto-offset-reset: earliest
+    max-poll-records: 20
+  topics:
+    invoicing: mg-invoice-100-2
+
 bm:
-  invoicing:
-    url: http://localhost:8022/repo
-    polling:
-      delay: 10000
-      retryDelay: 1000
-      maxPoolSize: 1
-      maxQuerySize: 300
-    workersCount: 5
   partyManagement:
     url: http://bustermaze:8022/repo
     polling:

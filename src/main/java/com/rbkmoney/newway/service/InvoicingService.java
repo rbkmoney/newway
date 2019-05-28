@@ -1,12 +1,11 @@
 package com.rbkmoney.newway.service;
 
-import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.EventPayload;
-import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
-import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.damsel.payment_processing.InvoiceChange;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,19 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
-public class InvoicingService implements EventService<Event, EventPayload> {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    private final InvoiceDao invoiceDao;
+@RequiredArgsConstructor
+public class InvoicingService implements EventService<MachineEvent, EventPayload> {
 
     private final List<AbstractInvoicingHandler> invoicingHandlers;
-
-    public InvoicingService(InvoiceDao invoiceDao, List<AbstractInvoicingHandler> invoicingHandlers) {
-        this.invoiceDao = invoiceDao;
-        this.invoicingHandlers = invoicingHandlers;
-    }
 
     @Override
     public Optional<Long> getLastEventId() {
@@ -35,19 +27,15 @@ public class InvoicingService implements EventService<Event, EventPayload> {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handleEvents(Event processingEvent, EventPayload payload) {
-        if (payload.isSetInvoiceChanges()) {
-            payload.getInvoiceChanges().forEach(cc -> invoicingHandlers.forEach(ph -> {
-                if (ph.accept(cc)) {
-                    ph.handle(cc, processingEvent);
+    public void handleEvents(MachineEvent machineEvent, EventPayload payload) {
+        List<InvoiceChange> invoiceChanges = payload.getInvoiceChanges();
+        for (int i = 0; i < invoiceChanges.size(); i++) {
+            InvoiceChange change = invoiceChanges.get(i);
+            for (AbstractInvoicingHandler invoicingHandler : invoicingHandlers) {
+                if (invoicingHandler.accept(change)) {
+                    invoicingHandler.handle(change, machineEvent, i);
                 }
-            }));
+            }
         }
-    }
-
-    public Optional<Long> getLastEventId(int div, int mod) throws DaoException {
-        Optional<Long> lastEventId = Optional.ofNullable(invoiceDao.getLastEventId(div, mod));
-        log.info("Last invoicing eventId={}", lastEventId);
-        return lastEventId;
     }
 }

@@ -1,21 +1,16 @@
 package com.rbkmoney.newway.config;
 
 import com.rbkmoney.eventstock.client.EventPublisher;
-import com.rbkmoney.eventstock.client.SubscriberConfig;
 import com.rbkmoney.eventstock.client.poll.FistfulPollingEventPublisherBuilder;
 import com.rbkmoney.eventstock.client.poll.PollingEventPublisherBuilder;
 import com.rbkmoney.eventstock.client.poll.RatesPollingEventPublisherBuilder;
 import com.rbkmoney.newway.poller.event_stock.*;
-import com.rbkmoney.newway.service.InvoicingService;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Configuration
 public class EventStockConfig {
@@ -37,41 +32,6 @@ public class EventStockConfig {
                 .withPollDelay(pollDelay)
                 .withMaxQuerySize(maxQuerySize)
                 .build();
-    }
-
-    @Bean
-    public List<InvoicingEventStockHandler> invoicingEventStockHandlers(
-            InvoicingService invoicingService,
-            @Value("${bm.invoicing.workersCount}") int workersCount){
-        List<InvoicingEventStockHandler> invoicingEventStockHandlers = new ArrayList<>();
-        for (int i = 0; i < workersCount; ++i) {
-            invoicingEventStockHandlers.add(new InvoicingEventStockHandler(invoicingService, workersCount, i));
-        }
-        return invoicingEventStockHandlers;
-    }
-
-    @Bean(name = "invoicingEventPublishers")
-    public List<EventPublisher> invoicingEventPublishers(
-            List<InvoicingEventStockHandler> invoicingEventStockHandlers,
-            @Value("${bm.invoicing.url}") Resource resource,
-            @Value("${bm.invoicing.polling.delay}") int pollDelay,
-            @Value("${bm.invoicing.polling.retryDelay}") int retryDelay,
-            @Value("${bm.invoicing.polling.maxPoolSize}") int maxPoolSize,
-            @Value("${bm.invoicing.polling.maxQuerySize}") int maxQuerySize,
-            @Value("${bm.invoicing.workersCount}") int workersCount
-    ) throws IOException {
-        List<EventPublisher> eventPublishers = new ArrayList<>();
-        for (int i = 0; i < workersCount; ++i) {
-            eventPublishers.add(new PollingEventPublisherBuilder()
-                    .withURI(resource.getURI())
-                    .withEventHandler(invoicingEventStockHandlers.get(i))
-                    .withMaxPoolSize(maxPoolSize)
-                    .withEventRetryDelay(retryDelay)
-                    .withPollDelay(pollDelay)
-                    .withMaxQuerySize(maxQuerySize)
-                    .build());
-        }
-        return eventPublishers;
     }
 
     @Bean
