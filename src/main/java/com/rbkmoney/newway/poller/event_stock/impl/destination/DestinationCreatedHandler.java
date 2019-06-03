@@ -13,6 +13,7 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.destination.iface.DestinationDao;
+import com.rbkmoney.newway.domain.enums.DestinationResourceType;
 import com.rbkmoney.newway.domain.enums.DestinationStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Destination;
 import com.rbkmoney.newway.util.JsonUtil;
@@ -74,8 +75,10 @@ public class DestinationCreatedHandler extends AbstractDestinationHandler {
         } else if (resource.isSetCryptoWallet()) {
             CryptoWallet wallet = resource.getCryptoWallet();
             destination.setResourceCryptoWalletId(wallet.getId());
-            destination.setResourceCryptoWalletType(wallet.getCurrency().toString());
+            destination.setResourceCryptoWalletType(wallet.getCurrency().name());
         }
+
+        destination.setResourceType(TBaseUtil.unionFieldToEnum(resource, DestinationResourceType.class));
 
         destinationDao.updateNotCurrent(event.getSource());
         destinationDao.save(destination);
