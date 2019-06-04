@@ -79,8 +79,6 @@ public class DestinationCreatedHandler extends AbstractDestinationHandler {
             destination.setResourceCryptoWalletType(wallet.getCurrency().name());
         }
 
-        destination.setResourceType(TBaseUtil.unionFieldToEnum(resource, DestinationResourceType.class));
-
         destinationDao.updateNotCurrent(event.getSource());
         destinationDao.save(destination);
         log.info("Destination have been saved, eventId={}, destinationId={}", event.getId(), event.getSource());
