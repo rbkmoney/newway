@@ -68,7 +68,7 @@ public class WithdrawalSessionCreatedHandler extends AbstractWithdrawalSessionHa
         } else if (resource.isSetCryptoWallet()) {
             CryptoWallet cryptoWallet = resource.getCryptoWallet();
             withdrawalSession.setResourceCryptoWalletId(cryptoWallet.getId());
-            withdrawalSession.setResourceCryptoWalletType(cryptoWallet.getCurrency().toString()););
+            withdrawalSession.setResourceCryptoWalletType(cryptoWallet.getCurrency().toString());
         }
 
         Cash cash = withdrawal.getCash();
