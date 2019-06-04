@@ -1,1 +1,0 @@
-ALTER TYPE nw.payment_tool_type ADD VALUE 'crypto_currency';

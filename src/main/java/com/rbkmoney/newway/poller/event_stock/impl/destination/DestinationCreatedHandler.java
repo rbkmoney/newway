@@ -64,6 +64,7 @@ public class DestinationCreatedHandler extends AbstractDestinationHandler {
             destination.setContextJson(JsonUtil.objectToJsonString(jsonNodeMap));
         }
         Resource resource = change.getCreated().getResource();
+        destination.setResourceType(TBaseUtil.unionFieldToEnum(resource, DestinationResourceType.class));
         if (resource.isSetBankCard()) {
             BankCard bankCard = resource.getBankCard();
             destination.setResourceBankCardToken(bankCard.getToken());
