@@ -2,6 +2,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.destination;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rbkmoney.fistful.base.BankCard;
+import com.rbkmoney.fistful.base.CryptoWallet;
 import com.rbkmoney.fistful.destination.Change;
 import com.rbkmoney.fistful.destination.Resource;
 import com.rbkmoney.fistful.destination.SinkEvent;
@@ -12,6 +13,7 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.destination.iface.DestinationDao;
+import com.rbkmoney.newway.domain.enums.DestinationResourceType;
 import com.rbkmoney.newway.domain.enums.DestinationStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Destination;
 import com.rbkmoney.newway.util.JsonUtil;
@@ -49,8 +51,7 @@ public class DestinationCreatedHandler extends AbstractDestinationHandler {
         destination.setDestinationStatus(DestinationStatus.unauthorized);
         destination.setExternalId(change.getCreated().getExternalId());
 
-        destination.setIdentityId(change.getCreated().getIdentity());
-        destination.setCurrencyCode(change.getCreated().getCurrency());
+        destination.setIdentityId(change.getCreated().getId());
         if (change.getCreated().isSetStatus()) {
             destination.setDestinationStatus(TBaseUtil.unionFieldToEnum(change.getCreated().getStatus(), DestinationStatus.class));
         }
@@ -63,6 +64,7 @@ public class DestinationCreatedHandler extends AbstractDestinationHandler {
             destination.setContextJson(JsonUtil.objectToJsonString(jsonNodeMap));
         }
         Resource resource = change.getCreated().getResource();
+        destination.setResourceType(TBaseUtil.unionFieldToEnum(resource, DestinationResourceType.class));
         if (resource.isSetBankCard()) {
             BankCard bankCard = resource.getBankCard();
             destination.setResourceBankCardToken(bankCard.getToken());
@@ -71,8 +73,11 @@ public class DestinationCreatedHandler extends AbstractDestinationHandler {
             if (bankCard.isSetPaymentSystem()) {
                 destination.setResourceBankCardPaymentSystem(bankCard.getPaymentSystem().toString());
             }
+        } else if (resource.isSetCryptoWallet()) {
+            CryptoWallet wallet = resource.getCryptoWallet();
+            destination.setResourceCryptoWalletId(wallet.getId());
+            destination.setResourceCryptoWalletType(wallet.getCurrency().name());
         }
-
         destinationDao.updateNotCurrent(event.getSource());
         destinationDao.save(destination);
         log.info("Destination have been saved, eventId={}, destinationId={}", event.getId(), event.getSource());
