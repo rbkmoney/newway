@@ -2,7 +2,13 @@ package com.rbkmoney.newway.poller.event_stock.impl.withdrawal_session;
 
 import com.rbkmoney.fistful.base.BankCard;
 import com.rbkmoney.fistful.base.Cash;
-import com.rbkmoney.fistful.withdrawal_session.*;
+import com.rbkmoney.fistful.base.CryptoWallet;
+import com.rbkmoney.fistful.destination.Resource;
+import com.rbkmoney.fistful.withdrawal_session.Change;
+import com.rbkmoney.fistful.withdrawal_session.Session;
+import com.rbkmoney.fistful.withdrawal_session.SinkEvent;
+import com.rbkmoney.fistful.withdrawal_session.Withdrawal;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -10,6 +16,7 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.withdrawal_session.iface.WithdrawalSessionDao;
 import com.rbkmoney.newway.domain.enums.BankCardPaymentSystem;
+import com.rbkmoney.newway.domain.enums.DestinationResourceType;
 import com.rbkmoney.newway.domain.tables.pojos.WithdrawalSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,11 +57,19 @@ public class WithdrawalSessionCreatedHandler extends AbstractWithdrawalSessionHa
         withdrawalSession.setWithdrawalId(withdrawal.getId());
         withdrawalSession.setDestinationName(withdrawal.getDestination().getName());
 
-        BankCard bankCard = withdrawal.getDestination().getResource().getBankCard();
-        withdrawalSession.setDestinationCardToken(bankCard.getToken());
-        withdrawalSession.setDestinationCardBin(bankCard.getBin());
-        withdrawalSession.setDestinationCardMaskedPan(bankCard.getMaskedPan());
-        withdrawalSession.setDestinationCardPaymentSystem(BankCardPaymentSystem.valueOf(bankCard.getPaymentSystem().name()));
+        Resource resource = withdrawal.getDestination().getResource();
+        withdrawalSession.setResourceType(TBaseUtil.unionFieldToEnum(resource, DestinationResourceType.class));
+        if (resource.isSetBankCard()) {
+            BankCard bankCard = resource.getBankCard();
+            withdrawalSession.setDestinationCardToken(bankCard.getToken());
+            withdrawalSession.setDestinationCardBin(bankCard.getBin());
+            withdrawalSession.setDestinationCardMaskedPan(bankCard.getMaskedPan());
+            withdrawalSession.setDestinationCardPaymentSystem(BankCardPaymentSystem.valueOf(bankCard.getPaymentSystem().name()));
+        } else if (resource.isSetCryptoWallet()) {
+            CryptoWallet cryptoWallet = resource.getCryptoWallet();
+            withdrawalSession.setResourceCryptoWalletId(cryptoWallet.getId());
+            withdrawalSession.setResourceCryptoWalletType(cryptoWallet.getCurrency().toString()););
+        }
 
         Cash cash = withdrawal.getCash();
         withdrawalSession.setAmount(cash.getAmount());
