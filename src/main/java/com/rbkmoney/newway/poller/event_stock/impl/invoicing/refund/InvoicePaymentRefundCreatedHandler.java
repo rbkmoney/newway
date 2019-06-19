@@ -99,11 +99,12 @@ public class InvoicePaymentRefundCreatedHandler extends AbstractInvoicingHandler
             refund.setPartyRevision(invoicePaymentRefund.getPartyRevision());
         }
 
-        long rfndId = refundDao.save(refund);
-
-        List<CashFlow> cashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentRefundCreated.getCashFlow(), rfndId, PaymentChangeType.refund);
-        cashFlowDao.save(cashFlowList);
-        refundDao.updateCommissions(rfndId);
+        Long rfndId = refundDao.save(refund);
+        if (rfndId != null) {
+            List<CashFlow> cashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentRefundCreated.getCashFlow(), rfndId, PaymentChangeType.refund);
+            cashFlowDao.save(cashFlowList);
+            refundDao.updateCommissions(rfndId);
+        }
 
         log.info("Refund has been saved, sequenceId={}, invoiceId={}, paymentId={}, refundId={}",
                 sequenceId, invoiceId, paymentId, refundId);

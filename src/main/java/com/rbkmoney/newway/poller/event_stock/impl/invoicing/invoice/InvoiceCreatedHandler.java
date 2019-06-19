@@ -73,21 +73,23 @@ public class InvoiceCreatedHandler extends AbstractInvoicingHandler {
         invoiceRecord.setContext(invoice.getContext().getData());
         invoiceRecord.setTemplateId(invoice.getTemplateId());
 
-        long invId = invoiceDao.save(invoiceRecord);
-        if (invoice.getDetails().isSetCart()) {
-            List<InvoiceCart> invoiceCarts = invoice.getDetails().getCart().getLines().stream().map(il -> {
-                InvoiceCart ic = new InvoiceCart();
-                ic.setInvId(invId);
-                ic.setProduct(il.getProduct());
-                ic.setQuantity(il.getQuantity());
-                ic.setAmount(il.getPrice().getAmount());
-                ic.setCurrencyCode(il.getPrice().getCurrency().getSymbolicCode());
-                Map<String, JsonNode> jsonNodeMap = il.getMetadata().entrySet().stream()
-                        .collect(Collectors.toMap(Map.Entry::getKey, e -> JsonUtil.tBaseToJsonNode(e.getValue())));
-                ic.setMetadataJson(JsonUtil.objectToJsonString(jsonNodeMap));
-                return ic;
-            }).collect(Collectors.toList());
-            invoiceCartDao.save(invoiceCarts);
+        Long invId = invoiceDao.save(invoiceRecord);
+        if (invId != null) {
+            if (invoice.getDetails().isSetCart()) {
+                List<InvoiceCart> invoiceCarts = invoice.getDetails().getCart().getLines().stream().map(il -> {
+                    InvoiceCart ic = new InvoiceCart();
+                    ic.setInvId(invId);
+                    ic.setProduct(il.getProduct());
+                    ic.setQuantity(il.getQuantity());
+                    ic.setAmount(il.getPrice().getAmount());
+                    ic.setCurrencyCode(il.getPrice().getCurrency().getSymbolicCode());
+                    Map<String, JsonNode> jsonNodeMap = il.getMetadata().entrySet().stream()
+                            .collect(Collectors.toMap(Map.Entry::getKey, e -> JsonUtil.tBaseToJsonNode(e.getValue())));
+                    ic.setMetadataJson(JsonUtil.objectToJsonString(jsonNodeMap));
+                    return ic;
+                }).collect(Collectors.toList());
+                invoiceCartDao.save(invoiceCarts);
+            }
         }
 
         log.info("Invoice has been saved, sequenceId={}, invoiceId={}, partyId={}, shopId={}",

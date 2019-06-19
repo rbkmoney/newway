@@ -72,19 +72,21 @@ public class InvoicePaymentAdjustmentStatusChangedHandler extends AbstractInvoic
             adjustmentSource.setStatusCancelledAt(TypeUtil.stringToLocalDateTime(invoicePaymentAdjustmentStatus.getCancelled().getAt()));
         }
         adjustmentDao.updateNotCurrent(invoiceId, paymentId, adjustmentId);
-        long adjId = adjustmentDao.save(adjustmentSource);
-        List<CashFlow> newCashFlows = cashFlowDao.getForAdjustments(adjustmentSourceId, AdjustmentCashFlowType.new_cash_flow);
-        newCashFlows.forEach(pcf -> {
-            pcf.setId(null);
-            pcf.setObjId(adjId);
-        });
-        cashFlowDao.save(newCashFlows);
-        List<CashFlow> oldCashFlows = cashFlowDao.getForAdjustments(adjustmentSourceId, AdjustmentCashFlowType.old_cash_flow_inverse);
-        oldCashFlows.forEach(pcf -> {
-            pcf.setId(null);
-            pcf.setObjId(adjId);
-        });
-        cashFlowDao.save(oldCashFlows);
+        Long adjId = adjustmentDao.save(adjustmentSource);
+        if (adjId != null) {
+            List<CashFlow> newCashFlows = cashFlowDao.getForAdjustments(adjustmentSourceId, AdjustmentCashFlowType.new_cash_flow);
+            newCashFlows.forEach(pcf -> {
+                pcf.setId(null);
+                pcf.setObjId(adjId);
+            });
+            cashFlowDao.save(newCashFlows);
+            List<CashFlow> oldCashFlows = cashFlowDao.getForAdjustments(adjustmentSourceId, AdjustmentCashFlowType.old_cash_flow_inverse);
+            oldCashFlows.forEach(pcf -> {
+                pcf.setId(null);
+                pcf.setObjId(adjId);
+            });
+            cashFlowDao.save(oldCashFlows);
+        }
 
         log.info("Adjustment status change has been saved, sequenceId={}, invoiceId={}, paymentId={}, adjustmentId={}, status={}",
                 sequenceId, invoiceId, paymentId, adjustmentId, invoicePaymentAdjustmentStatus.getSetField().getFieldName());

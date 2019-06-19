@@ -124,13 +124,15 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
             payment.setMakeRecurrent(invoicePayment.isMakeRecurrent());
         }
 
-        long pmntId = paymentDao.save(payment);
+        Long pmntId = paymentDao.save(payment);
 
         if (invoicePaymentStarted.isSetCashFlow()) {
-            List<CashFlow> cashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentStarted.getCashFlow(), pmntId, PaymentChangeType.payment);
-            cashFlowDao.save(cashFlowList);
-            if (!invoicePaymentStarted.getCashFlow().isEmpty()) {
-                paymentDao.updateCommissions(pmntId);
+            if (pmntId != null) {
+                List<CashFlow> cashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentStarted.getCashFlow(), pmntId, PaymentChangeType.payment);
+                cashFlowDao.save(cashFlowList);
+                if (!invoicePaymentStarted.getCashFlow().isEmpty()) {
+                    paymentDao.updateCommissions(pmntId);
+                }
             }
         }
 

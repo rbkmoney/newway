@@ -18,6 +18,7 @@ import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
+import com.rbkmoney.newway.service.CashFlowService;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ import java.util.List;
 public class InvoicePaymentSessionChangeTransactionBoundHandler extends AbstractInvoicingHandler {
 
     private final PaymentDao paymentDao;
-    private final CashFlowDao cashFlowDao;
+    private final CashFlowService cashFlowService;
 
     private Filter filter = new PathConditionFilter(new PathConditionRule(
             "invoice_payment_change.payload.invoice_payment_session_change.payload.session_transaction_bound",
@@ -86,12 +87,7 @@ public class InvoicePaymentSessionChangeTransactionBoundHandler extends Abstract
 
         paymentDao.updateNotCurrent(invoiceId, paymentId);
         long pmntId = paymentDao.save(paymentSource);
-        List<CashFlow> cashFlows = cashFlowDao.getByObjId(paymentSourceId, PaymentChangeType.payment);
-        cashFlows.forEach(pcf -> {
-            pcf.setId(null);
-            pcf.setObjId(pmntId);
-        });
-        cashFlowDao.save(cashFlows);
+        cashFlowService.save(paymentSourceId, pmntId, PaymentChangeType.payment);
         log.info("Payment session transaction info has been saved, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
     }
 

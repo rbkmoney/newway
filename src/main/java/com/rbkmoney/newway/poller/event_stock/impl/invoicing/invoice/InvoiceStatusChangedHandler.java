@@ -64,13 +64,15 @@ public class InvoiceStatusChangedHandler extends AbstractInvoicingHandler {
         }
 
         invoiceDao.updateNotCurrent(invoiceSource.getInvoiceId());
-        long invId = invoiceDao.save(invoiceSource);
-        List<InvoiceCart> invoiceCartList = invoiceCartDao.getByInvId(invoiceSourceId);
-        invoiceCartList.forEach(ic -> {
-            ic.setId(null);
-            ic.setInvId(invId);
-        });
-        invoiceCartDao.save(invoiceCartList);
+        Long invId = invoiceDao.save(invoiceSource);
+        if (invId != null) {
+            List<InvoiceCart> invoiceCartList = invoiceCartDao.getByInvId(invoiceSourceId);
+            invoiceCartList.forEach(ic -> {
+                ic.setId(null);
+                ic.setInvId(invId);
+            });
+            invoiceCartDao.save(invoiceCartList);
+        }
 
         log.info("Invoice has been saved, sequenceId={}, invoiceId={}, partyId={}, shopId={}, status={}",
                 sequenceId, invoiceId, invoiceSource.getPartyId(), invoiceSource.getShopId(), invoiceStatus.getSetField().getFieldName());

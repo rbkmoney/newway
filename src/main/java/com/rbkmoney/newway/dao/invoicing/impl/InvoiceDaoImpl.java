@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
+import java.util.Optional;
+
 import static com.rbkmoney.newway.domain.tables.Invoice.INVOICE;
 
 @Component
@@ -33,12 +35,11 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
         Query query = getDslContext().insertInto(INVOICE)
                 .set(invoiceRecord)
                 .onConflict(INVOICE.INVOICE_ID, INVOICE.CHANGE_ID, INVOICE.SEQUENCE_ID)
-                .doUpdate()
-                .set(invoiceRecord)
+                .doNothing()
                 .returning(INVOICE.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOneWithReturn(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
     @Override

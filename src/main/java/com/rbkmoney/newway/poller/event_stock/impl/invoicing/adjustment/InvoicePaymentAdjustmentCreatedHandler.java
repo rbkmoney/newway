@@ -87,12 +87,14 @@ public class InvoicePaymentAdjustmentCreatedHandler extends AbstractInvoicingHan
             adjustment.setPartyRevision(invoicePaymentAdjustment.getPartyRevision());
         }
 
-        long adjId = adjustmentDao.save(adjustment);
-        List<CashFlow> newCashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentAdjustment.getNewCashFlow(), adjId, PaymentChangeType.adjustment, AdjustmentCashFlowType.new_cash_flow);
-        cashFlowDao.save(newCashFlowList);
-        List<CashFlow> oldCashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentAdjustment.getOldCashFlowInverse(), adjId, PaymentChangeType.adjustment, AdjustmentCashFlowType.old_cash_flow_inverse);
-        cashFlowDao.save(oldCashFlowList);
-        adjustmentDao.updateCommissions(adjId);
+        Long adjId = adjustmentDao.save(adjustment);
+        if (adjId != null) {
+            List<CashFlow> newCashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentAdjustment.getNewCashFlow(), adjId, PaymentChangeType.adjustment, AdjustmentCashFlowType.new_cash_flow);
+            cashFlowDao.save(newCashFlowList);
+            List<CashFlow> oldCashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentAdjustment.getOldCashFlowInverse(), adjId, PaymentChangeType.adjustment, AdjustmentCashFlowType.old_cash_flow_inverse);
+            cashFlowDao.save(oldCashFlowList);
+            adjustmentDao.updateCommissions(adjId);
+        }
 
         log.info("Adjustment has been saved, sequenceId={}, invoiceId={}, paymentId={}, adjustmentId={}",
                 sequenceId, invoiceId, paymentId, adjustmentId);
