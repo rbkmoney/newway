@@ -40,7 +40,7 @@ public class RefundDaoImpl extends AbstractGenericDao implements RefundDao {
                 .doNothing()
                 .returning(REFUND.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeWithReturn(query, keyHolder);
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 

@@ -40,7 +40,7 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
                 .doNothing()
                 .returning(PAYMENT.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeWithReturn(query, keyHolder);
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 

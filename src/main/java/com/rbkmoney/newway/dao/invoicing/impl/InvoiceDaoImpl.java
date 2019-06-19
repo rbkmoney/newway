@@ -38,7 +38,7 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
                 .doNothing()
                 .returning(INVOICE.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeWithReturn(query, keyHolder);
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 

@@ -40,7 +40,7 @@ public class AdjustmentDaoImpl extends AbstractGenericDao implements AdjustmentD
                 .doNothing()
                 .returning(ADJUSTMENT.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeWithReturn(query, keyHolder);
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
