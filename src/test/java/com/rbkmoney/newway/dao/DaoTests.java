@@ -392,7 +392,7 @@ public class DaoTests extends AbstractAppDaoTests {
         adjustment.setCurrent(true);
         adjustmentDao.save(adjustment);
         assertEquals(adjustment.getPartyId(), adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()).getPartyId());
-        adjustmentDao.updateNotCurrent(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId());
+        adjustmentDao.updateNotCurrent(adjustment.getId());
         Assert.assertNull(adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()));
     }
 
