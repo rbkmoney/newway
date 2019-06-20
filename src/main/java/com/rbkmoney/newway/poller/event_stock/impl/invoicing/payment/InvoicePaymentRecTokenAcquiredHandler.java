@@ -54,8 +54,10 @@ public class InvoicePaymentRecTokenAcquiredHandler extends AbstractInvoicingHand
         paymentSource.setSequenceId(sequenceId);
         paymentSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         paymentSource.setRecurrentIntentionToken(token);
-        paymentDao.updateNotCurrent(invoiceId, paymentId);
         Long pmntId = paymentDao.save(paymentSource);
+        if (pmntId != null) {
+            paymentDao.updateNotCurrent(paymentSourceId);
+        }
         cashFlowService.save(paymentSourceId, pmntId, PaymentChangeType.payment);
         log.info("Payment recurrent token have been saved, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
     }

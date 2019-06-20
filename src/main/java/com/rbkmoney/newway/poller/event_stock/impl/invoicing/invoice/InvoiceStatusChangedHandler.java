@@ -63,9 +63,9 @@ public class InvoiceStatusChangedHandler extends AbstractInvoicingHandler {
             invoiceSource.setStatusFulfilledDetails(invoiceStatus.getFulfilled().getDetails());
         }
 
-        invoiceDao.updateNotCurrent(invoiceSource.getInvoiceId());
         Long invId = invoiceDao.save(invoiceSource);
         if (invId != null) {
+            invoiceDao.updateNotCurrent(invoiceSourceId);
             List<InvoiceCart> invoiceCartList = invoiceCartDao.getByInvId(invoiceSourceId);
             invoiceCartList.forEach(ic -> {
                 ic.setId(null);

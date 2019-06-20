@@ -85,8 +85,10 @@ public class InvoicePaymentSessionChangeTransactionBoundHandler extends Abstract
             }
         }
 
-        paymentDao.updateNotCurrent(invoiceId, paymentId);
-        long pmntId = paymentDao.save(paymentSource);
+        Long pmntId = paymentDao.save(paymentSource);
+        if (pmntId != null) {
+            paymentDao.updateNotCurrent(paymentSourceId);
+        }
         cashFlowService.save(paymentSourceId, pmntId, PaymentChangeType.payment);
         log.info("Payment session transaction info has been saved, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
     }

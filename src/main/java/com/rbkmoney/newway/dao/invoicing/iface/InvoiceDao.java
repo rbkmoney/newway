@@ -10,5 +10,5 @@ public interface InvoiceDao extends GenericDao {
 
     Invoice get(String invoiceId) throws DaoException;
 
-    void updateNotCurrent(String invoiceId) throws DaoException;
+    void updateNotCurrent(Long id) throws DaoException;
 }

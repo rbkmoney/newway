@@ -21,6 +21,7 @@ import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.Calendar;
 import com.rbkmoney.newway.domain.tables.pojos.Currency;
 import com.rbkmoney.newway.domain.tables.pojos.*;
+import com.rbkmoney.newway.service.CashFlowService;
 import com.rbkmoney.newway.util.HashUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -114,6 +115,8 @@ public class DaoTests extends AbstractAppDaoTests {
     private WithdrawalDao withdrawalDao;
     @Autowired
     private WithdrawalSessionDao withdrawalSessionDao;
+    @Autowired
+    private CashFlowService cashFlowService;
 
     @Test
     public void depositDaoTest() {
@@ -417,7 +420,7 @@ public class DaoTests extends AbstractAppDaoTests {
         paymentDao.save(payment);
         Payment paymentGet = paymentDao.get(payment.getInvoiceId(), payment.getPaymentId());
         assertEquals(payment, paymentGet);
-        paymentDao.updateNotCurrent(payment.getInvoiceId(), payment.getPaymentId());
+        paymentDao.updateNotCurrent(payment.getId());
         Assert.assertNull(paymentDao.get(payment.getInvoiceId(), payment.getPaymentId()));
     }
 
@@ -429,7 +432,7 @@ public class DaoTests extends AbstractAppDaoTests {
         refundDao.save(refund);
         Refund refundGet = refundDao.get(refund.getInvoiceId(), refund.getPaymentId(), refund.getRefundId());
         assertEquals(refund, refundGet);
-        refundDao.updateNotCurrent(refund.getInvoiceId(), refund.getPaymentId(), refund.getRefundId());
+        refundDao.updateNotCurrent(refund.getId());
         Assert.assertNull(refundDao.get(refund.getInvoiceId(), refund.getPaymentId(), refund.getRefundId()));
     }
 
@@ -647,6 +650,29 @@ public class DaoTests extends AbstractAppDaoTests {
 
         adjustmentDao.save(adjustment);
 
-        assertEquals("2", adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()).getPartyId());
+        assertEquals("1", adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()).getPartyId());
+    }
+
+    @Test
+    public void checkCashFlowCountTest(){
+        jdbcTemplate.execute("truncate table nw.payment cascade");
+        Payment payment = random(Payment.class);
+        payment.setCurrent(true);
+        // ------- 1 ----------
+        Long pmntId = paymentDao.save(payment);
+        List<CashFlow> cashFlowList = randomListOf(3, CashFlow.class);
+        cashFlowList.forEach(cf -> {
+            cf.setObjId(pmntId);
+            cf.setObjType(PaymentChangeType.payment);
+        });
+        cashFlowDao.save(cashFlowList);
+
+        // --------2 ---------
+        Long nullId = paymentDao.save(payment);
+        assertNull(nullId);
+        cashFlowService.save(nullId, pmntId, PaymentChangeType.payment);
+        List<CashFlow> sameCashFlowList = cashFlowDao.getByObjId(pmntId, PaymentChangeType.payment);
+        assertEquals(3, sameCashFlowList.size());
+
     }
 }

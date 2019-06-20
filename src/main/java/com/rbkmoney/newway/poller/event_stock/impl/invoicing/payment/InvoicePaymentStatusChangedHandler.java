@@ -80,8 +80,10 @@ public class InvoicePaymentStatusChangedHandler extends AbstractInvoicingHandler
             paymentSource.setStatusFailedFailure(JsonUtil.tBaseToJsonString(invoicePaymentStatus.getFailed()));
         }
 
-        paymentDao.updateNotCurrent(invoiceId, paymentId);
-        long pmntId = paymentDao.save(paymentSource);
+        Long pmntId = paymentDao.save(paymentSource);
+        if (pmntId != null) {
+            paymentDao.updateNotCurrent(paymentSourceId);
+        }
         cashFlowService.save(paymentSourceId, pmntId, PaymentChangeType.payment);
 
         log.info("Payment status has been saved, sequenceId={}, invoiceId={}, paymentId={}, status={}",

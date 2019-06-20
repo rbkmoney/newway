@@ -14,4 +14,6 @@ public interface AdjustmentDao extends GenericDao {
 
     void updateNotCurrent(String invoiceId, String paymentId, String adjustmentId) throws DaoException;
 
+    void updateNotCurrent(Long id) throws DaoException;
+
 }

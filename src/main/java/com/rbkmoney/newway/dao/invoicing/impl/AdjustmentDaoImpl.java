@@ -75,4 +75,10 @@ public class AdjustmentDaoImpl extends AbstractGenericDao implements AdjustmentD
                         .and(ADJUSTMENT.CURRENT)));
         executeOne(query);
     }
+
+    @Override
+    public void updateNotCurrent(Long id) throws DaoException {
+        Query query = getDslContext().update(ADJUSTMENT).set(ADJUSTMENT.CURRENT, false).where(ADJUSTMENT.ID.eq(id));
+        executeOne(query);
+    }
 }
