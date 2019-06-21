@@ -73,8 +73,8 @@ public class InvoicePaymentRefundStatusChangedHandler extends AbstractInvoicingH
         Long rfndId = refundDao.save(refundSource);
         if (rfndId != null) {
             refundDao.updateNotCurrent(refundSourceId);
+            cashFlowService.save(refundSourceId, rfndId, PaymentChangeType.refund);
         }
-        cashFlowService.save(refundSourceId, rfndId, PaymentChangeType.refund);
 
         log.info("Refund have been succeeded, sequenceId={}, invoiceId={}, paymentId={}, refundId={}, status={}",
                 sequenceId, invoiceId, paymentId, refundId, invoicePaymentRefundStatus.getSetField().getFieldName());

@@ -63,8 +63,8 @@ public class InvoicePaymentRouteChangedHandler extends AbstractInvoicingHandler 
         Long pmntId = paymentDao.save(paymentSource);
         if (pmntId != null) {
             paymentDao.updateNotCurrent(paymentSourceId);
+            cashFlowService.save(paymentSourceId, pmntId, PaymentChangeType.payment);
         }
-        cashFlowService.save(paymentSourceId, pmntId, PaymentChangeType.payment);
         log.info("Payment route have been saved, route='{}', sequenceId='{}', invoiceId='{}', paymentId='{}'", paymentRoute, sequenceId, invoiceId, paymentId);
     }
 

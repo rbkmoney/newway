@@ -70,8 +70,8 @@ public class InvoicePaymentRefundSessionChangeTransactionBoundHandler extends Ab
         Long rfndId = refundDao.save(refundSource);
         if (rfndId != null) {
             refundDao.updateNotCurrent(refundSourceId);
+            cashFlowService.save(refundSourceId, rfndId, PaymentChangeType.refund);
         }
-        cashFlowService.save(refundSourceId, rfndId, PaymentChangeType.refund);
         log.info("Refund session transaction info has been saved, sequenceId='{}', invoiceId='{}', paymentId='{}', refundId='{}'", sequenceId, invoiceId, paymentId, refundId);
     }
 
