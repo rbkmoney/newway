@@ -11,14 +11,13 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
 import com.rbkmoney.newway.dao.invoicing.iface.RefundDao;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.enums.RefundStatus;
-import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Refund;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
+import com.rbkmoney.newway.service.CashFlowService;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +33,7 @@ import java.util.List;
 public class InvoicePaymentRefundStatusChangedHandler extends AbstractInvoicingHandler {
 
     private final RefundDao refundDao;
-    private final CashFlowDao cashFlowDao;
+    private final CashFlowService cashFlowService;
 
     private Filter filter = new PathConditionFilter(new PathConditionRule(
             "invoice_payment_change.payload.invoice_payment_refund_change.payload.invoice_payment_refund_status_changed",
@@ -71,14 +70,11 @@ public class InvoicePaymentRefundStatusChangedHandler extends AbstractInvoicingH
         } else {
             refundSource.setStatusFailedFailure(null);
         }
-        refundDao.updateNotCurrent(invoiceId, paymentId, refundId);
-        long rfndId = refundDao.save(refundSource);
-        List<CashFlow> cashFlows = cashFlowDao.getByObjId(refundSourceId, PaymentChangeType.refund);
-        cashFlows.forEach(pcf -> {
-            pcf.setId(null);
-            pcf.setObjId(rfndId);
-        });
-        cashFlowDao.save(cashFlows);
+        Long rfndId = refundDao.save(refundSource);
+        if (rfndId != null) {
+            refundDao.updateNotCurrent(refundSourceId);
+            cashFlowService.save(refundSourceId, rfndId, PaymentChangeType.refund);
+        }
 
         log.info("Refund have been succeeded, sequenceId={}, invoiceId={}, paymentId={}, refundId={}, status={}",
                 sequenceId, invoiceId, paymentId, refundId, invoicePaymentRefundStatus.getSetField().getFieldName());

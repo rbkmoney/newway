@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
+import java.util.Optional;
+
 import static com.rbkmoney.newway.domain.Tables.PAYMENT;
 
 @Component
@@ -34,13 +36,12 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
         PaymentRecord paymentRecord = getDslContext().newRecord(PAYMENT, payment);
         Query query = getDslContext().insertInto(PAYMENT)
                 .set(paymentRecord)
-                .onConflict(PAYMENT.INVOICE_ID, PAYMENT.CHANGE_ID, PAYMENT.SEQUENCE_ID)
-                .doUpdate()
-                .set(paymentRecord)
+                .onConflict(PAYMENT.INVOICE_ID, PAYMENT.SEQUENCE_ID, PAYMENT.CHANGE_ID)
+                .doNothing()
                 .returning(PAYMENT.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        executeWithReturn(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
     @Override
@@ -64,9 +65,8 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
     }
 
     @Override
-    public void updateNotCurrent(String invoiceId, String paymentId) throws DaoException {
-        Query query = getDslContext().update(PAYMENT).set(PAYMENT.CURRENT, false)
-                .where(PAYMENT.INVOICE_ID.eq(invoiceId).and(PAYMENT.PAYMENT_ID.eq(paymentId).and(PAYMENT.CURRENT)));
+    public void updateNotCurrent(Long id) throws DaoException {
+        Query query = getDslContext().update(PAYMENT).set(PAYMENT.CURRENT, false).where(PAYMENT.ID.eq(id));
         executeOne(query);
     }
 }

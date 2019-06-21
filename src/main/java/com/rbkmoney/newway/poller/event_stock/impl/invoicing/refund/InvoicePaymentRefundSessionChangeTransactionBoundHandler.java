@@ -18,6 +18,7 @@ import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Refund;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
+import com.rbkmoney.newway.service.CashFlowService;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ import java.util.List;
 public class InvoicePaymentRefundSessionChangeTransactionBoundHandler extends AbstractInvoicingHandler {
 
     private final RefundDao refundDao;
-    private final CashFlowDao cashFlowDao;
+    private final CashFlowService cashFlowService;
 
     private Filter filter = new PathConditionFilter(new PathConditionRule(
             "invoice_payment_change.payload.invoice_payment_refund_change.payload.invoice_payment_session_change.payload.session_transaction_bound",
@@ -66,14 +67,11 @@ public class InvoicePaymentRefundSessionChangeTransactionBoundHandler extends Ab
         TransactionInfo transactionInfo = payload.getSessionTransactionBound().getTrx();
         refundSource.setSessionPayloadTransactionBoundTrxId(transactionInfo.getId());
         refundSource.setSessionPayloadTransactionBoundTrxExtraJson(JsonUtil.objectToJsonString(transactionInfo.getExtra()));
-        refundDao.updateNotCurrent(invoiceId, paymentId, refundId);
-        long rfndId = refundDao.save(refundSource);
-        List<CashFlow> cashFlows = cashFlowDao.getByObjId(refundSourceId, PaymentChangeType.refund);
-        cashFlows.forEach(pcf -> {
-            pcf.setId(null);
-            pcf.setObjId(rfndId);
-        });
-        cashFlowDao.save(cashFlows);
+        Long rfndId = refundDao.save(refundSource);
+        if (rfndId != null) {
+            refundDao.updateNotCurrent(refundSourceId);
+            cashFlowService.save(refundSourceId, rfndId, PaymentChangeType.refund);
+        }
         log.info("Refund session transaction info has been saved, sequenceId='{}', invoiceId='{}', paymentId='{}', refundId='{}'", sequenceId, invoiceId, paymentId, refundId);
     }
 

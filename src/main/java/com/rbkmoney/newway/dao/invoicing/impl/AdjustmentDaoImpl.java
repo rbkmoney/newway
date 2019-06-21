@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
+import java.util.Optional;
+
 import static com.rbkmoney.newway.domain.Tables.ADJUSTMENT;
 
 @Component
@@ -34,13 +36,12 @@ public class AdjustmentDaoImpl extends AbstractGenericDao implements AdjustmentD
         AdjustmentRecord record = getDslContext().newRecord(ADJUSTMENT, adjustment);
         Query query = getDslContext().insertInto(ADJUSTMENT)
                 .set(record)
-                .onConflict(ADJUSTMENT.INVOICE_ID, ADJUSTMENT.CHANGE_ID, ADJUSTMENT.SEQUENCE_ID)
-                .doUpdate()
-                .set(record)
+                .onConflict(ADJUSTMENT.INVOICE_ID, ADJUSTMENT.SEQUENCE_ID, ADJUSTMENT.CHANGE_ID)
+                .doNothing()
                 .returning(ADJUSTMENT.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        executeWithReturn(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
     @Override
@@ -66,12 +67,8 @@ public class AdjustmentDaoImpl extends AbstractGenericDao implements AdjustmentD
     }
 
     @Override
-    public void updateNotCurrent(String invoiceId, String paymentId, String adjustmentId) throws DaoException {
-        Query query = getDslContext().update(ADJUSTMENT).set(ADJUSTMENT.CURRENT, false)
-                .where(ADJUSTMENT.INVOICE_ID.eq(invoiceId)
-                        .and(ADJUSTMENT.PAYMENT_ID.eq(paymentId)
-                        .and(ADJUSTMENT.ADJUSTMENT_ID.eq(adjustmentId))
-                        .and(ADJUSTMENT.CURRENT)));
+    public void updateNotCurrent(Long id) throws DaoException {
+        Query query = getDslContext().update(ADJUSTMENT).set(ADJUSTMENT.CURRENT, false).where(ADJUSTMENT.ID.eq(id));
         executeOne(query);
     }
 }

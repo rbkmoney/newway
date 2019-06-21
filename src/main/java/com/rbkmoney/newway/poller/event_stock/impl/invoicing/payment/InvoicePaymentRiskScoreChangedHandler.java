@@ -16,6 +16,7 @@ import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
+import com.rbkmoney.newway.service.CashFlowService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ import java.util.List;
 public class InvoicePaymentRiskScoreChangedHandler extends AbstractInvoicingHandler {
 
     private final PaymentDao paymentDao;
-    private final CashFlowDao cashFlowDao;
+    private final CashFlowService cashFlowService;
 
     private Filter filter = new PathConditionFilter(new PathConditionRule(
             "invoice_payment_change.payload.invoice_payment_risk_score_changed",
@@ -62,14 +63,11 @@ public class InvoicePaymentRiskScoreChangedHandler extends AbstractInvoicingHand
             throw new IllegalArgumentException("Illegal risk score: " + riskScore);
         }
         paymentSource.setRiskScore(score);
-        paymentDao.updateNotCurrent(invoiceId, paymentId);
-        long pmntId = paymentDao.save(paymentSource);
-        List<CashFlow> cashFlows = cashFlowDao.getByObjId(paymentSourceId, PaymentChangeType.payment);
-        cashFlows.forEach(pcf -> {
-            pcf.setId(null);
-            pcf.setObjId(pmntId);
-        });
-        cashFlowDao.save(cashFlows);
+        Long pmntId = paymentDao.save(paymentSource);
+        if (pmntId != null) {
+            paymentDao.updateNotCurrent(paymentSourceId);
+            cashFlowService.save(paymentSourceId, pmntId, PaymentChangeType.payment);
+        }
         log.info("Payment risk score have been saved, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
     }
 

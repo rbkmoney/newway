@@ -8,20 +8,17 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
 import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
-import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
+import com.rbkmoney.newway.service.CashFlowService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Slf4j
 @Component
@@ -29,7 +26,7 @@ import java.util.List;
 public class InvoicePaymentRecTokenAcquiredHandler extends AbstractInvoicingHandler {
 
     private final PaymentDao paymentDao;
-    private final CashFlowDao cashFlowDao;
+    private final CashFlowService cashFlowService;
 
     private Filter filter = new PathConditionFilter(new PathConditionRule(
             "invoice_payment_change.payload.invoice_payment_rec_token_acquired",
@@ -57,14 +54,11 @@ public class InvoicePaymentRecTokenAcquiredHandler extends AbstractInvoicingHand
         paymentSource.setSequenceId(sequenceId);
         paymentSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         paymentSource.setRecurrentIntentionToken(token);
-        paymentDao.updateNotCurrent(invoiceId, paymentId);
-        long pmntId = paymentDao.save(paymentSource);
-        List<CashFlow> cashFlows = cashFlowDao.getByObjId(paymentSourceId, PaymentChangeType.payment);
-        cashFlows.forEach(pcf -> {
-            pcf.setId(null);
-            pcf.setObjId(pmntId);
-        });
-        cashFlowDao.save(cashFlows);
+        Long pmntId = paymentDao.save(paymentSource);
+        if (pmntId != null) {
+            paymentDao.updateNotCurrent(paymentSourceId);
+            cashFlowService.save(paymentSourceId, pmntId, PaymentChangeType.payment);
+        }
         log.info("Payment recurrent token have been saved, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
     }
 

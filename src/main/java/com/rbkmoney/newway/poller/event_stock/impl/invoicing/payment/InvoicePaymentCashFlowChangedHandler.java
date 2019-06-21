@@ -55,11 +55,13 @@ public class InvoicePaymentCashFlowChangedHandler extends AbstractInvoicingHandl
         paymentSource.setChangeId(changeId);
         paymentSource.setSequenceId(sequenceId);
         paymentSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        paymentDao.updateNotCurrent(invoiceId, paymentId);
-        long pmntId = paymentDao.save(paymentSource);
-        List<CashFlow> cashFlows = CashFlowUtil.convertCashFlows(invoicePaymentChange.getPayload().getInvoicePaymentCashFlowChanged().getCashFlow(), pmntId, PaymentChangeType.payment);
-        cashFlowDao.save(cashFlows);
-        paymentDao.updateCommissions(pmntId);
+        Long pmntId = paymentDao.save(paymentSource);
+        if (pmntId != null) {
+            paymentDao.updateNotCurrent(paymentSource.getId());
+            List<CashFlow> cashFlows = CashFlowUtil.convertCashFlows(invoicePaymentChange.getPayload().getInvoicePaymentCashFlowChanged().getCashFlow(), pmntId, PaymentChangeType.payment);
+            cashFlowDao.save(cashFlows);
+            paymentDao.updateCommissions(pmntId);
+        }
         log.info("Payment cashflow has been saved, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
     }
 
