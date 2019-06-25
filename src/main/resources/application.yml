@@ -22,7 +22,7 @@ management:
         flavor: etsy
         enabled: false
 retry-policy:
-  maxAttempts: 10
+  maxAttempts: -1
 
 kafka:
   bootstrap-servers: kenny-kafka1.bst1.rbkmoney.net:9092
