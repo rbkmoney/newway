@@ -1,13 +1,13 @@
 package com.rbkmoney.newway.kafka;
 
 import com.rbkmoney.damsel.payment_processing.EventPayload;
-import com.rbkmoney.kafka.common.serializer.ThriftSerializer;
+import com.rbkmoney.kafka.common.serialization.ThriftSerializer;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import com.rbkmoney.machinegun.msgpack.Value;
-import com.rbkmoney.newway.converter.SourceEventParser;
 import com.rbkmoney.newway.poller.listener.InvoicingKafkaListener;
 import com.rbkmoney.newway.service.InvoicingService;
+import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -39,11 +39,11 @@ public class InvoicingKafkaListenerTest extends AbstractKafkaTest {
     InvoicingService invoicingService;
 
     @MockBean
-    SourceEventParser eventParser;
+    MachineEventParser eventParser;
 
     @Test
     public void listenEmptyChanges() throws InterruptedException {
-        Mockito.when(eventParser.parseEvent(any())).thenReturn(EventPayload.invoice_changes(emptyList()));
+        Mockito.when(eventParser.parse(any())).thenReturn(EventPayload.invoice_changes(emptyList()));
 
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(createMessage());
@@ -52,7 +52,7 @@ public class InvoicingKafkaListenerTest extends AbstractKafkaTest {
 
         waitForTopicSync();
 
-        Mockito.verify(eventParser, Mockito.times(1)).parseEvent(any());
+        Mockito.verify(eventParser, Mockito.times(1)).parse(any());
         Mockito.verify(invoicingService, Mockito.times(1)).handleEvents(any(), any());
     }
 

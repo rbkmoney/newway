@@ -6,9 +6,9 @@ import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import com.rbkmoney.machinegun.msgpack.Value;
-import com.rbkmoney.newway.converter.SourceEventParser;
 import com.rbkmoney.newway.exception.ParseException;
 import com.rbkmoney.newway.service.InvoicingService;
+import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -28,7 +28,7 @@ public class InvoicingListenerTest {
     @Mock
     private InvoicingService invoicingService;
     @Mock
-    private SourceEventParser eventParser;
+    private MachineEventParser eventParser;
     @Mock
     private Acknowledgment ack;
 
@@ -48,7 +48,7 @@ public class InvoicingListenerTest {
         EventPayload payload = new EventPayload();
         payload.setCustomerChanges(List.of());
         event.setPayload(payload);
-        Mockito.when(eventParser.parseEvent(message)).thenReturn(payload);
+        Mockito.when(eventParser.parse(message)).thenReturn(payload);
 
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(message);
@@ -66,7 +66,7 @@ public class InvoicingListenerTest {
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(message);
 
-        Mockito.when(eventParser.parseEvent(message)).thenThrow(new ParseException());
+        Mockito.when(eventParser.parse(message)).thenThrow(new ParseException());
 
         listener.handle(sinkEvent, ack);
 
@@ -82,7 +82,7 @@ public class InvoicingListenerTest {
         invoiceChanges.add(new InvoiceChange());
         payload.setInvoiceChanges(invoiceChanges);
         event.setPayload(payload);
-        Mockito.when(eventParser.parseEvent(message)).thenReturn(payload);
+        Mockito.when(eventParser.parse(message)).thenReturn(payload);
 
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(message);

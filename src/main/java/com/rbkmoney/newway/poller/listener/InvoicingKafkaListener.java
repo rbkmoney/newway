@@ -1,9 +1,11 @@
 package com.rbkmoney.newway.poller.listener;
 
 import com.rbkmoney.damsel.payment_processing.EventPayload;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
-import com.rbkmoney.newway.converter.SourceEventParser;
 import com.rbkmoney.newway.service.InvoicingService;
+import com.rbkmoney.sink.common.parser.Parser;
+import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -16,12 +18,12 @@ import org.springframework.stereotype.Component;
 public class InvoicingKafkaListener {
 
     private final InvoicingService invoicingService;
-    private final SourceEventParser sourceEventParser;
+    private final MachineEventParser<EventPayload> parser;
 
     @KafkaListener(topics = "${kafka.topics.invoicing}", containerFactory = "kafkaListenerContainerFactory")
     public void handle(SinkEvent sinkEvent, Acknowledgment ack) {
         log.debug("Reading sinkEvent, sourceId:{}, eventId:{}", sinkEvent.getEvent().getSourceId(), sinkEvent.getEvent().getEventId());
-        EventPayload payload = sourceEventParser.parseEvent(sinkEvent.getEvent());
+        EventPayload payload = parser.parse(sinkEvent.getEvent());
         if (payload.isSetInvoiceChanges()) {
             invoicingService.handleEvents(sinkEvent.getEvent(), payload);
         }
