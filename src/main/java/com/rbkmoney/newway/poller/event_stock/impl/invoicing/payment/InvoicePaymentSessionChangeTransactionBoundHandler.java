@@ -64,7 +64,7 @@ public class InvoicePaymentSessionChangeTransactionBoundHandler extends Abstract
         com.rbkmoney.damsel.payment_processing.SessionChangePayload payload = sessionChange.getPayload();
         TransactionInfo transactionInfo = payload.getSessionTransactionBound().getTrx();
         paymentSource.setSessionPayloadTransactionBoundTrxId(transactionInfo.getId());
-        //paymentSource.setSessionPayloadTransactionBoundTrxExtraJson(JsonUtil.objectToJsonString(transactionInfo.getExtra()));
+        paymentSource.setSessionPayloadTransactionBoundTrxExtraJson(JsonUtil.objectToJsonString(transactionInfo.getExtra()));
 
         if (transactionInfo.isSetAdditionalInfo()) {
             AdditionalTransactionInfo additionalTransactionInfo = transactionInfo.getAdditionalInfo();
