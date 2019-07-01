@@ -39,7 +39,7 @@ public class InvoicingService implements EventService<MachineEvent, EventPayload
                 }
             }
         } catch (Throwable e) {
-            log.error("Unexpected error while handling events; machineId: {},  eventId: {}", machineEvent.getSourceId(), machineEvent.getEventId());
+            log.error("Unexpected error while handling events; machineId: {},  eventId: {}", machineEvent.getSourceId(), machineEvent.getEventId(), e);
             throw e;
         }
     }
