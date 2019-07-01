@@ -654,7 +654,7 @@ public class DaoTests extends AbstractAppDaoTests {
     }
 
     @Test
-    public void checkCashFlowCountTest(){
+    public void checkCashFlowCountTest() {
         jdbcTemplate.execute("truncate table nw.payment cascade");
         Payment payment = random(Payment.class);
         payment.setCurrent(true);

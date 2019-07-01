@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.utils;
 
+import com.rbkmoney.easyway.AbstractTestUtils;
 import com.rbkmoney.geck.common.util.TypeUtil;
-import com.rbkmoney.newway.AbstractTestUtils;
 import com.rbkmoney.xrates.base.TimestampInterval;
 import com.rbkmoney.xrates.rate.*;
 
