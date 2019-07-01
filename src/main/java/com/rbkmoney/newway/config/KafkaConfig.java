@@ -103,7 +103,7 @@ public class KafkaConfig {
     }
 
     public ErrorHandler kafkaErrorHandler() {
-        return new SeekToCurrentErrorHandler();
+        return new SeekToCurrentErrorHandler(-1);
     }
 
     @Bean
