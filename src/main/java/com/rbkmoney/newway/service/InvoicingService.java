@@ -28,14 +28,19 @@ public class InvoicingService implements EventService<MachineEvent, EventPayload
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(MachineEvent machineEvent, EventPayload payload) {
-        List<InvoiceChange> invoiceChanges = payload.getInvoiceChanges();
-        for (int i = 0; i < invoiceChanges.size(); i++) {
-            InvoiceChange change = invoiceChanges.get(i);
-            for (AbstractInvoicingHandler invoicingHandler : invoicingHandlers) {
-                if (invoicingHandler.accept(change)) {
-                    invoicingHandler.handle(change, machineEvent, i);
+        try {
+            List<InvoiceChange> invoiceChanges = payload.getInvoiceChanges();
+            for (int i = 0; i < invoiceChanges.size(); i++) {
+                InvoiceChange change = invoiceChanges.get(i);
+                for (AbstractInvoicingHandler invoicingHandler : invoicingHandlers) {
+                    if (invoicingHandler.accept(change)) {
+                        invoicingHandler.handle(change, machineEvent, i);
+                    }
                 }
             }
+        } catch (Throwable e) {
+            log.error("Unexpected error while handling events; machineId: {},  eventId: {}", machineEvent.getSourceId(), machineEvent.getEventId(), e);
+            throw e;
         }
     }
 }
