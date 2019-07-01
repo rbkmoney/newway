@@ -31,9 +31,11 @@ import static org.mockito.ArgumentMatchers.any;
 @ContextConfiguration(classes = {KafkaAutoConfiguration.class, InvoicingKafkaListener.class})
 public class InvoicingKafkaListenerTest extends AbstractKafkaTest {
 
-
-    @org.springframework.beans.factory.annotation.Value("${kafka.topics.invoicing}")
+    @org.springframework.beans.factory.annotation.Value("${kafka.topics.invoice.id}")
     public String topic;
+
+    @org.springframework.beans.factory.annotation.Value("${kafka.bootstrap-servers}")
+    private String bootstrapServers;
 
     @MockBean
     InvoicingService invoicingService;
@@ -78,15 +80,15 @@ public class InvoicingKafkaListenerTest extends AbstractKafkaTest {
         data.setBin(new byte[0]);
         message.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
         message.setEventId(1L);
-        message.setSourceNs(SOURCE_NS);
-        message.setSourceId(SOURCE_ID);
+        message.setSourceNs("sad");
+        message.setSourceId("sda");
         message.setData(data);
         return message;
     }
 
-    public static Producer<String, SinkEvent> createProducer() {
+    private Producer<String, SinkEvent> createProducer() {
         Properties props = new Properties();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers());
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "client_id");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, new ThriftSerializer<SinkEvent>().getClass());

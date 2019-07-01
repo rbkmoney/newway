@@ -1,33 +1,31 @@
 package com.rbkmoney.newway.dao;
 
-import com.rbkmoney.newway.AbstractTestUtils;
+import com.rbkmoney.easyway.*;
 import com.rbkmoney.newway.NewwayApplication;
-import com.rbkmoney.newway.TestContainers;
-import com.rbkmoney.newway.TestContainersBuilder;
-import com.rbkmoney.newway.utils.NewwayTestPropertyValuesBuilder;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ContextConfiguration(classes = NewwayApplication.class, initializers = AbstractAppDaoTests.Initializer.class)
-@TestPropertySource(properties =
-        "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class AbstractAppDaoTests extends AbstractTestUtils {
 
-    private static TestContainers testContainers = TestContainersBuilder.builder(false)
-            .addPostgreSQLTestContainer()
+    private static TestContainers testContainers = TestContainersBuilder.builderWithTestContainers(getTestContainersParametersSupplier())
+            .addPostgresqlTestContainer()
             .build();
 
     @BeforeClass
@@ -44,9 +42,27 @@ public abstract class AbstractAppDaoTests extends AbstractTestUtils {
 
         @Override
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            NewwayTestPropertyValuesBuilder
-                    .build(testContainers)
+            TestPropertyValues.of(
+                    testContainers.getEnvironmentProperties(getEnvironmentPropertiesConsumer())
+            )
                     .applyTo(configurableApplicationContext);
         }
+    }
+
+    private static Supplier<TestContainersParameters> getTestContainersParametersSupplier() {
+        return () -> {
+            TestContainersParameters testContainersParameters = new TestContainersParameters();
+            testContainersParameters.setPostgresqlJdbcUrl("jdbc:postgresql://localhost:5432/newway");
+
+            return testContainersParameters;
+        };
+    }
+
+    private static Consumer<EnvironmentProperties> getEnvironmentPropertiesConsumer() {
+        return environmentProperties -> {
+            environmentProperties.put("kafka.topics.invoice.enabled", "false");
+            environmentProperties.put("bm.pollingEnabled", "false");
+            environmentProperties.put("dmt.polling.enable", "false");
+        };
     }
 }
