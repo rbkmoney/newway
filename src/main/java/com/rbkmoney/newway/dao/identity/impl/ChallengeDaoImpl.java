@@ -57,6 +57,6 @@ public class ChallengeDaoImpl extends AbstractGenericDao implements ChallengeDao
                         .and(CHALLENGE.CHALLENGE_ID.eq(challengeId))
                                 .and(CHALLENGE.CURRENT)
                 );
-        executeOne(query);
+        execute(query);
     }
 }

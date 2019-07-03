@@ -57,6 +57,7 @@ public class IdentityCreatedHandler extends AbstractIdentityHandler {
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> JsonUtil.tBaseToJsonNode(e.getValue())));
             identity.setContextJson(JsonUtil.objectToJsonString(jsonNodeMap));
         }
+        identityDao.updateNotCurrent(event.getSource());
         identityDao.save(identity);
         log.info("Identity haven been saved, eventId={}, identityId={}", event.getId(), event.getSource());
     }
