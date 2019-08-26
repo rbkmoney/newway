@@ -3,7 +3,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.withdrawal_session;
 import com.rbkmoney.fistful.base.BankCard;
 import com.rbkmoney.fistful.base.Cash;
 import com.rbkmoney.fistful.base.CryptoWallet;
-import com.rbkmoney.fistful.destination.Resource;
+import com.rbkmoney.fistful.base.Resource;
 import com.rbkmoney.fistful.withdrawal_session.Change;
 import com.rbkmoney.fistful.withdrawal_session.Session;
 import com.rbkmoney.fistful.withdrawal_session.SinkEvent;
@@ -55,9 +55,8 @@ public class WithdrawalSessionCreatedHandler extends AbstractWithdrawalSessionHa
 
         Withdrawal withdrawal = session.getWithdrawal();
         withdrawalSession.setWithdrawalId(withdrawal.getId());
-        withdrawalSession.setDestinationName(withdrawal.getDestination().getName());
 
-        Resource resource = withdrawal.getDestination().getResource();
+        Resource resource = withdrawal.getDestinationResource();
         withdrawalSession.setResourceType(TBaseUtil.unionFieldToEnum(resource, DestinationResourceType.class));
         if (resource.isSetBankCard()) {
             BankCard bankCard = resource.getBankCard();
@@ -65,10 +64,20 @@ public class WithdrawalSessionCreatedHandler extends AbstractWithdrawalSessionHa
             withdrawalSession.setDestinationCardBin(bankCard.getBin());
             withdrawalSession.setDestinationCardMaskedPan(bankCard.getMaskedPan());
             withdrawalSession.setDestinationCardPaymentSystem(BankCardPaymentSystem.valueOf(bankCard.getPaymentSystem().name()));
+            withdrawalSession.setResourceBankCardBankName(bankCard.getBankName());
+            if (bankCard.isSetIssuerCountry()) {
+                withdrawalSession.setResourceBankCardIssuerCountry(bankCard.getIssuerCountry().toString());
+            }
+            if (bankCard.isSetCardType()) {
+                withdrawalSession.setResourceBankCardType(bankCard.getCardType().toString());
+            }
         } else if (resource.isSetCryptoWallet()) {
             CryptoWallet cryptoWallet = resource.getCryptoWallet();
             withdrawalSession.setResourceCryptoWalletId(cryptoWallet.getId());
             withdrawalSession.setResourceCryptoWalletType(cryptoWallet.getCurrency().toString());
+            if (cryptoWallet.isSetData()) {
+                withdrawalSession.setResourceCryptoWalletData(cryptoWallet.getData().getSetField().getFieldName());
+            }
         }
 
         Cash cash = withdrawal.getCash();
