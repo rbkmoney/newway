@@ -70,13 +70,23 @@ public class DestinationCreatedHandler extends AbstractDestinationHandler {
             destination.setResourceBankCardToken(bankCard.getToken());
             destination.setResourceBankCardBin(bankCard.getBin());
             destination.setResourceBankCardMaskedPan(bankCard.getMaskedPan());
+            destination.setResourceBankCardBankName(bankCard.getBankName());
+            if (bankCard.isSetIssuerCountry()) {
+                destination.setResourceBankCardIssuerCountry(bankCard.getIssuerCountry().toString());
+            }
             if (bankCard.isSetPaymentSystem()) {
                 destination.setResourceBankCardPaymentSystem(bankCard.getPaymentSystem().toString());
+            }
+            if (bankCard.isSetCardType()) {
+                destination.setResourceBankCardType(bankCard.getCardType().toString());
             }
         } else if (resource.isSetCryptoWallet()) {
             CryptoWallet wallet = resource.getCryptoWallet();
             destination.setResourceCryptoWalletId(wallet.getId());
             destination.setResourceCryptoWalletType(wallet.getCurrency().name());
+            if (wallet.isSetData()) {
+                destination.setResourceCryptoWalletData(wallet.getData().getSetField().getFieldName());
+            }
         }
 
         destinationDao.updateNotCurrent(event.getSource());

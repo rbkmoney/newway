@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.withdrawal;
 
 import com.rbkmoney.fistful.withdrawal.Change;
+import com.rbkmoney.fistful.withdrawal.Failure;
 import com.rbkmoney.fistful.withdrawal.SinkEvent;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
@@ -14,6 +15,7 @@ import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.enums.WithdrawalStatus;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Withdrawal;
+import com.rbkmoney.newway.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -54,7 +56,11 @@ public class WithdrawalStatusChangedHandler extends AbstractWithdrawalHandler {
         withdrawal.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawal.setWithdrawalId(event.getSource());
         withdrawal.setWithdrawalStatus(TBaseUtil.unionFieldToEnum(change.getStatusChanged(), WithdrawalStatus.class));
-
+        if (change.getStatusChanged().isSetFailed()) {
+            if (change.getStatusChanged().getFailed().isSetFailure()) {
+                withdrawal.setWithdrawalStatusFailedFailureJson(JsonUtil.tBaseToJsonString(change.getStatusChanged().getFailed()));
+            }
+        }
         withdrawalDao.updateNotCurrent(event.getSource());
         long id = withdrawalDao.save(withdrawal);
 

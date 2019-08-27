@@ -58,6 +58,10 @@ public class WithdrawalSessionFinishedHandler extends AbstractWithdrawalSessionH
                 withdrawalSession.setTranInfoTimestamp(TypeUtil.stringToLocalDateTime(trxInfo.getTimestamp()));
             }
             withdrawalSession.setTranInfoJson(JsonUtil.objectToJsonString(trxInfo.getExtra()));
+            if (trxInfo.isSetAdditionalInfo()) {
+                withdrawalSession.setTranAdditionalInfoRrn(trxInfo.getAdditionalInfo().getRrn());
+                withdrawalSession.setTranAdditionalInfoJson(JsonUtil.tBaseToJsonString(trxInfo.getAdditionalInfo()));
+            }
         }
 
         withdrawalSessionDao.updateNotCurrent(event.getSource());
