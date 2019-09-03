@@ -29,7 +29,7 @@ public class RateCreatedHandler extends AbstractRateHandler {
     }
 
     @Override
-    public void handle(Change change, SinkEvent event) {
+    public void handle(Change change, SinkEvent event, Integer changeId) {
         if (change.getCreated().getExchangeRateData().getQuotes().isEmpty()) {
             log.warn("Quotes is empty, SinkEvent will not be saved, eventId={}, sourceId={}", event.getId(), event.getSource());
             return;
@@ -40,6 +40,8 @@ public class RateCreatedHandler extends AbstractRateHandler {
 
         // SinkEvent
         rate.setEventId(event.getId());
+        rate.setSequenceId(event.getSequenceId());
+        rate.setChangeId(changeId);
         rate.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         rate.setSourceId(event.getSource());
 

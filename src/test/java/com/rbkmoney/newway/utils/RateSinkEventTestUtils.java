@@ -40,7 +40,8 @@ public class RateSinkEventTestUtils extends AbstractTestUtils {
                 random(Long.class),
                 TypeUtil.temporalToString(random(LocalDateTime.class)),
                 sourceId,
-                event
+                event,
+                random(Long.class)
         );
         return new Dto(event, sinkEvent);
     }
