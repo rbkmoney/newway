@@ -22,10 +22,29 @@ public class ServiceTests extends AbstractAppDaoTests {
 
     @Test
     public void rateServiceTest() {
+        jdbcTemplate.execute("truncate table nw.rate cascade");
         String sourceId = "CBR";
 
         RateSinkEventTestUtils.Dto dto = RateSinkEventTestUtils.create(sourceId);
 
+        rateService.handleEvents(dto.getSinkEvent(), dto.getEvent());
+
+        List<Rate> rates = jdbcTemplate.query(
+                "SELECT * FROM nw.rate AS rate WHERE rate.source_id = ? AND rate.current",
+                new Object[]{sourceId},
+                new BeanPropertyRowMapper(Rate.class)
+        );
+        assertEquals(4, rates.size());
+    }
+
+    @Test
+    public void rateServiceDuplicationTest() {
+        jdbcTemplate.execute("truncate table nw.rate cascade");
+        String sourceId = "CBR";
+
+        RateSinkEventTestUtils.Dto dto = RateSinkEventTestUtils.create(sourceId);
+
+        rateService.handleEvents(dto.getSinkEvent(), dto.getEvent());
         rateService.handleEvents(dto.getSinkEvent(), dto.getEvent());
 
         List<Rate> rates = jdbcTemplate.query(
