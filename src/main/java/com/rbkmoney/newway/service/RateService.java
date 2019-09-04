@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Slf4j
@@ -21,15 +22,16 @@ public class RateService implements EventService<SinkEvent, Event> {
 
     private final RateDao rateDao;
 
-    private final List<AbstractRateHandler> withdrawalHandlers;
+    private final List<AbstractRateHandler> rateHandlers;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(SinkEvent sinkEvent, Event payload) {
+        AtomicInteger cnt = new AtomicInteger(0);
         payload.getChanges().forEach(
-                cc -> withdrawalHandlers.stream()
+                cc -> rateHandlers.stream()
                         .filter(handler -> handler.accept(cc))
-                        .forEach(ph -> ph.handle(cc, sinkEvent))
+                        .forEach(ph -> ph.handle(cc, sinkEvent, cnt.getAndIncrement()))
         );
     }
 

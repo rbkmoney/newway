@@ -13,6 +13,9 @@ import com.rbkmoney.xrates.rate.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 @Component
 @Slf4j
 public class RateCreatedHandler extends AbstractRateHandler {
@@ -29,7 +32,7 @@ public class RateCreatedHandler extends AbstractRateHandler {
     }
 
     @Override
-    public void handle(Change change, SinkEvent event) {
+    public void handle(Change change, SinkEvent event, Integer changeId) {
         if (change.getCreated().getExchangeRateData().getQuotes().isEmpty()) {
             log.warn("Quotes is empty, SinkEvent will not be saved, eventId={}, sourceId={}", event.getId(), event.getSource());
             return;
@@ -40,6 +43,8 @@ public class RateCreatedHandler extends AbstractRateHandler {
 
         // SinkEvent
         rate.setEventId(event.getId());
+        rate.setSequenceId(event.getSequenceId());
+        rate.setChangeId(changeId);
         rate.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         rate.setSourceId(event.getSource());
 
@@ -57,7 +62,8 @@ public class RateCreatedHandler extends AbstractRateHandler {
         rate.setLowerBoundInclusive(TypeUtil.stringToLocalDateTime(interval.getLowerBoundInclusive()));
         rate.setUpperBoundExclusive(TypeUtil.stringToLocalDateTime(interval.getUpperBoundExclusive()));
 
-        rateDao.updateNotCurrent(event.getSource());
+        List<Long> ids = rateDao.getIds(event.getSource());
+        AtomicBoolean shouldUpdate = new AtomicBoolean(false);
         exchangeRateData.getQuotes().forEach(
                 quote -> {
                     // Quote
@@ -75,9 +81,13 @@ public class RateCreatedHandler extends AbstractRateHandler {
                     rate.setExchangeRateRationalP(exchangeRate.getP());
                     rate.setExchangeRateRationalQ(exchangeRate.getQ());
 
-                    rateDao.save(rate);
+                    Long id = rateDao.save(rate);
+                    shouldUpdate.set(id != null);
                 }
         );
+        if (shouldUpdate.get()) {
+            rateDao.updateNotCurrent(ids);
+        }
         log.info("Rate have been saved, eventId={}, sourceId={}", event.getId(), event.getSource());
     }
 

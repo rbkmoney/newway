@@ -565,7 +565,13 @@ public class DaoTests extends AbstractAppDaoTests {
                 )
         );
 
-        rateDao.updateNotCurrent(rate.getSourceId());
+        List<Long> ids = rateDao.getIds(rate.getSourceId());
+        assertNotNull(ids);
+        assertFalse(ids.isEmpty());
+        assertEquals(1, ids.size());
+        assertEquals(id, ids.get(0));
+
+        rateDao.updateNotCurrent(Collections.singletonList(id));
         try {
             jdbcTemplate.queryForObject(
                     "SELECT * FROM nw.rate AS rate WHERE rate.id = ? AND rate.current",
@@ -576,6 +582,9 @@ public class DaoTests extends AbstractAppDaoTests {
         } catch (Exception e) {
             assertTrue(e instanceof EmptyResultDataAccessException);
         }
+
+
+
     }
 
     @Test
