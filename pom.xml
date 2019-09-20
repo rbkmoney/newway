@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>newway</artifactId>
-    <version>1.0.53-SNAPSHOT</version>
+    <version>1.0.54-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
@@ -32,7 +32,7 @@
         <local.pg.url>jdbc:postgresql://localhost:5432/newway</local.pg.url>
         <local.pg.port>5432</local.pg.port>
         <damsel.version>1.320-95ff602</damsel.version>
-        <fistful-proto.version>1.36-683822a</fistful-proto.version>
+        <fistful-proto.version>1.37-22bb851</fistful-proto.version>
         <sonar.jacoco.reportPath>target/sites/jacoco/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.cobertura.reportPath>target/site/cobertura/coverage.xml</sonar.cobertura.reportPath>
     </properties>
@@ -320,7 +320,9 @@
                         <database>
                             <name>org.jooq.meta.postgres.PostgresDatabase</name>
                             <includes>.*</includes>
-                            <excludes>schema_version|.*func|get_adjustment.*|get_cashflow.*|get_payment.*|get_payout.*|get_refund.*</excludes>
+                            <excludes>
+                                schema_version|.*func|get_adjustment.*|get_cashflow.*|get_payment.*|get_payout.*|get_refund.*
+                            </excludes>
                             <inputSchema>${db.schema}</inputSchema>
                         </database>
                         <target>

@@ -2,6 +2,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.deposit;
 
 import com.rbkmoney.fistful.deposit.Change;
 import com.rbkmoney.fistful.deposit.SinkEvent;
+import com.rbkmoney.fistful.deposit.status.Status;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
@@ -36,16 +37,18 @@ public class DepositStatusChangedHandler extends AbstractDepositHandler {
     public DepositStatusChangedHandler(DepositDao depositDao, FistfulCashFlowDao fistfulCashFlowDao) {
         this.depositDao = depositDao;
         this.fistfulCashFlowDao = fistfulCashFlowDao;
-        this.filter = new PathConditionFilter(new PathConditionRule("status_changed", new IsNullCondition().not()));
+        this.filter = new PathConditionFilter(new PathConditionRule("status_changed.status", new IsNullCondition().not()));
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
+        Status status = change.getStatusChanged().getStatus();
+
         log.info("Start deposit status changed handling, eventId={}, depositId={}, status={}", event.getId(), event.getSource(), change.getStatusChanged());
+
         Deposit deposit = depositDao.get(event.getSource());
 
-        long sourceId = deposit.getId();
         deposit.setId(null);
         deposit.setWtime(null);
         deposit.setEventId(event.getId());
@@ -53,12 +56,12 @@ public class DepositStatusChangedHandler extends AbstractDepositHandler {
         deposit.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         deposit.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         deposit.setDepositId(event.getSource());
-        deposit.setDepositStatus(TBaseUtil.unionFieldToEnum(change.getStatusChanged(), DepositStatus.class));
+        deposit.setDepositStatus(TBaseUtil.unionFieldToEnum(status, DepositStatus.class));
 
         depositDao.updateNotCurrent(event.getSource());
         long id = depositDao.save(deposit);
 
-        List<FistfulCashFlow> cashFlows = fistfulCashFlowDao.getByObjId(sourceId, FistfulCashFlowChangeType.deposit);
+        List<FistfulCashFlow> cashFlows = fistfulCashFlowDao.getByObjId(deposit.getId(), FistfulCashFlowChangeType.deposit);
         cashFlows.forEach(pcf -> {
             pcf.setId(null);
             pcf.setObjId(id);

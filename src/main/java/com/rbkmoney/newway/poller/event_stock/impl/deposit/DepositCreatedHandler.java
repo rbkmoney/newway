@@ -26,26 +26,29 @@ public class DepositCreatedHandler extends AbstractDepositHandler {
 
     public DepositCreatedHandler(DepositDao depositDao) {
         this.depositDao = depositDao;
-        this.filter = new PathConditionFilter(new PathConditionRule("created", new IsNullCondition().not()));
+        this.filter = new PathConditionFilter(new PathConditionRule("created.deposit", new IsNullCondition().not()));
     }
 
     @Override
     public void handle(Change change, SinkEvent event) {
+        var depositDamsel = change.getCreated().getDeposit();
+
         log.info("Start deposit created handling, eventId={}, depositId={}", event.getId(), event.getSource());
+
         Deposit deposit = new Deposit();
         deposit.setEventId(event.getId());
         deposit.setSequenceId(event.getPayload().getSequence());
         deposit.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         deposit.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         deposit.setDepositId(event.getSource());
-        deposit.setSourceId(change.getCreated().getSource());
-        deposit.setWalletId(change.getCreated().getWallet());
+        deposit.setSourceId(depositDamsel.getSource());
+        deposit.setWalletId(depositDamsel.getWallet());
 
-        Cash cash = change.getCreated().getBody();
+        Cash cash = depositDamsel.getBody();
         deposit.setAmount(cash.getAmount());
         deposit.setCurrencyCode(cash.getCurrency().getSymbolicCode());
         deposit.setDepositStatus(DepositStatus.pending);
-        deposit.setExternalId(change.getCreated().getExternalId());
+        deposit.setExternalId(depositDamsel.getExternalId());
 
         depositDao.updateNotCurrent(event.getSource());
         depositDao.save(deposit);

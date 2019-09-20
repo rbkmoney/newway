@@ -37,13 +37,16 @@ public class WithdrawalTransferCreatedHandler extends AbstractWithdrawalHandler 
     public WithdrawalTransferCreatedHandler(WithdrawalDao withdrawalDao, FistfulCashFlowDao fistfulCashFlowDao) {
         this.withdrawalDao = withdrawalDao;
         this.fistfulCashFlowDao = fistfulCashFlowDao;
-        this.filter = new PathConditionFilter(new PathConditionRule("transfer.created", new IsNullCondition().not()));
+        this.filter = new PathConditionFilter(new PathConditionRule("transfer.payload.created.transfer.cashflow", new IsNullCondition().not()));
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
+        List<FinalCashFlowPosting> postings = change.getTransfer().getPayload().getCreated().getTransfer().getCashflow().getPostings();
+
         log.info("Start withdrawal transfer created handling, eventId={}, walletId={}, transferChange={}", event.getId(), event.getSource(), change.getTransfer());
+
         Withdrawal withdrawal = withdrawalDao.get(event.getSource());
 
         withdrawal.setId(null);
@@ -55,7 +58,6 @@ public class WithdrawalTransferCreatedHandler extends AbstractWithdrawalHandler 
         withdrawal.setWithdrawalId(event.getSource());
         withdrawal.setWithdrawalTransferStatus(WithdrawalTransferStatus.created);
 
-        List<FinalCashFlowPosting> postings = change.getTransfer().getCreated().getCashflow().getPostings();
         withdrawal.setFee(CashFlowUtil.getFistfulFee(postings));
         withdrawal.setProviderFee(CashFlowUtil.getFistfulProviderFee(postings));
 
