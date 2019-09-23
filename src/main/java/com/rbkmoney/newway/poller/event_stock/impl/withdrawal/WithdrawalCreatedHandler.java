@@ -32,30 +32,33 @@ public class WithdrawalCreatedHandler extends AbstractWithdrawalHandler {
 
     public WithdrawalCreatedHandler(WithdrawalDao withdrawalDao) {
         this.withdrawalDao = withdrawalDao;
-        this.filter = new PathConditionFilter(new PathConditionRule("created", new IsNullCondition().not()));
+        this.filter = new PathConditionFilter(new PathConditionRule("created.withdrawal", new IsNullCondition().not()));
     }
 
     @Override
     public void handle(Change change, SinkEvent event) {
+        var withdrawalDamsel = change.getCreated().getWithdrawal();
+
         log.info("Start withdrawal created handling, eventId={}, walletId={}", event.getId(), event.getSource());
+
         Withdrawal withdrawal = new Withdrawal();
         withdrawal.setEventId(event.getId());
         withdrawal.setSequenceId(event.getPayload().getSequence());
         withdrawal.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         withdrawal.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawal.setWithdrawalId(event.getSource());
-        withdrawal.setWalletId(change.getCreated().getSource());
-        withdrawal.setDestinationId(change.getCreated().getDestination());
-        withdrawal.setExternalId(change.getCreated().getExternalId());
-        if (change.getCreated().isSetStatus()) {
-            withdrawal.setWithdrawalStatus(TBaseUtil.unionFieldToEnum(change.getStatusChanged(), WithdrawalStatus.class));
+        withdrawal.setWalletId(withdrawalDamsel.getSource());
+        withdrawal.setDestinationId(withdrawalDamsel.getDestination());
+        withdrawal.setExternalId(withdrawalDamsel.getExternalId());
+        if (withdrawalDamsel.isSetStatus()) {
+            withdrawal.setWithdrawalStatus(TBaseUtil.unionFieldToEnum(withdrawalDamsel.getStatus(), WithdrawalStatus.class));
         }
-        if (change.getCreated().isSetContext()) {
-            Map<String, JsonNode> jsonNodeMap = change.getCreated().getContext().entrySet().stream()
+        if (withdrawalDamsel.isSetContext()) {
+            Map<String, JsonNode> jsonNodeMap = withdrawalDamsel.getContext().entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> JsonUtil.tBaseToJsonNode(e.getValue())));
             withdrawal.setContextJson(JsonUtil.objectToJsonString(jsonNodeMap));
         }
-        Cash cash = change.getCreated().getBody();
+        Cash cash = withdrawalDamsel.getBody();
         withdrawal.setAmount(cash.getAmount());
         withdrawal.setCurrencyCode(cash.getCurrency().getSymbolicCode());
         withdrawal.setWithdrawalStatus(WithdrawalStatus.pending);
