@@ -1,6 +1,5 @@
 package com.rbkmoney.newway.poller.event_stock.impl.withdrawal;
 
-import com.rbkmoney.fistful.transfer.Status;
 import com.rbkmoney.fistful.withdrawal.Change;
 import com.rbkmoney.fistful.withdrawal.SinkEvent;
 import com.rbkmoney.geck.common.util.TBaseUtil;
@@ -37,18 +36,16 @@ public class WithdrawalTransferStatusChangedHandler extends AbstractWithdrawalHa
     public WithdrawalTransferStatusChangedHandler(WithdrawalDao withdrawalDao, FistfulCashFlowDao fistfulCashFlowDao) {
         this.withdrawalDao = withdrawalDao;
         this.fistfulCashFlowDao = fistfulCashFlowDao;
-        this.filter = new PathConditionFilter(new PathConditionRule("transfer.payload.status_changed.status", new IsNullCondition().not()));
+        this.filter = new PathConditionFilter(new PathConditionRule("transfer.status_changed", new IsNullCondition().not()));
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
-        Status status = change.getTransfer().getPayload().getStatusChanged().getStatus();
-
         log.info("Start withdrawal transfer status changed handling, eventId={}, walletId={}, transferChange={}", event.getId(), event.getSource(), change.getTransfer());
-
         Withdrawal withdrawal = withdrawalDao.get(event.getSource());
 
+        long sourceId = withdrawal.getId();
         withdrawal.setId(null);
         withdrawal.setWtime(null);
         withdrawal.setEventId(event.getId());
@@ -56,12 +53,12 @@ public class WithdrawalTransferStatusChangedHandler extends AbstractWithdrawalHa
         withdrawal.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         withdrawal.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawal.setWithdrawalId(event.getSource());
-        withdrawal.setWithdrawalTransferStatus(TBaseUtil.unionFieldToEnum(status, WithdrawalTransferStatus.class));
+        withdrawal.setWithdrawalTransferStatus(TBaseUtil.unionFieldToEnum(change.getTransfer().getStatusChanged(), WithdrawalTransferStatus.class));
 
         withdrawalDao.updateNotCurrent(event.getSource());
         long id = withdrawalDao.save(withdrawal);
 
-        List<FistfulCashFlow> cashFlows = fistfulCashFlowDao.getByObjId(withdrawal.getId(), FistfulCashFlowChangeType.withdrawal);
+        List<FistfulCashFlow> cashFlows = fistfulCashFlowDao.getByObjId(sourceId, FistfulCashFlowChangeType.withdrawal);
         cashFlows.forEach(pcf -> {
             pcf.setId(null);
             pcf.setObjId(id);

@@ -27,13 +27,12 @@ public class SourceStatusChangedHandler extends AbstractSourceHandler {
 
     public SourceStatusChangedHandler(SourceDao sourceDao) {
         this.sourceDao = sourceDao;
-        this.filter = new PathConditionFilter(new PathConditionRule("status.status", new IsNullCondition().not()));
+        this.filter = new PathConditionFilter(new PathConditionRule("status.changed", new IsNullCondition().not()));
     }
 
     @Override
     public void handle(Change change, SinkEvent event) {
-        Status status = change.getStatus().getStatus();
-
+        Status status = change.getStatus().getChanged();
         log.info("Start source status changed handling, eventId={}, sourceId={}, status={}", event.getId(), event.getSource(), status);
 
         Source source = sourceDao.get(event.getSource());
