@@ -1,8 +1,8 @@
 package com.rbkmoney.newway.poller.event_stock.impl.withdrawal;
 
 import com.rbkmoney.fistful.withdrawal.Change;
-import com.rbkmoney.fistful.withdrawal.Failure;
 import com.rbkmoney.fistful.withdrawal.SinkEvent;
+import com.rbkmoney.fistful.withdrawal.status.Status;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
@@ -38,16 +38,18 @@ public class WithdrawalStatusChangedHandler extends AbstractWithdrawalHandler {
     public WithdrawalStatusChangedHandler(WithdrawalDao withdrawalDao, FistfulCashFlowDao fistfulCashFlowDao) {
         this.withdrawalDao = withdrawalDao;
         this.fistfulCashFlowDao = fistfulCashFlowDao;
-        this.filter = new PathConditionFilter(new PathConditionRule("status_changed", new IsNullCondition().not()));
+        this.filter = new PathConditionFilter(new PathConditionRule("status_changed.status", new IsNullCondition().not()));
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
+        Status status = change.getStatusChanged().getStatus();
+
         log.info("Start withdrawal status changed handling, eventId={}, walletId={}, status={}", event.getId(), event.getSource(), change.getStatusChanged());
+
         Withdrawal withdrawal = withdrawalDao.get(event.getSource());
 
-        long sourceId = withdrawal.getId();
         withdrawal.setId(null);
         withdrawal.setWtime(null);
         withdrawal.setEventId(event.getId());
@@ -55,22 +57,22 @@ public class WithdrawalStatusChangedHandler extends AbstractWithdrawalHandler {
         withdrawal.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         withdrawal.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawal.setWithdrawalId(event.getSource());
-        withdrawal.setWithdrawalStatus(TBaseUtil.unionFieldToEnum(change.getStatusChanged(), WithdrawalStatus.class));
-        if (change.getStatusChanged().isSetFailed()) {
-            if (change.getStatusChanged().getFailed().isSetFailure()) {
-                withdrawal.setWithdrawalStatusFailedFailureJson(JsonUtil.tBaseToJsonString(change.getStatusChanged().getFailed()));
+        withdrawal.setWithdrawalStatus(TBaseUtil.unionFieldToEnum(status, WithdrawalStatus.class));
+        if (status.isSetFailed()) {
+            if (status.getFailed().isSetFailure()) {
+                withdrawal.setWithdrawalStatusFailedFailureJson(JsonUtil.tBaseToJsonString(status.getFailed().getFailure()));
             }
         }
         withdrawalDao.updateNotCurrent(event.getSource());
         long id = withdrawalDao.save(withdrawal);
 
-        List<FistfulCashFlow> cashFlows = fistfulCashFlowDao.getByObjId(sourceId, FistfulCashFlowChangeType.withdrawal);
+        List<FistfulCashFlow> cashFlows = fistfulCashFlowDao.getByObjId(withdrawal.getId(), FistfulCashFlowChangeType.withdrawal);
         cashFlows.forEach(pcf -> {
             pcf.setId(null);
             pcf.setObjId(id);
         });
         fistfulCashFlowDao.save(cashFlows);
-        log.info("Withdrawal status have been changed, eventId={}, walletId={}, status={}", event.getId(), event.getSource(),change.getStatusChanged());
+        log.info("Withdrawal status have been changed, eventId={}, walletId={}, status={}", event.getId(), event.getSource(), change.getStatusChanged());
     }
 
     @Override

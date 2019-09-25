@@ -34,16 +34,18 @@ public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
     public WithdrawalRouteChangeHandler(WithdrawalDao withdrawalDao, FistfulCashFlowDao fistfulCashFlowDao) {
         this.withdrawalDao = withdrawalDao;
         this.fistfulCashFlowDao = fistfulCashFlowDao;
-        this.filter = new PathConditionFilter(new PathConditionRule("route", new IsNullCondition().not()));
+        this.filter = new PathConditionFilter(new PathConditionRule("route.route", new IsNullCondition().not()));
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
-        log.info("Start withdrawal provider id changed handling, eventId={}, walletId={}, providerId={}", event.getId(), event.getSource(), change.getRoute().getId());
+        String providerId = change.getRoute().getRoute().getProviderId();
+
+        log.info("Start withdrawal provider id changed handling, eventId={}, walletId={}, providerId={}", event.getId(), event.getSource(), providerId);
+
         Withdrawal withdrawal = withdrawalDao.get(event.getSource());
 
-        long sourceId = withdrawal.getId();
         withdrawal.setId(null);
         withdrawal.setWtime(null);
         withdrawal.setEventId(event.getId());
@@ -51,18 +53,18 @@ public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
         withdrawal.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         withdrawal.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawal.setWithdrawalId(event.getSource());
-        withdrawal.setProviderId(change.getRoute().getId());
+        withdrawal.setProviderId(providerId);
 
         withdrawalDao.updateNotCurrent(event.getSource());
         long id = withdrawalDao.save(withdrawal);
 
-        List<FistfulCashFlow> cashFlows = fistfulCashFlowDao.getByObjId(sourceId, FistfulCashFlowChangeType.withdrawal);
+        List<FistfulCashFlow> cashFlows = fistfulCashFlowDao.getByObjId(withdrawal.getId(), FistfulCashFlowChangeType.withdrawal);
         cashFlows.forEach(pcf -> {
             pcf.setId(null);
             pcf.setObjId(id);
         });
         fistfulCashFlowDao.save(cashFlows);
-        log.info("Withdrawal provider id have been changed, eventId={}, walletId={}, providerId={}", event.getId(), event.getSource(), change.getRoute().getId());
+        log.info("Withdrawal provider id have been changed, eventId={}, walletId={}, providerId={}", event.getId(), event.getSource(), providerId);
     }
 
     @Override
