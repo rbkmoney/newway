@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.dao.party.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
+import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.party.iface.ContractDao;
 import com.rbkmoney.newway.domain.tables.pojos.Contract;
 import com.rbkmoney.newway.domain.tables.records.ContractRecord;
@@ -31,7 +31,7 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
         ContractRecord record = getDslContext().newRecord(CONTRACT, contract);
         Query query = getDslContext().insertInto(CONTRACT).set(record).returning(CONTRACT.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

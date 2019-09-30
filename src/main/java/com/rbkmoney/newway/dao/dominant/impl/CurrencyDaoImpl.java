@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.dao.dominant.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.domain.tables.pojos.Currency;
 import com.rbkmoney.newway.domain.tables.records.CurrencyRecord;
@@ -25,7 +25,7 @@ public class CurrencyDaoImpl extends AbstractGenericDao implements DomainObjectD
         CurrencyRecord currencyRecord = getDslContext().newRecord(CURRENCY, currency);
         Query query = getDslContext().insertInto(CURRENCY).set(currencyRecord).returning(CURRENCY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

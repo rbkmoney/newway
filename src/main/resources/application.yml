@@ -12,6 +12,8 @@ spring:
     hikari:
       idle-timeout: 30000
       maximum-pool-size: 10
+      data-source-properties:
+        reWriteBatchedInserts: true
   flyway:
     schemas: nw
 
@@ -117,3 +119,9 @@ dmt:
     delay: 3000
     maxQuerySize: 10
     enable: true
+
+cache:
+  invoice:
+    size: 10000
+  payment:
+    size: 10000

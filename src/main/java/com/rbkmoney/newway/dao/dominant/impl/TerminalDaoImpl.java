@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.dao.dominant.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.domain.tables.pojos.Terminal;
 import com.rbkmoney.newway.domain.tables.records.TerminalRecord;
@@ -25,7 +25,7 @@ public class TerminalDaoImpl extends AbstractGenericDao implements DomainObjectD
         TerminalRecord terminalRecord = getDslContext().newRecord(TERMINAL, terminal);
         Query query = getDslContext().insertInto(TERMINAL).set(terminalRecord).returning(TERMINAL.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

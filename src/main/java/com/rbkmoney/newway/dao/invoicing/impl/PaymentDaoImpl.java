@@ -1,12 +1,12 @@
 package com.rbkmoney.newway.dao.invoicing.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
+import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
-import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.domain.tables.records.PaymentRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.model.InvoicingSwitchKey;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,7 +16,11 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.Tables.PAYMENT;
 
@@ -40,18 +44,31 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
                 .doNothing()
                 .returning(PAYMENT.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeWithReturn(query, keyHolder);
+        execute(query, keyHolder);
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
     @Override
-    public void updateCommissions(Long pmntId) throws DaoException {
-        MapSqlParameterSource params = new MapSqlParameterSource("pmntId", pmntId).addValue("objType", PaymentChangeType.payment.name());
-        this.getNamedParameterJdbcTemplate().update(
-                "UPDATE nw.payment SET fee = (SELECT nw.get_payment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = CAST(:objType as nw.payment_change_type)), " +
-                        "provider_fee = (SELECT nw.get_payment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = CAST(:objType as nw.payment_change_type)), " +
-                        "external_fee = (SELECT nw.get_payment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = CAST(:objType as nw.payment_change_type)), " +
-                        "guarantee_deposit = (SELECT nw.get_payment_guarantee_deposit(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = CAST(:objType as nw.payment_change_type)) " +
+    public void saveBatch(List<Payment> payments) throws DaoException {
+        List<Query> queries = payments.stream()
+                .map(payment -> getDslContext().newRecord(PAYMENT, payment))
+                .map(paymentRecord -> getDslContext().insertInto(PAYMENT)
+                        .set(paymentRecord)
+                        .onConflict(PAYMENT.INVOICE_ID, PAYMENT.SEQUENCE_ID, PAYMENT.CHANGE_ID)
+                        .doNothing()
+                )
+                .collect(Collectors.toList());
+        batchExecute(queries);
+    }
+
+    @Override
+    public void updateCommissions(List<Long> pmntIds) throws DaoException {
+        MapSqlParameterSource[] params = pmntIds.stream().map(pmntId -> new MapSqlParameterSource("pmntId", pmntId)).toArray(MapSqlParameterSource[]::new);
+        this.getNamedParameterJdbcTemplate().batchUpdate(
+                "UPDATE nw.payment SET fee = (SELECT nw.get_payment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = 'payment'), " +
+                        "provider_fee = (SELECT nw.get_payment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = 'payment'), " +
+                        "external_fee = (SELECT nw.get_payment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = 'payment'), " +
+                        "guarantee_deposit = (SELECT nw.get_payment_guarantee_deposit(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = 'payment') " +
                         "WHERE  id = :pmntId",
                 params);
     }
@@ -65,8 +82,11 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
     }
 
     @Override
-    public void updateNotCurrent(Long id) throws DaoException {
-        Query query = getDslContext().update(PAYMENT).set(PAYMENT.CURRENT, false).where(PAYMENT.ID.eq(id));
-        executeOne(query);
+    public void switchCurrent(List<InvoicingSwitchKey> paymentsSwitchIds) throws DaoException {
+        List<Query> queries = paymentsSwitchIds.stream().map(s -> Arrays.asList(
+                getDslContext().update(PAYMENT).set(PAYMENT.CURRENT, false).where(PAYMENT.INVOICE_ID.eq(s.getInvoiceId())),
+                getDslContext().update(PAYMENT).set(PAYMENT.CURRENT, true).where(PAYMENT.ID.eq(s.getId())))
+        ).flatMap(Collection::stream).collect(Collectors.toList());
+        batchExecute(queries);
     }
 }

@@ -56,7 +56,7 @@ public class CashFlowUtil {
         }
     }
 
-    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, long objId, PaymentChangeType paymentchangetype) {
+    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, Long objId, PaymentChangeType paymentchangetype) {
         return convertCashFlows(cashFlowPostings, objId, paymentchangetype, null);
     }
 
@@ -79,7 +79,7 @@ public class CashFlowUtil {
         }).collect(Collectors.toList());
     }
 
-    public static List<FistfulCashFlow> convertFistfulCashFlows(List<com.rbkmoney.fistful.cashflow.FinalCashFlowPosting> cashFlowPostings, long objId, FistfulCashFlowChangeType cashFlowChangeType) {
+    public static List<FistfulCashFlow> convertFistfulCashFlows(List<com.rbkmoney.fistful.cashflow.FinalCashFlowPosting> cashFlowPostings, Long objId, FistfulCashFlowChangeType cashFlowChangeType) {
         return cashFlowPostings.stream().map(cf -> {
             FistfulCashFlow fcf = new FistfulCashFlow();
             fcf.setObjId(objId);

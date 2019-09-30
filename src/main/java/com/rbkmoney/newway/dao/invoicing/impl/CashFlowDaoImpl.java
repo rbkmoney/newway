@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.dao.invoicing.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
+import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
 import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.tables.CashFlow.CASH_FLOW;
 
@@ -28,13 +29,12 @@ public class CashFlowDaoImpl extends AbstractGenericDao implements CashFlowDao {
     }
 
     @Override
-    public void save(List<CashFlow> cashFlowList) throws DaoException {
-        //todo: Batch insert
-        for (CashFlow paymentCashFlow : cashFlowList) {
-            CashFlowRecord record = getDslContext().newRecord(CASH_FLOW, paymentCashFlow);
-            Query query = getDslContext().insertInto(CASH_FLOW).set(record);
-            executeOne(query);
-        }
+    public void save(List<CashFlow> cashFlows) throws DaoException {
+        List<Query> queries = cashFlows.stream()
+                .map(cashFlow -> getDslContext().newRecord(CASH_FLOW, cashFlow))
+                .map(cashFlowRecord -> getDslContext().insertInto(CASH_FLOW).set(cashFlowRecord))
+                .collect(Collectors.toList());
+        batchExecute(queries);
     }
 
     @Override

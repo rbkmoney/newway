@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.dao.destination.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
+import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.destination.iface.DestinationDao;
 import com.rbkmoney.newway.domain.tables.pojos.Destination;
 import com.rbkmoney.newway.domain.tables.records.DestinationRecord;
@@ -39,7 +39,7 @@ public class DestinationDaoImpl extends AbstractGenericDao implements Destinatio
         Query query = getDslContext().insertInto(DESTINATION).set(record).returning(DESTINATION.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

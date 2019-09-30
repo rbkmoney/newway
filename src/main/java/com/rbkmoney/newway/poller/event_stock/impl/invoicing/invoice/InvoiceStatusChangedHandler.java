@@ -3,18 +3,19 @@ package com.rbkmoney.newway.poller.event_stock.impl.invoicing.invoice;
 import com.rbkmoney.damsel.domain.InvoiceStatus;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
-import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.dao.invoicing.iface.InvoiceCartDao;
-import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
+import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.exception.DaoException;
-import com.rbkmoney.newway.exception.NotFoundException;
-import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
+import com.rbkmoney.newway.poller.event_stock.*;
+import com.rbkmoney.newway.model.InvoiceWrapper;
+import com.rbkmoney.newway.model.InvoicingKey;
+import com.rbkmoney.newway.model.InvoicingType;
+import com.rbkmoney.newway.service.InvoiceWrapperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -26,34 +27,26 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class InvoiceStatusChangedHandler extends AbstractInvoicingHandler {
+public class InvoiceStatusChangedHandler extends AbstractInvoicingInvoiceMapper {
 
-    private final InvoiceDao invoiceDao;
-    private final InvoiceCartDao invoiceCartDao;
+    private final InvoiceWrapperService invoiceWrapperService;
 
     private Filter filter = new PathConditionFilter(
             new PathConditionRule("invoice_status_changed", new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(InvoiceChange invoiceChange, MachineEvent event, Integer changeId) throws DaoException {
+    public InvoiceWrapper map(InvoiceChange invoiceChange, MachineEvent event, Integer changeId, LocalStorage storage) throws DaoException {
         InvoiceStatus invoiceStatus = invoiceChange.getInvoiceStatusChanged().getStatus();
         long sequenceId = event.getEventId();
         String invoiceId = event.getSourceId();
 
-        com.rbkmoney.newway.domain.tables.pojos.Invoice invoiceSource = invoiceDao.get(event.getSourceId());
-        if (invoiceSource == null) {
-            throw new NotFoundException(String.format("Invoice not found, invoiceId='%s'", event.getSourceId()));
-        }
-        log.info("Start invoice status changed handling, sequenceId={}, invoiceId={}, partyId={}, shopId={}, status={}",
+        InvoiceWrapper invoiceWrapper = invoiceWrapperService.get(invoiceId, storage);
+        Invoice invoiceSource = invoiceWrapper.getInvoice();
+        log.info("Start invoice status changed mapping, sequenceId={}, invoiceId={}, partyId={}, shopId={}, status={}",
                 sequenceId, invoiceId, invoiceSource.getPartyId(), invoiceSource.getShopId(), invoiceStatus.getSetField().getFieldName());
 
-        Long invoiceSourceId = invoiceSource.getId();
-        invoiceSource.setId(null);
-        invoiceSource.setWtime(null);
-        invoiceSource.setChangeId(changeId);
-        invoiceSource.setSequenceId(sequenceId);
-        invoiceSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+        setDefaultProperties(invoiceSource, sequenceId, changeId, event.getCreatedAt());
         invoiceSource.setStatus(TBaseUtil.unionFieldToEnum(invoiceStatus, com.rbkmoney.newway.domain.enums.InvoiceStatus.class));
         if (invoiceStatus.isSetCancelled()) {
             invoiceSource.setStatusCancelledDetails(invoiceStatus.getCancelled().getDetails());
@@ -63,19 +56,14 @@ public class InvoiceStatusChangedHandler extends AbstractInvoicingHandler {
             invoiceSource.setStatusFulfilledDetails(invoiceStatus.getFulfilled().getDetails());
         }
 
-        Long invId = invoiceDao.save(invoiceSource);
-        if (invId != null) {
-            invoiceDao.updateNotCurrent(invoiceSourceId);
-            List<InvoiceCart> invoiceCartList = invoiceCartDao.getByInvId(invoiceSourceId);
-            invoiceCartList.forEach(ic -> {
-                ic.setId(null);
-                ic.setInvId(invId);
-            });
-            invoiceCartDao.save(invoiceCartList);
-        }
+        List<InvoiceCart> invoiceCarts = invoiceWrapper.getCarts();
+        invoiceCarts.forEach(ic -> ic.setId(null));
 
-        log.info("Invoice has been saved, sequenceId={}, invoiceId={}, partyId={}, shopId={}, status={}",
+        storage.put(InvoicingKey.builder().invoiceId(invoiceId).type(InvoicingType.INVOICE).build(), invoiceWrapper);
+
+        log.info("Invoice has been mapped, sequenceId={}, invoiceId={}, partyId={}, shopId={}, status={}",
                 sequenceId, invoiceId, invoiceSource.getPartyId(), invoiceSource.getShopId(), invoiceStatus.getSetField().getFieldName());
+        return invoiceWrapper;
     }
 
     @Override
