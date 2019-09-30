@@ -37,13 +37,16 @@ public class DepositTransferCreatedHandler extends AbstractDepositHandler {
     public DepositTransferCreatedHandler(DepositDao depositDao, FistfulCashFlowDao fistfulCashFlowDao) {
         this.depositDao = depositDao;
         this.fistfulCashFlowDao = fistfulCashFlowDao;
-        this.filter = new PathConditionFilter(new PathConditionRule("transfer.created", new IsNullCondition().not()));
+        this.filter = new PathConditionFilter(new PathConditionRule("transfer.payload.created.transfer.cashflow", new IsNullCondition().not()));
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
+        List<FinalCashFlowPosting> postings = change.getTransfer().getPayload().getCreated().getTransfer().getCashflow().getPostings();
+
         log.info("Start deposit transfer created handling, eventId={}, depositId={}, transferChange={}", event.getId(), event.getSource(), change.getTransfer());
+
         Deposit deposit = depositDao.get(event.getSource());
 
         deposit.setId(null);
@@ -55,7 +58,6 @@ public class DepositTransferCreatedHandler extends AbstractDepositHandler {
         deposit.setDepositId(event.getSource());
         deposit.setDepositTransferStatus(DepositTransferStatus.created);
 
-        List<FinalCashFlowPosting> postings = change.getTransfer().getCreated().getCashflow().getPostings();
         deposit.setFee(CashFlowUtil.getFistfulFee(postings));
         deposit.setProviderFee(CashFlowUtil.getFistfulProviderFee(postings));
 

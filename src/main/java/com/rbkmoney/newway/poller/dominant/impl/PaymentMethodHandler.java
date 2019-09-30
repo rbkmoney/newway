@@ -44,6 +44,10 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
             paymentMethodRefId = tokenizedBankCard.getPaymentSystem().name() + "_" + tokenizedBankCard.getTokenProvider().name();
         } else if (paymentMethodObjectRefId.isSetEmptyCvvBankCard()) {
             paymentMethodRefId = "empty_cvv_" + paymentMethodObjectRefId.getEmptyCvvBankCard().name();
+        } else if (paymentMethodObjectRefId.isSetCryptoCurrency()) {
+            paymentMethodRefId = paymentMethodObjectRefId.getCryptoCurrency().name();
+        } else if (paymentMethodObjectRefId.isSetMobile()) {
+            paymentMethodRefId = paymentMethodObjectRefId.getMobile().name();
         } else {
             throw new IllegalArgumentException("Unknown payment method: " + paymentMethodObjectRefId);
         }
