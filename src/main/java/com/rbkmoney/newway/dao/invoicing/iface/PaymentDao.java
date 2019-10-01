@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface PaymentDao extends GenericDao {
 
-    Long save(Payment payment) throws DaoException;
-
     void saveBatch(List<Payment> payments) throws DaoException;
 
     Payment get(String invoiceId, String paymentId) throws DaoException;

@@ -9,6 +9,7 @@ import com.rbkmoney.machinegun.msgpack.Value;
 import com.rbkmoney.newway.exception.ParseException;
 import com.rbkmoney.newway.service.InvoicingService;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -19,9 +20,11 @@ import org.springframework.kafka.support.Acknowledgment;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 
 public class InvoicingListenerTest {
 
@@ -37,7 +40,7 @@ public class InvoicingListenerTest {
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
-        listener = new InvoicingKafkaListener(invoicingService, eventParser);
+        listener = new InvoicingKafkaListener(invoicingService);
     }
 
     @Test
@@ -53,9 +56,9 @@ public class InvoicingListenerTest {
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(message);
 
-        listener.handle(sinkEvent, ack);
+        listener.handle(Collections.singletonList(new ConsumerRecord<>(any(), any(), any(), any(), sinkEvent)), ack);
 
-        Mockito.verify(invoicingService, Mockito.times(0)).handleEvents(any(), any());
+        Mockito.verify(invoicingService, Mockito.times(0)).handleEvents(anyList());
         Mockito.verify(ack, Mockito.times(1)).acknowledge();
     }
 
@@ -68,7 +71,7 @@ public class InvoicingListenerTest {
 
         Mockito.when(eventParser.parse(message)).thenThrow(new ParseException());
 
-        listener.handle(sinkEvent, ack);
+        listener.handle(Collections.singletonList(new ConsumerRecord<>(any(), any(), any(), any(), sinkEvent)), ack);
 
         Mockito.verify(ack, Mockito.times(0)).acknowledge();
     }
@@ -87,9 +90,9 @@ public class InvoicingListenerTest {
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(message);
 
-        listener.handle(sinkEvent, ack);
+        listener.handle(Collections.singletonList(new ConsumerRecord<>(any(), any(), any(), any(), sinkEvent)), ack);
 
-        Mockito.verify(invoicingService, Mockito.times(1)).handleEvents(any(), any());
+        Mockito.verify(invoicingService, Mockito.times(1)).handleEvents(anyList());
         Mockito.verify(ack, Mockito.times(1)).acknowledge();
     }
 

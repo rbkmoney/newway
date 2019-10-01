@@ -26,6 +26,7 @@ import java.util.Properties;
 
 import static java.util.Collections.emptyList;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 
 @Slf4j
 @ContextConfiguration(classes = {KafkaAutoConfiguration.class, InvoicingKafkaListener.class})
@@ -55,7 +56,7 @@ public class InvoicingKafkaListenerTest extends AbstractKafkaTest {
         waitForTopicSync();
 
         Mockito.verify(eventParser, Mockito.times(1)).parse(any());
-        Mockito.verify(invoicingService, Mockito.times(1)).handleEvents(any(), any());
+        Mockito.verify(invoicingService, Mockito.times(1)).handleEvents(anyList());
     }
 
     private void writeToTopic(SinkEvent sinkEvent) {
