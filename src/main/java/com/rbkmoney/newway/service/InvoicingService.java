@@ -28,7 +28,6 @@ public class InvoicingService {
     private final List<AbstractInvoicingMapper<PaymentWrapper>> paymentMappers;
     private final InvoiceBatchService invoiceBatchService;
     private final PaymentBatchService paymentBatchService;
-
     private final MachineEventParser<EventPayload> parser;
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -38,23 +37,25 @@ public class InvoicingService {
         List<PaymentWrapper> payments = new ArrayList<>(machineEvents.size());
         machineEvents.forEach(me -> {
             EventPayload payload = parser.parse(me);
-            try {
-                List<InvoiceChange> invoiceChanges = payload.getInvoiceChanges();
-                for (int i = 0; i < invoiceChanges.size(); i++) {
-                    InvoiceChange change = invoiceChanges.get(i);
-                    InvoiceWrapper invoice = mapInvoice(change, me, i, storage);
-                    PaymentWrapper payment = mapPayment(change, me, i, storage);
-                    if (invoice != null) {
-                        invoices.add(invoice);
+            if (payload.isSetInvoiceChanges()) {
+                try {
+                    List<InvoiceChange> invoiceChanges = payload.getInvoiceChanges();
+                    for (int i = 0; i < invoiceChanges.size(); i++) {
+                        InvoiceChange change = invoiceChanges.get(i);
+                        InvoiceWrapper invoice = mapInvoice(change, me, i, storage);
+                        PaymentWrapper payment = mapPayment(change, me, i, storage);
+                        if (invoice != null) {
+                            invoices.add(invoice);
+                        }
+                        if (payment != null) {
+                            payments.add(payment);
+                        }
+                        handleOtherEvent(change, me, i);
                     }
-                    if (payment != null) {
-                        payments.add(payment);
-                    }
-                    handleOtherEvent(change, me, i);
+                } catch (Throwable e) {
+                    log.error("Unexpected error while handling events; machineId: {},  eventId: {}", me.getSourceId(), me.getEventId(), e);
+                    throw e;
                 }
-            } catch (Throwable e) {
-                log.error("Unexpected error while handling events; machineId: {},  eventId: {}", me.getSourceId(), me.getEventId(), e);
-                throw e;
             }
         });
         if (!invoices.isEmpty()) {
