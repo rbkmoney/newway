@@ -9,3 +9,5 @@ CREATE SEQUENCE nw.pmnt_seq
     START 600000000
     MINVALUE 600000000
     CACHE 1;
+
+alter table nw.payment add column capture_started_params_cart_json character varying;
