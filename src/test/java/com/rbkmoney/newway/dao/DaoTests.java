@@ -397,22 +397,6 @@ public class DaoTests extends AbstractAppDaoTests {
     }
 
     @Test
-    public void invoiceCartDaoTest() {
-        jdbcTemplate.execute("truncate table nw.invoice cascade");
-        jdbcTemplate.execute("truncate table nw.invoice_cart cascade");
-        Invoice invoice = random(Invoice.class);
-        invoice.setCurrent(true);
-        Long invId = invoiceDao.save(invoice);
-        List<InvoiceCart> invoiceCarts = randomListOf(10, InvoiceCart.class);
-        invoiceCarts.forEach(ic -> {
-            ic.setInvId(invId);
-        });
-        invoiceCartDao.save(invoiceCarts);
-        List<InvoiceCart> byInvId = invoiceCartDao.getByInvId(invId);
-        assertEquals(new HashSet(invoiceCarts), new HashSet(byInvId));
-    }
-
-    @Test
     public void paymentDaoTest() {
         jdbcTemplate.execute("truncate table nw.payment cascade");
         Payment payment = random(Payment.class);
