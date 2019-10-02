@@ -32,7 +32,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class InvoicePaymentCreatedHandler extends AbstractInvoicingPaymentMapper {
+public class InvoicePaymentCreatedMapper extends AbstractInvoicingPaymentMapper {
 
     private final InvoiceWrapperService invoiceWrapperService;
 

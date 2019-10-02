@@ -1,6 +1,5 @@
 package com.rbkmoney.newway.poller.event_stock.impl.invoicing.payment;
 
-import com.rbkmoney.damsel.domain.PaymentRoute;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentChange;
 import com.rbkmoney.geck.filter.Filter;
@@ -23,12 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class InvoicePaymentRouteChangedHandler extends AbstractInvoicingPaymentMapper {
+public class InvoicePaymentRecTokenAcquiredMapper extends AbstractInvoicingPaymentMapper {
 
     private final PaymentWrapperService paymentWrapperService;
 
     private Filter filter = new PathConditionFilter(new PathConditionRule(
-            "invoice_payment_change.payload.invoice_payment_route_changed",
+            "invoice_payment_change.payload.invoice_payment_rec_token_acquired",
             new IsNullCondition().not()));
 
     @Override
@@ -37,17 +36,16 @@ public class InvoicePaymentRouteChangedHandler extends AbstractInvoicingPaymentM
         InvoicePaymentChange invoicePaymentChange = change.getInvoicePaymentChange();
         String invoiceId = event.getSourceId();
         String paymentId = invoicePaymentChange.getId();
-        PaymentRoute paymentRoute = invoicePaymentChange.getPayload().getInvoicePaymentRouteChanged().getRoute();
+        String token = invoicePaymentChange.getPayload().getInvoicePaymentRecTokenAcquired().getToken();
         long sequenceId = event.getEventId();
-        log.info("Start mapping payment route change, route='{}', sequenceId='{}', invoiceId='{}', paymentId='{}'", paymentRoute, sequenceId, invoiceId, paymentId);
+        log.info("Start handling payment recurrent token acquired, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
         PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, storage);
         Payment paymentSource = paymentWrapper.getPayment();
         setDefaultProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
-        paymentSource.setRouteProviderId(paymentRoute.getProvider().getId());
-        paymentSource.setRouteTerminalId(paymentRoute.getTerminal().getId());
+        paymentSource.setRecurrentIntentionToken(token);
         paymentWrapper.getCashFlows().forEach(c -> c.setId(null));
         storage.put(InvoicingKey.builder().invoiceId(invoiceId).paymentId(paymentId).type(InvoicingType.PAYMENT).build(), paymentWrapper);
-        log.info("Payment route have been mapped, route='{}', sequenceId='{}', invoiceId='{}', paymentId='{}'", paymentRoute, sequenceId, invoiceId, paymentId);
+        log.info("Payment recurrent token have been saved, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
         return paymentWrapper;
     }
 

@@ -27,7 +27,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class InvoiceStatusChangedHandler extends AbstractInvoicingInvoiceMapper {
+public class InvoiceStatusChangedMapper extends AbstractInvoicingInvoiceMapper {
 
     private final InvoiceWrapperService invoiceWrapperService;
 

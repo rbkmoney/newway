@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class InvoiceCreatedHandler extends AbstractInvoicingInvoiceMapper {
+public class InvoiceCreatedMapper extends AbstractInvoicingInvoiceMapper {
 
     private Filter filter = new PathConditionFilter(
             new PathConditionRule("invoice_created", new IsNullCondition().not())
@@ -68,7 +68,6 @@ public class InvoiceCreatedHandler extends AbstractInvoicingInvoiceMapper {
         invoiceRecord.setCurrencyCode(invoice.getCost().getCurrency().getSymbolicCode());
         invoiceRecord.setContext(invoice.getContext().getData());
         invoiceRecord.setTemplateId(invoice.getTemplateId());
-        invoiceRecord.setCurrent(false);
 
         InvoiceWrapper invoiceWrapper = new InvoiceWrapper();
         invoiceWrapper.setInvoice(invoiceRecord);

@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class InvoicePaymentSessionChangeTransactionBoundHandler extends AbstractInvoicingPaymentMapper {
+public class InvoicePaymentSessionChangeTransactionBoundMapper extends AbstractInvoicingPaymentMapper {
 
     private final PaymentWrapperService paymentWrapperService;
 

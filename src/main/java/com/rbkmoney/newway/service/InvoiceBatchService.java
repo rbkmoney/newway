@@ -25,11 +25,12 @@ public class InvoiceBatchService {
         List<Long> ids = invoiceIdsGeneratorDao.get(invoiceWrappers.size());
         setIds(invoiceWrappers, ids);
         invoiceWrapperService.save(invoiceWrappers);
-        List<InvoicingSwitchKey> invoicesSwitchIds = invoiceWrappers.stream()
+        List<InvoicingSwitchKey> invoicingSwitchIds = invoiceWrappers.stream()
                 .map(i -> new InvoicingSwitchKey(i.getInvoice().getInvoiceId(), null, i.getInvoice().getId()))
                 .collect(Collectors.groupingBy(InvoicingSwitchKey::getInvoiceId, Collectors.maxBy(Comparator.comparing(InvoicingSwitchKey::getId))))
                 .values().stream().filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
-        invoiceDao.switchCurrent(invoicesSwitchIds);
+        log.info("Switch to current ids: {}", invoicingSwitchIds);
+        invoiceDao.switchCurrent(invoicingSwitchIds);
         log.info("End processing of invoice batch");
     }
 

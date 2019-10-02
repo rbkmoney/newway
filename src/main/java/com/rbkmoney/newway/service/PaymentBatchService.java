@@ -4,6 +4,9 @@ import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.dao.invoicing.impl.PaymentIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.model.InvoicingSwitchKey;
 import com.rbkmoney.newway.model.PaymentWrapper;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,13 @@ public class PaymentBatchService {
     private final PaymentWrapperService paymentWrapperService;
     private final PaymentIdsGeneratorDaoImpl paymentIdsGeneratorDao;
 
+    @AllArgsConstructor
+    @EqualsAndHashCode
+    private class Pair {
+        private String invoiceId;
+        private String paymentId;
+    }
+
     public void process(List<PaymentWrapper> paymentWrappers) {
         log.info("Start processing of payment batch, size={}", paymentWrappers.size());
         List<Long> ids = paymentIdsGeneratorDao.get(paymentWrappers.size());
@@ -30,8 +40,9 @@ public class PaymentBatchService {
         paymentDao.updateCommissions(paymentWrappers.stream().filter(PaymentWrapper::isNeedUpdateCommissions).map(pw -> pw.getPayment().getId()).collect(Collectors.toList()));
         List<InvoicingSwitchKey> invoicingSwitchIds = paymentWrappers.stream()
                 .map(p -> new InvoicingSwitchKey(p.getPayment().getInvoiceId(), p.getPayment().getPaymentId(), p.getPayment().getId()))
-                .collect(Collectors.groupingBy(InvoicingSwitchKey::getInvoiceId, Collectors.maxBy(Comparator.comparing(InvoicingSwitchKey::getId))))
+                .collect(Collectors.groupingBy(isk ->  new Pair(isk.getInvoiceId(), isk.getPaymentId()), Collectors.maxBy(Comparator.comparing(InvoicingSwitchKey::getId))))
                 .values().stream().filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+        log.info("Switch to current ids: {}", invoicingSwitchIds);
         paymentDao.switchCurrent(invoicingSwitchIds);
         log.info("End processing of payment batch");
     }

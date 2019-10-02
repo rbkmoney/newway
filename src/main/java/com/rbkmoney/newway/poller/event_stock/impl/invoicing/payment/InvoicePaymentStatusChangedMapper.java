@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class InvoicePaymentStatusChangedHandler extends AbstractInvoicingPaymentMapper {
+public class InvoicePaymentStatusChangedMapper extends AbstractInvoicingPaymentMapper {
 
     private final PaymentWrapperService paymentWrapperService;
 

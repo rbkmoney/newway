@@ -34,7 +34,7 @@ public class InvoiceWrapperService {
         }
         invoiceWrapper = invoiceDataCache.getIfPresent(key);
         if (invoiceWrapper != null) {
-            invoiceWrapper.copy();
+            return invoiceWrapper.copy();
         }
         Invoice invoice = invoiceDao.get(invoiceId);
         if (invoice == null) {

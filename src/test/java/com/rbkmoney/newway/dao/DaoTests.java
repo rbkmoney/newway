@@ -7,6 +7,7 @@ import com.rbkmoney.newway.dao.dominant.impl.*;
 import com.rbkmoney.newway.dao.identity.iface.ChallengeDao;
 import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.dao.invoicing.iface.*;
+import com.rbkmoney.newway.dao.invoicing.impl.PaymentIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
 import com.rbkmoney.newway.dao.payout.iface.PayoutSummaryDao;
@@ -118,6 +119,8 @@ public class DaoTests extends AbstractAppDaoTests {
     private WithdrawalSessionDao withdrawalSessionDao;
     @Autowired
     private CashFlowService cashFlowService;
+    @Autowired
+    private PaymentIdsGeneratorDaoImpl idsGeneratorDao;
 
     @Test
     public void depositDaoTest() {
@@ -400,15 +403,36 @@ public class DaoTests extends AbstractAppDaoTests {
     }
 
     @Test
+    public void invoiceCartDaoTest() {
+        jdbcTemplate.execute("truncate table nw.invoice cascade");
+        jdbcTemplate.execute("truncate table nw.invoice_cart cascade");
+        Invoice invoice = random(Invoice.class);
+        invoice.setCurrent(true);
+        Long invId = invoice.getId();
+        invoiceDao.saveBatch(Collections.singletonList(invoice));
+        List<InvoiceCart> invoiceCarts = randomListOf(10, InvoiceCart.class);
+        invoiceCarts.forEach(ic -> {
+            ic.setInvId(invId);
+        });
+        invoiceCartDao.save(invoiceCarts);
+        List<InvoiceCart> byInvId = invoiceCartDao.getByInvId(invId);
+        assertEquals(new HashSet(invoiceCarts), new HashSet(byInvId));
+    }
+
+    @Test
     public void paymentDaoTest() {
         jdbcTemplate.execute("truncate table nw.payment cascade");
         Payment payment = random(Payment.class);
-        payment.setCurrent(true);
-        paymentDao.saveBatch(Collections.singletonList(payment));
+        payment.setCurrent(false);
+        Payment paymentTwo = random(Payment.class);
+        paymentTwo.setCurrent(false);
+        paymentTwo.setInvoiceId(payment.getInvoiceId());
+        paymentTwo.setPaymentId(payment.getPaymentId());
+        paymentDao.saveBatch(Arrays.asList(payment, paymentTwo));
+        paymentDao.switchCurrent(Collections.singletonList(new InvoicingSwitchKey(payment.getInvoiceId(), payment.getPaymentId(), paymentTwo.getId())));
         Payment paymentGet = paymentDao.get(payment.getInvoiceId(), payment.getPaymentId());
-        assertEquals(payment, paymentGet);
-        paymentDao.switchCurrent(Collections.singletonList(new InvoicingSwitchKey(paymentGet.getInvoiceId(), paymentGet.getPaymentId(), paymentGet.getId())));
-        Assert.assertNotNull(paymentDao.get(payment.getInvoiceId(), payment.getPaymentId()));
+        paymentTwo.setCurrent(true);
+        assertEquals(paymentTwo, paymentGet);
     }
 
     @Test
@@ -569,9 +593,6 @@ public class DaoTests extends AbstractAppDaoTests {
         } catch (Exception e) {
             assertTrue(e instanceof EmptyResultDataAccessException);
         }
-
-
-
     }
 
     @Test
@@ -647,5 +668,12 @@ public class DaoTests extends AbstractAppDaoTests {
         adjustmentDao.save(adjustment);
 
         assertEquals("1", adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()).getPartyId());
+    }
+
+    @Test
+    public void idsGeneratorTest() {
+        List<Long> list = idsGeneratorDao.get(100);
+        assertEquals(100, list.size());
+        assertEquals(99,list.get(99) - list.get(0));
     }
 }
