@@ -50,7 +50,6 @@ public class InvoicePaymentRiskScoreChangedMapper extends AbstractInvoicingPayme
         }
         paymentSource.setRiskScore(score);
         paymentWrapper.getCashFlows().forEach(c -> c.setId(null));
-        storage.put(InvoicingKey.builder().invoiceId(invoiceId).paymentId(paymentId).type(InvoicingType.PAYMENT).build(), paymentWrapper);
         log.info("Payment risk score have been mapped, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
         return paymentWrapper;
     }

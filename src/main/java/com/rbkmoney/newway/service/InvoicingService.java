@@ -3,6 +3,8 @@ package com.rbkmoney.newway.service;
 import com.rbkmoney.damsel.payment_processing.EventPayload;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
+import com.rbkmoney.newway.model.InvoicingKey;
+import com.rbkmoney.newway.model.InvoicingType;
 import com.rbkmoney.newway.poller.event_stock.*;
 import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
 import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingMapper;
@@ -42,13 +44,22 @@ public class InvoicingService {
                     List<InvoiceChange> invoiceChanges = payload.getInvoiceChanges();
                     for (int i = 0; i < invoiceChanges.size(); i++) {
                         InvoiceChange change = invoiceChanges.get(i);
-                        InvoiceWrapper invoice = mapInvoice(change, me, i, storage);
-                        PaymentWrapper payment = mapPayment(change, me, i, storage);
-                        if (invoice != null) {
-                            invoices.add(invoice);
+                        InvoiceWrapper invoiceWrapper = mapInvoice(change, me, i, storage);
+                        PaymentWrapper paymentWrapper = mapPayment(change, me, i, storage);
+                        if (invoiceWrapper != null) {
+                            invoices.add(invoiceWrapper);
+                            storage.put(InvoicingKey.builder()
+                                    .invoiceId(invoiceWrapper.getInvoice().getInvoiceId())
+                                    .type(InvoicingType.INVOICE)
+                                    .build(), invoiceWrapper);
                         }
-                        if (payment != null) {
-                            payments.add(payment);
+                        if (paymentWrapper != null) {
+                            payments.add(paymentWrapper);
+                            storage.put(InvoicingKey.builder()
+                                    .invoiceId(paymentWrapper.getPayment().getInvoiceId())
+                                    .paymentId(paymentWrapper.getPayment().getPaymentId())
+                                    .type(InvoicingType.PAYMENT)
+                                    .build(), paymentWrapper);
                         }
                         handleOtherEvent(change, me, i);
                     }

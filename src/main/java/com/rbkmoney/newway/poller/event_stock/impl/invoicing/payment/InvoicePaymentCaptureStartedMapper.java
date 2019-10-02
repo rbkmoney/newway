@@ -58,7 +58,6 @@ public class InvoicePaymentCaptureStartedMapper extends AbstractInvoicingPayment
             String cartsJson = JsonUtil.objectToJsonString(captureParams.getCart().getLines().stream().map(JsonUtil::tBaseToJsonNode).collect(Collectors.toList()));
             paymentSource.setCaptureStartedParamsCartJson(cartsJson);
         }
-        storage.put(InvoicingKey.builder().invoiceId(invoiceId).paymentId(paymentId).type(InvoicingType.PAYMENT).build(), paymentWrapper);
         log.info("Payment has been saved, sequenceId={}, invoiceId={}, paymentId={}", sequenceId, invoiceId, paymentSource.getId());
         return paymentWrapper;
     }

@@ -67,7 +67,6 @@ public class InvoicePaymentStatusChangedMapper extends AbstractInvoicingPaymentM
             paymentSource.setStatusFailedFailure(JsonUtil.tBaseToJsonString(invoicePaymentStatus.getFailed()));
         }
         paymentWrapper.getCashFlows().forEach(c -> c.setId(null));
-        storage.put(InvoicingKey.builder().invoiceId(invoiceId).paymentId(paymentId).type(InvoicingType.PAYMENT).build(), paymentWrapper);
         log.info("Payment status has been saved, sequenceId={}, invoiceId={}, paymentId={}, status={}",
                 sequenceId, invoiceId, paymentId, invoicePaymentStatus.getSetField().getFieldName());
         return paymentWrapper;

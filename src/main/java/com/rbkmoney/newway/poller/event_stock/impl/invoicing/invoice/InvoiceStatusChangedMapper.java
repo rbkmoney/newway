@@ -58,9 +58,6 @@ public class InvoiceStatusChangedMapper extends AbstractInvoicingInvoiceMapper {
 
         List<InvoiceCart> invoiceCarts = invoiceWrapper.getCarts();
         invoiceCarts.forEach(ic -> ic.setId(null));
-
-        storage.put(InvoicingKey.builder().invoiceId(invoiceId).type(InvoicingType.INVOICE).build(), invoiceWrapper);
-
         log.info("Invoice has been mapped, sequenceId={}, invoiceId={}, partyId={}, shopId={}, status={}",
                 sequenceId, invoiceId, invoiceSource.getPartyId(), invoiceSource.getShopId(), invoiceStatus.getSetField().getFieldName());
         return invoiceWrapper;

@@ -85,8 +85,6 @@ public class InvoiceCreatedMapper extends AbstractInvoicingInvoiceMapper {
             }).collect(Collectors.toList());
             invoiceWrapper.setCarts(invoiceCarts);
         }
-        storage.put(InvoicingKey.builder().invoiceId(invoiceId).type(InvoicingType.INVOICE).build(), invoiceWrapper);
-
         log.info("Invoice has been mapped, sequenceId={}, invoiceId={}, partyId={}, shopId={}",
                 sequenceId, invoiceId, invoice.getOwnerId(), invoice.getShopId());
         return invoiceWrapper;

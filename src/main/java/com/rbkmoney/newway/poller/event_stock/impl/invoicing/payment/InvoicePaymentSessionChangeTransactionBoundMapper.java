@@ -72,7 +72,6 @@ public class InvoicePaymentSessionChangeTransactionBoundMapper extends AbstractI
             }
         }
         paymentWrapper.getCashFlows().forEach(c -> c.setId(null));
-        storage.put(InvoicingKey.builder().invoiceId(invoiceId).paymentId(paymentId).type(InvoicingType.PAYMENT).build(), paymentWrapper);
         log.info("Payment session transaction info has been saved, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
         return paymentWrapper;
     }

@@ -49,7 +49,6 @@ public class InvoicePaymentCashFlowChangedMapper extends AbstractInvoicingPaymen
         List<CashFlow> cashFlows = CashFlowUtil.convertCashFlows(invoicePaymentChange.getPayload().getInvoicePaymentCashFlowChanged().getCashFlow(), null, PaymentChangeType.payment);
         paymentWrapper.setCashFlows(cashFlows);
         paymentWrapper.setNeedUpdateCommissions(true);
-        storage.put(InvoicingKey.builder().invoiceId(invoiceId).paymentId(paymentId).type(InvoicingType.PAYMENT).build(), paymentWrapper);
         log.info("Payment cashflow has been mapped, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
         return paymentWrapper;
     }
