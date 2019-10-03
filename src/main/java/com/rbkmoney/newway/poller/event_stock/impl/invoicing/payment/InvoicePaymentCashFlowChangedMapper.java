@@ -11,16 +11,12 @@ import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.poller.event_stock.*;
-import com.rbkmoney.newway.model.InvoicingKey;
-import com.rbkmoney.newway.model.InvoicingType;
 import com.rbkmoney.newway.model.PaymentWrapper;
 import com.rbkmoney.newway.service.PaymentWrapperService;
 import com.rbkmoney.newway.util.CashFlowUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,7 +32,6 @@ public class InvoicePaymentCashFlowChangedMapper extends AbstractInvoicingPaymen
             new IsNullCondition().not()));
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
     public PaymentWrapper map(InvoiceChange change, MachineEvent event, Integer changeId, LocalStorage storage) {
         InvoicePaymentChange invoicePaymentChange = change.getInvoicePaymentChange();
         String invoiceId = event.getSourceId();

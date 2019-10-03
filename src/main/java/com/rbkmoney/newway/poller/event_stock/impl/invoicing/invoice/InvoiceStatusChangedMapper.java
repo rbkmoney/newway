@@ -13,14 +13,10 @@ import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.poller.event_stock.*;
 import com.rbkmoney.newway.model.InvoiceWrapper;
-import com.rbkmoney.newway.model.InvoicingKey;
-import com.rbkmoney.newway.model.InvoicingType;
 import com.rbkmoney.newway.service.InvoiceWrapperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -35,7 +31,6 @@ public class InvoiceStatusChangedMapper extends AbstractInvoicingInvoiceMapper {
             new PathConditionRule("invoice_status_changed", new IsNullCondition().not()));
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
     public InvoiceWrapper map(InvoiceChange invoiceChange, MachineEvent event, Integer changeId, LocalStorage storage) throws DaoException {
         InvoiceStatus invoiceStatus = invoiceChange.getInvoiceStatusChanged().getStatus();
         long sequenceId = event.getEventId();

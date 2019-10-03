@@ -14,15 +14,11 @@ import com.rbkmoney.newway.domain.enums.InvoiceStatus;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.model.InvoiceWrapper;
-import com.rbkmoney.newway.model.InvoicingType;
-import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.poller.event_stock.LocalStorage;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -38,7 +34,6 @@ public class InvoiceCreatedMapper extends AbstractInvoicingInvoiceMapper {
     );
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
     public InvoiceWrapper map(InvoiceChange invoiceChange, MachineEvent event, Integer changeId, LocalStorage storage) throws DaoException {
         Invoice invoice = invoiceChange.getInvoiceCreated().getInvoice();
         long sequenceId = event.getEventId();

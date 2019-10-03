@@ -11,8 +11,6 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
-import com.rbkmoney.newway.model.InvoicingKey;
-import com.rbkmoney.newway.model.InvoicingType;
 import com.rbkmoney.newway.model.PaymentWrapper;
 import com.rbkmoney.newway.poller.event_stock.LocalStorage;
 import com.rbkmoney.newway.service.PaymentWrapperService;
@@ -33,7 +31,6 @@ public class InvoicePaymentCaptureStartedMapper extends AbstractInvoicingPayment
     private final Filter filter = new PathConditionFilter(new PathConditionRule(
             "invoice_payment_change.payload.invoice_payment_capture_started",
             new IsNullCondition().not()));
-
 
     @Override
     public PaymentWrapper map(InvoiceChange change, MachineEvent event, Integer changeId, LocalStorage storage) {
