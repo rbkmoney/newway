@@ -54,8 +54,8 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
     @Override
     public void switchCurrent(List<InvoicingSwitchKey> invoicesSwitchIds) throws DaoException {
         invoicesSwitchIds.forEach(s -> {
-            executeOne(getDslContext().update(INVOICE).set(INVOICE.CURRENT, false).where(INVOICE.INVOICE_ID.eq(s.getInvoiceId())));
-            executeOne(getDslContext().update(INVOICE).set(INVOICE.CURRENT, true).where(INVOICE.ID.eq(s.getId())));
+            execute(getDslContext().update(INVOICE).set(INVOICE.CURRENT, false).where(INVOICE.INVOICE_ID.eq(s.getInvoiceId()).and(INVOICE.CURRENT)));
+            execute(getDslContext().update(INVOICE).set(INVOICE.CURRENT, true).where(INVOICE.ID.eq(s.getId())));
         });
     }
 }

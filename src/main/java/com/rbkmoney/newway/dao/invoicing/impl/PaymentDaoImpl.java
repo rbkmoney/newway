@@ -71,8 +71,8 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
     @Override
     public void switchCurrent(List<InvoicingSwitchKey> paymentsSwitchIds) throws DaoException {
         paymentsSwitchIds.forEach(s -> {
-            executeOne(getDslContext().update(PAYMENT).set(PAYMENT.CURRENT, false).where(PAYMENT.INVOICE_ID.eq(s.getInvoiceId())));
-            executeOne(getDslContext().update(PAYMENT).set(PAYMENT.CURRENT, true).where(PAYMENT.ID.eq(s.getId())));
+            execute(getDslContext().update(PAYMENT).set(PAYMENT.CURRENT, false).where(PAYMENT.INVOICE_ID.eq(s.getInvoiceId()).and(PAYMENT.PAYMENT_ID.eq(s.getPaymentId())).and(PAYMENT.CURRENT)));
+            execute(getDslContext().update(PAYMENT).set(PAYMENT.CURRENT, true).where(PAYMENT.ID.eq(s.getId())));
         });
     }
 }

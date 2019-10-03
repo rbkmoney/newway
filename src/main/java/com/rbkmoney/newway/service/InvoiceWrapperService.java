@@ -28,9 +28,9 @@ public class InvoiceWrapperService {
 
     public InvoiceWrapper get(String invoiceId, LocalStorage storage) throws DaoException, NotFoundException {
         InvoicingKey key = InvoicingKey.builder().invoiceId(invoiceId).type(InvoicingType.INVOICE).build();
-        InvoiceWrapper invoiceWrapper = (InvoiceWrapper) storage.getCopy(key);
+        InvoiceWrapper invoiceWrapper = (InvoiceWrapper) storage.get(key);
         if (invoiceWrapper != null) {
-            return invoiceWrapper;
+            return invoiceWrapper.copy();
         }
         invoiceWrapper = invoiceDataCache.getIfPresent(key);
         if (invoiceWrapper != null) {

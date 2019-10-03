@@ -43,7 +43,7 @@ public class InvoicePaymentSessionChangeTransactionBoundMapper extends AbstractI
         String paymentId = invoicePaymentChange.getId();
         InvoicePaymentSessionChange sessionChange = invoicePaymentChange.getPayload().getInvoicePaymentSessionChange();
         long sequenceId = event.getEventId();
-        log.info("Start handling session change transaction info, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
+        log.info("Start mapping session change transaction info, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
 
         PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, storage);
         Payment paymentSource = paymentWrapper.getPayment();
@@ -72,7 +72,7 @@ public class InvoicePaymentSessionChangeTransactionBoundMapper extends AbstractI
             }
         }
         paymentWrapper.getCashFlows().forEach(c -> c.setId(null));
-        log.info("Payment session transaction info has been saved, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
+        log.info("Payment session transaction info has been mapped, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
         return paymentWrapper;
     }
 

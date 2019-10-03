@@ -41,7 +41,7 @@ public class InvoicePaymentStatusChangedMapper extends AbstractInvoicingPaymentM
         String invoiceId = event.getSourceId();
         String paymentId = change.getInvoicePaymentChange().getId();
 
-        log.info("Start payment status changed handling, sequenceId={}, invoiceId={}, paymentId={}, status={}",
+        log.info("Start payment status changed mapping, sequenceId={}, invoiceId={}, paymentId={}, status={}",
                 sequenceId, invoiceId, paymentId, invoicePaymentStatus.getSetField().getFieldName());
 
         PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, storage);
@@ -67,7 +67,7 @@ public class InvoicePaymentStatusChangedMapper extends AbstractInvoicingPaymentM
             paymentSource.setStatusFailedFailure(JsonUtil.tBaseToJsonString(invoicePaymentStatus.getFailed()));
         }
         paymentWrapper.getCashFlows().forEach(c -> c.setId(null));
-        log.info("Payment status has been saved, sequenceId={}, invoiceId={}, paymentId={}, status={}",
+        log.info("Payment status has been mapped, sequenceId={}, invoiceId={}, paymentId={}, status={}",
                 sequenceId, invoiceId, paymentId, invoicePaymentStatus.getSetField().getFieldName());
         return paymentWrapper;
     }

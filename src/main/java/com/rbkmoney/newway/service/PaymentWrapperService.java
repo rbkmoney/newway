@@ -29,10 +29,9 @@ public class PaymentWrapperService {
 
     public PaymentWrapper get(String invoiceId, String paymentId, LocalStorage storage) throws DaoException, NotFoundException {
         InvoicingKey key = InvoicingKey.builder().invoiceId(invoiceId).paymentId(paymentId).type(InvoicingType.PAYMENT).build();
-        PaymentWrapper paymentWrapper = (PaymentWrapper) storage.getCopy(key);
+        PaymentWrapper paymentWrapper = (PaymentWrapper) storage.get(key);
         if (paymentWrapper != null) {
-            paymentWrapper.setNeedUpdateCommissions(false);
-            return paymentWrapper;
+            return paymentWrapper.copy();
         }
         paymentWrapper = paymentDataCache.getIfPresent(key);
         if (paymentWrapper != null) {

@@ -11,3 +11,4 @@ CREATE SEQUENCE nw.pmnt_seq
     CACHE 1;
 
 alter table nw.payment add column capture_started_params_cart_json character varying;
+alter table nw.invoice_cart drop constraint if exists fk_cart_to_invoice;

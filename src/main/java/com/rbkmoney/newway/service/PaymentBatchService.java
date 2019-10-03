@@ -5,7 +5,6 @@ import com.rbkmoney.newway.dao.invoicing.impl.PaymentIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.model.InvoicingSwitchKey;
 import com.rbkmoney.newway.model.PaymentWrapper;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,7 @@ public class PaymentBatchService {
         paymentDao.updateCommissions(paymentWrappers.stream().filter(PaymentWrapper::isNeedUpdateCommissions).map(pw -> pw.getPayment().getId()).collect(Collectors.toList()));
         List<InvoicingSwitchKey> invoicingSwitchIds = paymentWrappers.stream()
                 .map(p -> new InvoicingSwitchKey(p.getPayment().getInvoiceId(), p.getPayment().getPaymentId(), p.getPayment().getId()))
-                .collect(Collectors.groupingBy(isk ->  new Pair(isk.getInvoiceId(), isk.getPaymentId()), Collectors.maxBy(Comparator.comparing(InvoicingSwitchKey::getId))))
+                .collect(Collectors.groupingBy(isk -> new Pair(isk.getInvoiceId(), isk.getPaymentId()), Collectors.maxBy(Comparator.comparing(InvoicingSwitchKey::getId))))
                 .values().stream().filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
         log.info("Switch to current ids: {}", invoicingSwitchIds);
         paymentDao.switchCurrent(invoicingSwitchIds);
