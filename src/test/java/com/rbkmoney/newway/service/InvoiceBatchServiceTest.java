@@ -31,17 +31,10 @@ public class InvoiceBatchServiceTest extends AbstractAppDaoTests {
     @Test
     public void processTest() {
         List<InvoiceWrapper> invoiceWrappers = IntStream.range(1, 5)
-                .mapToObj(x -> new InvoiceWrapper(random(Invoice.class), randomListOf(3, InvoiceCart.class)))
+                .mapToObj(x -> new InvoiceWrapper(random(Invoice.class, "id"), randomListOf(3, InvoiceCart.class, "id", "invId")))
                 .collect(Collectors.toList());
 
-        invoiceWrappers.forEach(iw -> {
-            iw.getInvoice().setId(null);
-            iw.getInvoice().setCurrent(false);
-            iw.getCarts().forEach(c -> {
-                c.setId(null);
-                c.setInvId(null);
-            });
-        });
+        invoiceWrappers.forEach(iw -> iw.getInvoice().setCurrent(false));
         String invoiceIdFirst = "invoiceIdFirst";
         String invoiceIdSecond = "invoiceIdSecond";
         invoiceWrappers.get(0).getInvoice().setInvoiceId(invoiceIdFirst);
@@ -59,14 +52,6 @@ public class InvoiceBatchServiceTest extends AbstractAppDaoTests {
         assertEquals(invoiceWrappers.get(3).getInvoice().getShopId(), invoiceSecondGet.getShopId());
 
         //Duplication check
-        invoiceWrappers.forEach(iw -> {
-            iw.getInvoice().setId(null);
-            iw.getInvoice().setCurrent(false);
-            iw.getCarts().forEach(c -> {
-                c.setId(null);
-                c.setInvId(null);
-            });
-        });
         invoiceBatchService.process(invoiceWrappers);
         assertEquals(2, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.invoice WHERE invoice_id = ? ", new Object[]{invoiceIdFirst}, Integer.class).intValue());
         assertEquals(2, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.invoice WHERE invoice_id = ? ", new Object[]{invoiceIdSecond}, Integer.class).intValue());

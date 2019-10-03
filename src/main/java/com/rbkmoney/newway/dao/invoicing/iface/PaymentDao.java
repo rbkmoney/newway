@@ -3,8 +3,9 @@ package com.rbkmoney.newway.dao.invoicing.iface;
 import com.rbkmoney.dao.GenericDao;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.DaoException;
-import com.rbkmoney.newway.model.InvoicingSwitchKey;
+import com.rbkmoney.newway.model.InvoicingKey;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface PaymentDao extends GenericDao {
@@ -15,5 +16,5 @@ public interface PaymentDao extends GenericDao {
 
     void updateCommissions(List<Long> pmntIds) throws DaoException;
 
-    void switchCurrent(List<InvoicingSwitchKey> invoicesSwitchIds) throws DaoException;
+    void switchCurrent(Collection<InvoicingKey> invoicesSwitchIds) throws DaoException;
 }

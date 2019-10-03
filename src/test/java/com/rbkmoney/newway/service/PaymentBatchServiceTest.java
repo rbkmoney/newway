@@ -36,17 +36,12 @@ public class PaymentBatchServiceTest extends AbstractAppDaoTests {
     @Test
     public void processTest() {
         List<PaymentWrapper> paymentWrappers = IntStream.range(1, 5)
-                .mapToObj(x -> new PaymentWrapper(random(Payment.class), randomListOf(3, CashFlow.class), false))
+                .mapToObj(x -> new PaymentWrapper(random(Payment.class, "id"), randomListOf(3, CashFlow.class, "id", "objId"), false))
                 .collect(Collectors.toList());
 
         paymentWrappers.forEach(iw -> {
-            iw.getPayment().setId(null);
             iw.getPayment().setCurrent(false);
-            iw.getCashFlows().forEach(c -> {
-                c.setId(null);
-                c.setObjType(PaymentChangeType.payment);
-                c.setObjId(null);
-            });
+            iw.getCashFlows().forEach(c -> c.setObjType(PaymentChangeType.payment));
         });
         String invoiceIdFirst = "invoiceIdFirst";
         String invoiceIdSecond = "invoiceIdSecond";
@@ -68,15 +63,9 @@ public class PaymentBatchServiceTest extends AbstractAppDaoTests {
         assertEquals(paymentWrappers.get(2).getPayment().getShopId(), paymentSecondGet.getShopId());
 
         //Duplication check
-        paymentWrappers.forEach(iw -> {
-            iw.getPayment().setId(null);
-            iw.getPayment().setCurrent(false);
-            iw.getCashFlows().forEach(c -> {
-                c.setId(null);
-                c.setObjId(null);
-            });
-        });
         paymentBatchService.process(paymentWrappers);
+        Payment paymentFirstGet2 = paymentDao.get(invoiceIdFirst, "1");
+        assertEquals(paymentWrappers.get(1).getPayment().getPartyId(), paymentFirstGet2.getPartyId());
         assertEquals(2, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.payment WHERE invoice_id = ? and payment_id = ? ", new Object[]{invoiceIdFirst, "1"}, Integer.class).intValue());
         assertEquals(1, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.payment WHERE invoice_id = ? and payment_id = ? ", new Object[]{invoiceIdFirst, "2"}, Integer.class).intValue());
         assertEquals(1, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.payment WHERE invoice_id = ? and payment_id = ? ", new Object[]{invoiceIdSecond, "1"}, Integer.class).intValue());

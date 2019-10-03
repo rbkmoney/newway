@@ -29,8 +29,7 @@ public class InvoiceWrapperServiceTest extends AbstractAppDaoTests {
 
         invoiceWrappers.forEach(iw -> {
             iw.getInvoice().setCurrent(false);
-            iw.getCarts().forEach(c -> {
-                c.setInvId(iw.getInvoice().getId());});
+            iw.getCarts().forEach(c -> c.setInvId(iw.getInvoice().getId()));
         });
         service.save(invoiceWrappers);
 

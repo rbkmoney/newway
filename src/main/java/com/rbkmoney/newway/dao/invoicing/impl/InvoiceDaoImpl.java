@@ -4,13 +4,12 @@ import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
-import com.rbkmoney.newway.domain.tables.records.InvoiceRecord;
 import com.rbkmoney.newway.exception.DaoException;
-import com.rbkmoney.newway.model.InvoicingSwitchKey;
+import com.rbkmoney.newway.model.InvoicingKey;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -52,10 +51,10 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
     }
 
     @Override
-    public void switchCurrent(List<InvoicingSwitchKey> invoicesSwitchIds) throws DaoException {
-        invoicesSwitchIds.forEach(s -> {
-            execute(getDslContext().update(INVOICE).set(INVOICE.CURRENT, false).where(INVOICE.INVOICE_ID.eq(s.getInvoiceId()).and(INVOICE.CURRENT)));
-            execute(getDslContext().update(INVOICE).set(INVOICE.CURRENT, true).where(INVOICE.ID.eq(s.getId())));
-        });
+    public void switchCurrent(Collection<InvoicingKey> invoicesSwitchIds) throws DaoException {
+        invoicesSwitchIds.forEach(ik ->
+                this.getNamedParameterJdbcTemplate().update("update nw.invoice set current = false where invoice_id =:invoice_id and current;" +
+                                "update nw.invoice set current = true where id = (select max(id) from nw.invoice where invoice_id =:invoice_id);",
+                        new MapSqlParameterSource("invoice_id", ik.getInvoiceId())));
     }
 }

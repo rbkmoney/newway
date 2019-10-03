@@ -4,22 +4,18 @@ import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
-import com.rbkmoney.newway.domain.tables.records.PaymentRecord;
 import com.rbkmoney.newway.exception.DaoException;
-import com.rbkmoney.newway.model.InvoicingSwitchKey;
+import com.rbkmoney.newway.model.InvoicingKey;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.Tables.PAYMENT;
@@ -69,10 +65,10 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
     }
 
     @Override
-    public void switchCurrent(List<InvoicingSwitchKey> paymentsSwitchIds) throws DaoException {
-        paymentsSwitchIds.forEach(s -> {
-            execute(getDslContext().update(PAYMENT).set(PAYMENT.CURRENT, false).where(PAYMENT.INVOICE_ID.eq(s.getInvoiceId()).and(PAYMENT.PAYMENT_ID.eq(s.getPaymentId())).and(PAYMENT.CURRENT)));
-            execute(getDslContext().update(PAYMENT).set(PAYMENT.CURRENT, true).where(PAYMENT.ID.eq(s.getId())));
-        });
+    public void switchCurrent(Collection<InvoicingKey> paymentsSwitchIds) throws DaoException {
+        paymentsSwitchIds.forEach(ik ->
+                this.getNamedParameterJdbcTemplate().update("update nw.payment set current = false where invoice_id =:invoice_id and payment_id=:payment_id and current;" +
+                                "update nw.payment set current = true where id = (select max(id) from nw.payment where invoice_id =:invoice_id and payment_id=:payment_id);",
+                        new MapSqlParameterSource("invoice_id", ik.getInvoiceId()).addValue("payment_id", ik.getPaymentId())));
     }
 }

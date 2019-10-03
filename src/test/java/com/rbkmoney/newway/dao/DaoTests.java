@@ -22,7 +22,8 @@ import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.Calendar;
 import com.rbkmoney.newway.domain.tables.pojos.Currency;
 import com.rbkmoney.newway.domain.tables.pojos.*;
-import com.rbkmoney.newway.model.InvoicingSwitchKey;
+import com.rbkmoney.newway.model.InvoicingKey;
+import com.rbkmoney.newway.model.InvoicingType;
 import com.rbkmoney.newway.service.CashFlowService;
 import com.rbkmoney.newway.util.HashUtil;
 import org.junit.Assert;
@@ -422,15 +423,16 @@ public class DaoTests extends AbstractAppDaoTests {
     @Test
     public void paymentDaoTest() {
         jdbcTemplate.execute("truncate table nw.payment cascade");
-        Payment payment = random(Payment.class);
+        Payment payment = random(Payment.class, "id");
         payment.setCurrent(false);
-        Payment paymentTwo = random(Payment.class);
+        Payment paymentTwo = random(Payment.class, "id");
         paymentTwo.setCurrent(false);
         paymentTwo.setInvoiceId(payment.getInvoiceId());
         paymentTwo.setPaymentId(payment.getPaymentId());
         paymentDao.saveBatch(Arrays.asList(payment, paymentTwo));
-        paymentDao.switchCurrent(Collections.singletonList(new InvoicingSwitchKey(payment.getInvoiceId(), payment.getPaymentId(), paymentTwo.getId())));
+        paymentDao.switchCurrent(Collections.singletonList(new InvoicingKey(payment.getInvoiceId(), payment.getPaymentId(), InvoicingType.PAYMENT)));
         Payment paymentGet = paymentDao.get(payment.getInvoiceId(), payment.getPaymentId());
+        paymentGet.setId(null);
         paymentTwo.setCurrent(true);
         assertEquals(paymentTwo, paymentGet);
     }

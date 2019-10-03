@@ -3,7 +3,8 @@ package com.rbkmoney.newway.service;
 import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
 import com.rbkmoney.newway.dao.invoicing.impl.InvoiceIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.model.InvoiceWrapper;
-import com.rbkmoney.newway.model.InvoicingSwitchKey;
+import com.rbkmoney.newway.model.InvoicingKey;
+import com.rbkmoney.newway.model.InvoicingType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,8 @@ public class InvoiceBatchService {
         List<Long> ids = invoiceIdsGeneratorDao.get(invoiceWrappers.size());
         setIds(invoiceWrappers, ids);
         invoiceWrapperService.save(invoiceWrappers);
-        List<InvoicingSwitchKey> invoicingSwitchIds = invoiceWrappers.stream()
-                .map(i -> new InvoicingSwitchKey(i.getInvoice().getInvoiceId(), null, i.getInvoice().getId()))
-                .collect(Collectors.groupingBy(InvoicingSwitchKey::getInvoiceId, Collectors.maxBy(Comparator.comparing(InvoicingSwitchKey::getId))))
-                .values().stream().filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
+        Collection<InvoicingKey> invoicingSwitchIds = invoiceWrappers.stream().collect(
+                Collectors.groupingBy(i -> new InvoicingKey(i.getInvoice().getInvoiceId(), null, InvoicingType.INVOICE))).keySet();
         log.info("Switch to current ids: {}", invoicingSwitchIds);
         invoiceDao.switchCurrent(invoicingSwitchIds);
         log.info("End processing of invoice batch");
