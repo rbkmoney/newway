@@ -30,24 +30,24 @@ kafka:
   bootstrap-servers: kenny-kafka1.bst1.rbkmoney.net:9092
   client-id: newway
   ssl:
-    enabled: true
-    trust-store-location: "/Users/inalarsanukaev/git/load-test/truststore.p12"
-    trust-store-password: "kenny12"
-    key-store-location: "/Users/inalarsanukaev/git/load-test/p.popov.p12"
-    key-store-password: "kenny"
-    key-password: "kenny"
+    enabled: false
+    trust-store-location: "test"
+    trust-store-password: "test"
+    key-store-location: "test"
+    key-store-password: "test"
+    key-password: "test"
     key-store-type: PKCS12
     trust-store-type: PKCS12
   consumer:
     concurrency: 8
-    group-id: "NewwayListener2"
+    group-id: "NewwayListener"
     enable-auto-commit: false
     auto-offset-reset: earliest
     max-poll-records: 20
   topics:
     invoice:
       id: mg-invoice-100-2
-      enabled: true
+      enabled: false
 
 bm:
   partyManagement:
