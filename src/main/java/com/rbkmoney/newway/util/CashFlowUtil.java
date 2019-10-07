@@ -58,16 +58,16 @@ public class CashFlowUtil {
         }
     }
 
-    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, Long objId, PaymentChangeType paymentchangetype) {
-        return convertCashFlows(cashFlowPostings, objId, paymentchangetype, null);
+    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, Long objId, PaymentChangeType paymentChangeType) {
+        return convertCashFlows(cashFlowPostings, objId, paymentChangeType, null);
     }
 
-    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, Long objId, PaymentChangeType paymentchangetype, AdjustmentCashFlowType adjustmentcashflowtype) {
+    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, Long objId, PaymentChangeType paymentChangeType, AdjustmentCashFlowType adjustmentCashFlowType) {
         return cashFlowPostings.stream().map(cf -> {
             CashFlow pcf = new CashFlow();
             pcf.setObjId(objId);
-            pcf.setObjType(paymentchangetype);
-            pcf.setAdjFlowType(adjustmentcashflowtype);
+            pcf.setObjType(paymentChangeType);
+            pcf.setAdjFlowType(adjustmentCashFlowType);
             pcf.setSourceAccountType(CashFlowUtil.getCashFlowAccountType(cf.getSource()));
             pcf.setSourceAccountTypeValue(getCashFlowAccountTypeValue(cf.getSource()));
             pcf.setSourceAccountId(cf.getSource().getAccountId());
