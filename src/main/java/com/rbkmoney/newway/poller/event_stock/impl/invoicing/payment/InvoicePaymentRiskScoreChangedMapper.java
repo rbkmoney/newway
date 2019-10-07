@@ -44,7 +44,6 @@ public class InvoicePaymentRiskScoreChangedMapper extends AbstractInvoicingPayme
             throw new IllegalArgumentException("Illegal risk score: " + riskScore);
         }
         paymentSource.setRiskScore(score);
-        paymentWrapper.getCashFlows().forEach(c -> c.setId(null));
         log.info("Payment risk score have been mapped, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
         return paymentWrapper;
     }

@@ -66,7 +66,6 @@ public class InvoicePaymentSessionChangeTransactionBoundMapper extends AbstractI
                 paymentSource.setTrxAdditionalInfoThreeDsVerification(additionalTransactionInfo.getThreeDsVerification().name());
             }
         }
-        paymentWrapper.getCashFlows().forEach(c -> c.setId(null));
         log.info("Payment session transaction info has been mapped, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
         return paymentWrapper;
     }

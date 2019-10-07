@@ -48,7 +48,7 @@ public class PaymentWrapperService {
     public void save(List<PaymentWrapper> paymentWrappers) {
         paymentWrappers.forEach(i -> paymentDataCache.put(InvoicingKey.builder().invoiceId(i.getPayment().getInvoiceId()).type(InvoicingType.INVOICE).build(), i));
         List<Payment> payments = paymentWrappers.stream().map(PaymentWrapper::getPayment).collect(Collectors.toList());
-        List<CashFlow> cashFlows = paymentWrappers.stream().map(PaymentWrapper::getCashFlows).flatMap(Collection::stream).collect(Collectors.toList());
+        List<CashFlow> cashFlows = paymentWrappers.stream().filter(p -> p.getCashFlows() != null).map(PaymentWrapper::getCashFlows).flatMap(Collection::stream).collect(Collectors.toList());
         paymentDao.saveBatch(payments);
         cashFlowDao.save(cashFlows);
     }

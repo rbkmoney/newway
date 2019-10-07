@@ -41,7 +41,12 @@ public class PaymentBatchService {
             PaymentWrapper paymentWrapper = paymentWrappers.get(i);
             Long pmntId = ids.get(i);
             paymentWrapper.getPayment().setId(pmntId);
-            paymentWrapper.getCashFlows().forEach(c -> c.setObjId(pmntId));
+            if (paymentWrapper.getCashFlows() != null) {
+                paymentWrapper.getCashFlows().forEach(c -> {
+                    c.setId(null);
+                    c.setObjId(pmntId);
+                });
+            }
         }
     }
 }

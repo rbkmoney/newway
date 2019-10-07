@@ -40,7 +40,6 @@ public class InvoicePaymentRouteChangedMapper extends AbstractInvoicingPaymentMa
         setDefaultProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
         paymentSource.setRouteProviderId(paymentRoute.getProvider().getId());
         paymentSource.setRouteTerminalId(paymentRoute.getTerminal().getId());
-        paymentWrapper.getCashFlows().forEach(c -> c.setId(null));
         log.info("Payment route have been mapped, route='{}', sequenceId='{}', invoiceId='{}', paymentId='{}'", paymentRoute, sequenceId, invoiceId, paymentId);
         return paymentWrapper;
     }

@@ -38,7 +38,12 @@ public class InvoiceBatchService {
             InvoiceWrapper invoiceWrapper = invoiceWrappers.get(i);
             Long invId = ids.get(i);
             invoiceWrapper.getInvoice().setId(invId);
-            invoiceWrapper.getCarts().forEach(c -> c.setInvId(invId));
+            if (invoiceWrapper.getCarts() != null) {
+                invoiceWrapper.getCarts().forEach(c -> {
+                    c.setId(null);
+                    c.setInvId(invId);
+                });
+            }
         }
     }
 }

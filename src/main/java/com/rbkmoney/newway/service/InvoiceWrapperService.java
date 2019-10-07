@@ -47,8 +47,8 @@ public class InvoiceWrapperService {
     public void save(List<InvoiceWrapper> invoiceWrappers) {
         invoiceWrappers.forEach(i -> invoiceDataCache.put(InvoicingKey.builder().invoiceId(i.getInvoice().getInvoiceId()).type(InvoicingType.INVOICE).build(), i));
         List<Invoice> invoices = invoiceWrappers.stream().map(InvoiceWrapper::getInvoice).collect(Collectors.toList());
-        List<InvoiceCart> carts = invoiceWrappers.stream().map(InvoiceWrapper::getCarts).flatMap(Collection::stream).collect(Collectors.toList());
         invoiceDao.saveBatch(invoices);
+        List<InvoiceCart> carts = invoiceWrappers.stream().filter(i -> i.getCarts() != null).map(InvoiceWrapper::getCarts).flatMap(Collection::stream).collect(Collectors.toList());
         invoiceCartDao.save(carts);
     }
 }
