@@ -36,7 +36,7 @@ public class PaymentBatchServiceTest extends AbstractAppDaoTests {
     @Test
     public void processTest() {
         List<PaymentWrapper> paymentWrappers = IntStream.range(1, 5)
-                .mapToObj(x -> new PaymentWrapper(random(Payment.class, "id"), randomListOf(3, CashFlow.class, "id", "objId"), false))
+                .mapToObj(x -> new PaymentWrapper(random(Payment.class, "id"), randomListOf(3, CashFlow.class, "id", "objId")))
                 .collect(Collectors.toList());
 
         paymentWrappers.forEach(iw -> {

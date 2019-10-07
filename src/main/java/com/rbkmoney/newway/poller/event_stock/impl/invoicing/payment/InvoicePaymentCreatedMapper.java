@@ -17,6 +17,7 @@ import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.poller.event_stock.*;
 import com.rbkmoney.newway.model.PaymentWrapper;
 import com.rbkmoney.newway.service.InvoiceWrapperService;
+import com.rbkmoney.newway.util.CashFlowType;
 import com.rbkmoney.newway.util.CashFlowUtil;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -115,7 +117,11 @@ public class InvoicePaymentCreatedMapper extends AbstractInvoicingPaymentMapper 
         if (invoicePaymentStarted.isSetCashFlow()) {
             List<CashFlow> cashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentStarted.getCashFlow(), null, PaymentChangeType.payment);
             paymentWrapper.setCashFlows(cashFlowList);
-            paymentWrapper.setNeedUpdateCommissions(true);
+            Map<CashFlowType, Long> parsedCashFlow = CashFlowUtil.parseCashFlow(invoicePaymentStarted.getCashFlow());
+            payment.setFee(parsedCashFlow.getOrDefault(CashFlowType.FEE, 0L));
+            payment.setProviderFee(parsedCashFlow.getOrDefault(CashFlowType.PROVIDER_FEE, 0L));
+            payment.setExternalFee(parsedCashFlow.getOrDefault(CashFlowType.EXTERNAL_FEE, 0L));
+            payment.setGuaranteeDeposit(parsedCashFlow.getOrDefault(CashFlowType.GUARANTEE_DEPOSIT, 0L));
         }
         log.info("Payment has been mapped, sequenceId={}, invoiceId={}, paymentId={}", sequenceId, invoiceId, paymentId);
         return paymentWrapper;

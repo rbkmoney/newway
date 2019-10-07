@@ -45,18 +45,6 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
     }
 
     @Override
-    public void updateCommissions(List<Long> pmntIds) throws DaoException {
-        MapSqlParameterSource[] params = pmntIds.stream().map(pmntId -> new MapSqlParameterSource("pmntId", pmntId)).toArray(MapSqlParameterSource[]::new);
-        this.getNamedParameterJdbcTemplate().batchUpdate(
-                "UPDATE nw.payment SET fee = (SELECT nw.get_payment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = 'payment'), " +
-                        "provider_fee = (SELECT nw.get_payment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = 'payment'), " +
-                        "external_fee = (SELECT nw.get_payment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = 'payment'), " +
-                        "guarantee_deposit = (SELECT nw.get_payment_guarantee_deposit(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = 'payment') " +
-                        "WHERE  id = :pmntId",
-                params);
-    }
-
-    @Override
     public Payment get(String invoiceId, String paymentId) throws DaoException {
         Query query = getDslContext().selectFrom(PAYMENT)
                 .where(PAYMENT.INVOICE_ID.eq(invoiceId).and(PAYMENT.PAYMENT_ID.eq(paymentId)).and(PAYMENT.CURRENT));

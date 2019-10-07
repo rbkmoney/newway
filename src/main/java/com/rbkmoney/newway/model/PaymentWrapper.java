@@ -16,7 +16,6 @@ import java.util.List;
 public class PaymentWrapper {
     private Payment payment;
     private List<CashFlow> cashFlows;
-    private boolean needUpdateCommissions;
 
     public PaymentWrapper copy(){
         Payment paymentTarget = new Payment();

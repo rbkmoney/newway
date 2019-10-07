@@ -25,6 +25,8 @@ import com.rbkmoney.newway.domain.tables.pojos.*;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.InvoicingType;
 import com.rbkmoney.newway.service.CashFlowService;
+import com.rbkmoney.newway.util.CashFlowType;
+import com.rbkmoney.newway.util.CashFlowUtil;
 import com.rbkmoney.newway.util.HashUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -338,11 +340,7 @@ public class DaoTests extends AbstractAppDaoTests {
     public void cashFlowDaoTest() {
         jdbcTemplate.execute("truncate table nw.payment cascade");
         jdbcTemplate.execute("truncate table nw.cash_flow cascade");
-        Payment payment = random(Payment.class);
-        payment.setCurrent(true);
-        paymentDao.saveBatch(Collections.singletonList(payment));
-        Payment paymentGet = paymentDao.get(payment.getInvoiceId(), payment.getPaymentId());
-        Long pmntId = paymentGet.getId();
+        Long pmntId = 123L;
         List<CashFlow> cashFlowList = randomListOf(100, CashFlow.class);
         cashFlowList.forEach(cf -> {
             cf.setObjId(pmntId);
@@ -359,13 +357,6 @@ public class DaoTests extends AbstractAppDaoTests {
         cashFlowDao.save(cashFlowList);
         List<CashFlow> byObjId = cashFlowDao.getByObjId(pmntId, PaymentChangeType.payment);
         assertEquals(new HashSet(byObjId), new HashSet(cashFlowList));
-        paymentDao.updateCommissions(Collections.singletonList(pmntId));
-        Payment paymentWithCommissions = paymentDao.get(payment.getInvoiceId(), payment.getPaymentId());
-        Map<DaoUtils.FeeType, Long> fees = getFees(cashFlowList);
-        assertEquals(paymentWithCommissions.getFee(), fees.getOrDefault(DaoUtils.FeeType.FEE, 0L));
-        assertEquals(paymentWithCommissions.getProviderFee(), fees.getOrDefault(DaoUtils.FeeType.PROVIDER_FEE, 0L));
-        assertEquals(paymentWithCommissions.getExternalFee(), fees.getOrDefault(DaoUtils.FeeType.EXTERNAL_FEE, 0L));
-        assertEquals(paymentWithCommissions.getGuaranteeDeposit(), fees.getOrDefault(DaoUtils.FeeType.GUARANTEE_DEPOSIT, 0L));
     }
 
     @Test

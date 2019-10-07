@@ -14,7 +14,5 @@ public interface PaymentDao extends GenericDao {
 
     Payment get(String invoiceId, String paymentId) throws DaoException;
 
-    void updateCommissions(List<Long> pmntIds) throws DaoException;
-
     void switchCurrent(Collection<InvoicingKey> invoicesSwitchIds) throws DaoException;
 }

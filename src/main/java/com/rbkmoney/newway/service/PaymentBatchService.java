@@ -28,7 +28,6 @@ public class PaymentBatchService {
         List<Long> ids = paymentIdsGeneratorDao.get(paymentWrappers.size());
         setIds(paymentWrappers, ids);
         paymentWrapperService.save(paymentWrappers);
-        paymentDao.updateCommissions(paymentWrappers.stream().filter(PaymentWrapper::isNeedUpdateCommissions).map(pw -> pw.getPayment().getId()).collect(Collectors.toList()));
         Collection<InvoicingKey> invoicingSwitchIds = paymentWrappers.stream().collect(
                 Collectors.groupingBy(p -> new InvoicingKey(p.getPayment().getInvoiceId(), p.getPayment().getPaymentId(), InvoicingType.PAYMENT))).keySet();
         log.info("Switch to current ids: {}", invoicingSwitchIds);

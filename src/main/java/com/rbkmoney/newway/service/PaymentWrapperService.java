@@ -42,7 +42,7 @@ public class PaymentWrapperService {
             throw new NotFoundException(String.format("Payment not found, invoiceId='%s', payment='%s'", invoiceId, paymentId));
         }
         List<CashFlow> cashFlows = cashFlowDao.getByObjId(payment.getId(), PaymentChangeType.payment);
-        return new PaymentWrapper(payment, cashFlows, false);
+        return new PaymentWrapper(payment, cashFlows);
     }
 
     public void save(List<PaymentWrapper> paymentWrappers) {

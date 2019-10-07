@@ -12,6 +12,8 @@ import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -123,4 +125,19 @@ public class CashFlowUtil {
                 .reduce(0L, Long::sum);
     }
 
+    public static Map<CashFlowType, Long> parseCashFlow(List<FinalCashFlowPosting> finalCashFlow) {
+        return parseCashFlow(finalCashFlow, CashFlowType::getCashFlowType);
+    }
+
+    public static Map<CashFlowType, Long> parseCashFlow(List<FinalCashFlowPosting> finalCashFlow, Function<FinalCashFlowPosting, CashFlowType> classifier) {
+        Map<CashFlowType, Long> collect = finalCashFlow.stream()
+                .collect(
+                        Collectors.groupingBy(
+                                classifier,
+                                Collectors.summingLong(cashFlow -> cashFlow.getVolume().getAmount()
+                                )
+                        )
+                );
+        return collect;
+    }
 }
