@@ -12,6 +12,8 @@ import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -56,16 +58,16 @@ public class CashFlowUtil {
         }
     }
 
-    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, long objId, PaymentChangeType paymentchangetype) {
-        return convertCashFlows(cashFlowPostings, objId, paymentchangetype, null);
+    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, Long objId, PaymentChangeType paymentChangeType) {
+        return convertCashFlows(cashFlowPostings, objId, paymentChangeType, null);
     }
 
-    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, long objId, PaymentChangeType paymentchangetype, AdjustmentCashFlowType adjustmentcashflowtype) {
+    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, Long objId, PaymentChangeType paymentChangeType, AdjustmentCashFlowType adjustmentCashFlowType) {
         return cashFlowPostings.stream().map(cf -> {
             CashFlow pcf = new CashFlow();
             pcf.setObjId(objId);
-            pcf.setObjType(paymentchangetype);
-            pcf.setAdjFlowType(adjustmentcashflowtype);
+            pcf.setObjType(paymentChangeType);
+            pcf.setAdjFlowType(adjustmentCashFlowType);
             pcf.setSourceAccountType(CashFlowUtil.getCashFlowAccountType(cf.getSource()));
             pcf.setSourceAccountTypeValue(getCashFlowAccountTypeValue(cf.getSource()));
             pcf.setSourceAccountId(cf.getSource().getAccountId());
@@ -79,7 +81,7 @@ public class CashFlowUtil {
         }).collect(Collectors.toList());
     }
 
-    public static List<FistfulCashFlow> convertFistfulCashFlows(List<com.rbkmoney.fistful.cashflow.FinalCashFlowPosting> cashFlowPostings, long objId, FistfulCashFlowChangeType cashFlowChangeType) {
+    public static List<FistfulCashFlow> convertFistfulCashFlows(List<com.rbkmoney.fistful.cashflow.FinalCashFlowPosting> cashFlowPostings, Long objId, FistfulCashFlowChangeType cashFlowChangeType) {
         return cashFlowPostings.stream().map(cf -> {
             FistfulCashFlow fcf = new FistfulCashFlow();
             fcf.setObjId(objId);
@@ -123,4 +125,19 @@ public class CashFlowUtil {
                 .reduce(0L, Long::sum);
     }
 
+    public static Map<CashFlowType, Long> parseCashFlow(List<FinalCashFlowPosting> finalCashFlow) {
+        return parseCashFlow(finalCashFlow, CashFlowType::getCashFlowType);
+    }
+
+    public static Map<CashFlowType, Long> parseCashFlow(List<FinalCashFlowPosting> finalCashFlow, Function<FinalCashFlowPosting, CashFlowType> classifier) {
+        Map<CashFlowType, Long> collect = finalCashFlow.stream()
+                .collect(
+                        Collectors.groupingBy(
+                                classifier,
+                                Collectors.summingLong(cashFlow -> cashFlow.getVolume().getAmount()
+                                )
+                        )
+                );
+        return collect;
+    }
 }

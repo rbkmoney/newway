@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.dao.identity.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
+import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.domain.tables.pojos.Identity;
 import com.rbkmoney.newway.domain.tables.records.IdentityRecord;
@@ -44,7 +44,7 @@ public class IdentityDaoImpl extends AbstractGenericDao implements IdentityDao {
         Query query = getDslContext().insertInto(IDENTITY).set(record).returning(IDENTITY.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

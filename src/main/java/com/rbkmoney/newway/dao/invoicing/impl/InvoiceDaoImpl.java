@@ -1,20 +1,21 @@
 package com.rbkmoney.newway.dao.invoicing.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
+import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
-import com.rbkmoney.newway.domain.tables.records.InvoiceRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.model.InvoicingKey;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.tables.Invoice.INVOICE;
 
@@ -30,16 +31,16 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
     }
 
     @Override
-    public Long save(Invoice invoice) throws DaoException {
-        InvoiceRecord invoiceRecord = getDslContext().newRecord(INVOICE, invoice);
-        Query query = getDslContext().insertInto(INVOICE)
-                .set(invoiceRecord)
-                .onConflict(INVOICE.INVOICE_ID, INVOICE.SEQUENCE_ID, INVOICE.CHANGE_ID)
-                .doNothing()
-                .returning(INVOICE.ID);
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeWithReturn(query, keyHolder);
-        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
+    public void saveBatch(List<Invoice> invoices) throws DaoException {
+        List<Query> queries = invoices.stream()
+                .map(invoice -> getDslContext().newRecord(INVOICE, invoice))
+                .map(invoiceRecord -> getDslContext().insertInto(INVOICE)
+                        .set(invoiceRecord)
+                        .onConflict(INVOICE.INVOICE_ID, INVOICE.SEQUENCE_ID, INVOICE.CHANGE_ID)
+                        .doNothing()
+                )
+                .collect(Collectors.toList());
+        batchExecute(queries);
     }
 
     @Override
@@ -50,8 +51,10 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
     }
 
     @Override
-    public void updateNotCurrent(Long id) throws DaoException {
-        Query query = getDslContext().update(INVOICE).set(INVOICE.CURRENT, false).where(INVOICE.ID.eq(id));
-        executeOne(query);
+    public void switchCurrent(Collection<InvoicingKey> invoicesSwitchIds) throws DaoException {
+        invoicesSwitchIds.forEach(ik ->
+                this.getNamedParameterJdbcTemplate().update("update nw.invoice set current = false where invoice_id =:invoice_id and current;" +
+                                "update nw.invoice set current = true where id = (select max(id) from nw.invoice where invoice_id =:invoice_id);",
+                        new MapSqlParameterSource("invoice_id", ik.getInvoiceId())));
     }
 }

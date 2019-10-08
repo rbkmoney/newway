@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.dao.wallet.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
+import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.wallet.iface.WalletDao;
 import com.rbkmoney.newway.domain.tables.pojos.Wallet;
 import com.rbkmoney.newway.domain.tables.records.WalletRecord;
@@ -40,7 +40,7 @@ public class WalletDaoImpl extends AbstractGenericDao implements WalletDao {
         Query query = getDslContext().insertInto(WALLET).set(record).returning(WALLET.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

@@ -10,67 +10,57 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
-import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
-import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.domain.enums.*;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
-import com.rbkmoney.newway.exception.NotFoundException;
-import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
+import com.rbkmoney.newway.poller.event_stock.*;
+import com.rbkmoney.newway.model.PaymentWrapper;
+import com.rbkmoney.newway.service.InvoiceWrapperService;
+import com.rbkmoney.newway.util.CashFlowType;
 import com.rbkmoney.newway.util.CashFlowUtil;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
+public class InvoicePaymentCreatedMapper extends AbstractInvoicingPaymentMapper {
 
-    private final InvoiceDao invoiceDao;
-    private final PaymentDao paymentDao;
-    private final CashFlowDao cashFlowDao;
+    private final InvoiceWrapperService invoiceWrapperService;
 
     private Filter filter = new PathConditionFilter(new PathConditionRule(
             "invoice_payment_change.payload.invoice_payment_started",
             new IsNullCondition().not()));
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(InvoiceChange invoiceChange, MachineEvent event, Integer changeId) {
+    public PaymentWrapper map(InvoiceChange invoiceChange, MachineEvent event, Integer changeId, LocalStorage storage) {
         InvoicePaymentStarted invoicePaymentStarted = invoiceChange
                 .getInvoicePaymentChange()
                 .getPayload()
                 .getInvoicePaymentStarted();
 
+        PaymentWrapper paymentWrapper = new PaymentWrapper();
         Payment payment = new Payment();
+        paymentWrapper.setPayment(payment);
         InvoicePayment invoicePayment = invoicePaymentStarted.getPayment();
 
         long sequenceId = event.getEventId();
         String invoiceId = event.getSourceId();
 
-        log.info("Start payment created handling, sequenceId={}, invoiceId={}, paymentId={}",
-                sequenceId, invoiceId, invoicePayment.getId());
-
-        payment.setChangeId(changeId);
-        payment.setSequenceId(sequenceId);
-        payment.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        payment.setPaymentId(invoicePayment.getId());
+        String paymentId = invoicePayment.getId();
+        log.info("Start payment created mapping, sequenceId={}, invoiceId={}, paymentId={}", sequenceId, invoiceId, paymentId);
+        setDefaultProperties(payment, sequenceId, changeId, event.getCreatedAt());
+        payment.setPaymentId(paymentId);
         payment.setCreatedAt(TypeUtil.stringToLocalDateTime(invoicePayment.getCreatedAt()));
         payment.setInvoiceId(invoiceId);
 
-        Invoice invoice = invoiceDao.get(invoiceId);
-        if (invoice == null) {
-            throw new NotFoundException(String.format("Invoice on payment not found, invoiceId='%s', paymentId='%s'",
-                    invoiceId, invoicePayment.getId()));
-        }
+        Invoice invoice = invoiceWrapperService.get(invoiceId, storage).getInvoice();
 
         payment.setPartyId(invoice.getPartyId());
         payment.setShopId(invoice.getShopId());
@@ -124,19 +114,17 @@ public class InvoicePaymentCreatedHandler extends AbstractInvoicingHandler {
             payment.setMakeRecurrent(invoicePayment.isMakeRecurrent());
         }
 
-        Long pmntId = paymentDao.save(payment);
-
-        if (pmntId != null) {
-            if (invoicePaymentStarted.isSetCashFlow()) {
-                List<CashFlow> cashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentStarted.getCashFlow(), pmntId, PaymentChangeType.payment);
-                cashFlowDao.save(cashFlowList);
-                if (!invoicePaymentStarted.getCashFlow().isEmpty()) {
-                    paymentDao.updateCommissions(pmntId);
-                }
-            }
+        if (invoicePaymentStarted.isSetCashFlow()) {
+            List<CashFlow> cashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentStarted.getCashFlow(), null, PaymentChangeType.payment);
+            paymentWrapper.setCashFlows(cashFlowList);
+            Map<CashFlowType, Long> parsedCashFlow = CashFlowUtil.parseCashFlow(invoicePaymentStarted.getCashFlow());
+            payment.setFee(parsedCashFlow.getOrDefault(CashFlowType.FEE, 0L));
+            payment.setProviderFee(parsedCashFlow.getOrDefault(CashFlowType.PROVIDER_FEE, 0L));
+            payment.setExternalFee(parsedCashFlow.getOrDefault(CashFlowType.EXTERNAL_FEE, 0L));
+            payment.setGuaranteeDeposit(parsedCashFlow.getOrDefault(CashFlowType.GUARANTEE_DEPOSIT, 0L));
         }
-
-        log.info("Payment has been saved, sequenceId={}, invoiceId={}, paymentId={}", sequenceId, invoiceId, invoicePayment.getId());
+        log.info("Payment has been mapped, sequenceId={}, invoiceId={}, paymentId={}", sequenceId, invoiceId, paymentId);
+        return paymentWrapper;
     }
 
     private void fillContactInfo(Payment payment, ContactInfo contactInfo) {

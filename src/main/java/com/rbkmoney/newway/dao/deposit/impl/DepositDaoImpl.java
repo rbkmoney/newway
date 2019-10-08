@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.dao.deposit.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
+import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.deposit.iface.DepositDao;
 import com.rbkmoney.newway.domain.tables.pojos.Deposit;
 import com.rbkmoney.newway.domain.tables.records.DepositRecord;
@@ -40,7 +40,7 @@ public class DepositDaoImpl extends AbstractGenericDao implements DepositDao {
         Query query = getDslContext().insertInto(DEPOSIT).set(record).returning(DEPOSIT.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

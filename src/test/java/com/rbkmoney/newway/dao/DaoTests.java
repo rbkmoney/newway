@@ -7,6 +7,7 @@ import com.rbkmoney.newway.dao.dominant.impl.*;
 import com.rbkmoney.newway.dao.identity.iface.ChallengeDao;
 import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.dao.invoicing.iface.*;
+import com.rbkmoney.newway.dao.invoicing.impl.PaymentIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
 import com.rbkmoney.newway.dao.payout.iface.PayoutSummaryDao;
@@ -21,7 +22,11 @@ import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.Calendar;
 import com.rbkmoney.newway.domain.tables.pojos.Currency;
 import com.rbkmoney.newway.domain.tables.pojos.*;
+import com.rbkmoney.newway.model.InvoicingKey;
+import com.rbkmoney.newway.model.InvoicingType;
 import com.rbkmoney.newway.service.CashFlowService;
+import com.rbkmoney.newway.util.CashFlowType;
+import com.rbkmoney.newway.util.CashFlowUtil;
 import com.rbkmoney.newway.util.HashUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -117,6 +122,8 @@ public class DaoTests extends AbstractAppDaoTests {
     private WithdrawalSessionDao withdrawalSessionDao;
     @Autowired
     private CashFlowService cashFlowService;
+    @Autowired
+    private PaymentIdsGeneratorDaoImpl idsGeneratorDao;
 
     @Test
     public void depositDaoTest() {
@@ -333,9 +340,7 @@ public class DaoTests extends AbstractAppDaoTests {
     public void cashFlowDaoTest() {
         jdbcTemplate.execute("truncate table nw.payment cascade");
         jdbcTemplate.execute("truncate table nw.cash_flow cascade");
-        Payment payment = random(Payment.class);
-        payment.setCurrent(true);
-        Long pmntId = paymentDao.save(payment);
+        Long pmntId = 123L;
         List<CashFlow> cashFlowList = randomListOf(100, CashFlow.class);
         cashFlowList.forEach(cf -> {
             cf.setObjId(pmntId);
@@ -352,13 +357,6 @@ public class DaoTests extends AbstractAppDaoTests {
         cashFlowDao.save(cashFlowList);
         List<CashFlow> byObjId = cashFlowDao.getByObjId(pmntId, PaymentChangeType.payment);
         assertEquals(new HashSet(byObjId), new HashSet(cashFlowList));
-        paymentDao.updateCommissions(pmntId);
-        Payment paymentWithCommissions = paymentDao.get(payment.getInvoiceId(), payment.getPaymentId());
-        Map<DaoUtils.FeeType, Long> fees = getFees(cashFlowList);
-        assertEquals(paymentWithCommissions.getFee(), fees.getOrDefault(DaoUtils.FeeType.FEE, 0L));
-        assertEquals(paymentWithCommissions.getProviderFee(), fees.getOrDefault(DaoUtils.FeeType.PROVIDER_FEE, 0L));
-        assertEquals(paymentWithCommissions.getExternalFee(), fees.getOrDefault(DaoUtils.FeeType.EXTERNAL_FEE, 0L));
-        assertEquals(paymentWithCommissions.getGuaranteeDeposit(), fees.getOrDefault(DaoUtils.FeeType.GUARANTEE_DEPOSIT, 0L));
     }
 
     @Test
@@ -402,7 +400,8 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.invoice_cart cascade");
         Invoice invoice = random(Invoice.class);
         invoice.setCurrent(true);
-        Long invId = invoiceDao.save(invoice);
+        Long invId = invoice.getId();
+        invoiceDao.saveBatch(Collections.singletonList(invoice));
         List<InvoiceCart> invoiceCarts = randomListOf(10, InvoiceCart.class);
         invoiceCarts.forEach(ic -> {
             ic.setInvId(invId);
@@ -415,13 +414,18 @@ public class DaoTests extends AbstractAppDaoTests {
     @Test
     public void paymentDaoTest() {
         jdbcTemplate.execute("truncate table nw.payment cascade");
-        Payment payment = random(Payment.class);
-        payment.setCurrent(true);
-        paymentDao.save(payment);
+        Payment payment = random(Payment.class, "id");
+        payment.setCurrent(false);
+        Payment paymentTwo = random(Payment.class, "id");
+        paymentTwo.setCurrent(false);
+        paymentTwo.setInvoiceId(payment.getInvoiceId());
+        paymentTwo.setPaymentId(payment.getPaymentId());
+        paymentDao.saveBatch(Arrays.asList(payment, paymentTwo));
+        paymentDao.switchCurrent(Collections.singletonList(new InvoicingKey(payment.getInvoiceId(), payment.getPaymentId(), InvoicingType.PAYMENT)));
         Payment paymentGet = paymentDao.get(payment.getInvoiceId(), payment.getPaymentId());
-        assertEquals(payment, paymentGet);
-        paymentDao.updateNotCurrent(payment.getId());
-        Assert.assertNull(paymentDao.get(payment.getInvoiceId(), payment.getPaymentId()));
+        paymentGet.setId(null);
+        paymentTwo.setCurrent(true);
+        assertEquals(paymentTwo, paymentGet);
     }
 
     @Test
@@ -582,9 +586,6 @@ public class DaoTests extends AbstractAppDaoTests {
         } catch (Exception e) {
             assertTrue(e instanceof EmptyResultDataAccessException);
         }
-
-
-
     }
 
     @Test
@@ -663,25 +664,9 @@ public class DaoTests extends AbstractAppDaoTests {
     }
 
     @Test
-    public void checkCashFlowCountTest() {
-        jdbcTemplate.execute("truncate table nw.payment cascade");
-        Payment payment = random(Payment.class);
-        payment.setCurrent(true);
-        // ------- 1 ----------
-        Long pmntId = paymentDao.save(payment);
-        List<CashFlow> cashFlowList = randomListOf(3, CashFlow.class);
-        cashFlowList.forEach(cf -> {
-            cf.setObjId(pmntId);
-            cf.setObjType(PaymentChangeType.payment);
-        });
-        cashFlowDao.save(cashFlowList);
-
-        // --------2 ---------
-        Long nullId = paymentDao.save(payment);
-        assertNull(nullId);
-        cashFlowService.save(nullId, pmntId, PaymentChangeType.payment);
-        List<CashFlow> sameCashFlowList = cashFlowDao.getByObjId(pmntId, PaymentChangeType.payment);
-        assertEquals(3, sameCashFlowList.size());
-
+    public void idsGeneratorTest() {
+        List<Long> list = idsGeneratorDao.get(100);
+        assertEquals(100, list.size());
+        assertEquals(99,list.get(99) - list.get(0));
     }
 }

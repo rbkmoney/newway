@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.dao.deposit.iface;
 
-import com.rbkmoney.newway.dao.common.iface.GenericDao;
+import com.rbkmoney.dao.GenericDao;
 import com.rbkmoney.newway.domain.tables.pojos.Deposit;
 import com.rbkmoney.newway.exception.DaoException;
 

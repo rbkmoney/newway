@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.dao.invoicing.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
+import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.invoicing.iface.InvoiceCartDao;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.domain.tables.records.InvoiceCartRecord;
@@ -13,7 +13,9 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.rbkmoney.newway.domain.tables.CashFlow.CASH_FLOW;
 import static com.rbkmoney.newway.domain.tables.InvoiceCart.INVOICE_CART;
 
 @Component
@@ -28,13 +30,12 @@ public class InvoiceCartDaoImpl extends AbstractGenericDao implements InvoiceCar
     }
 
     @Override
-    public void save(List<InvoiceCart> invoiceCartList) throws DaoException {
-        //todo: Batch insert
-        for (InvoiceCart invoiceCart : invoiceCartList) {
-            InvoiceCartRecord record = getDslContext().newRecord(INVOICE_CART, invoiceCart);
-            Query query = getDslContext().insertInto(INVOICE_CART).set(record);
-            executeOne(query);
-        }
+    public void save(List<InvoiceCart> carts) throws DaoException {
+        List<Query> queries = carts.stream()
+                .map(cart -> getDslContext().newRecord(INVOICE_CART, cart))
+                .map(cartRecord -> getDslContext().insertInto(INVOICE_CART).set(cartRecord))
+                .collect(Collectors.toList());
+        batchExecute(queries);
     }
 
     @Override

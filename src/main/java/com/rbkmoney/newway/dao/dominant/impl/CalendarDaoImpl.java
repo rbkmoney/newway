@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.dao.dominant.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.domain.tables.pojos.Calendar;
 import com.rbkmoney.newway.domain.tables.records.CalendarRecord;
@@ -25,7 +25,7 @@ public class CalendarDaoImpl extends AbstractGenericDao implements DomainObjectD
         CalendarRecord calendarRecord = getDslContext().newRecord(CALENDAR, calendar);
         Query query = getDslContext().insertInto(CALENDAR).set(calendarRecord).returning(CALENDAR.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

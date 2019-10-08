@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.dao.dominant.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.domain.tables.pojos.PaymentInstitution;
 import com.rbkmoney.newway.domain.tables.records.PaymentInstitutionRecord;
@@ -25,7 +25,7 @@ public class PaymentInstitutionDaoImpl extends AbstractGenericDao implements Dom
         PaymentInstitutionRecord paymentInstitutionRecord = getDslContext().newRecord(PAYMENT_INSTITUTION, paymentInstitution);
         Query query = getDslContext().insertInto(PAYMENT_INSTITUTION).set(paymentInstitutionRecord).returning(PAYMENT_INSTITUTION.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

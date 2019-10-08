@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.dao.dominant.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.domain.tables.pojos.Provider;
 import com.rbkmoney.newway.domain.tables.records.ProviderRecord;
@@ -25,7 +25,7 @@ public class ProviderDaoImpl extends AbstractGenericDao implements DomainObjectD
         ProviderRecord providerRecord = getDslContext().newRecord(PROVIDER, provider);
         Query query = getDslContext().insertInto(PROVIDER).set(providerRecord).returning(PROVIDER.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

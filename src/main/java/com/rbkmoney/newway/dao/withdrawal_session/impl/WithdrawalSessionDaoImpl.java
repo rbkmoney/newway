@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.dao.withdrawal_session.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
+import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.withdrawal_session.iface.WithdrawalSessionDao;
 import com.rbkmoney.newway.domain.tables.pojos.WithdrawalSession;
 import com.rbkmoney.newway.domain.tables.records.WithdrawalSessionRecord;
@@ -42,7 +42,7 @@ public class WithdrawalSessionDaoImpl extends AbstractGenericDao implements With
         Query query = getDslContext().insertInto(WITHDRAWAL_SESSION).set(record).returning(WITHDRAWAL_SESSION.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

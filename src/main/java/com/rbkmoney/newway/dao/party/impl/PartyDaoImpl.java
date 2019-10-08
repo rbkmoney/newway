@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.dao.party.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
+import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
 import com.rbkmoney.newway.domain.tables.records.PartyRecord;
@@ -42,7 +42,7 @@ public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
         PartyRecord record = getDslContext().newRecord(PARTY, party);
         Query query = getDslContext().insertInto(PARTY).set(record).returning(PARTY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

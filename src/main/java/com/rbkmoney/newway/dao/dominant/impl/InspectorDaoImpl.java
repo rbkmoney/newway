@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.dao.dominant.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.domain.tables.pojos.Inspector;
 import com.rbkmoney.newway.domain.tables.records.InspectorRecord;
@@ -25,7 +25,7 @@ public class InspectorDaoImpl extends AbstractGenericDao implements DomainObject
         InspectorRecord inspectorRecord = getDslContext().newRecord(INSPECTOR, inspector);
         Query query = getDslContext().insertInto(INSPECTOR).set(inspectorRecord).returning(INSPECTOR.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

@@ -1,22 +1,22 @@
 package com.rbkmoney.newway.dao.invoicing.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
+import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
-import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
-import com.rbkmoney.newway.domain.tables.records.PaymentRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.model.InvoicingKey;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
-import java.util.Optional;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.Tables.PAYMENT;
 
@@ -32,28 +32,16 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
     }
 
     @Override
-    public Long save(Payment payment) throws DaoException {
-        PaymentRecord paymentRecord = getDslContext().newRecord(PAYMENT, payment);
-        Query query = getDslContext().insertInto(PAYMENT)
-                .set(paymentRecord)
-                .onConflict(PAYMENT.INVOICE_ID, PAYMENT.SEQUENCE_ID, PAYMENT.CHANGE_ID)
-                .doNothing()
-                .returning(PAYMENT.ID);
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeWithReturn(query, keyHolder);
-        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
-    }
-
-    @Override
-    public void updateCommissions(Long pmntId) throws DaoException {
-        MapSqlParameterSource params = new MapSqlParameterSource("pmntId", pmntId).addValue("objType", PaymentChangeType.payment.name());
-        this.getNamedParameterJdbcTemplate().update(
-                "UPDATE nw.payment SET fee = (SELECT nw.get_payment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = CAST(:objType as nw.payment_change_type)), " +
-                        "provider_fee = (SELECT nw.get_payment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = CAST(:objType as nw.payment_change_type)), " +
-                        "external_fee = (SELECT nw.get_payment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = CAST(:objType as nw.payment_change_type)), " +
-                        "guarantee_deposit = (SELECT nw.get_payment_guarantee_deposit(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :pmntId AND obj_type = CAST(:objType as nw.payment_change_type)) " +
-                        "WHERE  id = :pmntId",
-                params);
+    public void saveBatch(List<Payment> payments) throws DaoException {
+        List<Query> queries = payments.stream()
+                .map(payment -> getDslContext().newRecord(PAYMENT, payment))
+                .map(paymentRecord -> getDslContext().insertInto(PAYMENT)
+                        .set(paymentRecord)
+                        .onConflict(PAYMENT.INVOICE_ID, PAYMENT.SEQUENCE_ID, PAYMENT.CHANGE_ID)
+                        .doNothing()
+                )
+                .collect(Collectors.toList());
+        batchExecute(queries);
     }
 
     @Override
@@ -65,8 +53,10 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
     }
 
     @Override
-    public void updateNotCurrent(Long id) throws DaoException {
-        Query query = getDslContext().update(PAYMENT).set(PAYMENT.CURRENT, false).where(PAYMENT.ID.eq(id));
-        executeOne(query);
+    public void switchCurrent(Collection<InvoicingKey> paymentsSwitchIds) throws DaoException {
+        paymentsSwitchIds.forEach(ik ->
+                this.getNamedParameterJdbcTemplate().update("update nw.payment set current = false where invoice_id =:invoice_id and payment_id=:payment_id and current;" +
+                                "update nw.payment set current = true where id = (select max(id) from nw.payment where invoice_id =:invoice_id and payment_id=:payment_id);",
+                        new MapSqlParameterSource("invoice_id", ik.getInvoiceId()).addValue("payment_id", ik.getPaymentId())));
     }
 }

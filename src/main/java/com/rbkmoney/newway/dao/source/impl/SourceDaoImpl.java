@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.dao.source.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
-import com.rbkmoney.newway.dao.common.mapper.RecordRowMapper;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
+import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.source.iface.SourceDao;
 import com.rbkmoney.newway.domain.tables.pojos.Source;
 import com.rbkmoney.newway.domain.tables.records.SourceRecord;
@@ -39,7 +39,7 @@ public class SourceDaoImpl extends AbstractGenericDao implements SourceDao {
         Query query = getDslContext().insertInto(SOURCE).set(record).returning(SOURCE.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

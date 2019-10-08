@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.dao.dominant.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.domain.tables.pojos.TermSetHierarchy;
 import com.rbkmoney.newway.domain.tables.records.TermSetHierarchyRecord;
@@ -25,7 +25,7 @@ public class TermSetHierarchyDaoImpl extends AbstractGenericDao implements Domai
         TermSetHierarchyRecord termSetHierarchyRecord = getDslContext().newRecord(TERM_SET_HIERARCHY, termSetHierarchy);
         Query query = getDslContext().insertInto(TERM_SET_HIERARCHY).set(termSetHierarchyRecord).returning(TERM_SET_HIERARCHY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

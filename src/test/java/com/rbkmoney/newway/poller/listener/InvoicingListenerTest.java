@@ -1,14 +1,21 @@
 package com.rbkmoney.newway.poller.listener;
 
+import com.rbkmoney.damsel.base.Content;
+import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.EventPayload;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
+import com.rbkmoney.damsel.payment_processing.InvoiceCreated;
+import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
-import com.rbkmoney.machinegun.msgpack.Value;
 import com.rbkmoney.newway.exception.ParseException;
+import com.rbkmoney.newway.poller.event_stock.impl.invoicing.invoice.InvoiceCreatedMapper;
+import com.rbkmoney.newway.service.InvoiceBatchService;
 import com.rbkmoney.newway.service.InvoicingService;
+import com.rbkmoney.newway.service.PaymentBatchService;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,16 +24,18 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.kafka.support.Acknowledgment;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 
 public class InvoicingListenerTest {
 
     @Mock
-    private InvoicingService invoicingService;
+    private InvoiceBatchService invoiceBatchService;
+    @Mock
+    private PaymentBatchService paymentBatchService;
     @Mock
     private MachineEventParser eventParser;
     @Mock
@@ -37,7 +46,7 @@ public class InvoicingListenerTest {
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
-        listener = new InvoicingKafkaListener(invoicingService, eventParser);
+        listener = new InvoicingKafkaListener(new InvoicingService(new ArrayList<>(), Collections.singletonList(new InvoiceCreatedMapper()), new ArrayList<>(), invoiceBatchService, paymentBatchService, eventParser));
     }
 
     @Test
@@ -53,9 +62,9 @@ public class InvoicingListenerTest {
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(message);
 
-        listener.handle(sinkEvent, ack);
+        listener.handle(Collections.singletonList(new ConsumerRecord<>("topic", 1, 1, "kek", sinkEvent)), ack);
 
-        Mockito.verify(invoicingService, Mockito.times(0)).handleEvents(any(), any());
+        Mockito.verify(invoiceBatchService, Mockito.times(0)).process(anyList());
         Mockito.verify(ack, Mockito.times(1)).acknowledge();
     }
 
@@ -68,7 +77,7 @@ public class InvoicingListenerTest {
 
         Mockito.when(eventParser.parse(message)).thenThrow(new ParseException());
 
-        listener.handle(sinkEvent, ack);
+        listener.handle(Collections.singletonList(new ConsumerRecord<>("topic", 1, 1, "kek", sinkEvent)), ack);
 
         Mockito.verify(ack, Mockito.times(0)).acknowledge();
     }
@@ -77,9 +86,20 @@ public class InvoicingListenerTest {
     public void listenChanges() {
         MachineEvent message = new MachineEvent();
         Event event = new Event();
+        message.setCreatedAt(TypeUtil.temporalToString(LocalDateTime.now()));
         EventPayload payload = new EventPayload();
         ArrayList<InvoiceChange> invoiceChanges = new ArrayList<>();
-        invoiceChanges.add(new InvoiceChange());
+        InvoiceChange invoiceChange = new InvoiceChange();
+        invoiceChange.setInvoiceCreated(
+                new InvoiceCreated(
+                        new Invoice()
+                                .setCreatedAt(TypeUtil.temporalToString(LocalDateTime.now()))
+                                .setStatus(InvoiceStatus.unpaid(new InvoiceUnpaid()))
+                                .setDetails(new InvoiceDetails())
+                                .setDue(TypeUtil.temporalToString(LocalDateTime.now()))
+                                .setCost(new Cash().setAmount(1).setCurrency(new CurrencyRef()))
+                                .setContext(new Content())));
+        invoiceChanges.add(invoiceChange);
         payload.setInvoiceChanges(invoiceChanges);
         event.setPayload(payload);
         Mockito.when(eventParser.parse(message)).thenReturn(payload);
@@ -87,22 +107,9 @@ public class InvoicingListenerTest {
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(message);
 
-        listener.handle(sinkEvent, ack);
+        listener.handle(Collections.singletonList(new ConsumerRecord<>("topic", 1, 1, "kek", sinkEvent)), ack);
 
-        Mockito.verify(invoicingService, Mockito.times(1)).handleEvents(any(), any());
+        Mockito.verify(invoiceBatchService, Mockito.times(1)).process(anyList());
         Mockito.verify(ack, Mockito.times(1)).acknowledge();
-    }
-
-
-    private static SinkEvent createSinkEvent() {
-        MachineEvent message = new MachineEvent();
-        Value data = new Value();
-        data.setBin(new byte[0]);
-        message.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-        message.setEventId(1L);
-        message.setSourceNs("ns");
-        message.setSourceId("id");
-        message.setData(data);
-        return new SinkEvent();
     }
 }

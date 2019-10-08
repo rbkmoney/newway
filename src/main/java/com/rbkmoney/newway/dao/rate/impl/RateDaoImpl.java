@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.dao.rate.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.newway.dao.rate.iface.RateDao;
 import com.rbkmoney.newway.domain.tables.pojos.Rate;
 import com.rbkmoney.newway.domain.tables.records.RateRecord;
@@ -43,7 +43,7 @@ public class RateDaoImpl extends AbstractGenericDao implements RateDao {
                 .returning(RATE.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeWithReturn(query, keyHolder);
+        execute(query, keyHolder);
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 

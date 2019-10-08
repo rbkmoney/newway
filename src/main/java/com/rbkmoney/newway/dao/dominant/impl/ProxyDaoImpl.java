@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.dao.dominant.impl;
 
-import com.rbkmoney.newway.dao.common.impl.AbstractGenericDao;
+import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.domain.tables.pojos.Proxy;
 import com.rbkmoney.newway.domain.tables.records.ProxyRecord;
@@ -25,7 +25,7 @@ public class ProxyDaoImpl extends AbstractGenericDao implements DomainObjectDao<
         ProxyRecord proxyRecord = getDslContext().newRecord(PROXY, proxy);
         Query query = getDslContext().insertInto(PROXY).set(proxyRecord).returning(PROXY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOneWithReturn(query, keyHolder);
+        executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
     }
 

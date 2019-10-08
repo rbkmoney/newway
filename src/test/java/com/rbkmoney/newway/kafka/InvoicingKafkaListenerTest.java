@@ -1,13 +1,11 @@
 package com.rbkmoney.newway.kafka;
 
-import com.rbkmoney.damsel.payment_processing.EventPayload;
 import com.rbkmoney.kafka.common.serialization.ThriftSerializer;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import com.rbkmoney.machinegun.msgpack.Value;
 import com.rbkmoney.newway.poller.listener.InvoicingKafkaListener;
 import com.rbkmoney.newway.service.InvoicingService;
-import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -24,8 +22,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
-import static java.util.Collections.emptyList;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 
 @Slf4j
 @ContextConfiguration(classes = {KafkaAutoConfiguration.class, InvoicingKafkaListener.class})
@@ -40,12 +37,8 @@ public class InvoicingKafkaListenerTest extends AbstractKafkaTest {
     @MockBean
     InvoicingService invoicingService;
 
-    @MockBean
-    MachineEventParser eventParser;
-
     @Test
     public void listenEmptyChanges() throws InterruptedException {
-        Mockito.when(eventParser.parse(any())).thenReturn(EventPayload.invoice_changes(emptyList()));
 
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(createMessage());
@@ -54,8 +47,7 @@ public class InvoicingKafkaListenerTest extends AbstractKafkaTest {
 
         waitForTopicSync();
 
-        Mockito.verify(eventParser, Mockito.times(1)).parse(any());
-        Mockito.verify(invoicingService, Mockito.times(1)).handleEvents(any(), any());
+        Mockito.verify(invoicingService, Mockito.times(1)).handleEvents(anyList());
     }
 
     private void writeToTopic(SinkEvent sinkEvent) {
@@ -70,7 +62,7 @@ public class InvoicingKafkaListenerTest extends AbstractKafkaTest {
     }
 
     private void waitForTopicSync() throws InterruptedException {
-        Thread.sleep(1000L);
+        Thread.sleep(5000L);
     }
 
 
