@@ -49,7 +49,9 @@ public class InvoicePaymentSessionChangeTransactionBoundMapper extends AbstractI
         TransactionInfo transactionInfo = payload.getSessionTransactionBound().getTrx();
         paymentSource.setSessionPayloadTransactionBoundTrxId(transactionInfo.getId());
         Map<String, String> extra = transactionInfo.getExtra();
-        extra.put("PaRes", null);
+        if (extra.get("PaRes") != null) {
+            extra.put("PaRes", null); 
+        }
         paymentSource.setSessionPayloadTransactionBoundTrxExtraJson(JsonUtil.objectToJsonString(extra));
 
         if (transactionInfo.isSetAdditionalInfo()) {
