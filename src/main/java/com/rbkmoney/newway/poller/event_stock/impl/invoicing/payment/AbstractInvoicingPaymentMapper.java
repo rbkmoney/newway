@@ -6,6 +6,7 @@ import com.rbkmoney.newway.model.PaymentWrapper;
 import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingMapper;
 
 public abstract class AbstractInvoicingPaymentMapper extends AbstractInvoicingMapper<PaymentWrapper> {
+
     protected void setDefaultProperties(Payment payment, Long sequenceId, Integer changeId, String eventCreatedAt){
         payment.setId(null);
         payment.setWtime(null);
@@ -13,5 +14,17 @@ public abstract class AbstractInvoicingPaymentMapper extends AbstractInvoicingMa
         payment.setChangeId(changeId);
         payment.setSequenceId(sequenceId);
         payment.setEventCreatedAt(TypeUtil.stringToLocalDateTime(eventCreatedAt));
+        payment.setSessionPayloadTransactionBoundTrxExtraJson(null);
+        payment.setTrxAdditionalInfoApprovalCode(null);
+        payment.setTrxAdditionalInfoAcsUrl(null);
+        payment.setTrxAdditionalInfoPareq(null);
+        payment.setTrxAdditionalInfoMd(null);
+        payment.setTrxAdditionalInfoTermUrl(null);
+        payment.setTrxAdditionalInfoPares(null);
+        payment.setTrxAdditionalInfoEci(null);
+        payment.setTrxAdditionalInfoCavv(null);
+        payment.setTrxAdditionalInfoXid(null);
+        payment.setTrxAdditionalInfoCavvAlgorithm(null);
+        payment.setTrxAdditionalInfoThreeDsVerification(null);
     }
 }
