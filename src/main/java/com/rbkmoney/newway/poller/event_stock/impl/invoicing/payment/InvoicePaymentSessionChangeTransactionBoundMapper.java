@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -46,17 +48,21 @@ public class InvoicePaymentSessionChangeTransactionBoundMapper extends AbstractI
         SessionChangePayload payload = sessionChange.getPayload();
         TransactionInfo transactionInfo = payload.getSessionTransactionBound().getTrx();
         paymentSource.setSessionPayloadTransactionBoundTrxId(transactionInfo.getId());
-        paymentSource.setSessionPayloadTransactionBoundTrxExtraJson(JsonUtil.objectToJsonString(transactionInfo.getExtra()));
+        Map<String, String> extra = transactionInfo.getExtra();
+        if (extra.get("PaRes") != null) {
+            extra.put("PaRes", null); 
+        }
+        paymentSource.setSessionPayloadTransactionBoundTrxExtraJson(JsonUtil.objectToJsonString(extra));
 
         if (transactionInfo.isSetAdditionalInfo()) {
             AdditionalTransactionInfo additionalTransactionInfo = transactionInfo.getAdditionalInfo();
             paymentSource.setTrxAdditionalInfoRrn(additionalTransactionInfo.getRrn());
             paymentSource.setTrxAdditionalInfoApprovalCode(additionalTransactionInfo.getApprovalCode());
             paymentSource.setTrxAdditionalInfoAcsUrl(additionalTransactionInfo.getAcsUrl());
-            paymentSource.setTrxAdditionalInfoPareq(additionalTransactionInfo.getPareq());
+            //paymentSource.setTrxAdditionalInfoPareq(additionalTransactionInfo.getPareq());
             paymentSource.setTrxAdditionalInfoMd(additionalTransactionInfo.getMd());
             paymentSource.setTrxAdditionalInfoTermUrl(additionalTransactionInfo.getTermUrl());
-            paymentSource.setTrxAdditionalInfoPares(additionalTransactionInfo.getPares());
+            //paymentSource.setTrxAdditionalInfoPares(additionalTransactionInfo.getPares());
             paymentSource.setTrxAdditionalInfoEci(additionalTransactionInfo.getEci());
             paymentSource.setTrxAdditionalInfoCavv(additionalTransactionInfo.getCavv());
             paymentSource.setTrxAdditionalInfoXid(additionalTransactionInfo.getXid());
