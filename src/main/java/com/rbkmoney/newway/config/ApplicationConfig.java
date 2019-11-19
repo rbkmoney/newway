@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.config;
 
 import com.rbkmoney.damsel.domain_config.RepositorySrv;
+import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolEventSinkSrv;
 import com.rbkmoney.newway.domain.Nw;
 import com.rbkmoney.woody.thrift.impl.http.THSpawnClientBuilder;
 import org.jooq.Schema;
@@ -20,6 +21,14 @@ public class ApplicationConfig {
         return new THSpawnClientBuilder()
                 .withNetworkTimeout(networkTimeout)
                 .withAddress(resource.getURI()).build(RepositorySrv.Iface.class);
+    }
+
+    @Bean
+    public RecurrentPaymentToolEventSinkSrv.Iface recurrentPaymentToolClient(@Value("${recurrentPaymentTool.url}") Resource resource,
+                                                                             @Value("${recurrentPaymentTool.networkTimeout}") int networkTimeout) throws IOException {
+        return new THSpawnClientBuilder()
+                .withNetworkTimeout(networkTimeout)
+                .withAddress(resource.getURI()).build(RecurrentPaymentToolEventSinkSrv.Iface.class);
     }
 
     @Bean

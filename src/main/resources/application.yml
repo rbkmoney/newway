@@ -119,6 +119,12 @@ dmt:
     delay: 3000
     maxQuerySize: 10
     enable: true
+recurrentPaymentTool:
+  url: http://hellgate:8022/v1/eventsink/recurrentPaymentTool
+  networkTimeout: 5000
+  polling:
+    delay: 10000
+    limit: 500
 
 cache:
   invoice:
