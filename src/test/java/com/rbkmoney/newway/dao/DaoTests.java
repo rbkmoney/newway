@@ -12,6 +12,7 @@ import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
 import com.rbkmoney.newway.dao.payout.iface.PayoutSummaryDao;
 import com.rbkmoney.newway.dao.rate.iface.RateDao;
+import com.rbkmoney.newway.dao.recurrent_payment_tool.iface.RecurrentPaymentToolDao;
 import com.rbkmoney.newway.dao.source.iface.SourceDao;
 import com.rbkmoney.newway.dao.wallet.iface.WalletDao;
 import com.rbkmoney.newway.dao.withdrawal.iface.WithdrawalDao;
@@ -124,6 +125,8 @@ public class DaoTests extends AbstractAppDaoTests {
     private CashFlowService cashFlowService;
     @Autowired
     private PaymentIdsGeneratorDaoImpl idsGeneratorDao;
+    @Autowired
+    private RecurrentPaymentToolDao recurrentPaymentToolDao;
 
     @Test
     public void depositDaoTest() {
@@ -668,5 +671,18 @@ public class DaoTests extends AbstractAppDaoTests {
         List<Long> list = idsGeneratorDao.get(100);
         assertEquals(100, list.size());
         assertEquals(99,list.get(99) - list.get(0));
+    }
+
+    @Test
+    public void recurrentPaymentToolDaoTest(){
+        jdbcTemplate.execute("truncate table nw.recurrent_payment_tool cascade");
+        RecurrentPaymentTool recurrentPaymentTool = random(RecurrentPaymentTool.class);
+        recurrentPaymentTool.setCurrent(true);
+        Long id = recurrentPaymentToolDao.save(recurrentPaymentTool);
+        recurrentPaymentTool.setId(id);
+        assertEquals(recurrentPaymentTool, recurrentPaymentToolDao.get(recurrentPaymentTool.getRecurrentPaymentToolId()));
+        assertEquals(recurrentPaymentTool.getEventId(), recurrentPaymentToolDao.getLastEventId());
+        recurrentPaymentToolDao.updateNotCurrent(recurrentPaymentTool.getId());
+        assertNull(recurrentPaymentToolDao.get(recurrentPaymentTool.getRecurrentPaymentToolId()));
     }
 }

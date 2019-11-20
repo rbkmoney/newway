@@ -64,6 +64,10 @@ public class RecurrentPaymentToolHasCreatedHandler extends AbstractRecurrentPaym
             recurrentPaymentTool.setRouteProviderId(recurrentPaymentToolOrigin.getRoute().getProvider().getId());
             recurrentPaymentTool.setRouteTerminalId(recurrentPaymentToolOrigin.getRoute().getTerminal().getId());
         }
+        if (recPaymentToolCreated.isSetRoute()) {
+            recurrentPaymentTool.setRouteProviderId(recPaymentToolCreated.getRoute().getProvider().getId());
+            recurrentPaymentTool.setRouteTerminalId(recPaymentToolCreated.getRoute().getTerminal().getId());
+        }
         if (recurrentPaymentToolOrigin.isSetMinimalPaymentCost()) {
             recurrentPaymentTool.setAmount(recurrentPaymentToolOrigin.getMinimalPaymentCost().getAmount());
             recurrentPaymentTool.setCurrencyCode(recurrentPaymentToolOrigin.getMinimalPaymentCost().getCurrency().getSymbolicCode());

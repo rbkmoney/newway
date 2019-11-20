@@ -3,7 +3,6 @@ package com.rbkmoney.newway.service;
 import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolEvent;
 import com.rbkmoney.newway.dao.recurrent_payment_tool.iface.RecurrentPaymentToolDao;
 import com.rbkmoney.newway.poller.event_stock.impl.recurrent_payment_tool.AbstractRecurrentPaymentToolHandler;
-import com.rbkmoney.newway.poller.event_stock.impl.source.AbstractSourceHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

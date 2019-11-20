@@ -28,10 +28,11 @@ public class RecurrentPaymentToolHasAcquiredHandler extends AbstractRecurrentPay
     public void handle(RecurrentPaymentToolChange change, RecurrentPaymentToolEvent event, Integer changeId) {
         log.info("Start recurrent payment tool acquired handling, eventId={}, recurrent_payment_tool_id={}", event.getId(), event.getSource());
         RecurrentPaymentTool recurrentPaymentTool = getRecurrentPaymentToolSource(event);
+        Long rptSourceId = recurrentPaymentTool.getId();
         setDefaultProperties(recurrentPaymentTool, event, changeId);
         recurrentPaymentTool.setStatus(RecurrentPaymentToolStatus.acquired);
         recurrentPaymentTool.setRecToken(change.getRecPaymentToolAcquired().getToken());
-        saveAndUpdateNotCurrent(recurrentPaymentTool);
+        saveAndUpdateNotCurrent(recurrentPaymentTool, rptSourceId);
         log.info("End recurrent payment tool acquired handling, eventId={}, recurrent_payment_tool_id={}", event.getId(), event.getSource());
     }
 

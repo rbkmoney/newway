@@ -24,17 +24,15 @@ public abstract class AbstractRecurrentPaymentToolHandler implements Handler<Rec
         return recurrentPaymentTool;
     }
 
-    protected void saveAndUpdateNotCurrent(RecurrentPaymentTool recurrentPaymentTool) {
-        Long rptId = recurrentPaymentToolDao.save(recurrentPaymentTool);
-        if (rptId != null) {
-            recurrentPaymentToolDao.updateNotCurrent(rptId);
+    protected void saveAndUpdateNotCurrent(RecurrentPaymentTool recurrentPaymentTool, Long rptSourceId) {
+        if (recurrentPaymentToolDao.save(recurrentPaymentTool) != null) {
+            recurrentPaymentToolDao.updateNotCurrent(rptSourceId);
         }
     }
 
     protected void setDefaultProperties(RecurrentPaymentTool recurrentPaymentTool, RecurrentPaymentToolEvent event, Integer changeId) {
         recurrentPaymentTool.setId(null);
         recurrentPaymentTool.setWtime(null);
-        recurrentPaymentTool.setCurrent(false);
         recurrentPaymentTool.setEventId(event.getId());
         recurrentPaymentTool.setChangeId(changeId);
         recurrentPaymentTool.setSequenceId(event.getSequence());

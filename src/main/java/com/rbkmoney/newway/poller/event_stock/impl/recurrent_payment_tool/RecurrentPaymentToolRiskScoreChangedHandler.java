@@ -27,9 +27,10 @@ public class RecurrentPaymentToolRiskScoreChangedHandler extends AbstractRecurre
     public void handle(RecurrentPaymentToolChange change, RecurrentPaymentToolEvent event, Integer changeId) {
         log.info("Start recurrent payment tool risk score changed handling, eventId={}, recurrent_payment_tool_id={}", event.getId(), event.getSource());
         RecurrentPaymentTool recurrentPaymentTool = getRecurrentPaymentToolSource(event);
+        Long rptSourceId = recurrentPaymentTool.getId();
         setDefaultProperties(recurrentPaymentTool, event, changeId);
         recurrentPaymentTool.setRiskScore(change.getRecPaymentToolRiskScoreChanged().getRiskScore().name());
-        saveAndUpdateNotCurrent(recurrentPaymentTool);
+        saveAndUpdateNotCurrent(recurrentPaymentTool, rptSourceId);
         log.info("End recurrent payment tool risk score changed handling, eventId={}, recurrent_payment_tool_id={}", event.getId(), event.getSource());
     }
 

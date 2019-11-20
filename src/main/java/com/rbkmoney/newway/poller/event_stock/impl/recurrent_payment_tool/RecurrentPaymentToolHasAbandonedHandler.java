@@ -28,9 +28,10 @@ public class RecurrentPaymentToolHasAbandonedHandler extends AbstractRecurrentPa
     public void handle(RecurrentPaymentToolChange change, RecurrentPaymentToolEvent event, Integer changeId) {
         log.info("Start recurrent payment tool abandoned handling, eventId={}, recurrent_payment_tool_id={}", event.getId(), event.getSource());
         RecurrentPaymentTool recurrentPaymentTool = getRecurrentPaymentToolSource(event);
+        Long rptSourceId = recurrentPaymentTool.getId();
         setDefaultProperties(recurrentPaymentTool, event, changeId);
         recurrentPaymentTool.setStatus(RecurrentPaymentToolStatus.abandoned);
-        saveAndUpdateNotCurrent(recurrentPaymentTool);
+        saveAndUpdateNotCurrent(recurrentPaymentTool, rptSourceId);
         log.info("End recurrent payment tool abandoned handling, eventId={}, recurrent_payment_tool_id={}", event.getId(), event.getSource());
     }
 

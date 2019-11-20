@@ -30,6 +30,7 @@ public class RecurrentPaymentToolSessionChangedTransactionBoundHandler extends A
     public void handle(RecurrentPaymentToolChange change, RecurrentPaymentToolEvent event, Integer changeId) {
         log.info("Start recurrent payment tool session changed transaction bound handling, eventId={}, recurrent_payment_tool_id={}", event.getId(), event.getSource());
         RecurrentPaymentTool recurrentPaymentTool = getRecurrentPaymentToolSource(event);
+        Long rptSourceId = recurrentPaymentTool.getId();
         setDefaultProperties(recurrentPaymentTool, event, changeId);
         TransactionInfo trx = change.getRecPaymentToolSessionChanged().getPayload().getSessionTransactionBound().getTrx();
         recurrentPaymentTool.setSessionPayloadTransactionBoundTrxId(trx.getId());
@@ -37,7 +38,7 @@ public class RecurrentPaymentToolSessionChangedTransactionBoundHandler extends A
         if (trx.isSetAdditionalInfo()) {
             recurrentPaymentTool.setSessionPayloadTransactionBoundTrxAdditionalInfoRrn(trx.getAdditionalInfo().getRrn());
         }
-        saveAndUpdateNotCurrent(recurrentPaymentTool);
+        saveAndUpdateNotCurrent(recurrentPaymentTool, rptSourceId);
         log.info("End recurrent payment tool session changed transaction bound handling, eventId={}, recurrent_payment_tool_id={}", event.getId(), event.getSource());
     }
 
