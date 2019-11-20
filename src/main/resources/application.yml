@@ -1,3 +1,5 @@
+info:
+  single-instance-mode: false
 server:
   port: @server.port@
 spring:
@@ -47,7 +49,6 @@ kafka:
   topics:
     invoice:
       id: mg-invoice-100-2
-      enabled: false
 
 bm:
   partyManagement:

@@ -15,7 +15,6 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Component
 @DependsOn("flywayInitializer")
 public class DominantPoller {
 
@@ -29,8 +28,8 @@ public class DominantPoller {
 
     public DominantPoller(RepositorySrv.Iface dominantClient,
                           DominantService dominantService,
-                          @Value("${dmt.polling.maxQuerySize}") int maxQuerySize,
-                          @Value("${dmt.polling.enable}") boolean pollingEnabled) {
+                          int maxQuerySize,
+                          boolean pollingEnabled) {
         this.dominantClient = dominantClient;
         this.dominantService = dominantService;
         this.after = dominantService.getLastVersionId().orElse(0L);
