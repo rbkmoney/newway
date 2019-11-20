@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class RecurrentPaymentToolService implements EventService<RecurrentPaymentToolEvent, RecurrentPaymentToolEvent>{
 
-    private RecurrentPaymentToolDao recurrentPaymentToolDao;
+    private final RecurrentPaymentToolDao recurrentPaymentToolDao;
 
     private final List<AbstractRecurrentPaymentToolHandler> recurrentPaymentToolHandlers;
 
