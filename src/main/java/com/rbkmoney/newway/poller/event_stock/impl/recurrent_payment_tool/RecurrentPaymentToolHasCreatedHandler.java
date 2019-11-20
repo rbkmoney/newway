@@ -52,8 +52,7 @@ public class RecurrentPaymentToolHasCreatedHandler extends AbstractRecurrentPaym
         recurrentPaymentTool.setDomainRevision(recurrentPaymentToolOrigin.getDomainRevision());
         recurrentPaymentTool.setStatus(TBaseUtil.unionFieldToEnum(recurrentPaymentToolOrigin.getStatus(), RecurrentPaymentToolStatus.class));
         DisposablePaymentResource paymentResource = recurrentPaymentToolOrigin.getPaymentResource();
-        PaymentTool paymentTool = paymentResource.getPaymentTool();
-        fillPaymentTool(recurrentPaymentTool, paymentTool);
+        fillPaymentTool(recurrentPaymentTool, paymentResource.getPaymentTool());
         recurrentPaymentTool.setPaymentSessionId(paymentResource.getPaymentSessionId());
         if (paymentResource.isSetClientInfo()) {
             recurrentPaymentTool.setClientInfoIpAddress(paymentResource.getClientInfo().getIpAddress());
@@ -82,49 +81,67 @@ public class RecurrentPaymentToolHasCreatedHandler extends AbstractRecurrentPaym
     private void fillPaymentTool(RecurrentPaymentTool recurrentPaymentTool, PaymentTool paymentTool) {
         recurrentPaymentTool.setPaymentToolType(TBaseUtil.unionFieldToEnum(paymentTool, PaymentToolType.class));
         if (paymentTool.isSetBankCard()) {
-            BankCard bankCard = paymentTool.getBankCard();
-            recurrentPaymentTool.setBankCardToken(bankCard.getToken());
-            recurrentPaymentTool.setBankCardPaymentSystem(bankCard.getPaymentSystem().name());
-            recurrentPaymentTool.setBankCardBin(bankCard.getBin());
-            recurrentPaymentTool.setBankCardMaskedPan(bankCard.getMaskedPan());
-            if (bankCard.isSetTokenProvider()) {
-                recurrentPaymentTool.setBankCardTokenProvider(bankCard.getTokenProvider().name());
-            }
-            if (bankCard.isSetIssuerCountry()) {
-                recurrentPaymentTool.setBankCardIssuerCountry(bankCard.getIssuerCountry().name());
-            }
-            recurrentPaymentTool.setBankCardBankName(bankCard.getBankName());
-            if (bankCard.isSetMetadata()) {
-                recurrentPaymentTool.setBankCardMetadataJson(
-                        JsonUtil.objectToJsonString(
-                                bankCard.getMetadata().entrySet().stream()
-                                        .collect(Collectors.toMap(
-                                                e -> e.getKey(),
-                                                e -> JsonUtil.tBaseToJsonNode(e.getValue())
-                                        ))));
-            }
-            if (bankCard.isSetIsCvvEmpty()) {
-                recurrentPaymentTool.setBankCardIsCvvEmpty(bankCard.isIsCvvEmpty());
-            }
-            if (bankCard.isSetExpDate()) {
-                recurrentPaymentTool.setBankCardExpDateMonth((int) bankCard.getExpDate().getMonth());
-                recurrentPaymentTool.setBankCardExpDateYear((int) bankCard.getExpDate().getYear());
-            }
-            recurrentPaymentTool.setBankCardCardholderName(bankCard.getCardholderName());
+            fillBankCard(recurrentPaymentTool, paymentTool);
         } else if (paymentTool.isSetPaymentTerminal()) {
-            recurrentPaymentTool.setPaymentTerminalType(paymentTool.getPaymentTerminal().getTerminalType().name());
+            fillPaymentTerminal(recurrentPaymentTool, paymentTool);
         } else if (paymentTool.isSetDigitalWallet()) {
-            recurrentPaymentTool.setDigitalWalletId(paymentTool.getDigitalWallet().getId());
-            recurrentPaymentTool.setDigitalWalletProvider(paymentTool.getDigitalWallet().getProvider().name());
-            recurrentPaymentTool.setDigitalWalletToken(paymentTool.getDigitalWallet().getToken());
+            fillDigitalWallet(recurrentPaymentTool, paymentTool);
         } else if (paymentTool.isSetCryptoCurrency()) {
-            recurrentPaymentTool.setCryptoCurrency(paymentTool.getCryptoCurrency().toString());
+            fillCryptoCurrency(recurrentPaymentTool, paymentTool);
         } else if (paymentTool.isSetMobileCommerce()) {
-            recurrentPaymentTool.setMobileCommerceOperator(TypeUtil.toEnumField(paymentTool.getMobileCommerce().getOperator().name(),
-                    MobileOperatorType.class));
-            recurrentPaymentTool.setMobileCommercePhoneCc(paymentTool.getMobileCommerce().getPhone().getCc());
-            recurrentPaymentTool.setMobileCommercePhoneCtn(paymentTool.getMobileCommerce().getPhone().getCtn());
+            fillMobileCommerce(recurrentPaymentTool, paymentTool);
         }
+    }
+
+    private void fillMobileCommerce(RecurrentPaymentTool recurrentPaymentTool, PaymentTool paymentTool) {
+        recurrentPaymentTool.setMobileCommerceOperator(TypeUtil.toEnumField(paymentTool.getMobileCommerce().getOperator().name(),
+                MobileOperatorType.class));
+        recurrentPaymentTool.setMobileCommercePhoneCc(paymentTool.getMobileCommerce().getPhone().getCc());
+        recurrentPaymentTool.setMobileCommercePhoneCtn(paymentTool.getMobileCommerce().getPhone().getCtn());
+    }
+
+    private void fillCryptoCurrency(RecurrentPaymentTool recurrentPaymentTool, PaymentTool paymentTool) {
+        recurrentPaymentTool.setCryptoCurrency(paymentTool.getCryptoCurrency().toString());
+    }
+
+    private void fillDigitalWallet(RecurrentPaymentTool recurrentPaymentTool, PaymentTool paymentTool) {
+        recurrentPaymentTool.setDigitalWalletId(paymentTool.getDigitalWallet().getId());
+        recurrentPaymentTool.setDigitalWalletProvider(paymentTool.getDigitalWallet().getProvider().name());
+        recurrentPaymentTool.setDigitalWalletToken(paymentTool.getDigitalWallet().getToken());
+    }
+
+    private void fillPaymentTerminal(RecurrentPaymentTool recurrentPaymentTool, PaymentTool paymentTool) {
+        recurrentPaymentTool.setPaymentTerminalType(paymentTool.getPaymentTerminal().getTerminalType().name());
+    }
+
+    private void fillBankCard(RecurrentPaymentTool recurrentPaymentTool, PaymentTool paymentTool) {
+        BankCard bankCard = paymentTool.getBankCard();
+        recurrentPaymentTool.setBankCardToken(bankCard.getToken());
+        recurrentPaymentTool.setBankCardPaymentSystem(bankCard.getPaymentSystem().name());
+        recurrentPaymentTool.setBankCardBin(bankCard.getBin());
+        recurrentPaymentTool.setBankCardMaskedPan(bankCard.getMaskedPan());
+        if (bankCard.isSetTokenProvider()) {
+            recurrentPaymentTool.setBankCardTokenProvider(bankCard.getTokenProvider().name());
+        }
+        if (bankCard.isSetIssuerCountry()) {
+            recurrentPaymentTool.setBankCardIssuerCountry(bankCard.getIssuerCountry().name());
+        }
+        recurrentPaymentTool.setBankCardBankName(bankCard.getBankName());
+        if (bankCard.isSetMetadata()) {
+            recurrentPaymentTool.setBankCardMetadataJson(JsonUtil.objectToJsonString(
+                    bankCard.getMetadata().entrySet().stream().collect(Collectors.toMap(
+                            e -> e.getKey(),
+                            e -> JsonUtil.tBaseToJsonNode(e.getValue())
+                    ))));
+        }
+        if (bankCard.isSetIsCvvEmpty()) {
+            recurrentPaymentTool.setBankCardIsCvvEmpty(bankCard.isIsCvvEmpty());
+        }
+        if (bankCard.isSetExpDate()) {
+            recurrentPaymentTool.setBankCardExpDateMonth((int) bankCard.getExpDate().getMonth());
+            recurrentPaymentTool.setBankCardExpDateYear((int) bankCard.getExpDate().getYear());
+        }
+        recurrentPaymentTool.setBankCardCardholderName(bankCard.getCardholderName());
     }
 
     @Override

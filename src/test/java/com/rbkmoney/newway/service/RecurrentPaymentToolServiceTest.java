@@ -30,9 +30,9 @@ public class RecurrentPaymentToolServiceTest extends AbstractAppDaoTests {
         RecurrentPaymentToolEvent event = buildEvent(recurrentId);
         recurrentPaymentToolService.handleEvents(event, event);
 
+        String sql = "select * from nw.recurrent_payment_tool where recurrent_payment_tool_id = :id";
         List<com.rbkmoney.newway.domain.tables.pojos.RecurrentPaymentTool> recurrentPaymentTools =
-                jdbcTemplate.query("select * from nw.recurrent_payment_tool where recurrent_payment_tool_id = :id",
-                        new MapSqlParameterSource("id", recurrentId),
+                jdbcTemplate.query(sql, new MapSqlParameterSource("id", recurrentId),
                         new BeanPropertyRowMapper<>(com.rbkmoney.newway.domain.tables.pojos.RecurrentPaymentTool.class));
         assertEquals(7, recurrentPaymentTools.size());
 
