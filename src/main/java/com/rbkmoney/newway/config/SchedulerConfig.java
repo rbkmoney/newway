@@ -16,7 +16,7 @@ public class SchedulerConfig {
     public DominantPoller dominantPoller(RepositorySrv.Iface dominantClient,
                                          DominantService dominantService,
                                          @Value("${dmt.polling.maxQuerySize}") int maxQuerySize,
-                                         @Value("${dmt.polling.enable}") boolean pollingEnabled){
+                                         @Value("${dmt.polling.enabled}") boolean pollingEnabled){
         return new DominantPoller(dominantClient, dominantService, maxQuerySize, pollingEnabled);
     }
 }

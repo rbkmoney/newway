@@ -62,8 +62,8 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
     private static Consumer<EnvironmentProperties> getEnvironmentPropertiesConsumer() {
         return environmentProperties -> {
             environmentProperties.put("info.single-instance-mode", "false");
-            environmentProperties.put("bm.pollingEnabled", "false");
-            environmentProperties.put("dmt.polling.enable", "false");
+            environmentProperties.put("bm.polling.enabled", "false");
+            environmentProperties.put("dmt.polling.enabled", "false");
         };
     }
 }

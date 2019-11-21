@@ -38,7 +38,7 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private final WithdrawalSessionService withdrawalSessionService;
     private final RateService rateService;
 
-    @Value("${bm.pollingEnabled}")
+    @Value("${bm.polling.enabled}")
     private boolean pollingEnabled;
 
     @Override
