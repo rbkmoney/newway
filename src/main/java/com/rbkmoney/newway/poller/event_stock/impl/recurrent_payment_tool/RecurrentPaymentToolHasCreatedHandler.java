@@ -20,6 +20,7 @@ import com.rbkmoney.newway.domain.tables.pojos.RecurrentPaymentTool;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
@@ -38,6 +39,7 @@ public class RecurrentPaymentToolHasCreatedHandler extends AbstractRecurrentPaym
     }
 
     @Override
+    @Transactional
     public void handle(RecurrentPaymentToolChange change, RecurrentPaymentToolEvent event, Integer changeId) {
         log.info("Start recurrent payment tool created handling, eventId={}, recurrent_payment_tool_id={}", event.getId(), event.getSource());
         RecurrentPaymentToolHasCreated recPaymentToolCreated = change.getRecPaymentToolCreated();

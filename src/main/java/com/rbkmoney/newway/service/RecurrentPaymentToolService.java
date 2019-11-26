@@ -29,7 +29,6 @@ public class RecurrentPaymentToolService implements EventService<RecurrentPaymen
     }
 
     @Override
-    @Transactional
     public void handleEvents(RecurrentPaymentToolEvent event, RecurrentPaymentToolEvent payload) {
         AtomicInteger cnt = new AtomicInteger(0);
         event.getPayload().forEach(
