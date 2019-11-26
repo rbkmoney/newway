@@ -23,6 +23,7 @@ public class RecurrentPaymentToolPoller {
 
     private final RecurrentPaymentToolEventSinkSrv.Iface recurrentPaymentToolClient;
     private final RecurrentPaymentToolService recurrentPaymentToolService;
+
     @Value("${recurrentPaymentTool.polling.limit}")
     private int limit;
     private long after;
@@ -36,10 +37,10 @@ public class RecurrentPaymentToolPoller {
     public void process() {
         try {
             List<RecurrentPaymentToolEvent> events = recurrentPaymentToolClient.getEvents(getEventRange());
-            events.forEach(e -> {
+            events.forEach(event -> {
                 try {
-                    recurrentPaymentToolService.handleEvents(e, e);
-                    after = e.getId();
+                    recurrentPaymentToolService.handleEvents(event, event);
+                    after = event.getId();
                 } catch (RuntimeException ex) {
                     throw new RuntimeException(String.format("Unexpected error when polling recurrent payment tool eventSink, eventId=%d", after), ex);
                 }

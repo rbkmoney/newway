@@ -20,7 +20,8 @@ public class ApplicationConfig {
                                               @Value("${dmt.networkTimeout}") int networkTimeout) throws IOException {
         return new THSpawnClientBuilder()
                 .withNetworkTimeout(networkTimeout)
-                .withAddress(resource.getURI()).build(RepositorySrv.Iface.class);
+                .withAddress(resource.getURI())
+                .build(RepositorySrv.Iface.class);
     }
 
     @Bean
@@ -28,7 +29,8 @@ public class ApplicationConfig {
                                                                              @Value("${recurrentPaymentTool.networkTimeout}") int networkTimeout) throws IOException {
         return new THSpawnClientBuilder()
                 .withNetworkTimeout(networkTimeout)
-                .withAddress(resource.getURI()).build(RecurrentPaymentToolEventSinkSrv.Iface.class);
+                .withAddress(resource.getURI())
+                .build(RecurrentPaymentToolEventSinkSrv.Iface.class);
     }
 
     @Bean

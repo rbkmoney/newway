@@ -6,6 +6,7 @@ import com.rbkmoney.newway.poller.event_stock.impl.recurrent_payment_tool.Abstra
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.List;
@@ -28,13 +29,14 @@ public class RecurrentPaymentToolService implements EventService<RecurrentPaymen
     }
 
     @Override
+    @Transactional
     public void handleEvents(RecurrentPaymentToolEvent event, RecurrentPaymentToolEvent payload) {
         AtomicInteger cnt = new AtomicInteger(0);
         event.getPayload().forEach(
-                cc -> recurrentPaymentToolHandlers.forEach
-                        (ph -> {
-                            if (ph.accept(cc)) {
-                                ph.handle(cc, event, cnt.getAndIncrement());
+                change -> recurrentPaymentToolHandlers.forEach
+                        (handler -> {
+                            if (handler.accept(change)) {
+                                handler.handle(change, event, cnt.getAndIncrement());
                             }
                         }));
     }

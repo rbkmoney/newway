@@ -7,14 +7,12 @@ import com.rbkmoney.newway.dao.recurrent_payment_tool.iface.RecurrentPaymentTool
 import com.rbkmoney.newway.domain.tables.pojos.RecurrentPaymentTool;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.Handler;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public abstract class AbstractRecurrentPaymentToolHandler implements Handler<RecurrentPaymentToolChange, RecurrentPaymentToolEvent> {
 
-    private RecurrentPaymentToolDao recurrentPaymentToolDao;
-
-    public AbstractRecurrentPaymentToolHandler(RecurrentPaymentToolDao recurrentPaymentToolDao) {
-        this.recurrentPaymentToolDao = recurrentPaymentToolDao;
-    }
+    private final RecurrentPaymentToolDao recurrentPaymentToolDao;
 
     protected RecurrentPaymentTool getRecurrentPaymentToolSource(RecurrentPaymentToolEvent event) {
         RecurrentPaymentTool recurrentPaymentTool = recurrentPaymentToolDao.get(event.getSource());
