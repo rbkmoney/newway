@@ -64,6 +64,7 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
             environmentProperties.put("info.single-instance-mode", "false");
             environmentProperties.put("bm.polling.enabled", "false");
             environmentProperties.put("dmt.polling.enabled", "false");
+            environmentProperties.put("recurrentPaymentTool.polling.enabled", "false");
         };
     }
 }
