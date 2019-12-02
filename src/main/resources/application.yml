@@ -1,3 +1,5 @@
+info:
+  single-instance-mode: false
 server:
   port: @server.port@
 spring:
@@ -63,7 +65,8 @@ bm:
       delay: 10000
       retryDelay: 1000
       maxPoolSize: 1
-  pollingEnabled: true
+  polling:
+    enabled: true
 identity:
   polling:
     url: http://wapi:8022/v1/eventsink/identity

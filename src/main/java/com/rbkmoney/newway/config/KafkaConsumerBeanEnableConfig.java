@@ -12,7 +12,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 public class KafkaConsumerBeanEnableConfig {
 
     @Bean
-    @ConditionalOnProperty(value = "kafka.topics.invoice.enabled", havingValue = "true")
+    @ConditionalOnProperty(value = "info.single-instance-mode", havingValue = "false")
     public InvoicingKafkaListener paymentEventsKafkaListener(InvoicingService invoicingService) {
         return new InvoicingKafkaListener(invoicingService);
     }

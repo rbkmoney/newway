@@ -4,8 +4,11 @@ import com.rbkmoney.eventstock.client.EventPublisher;
 import com.rbkmoney.eventstock.client.poll.FistfulPollingEventPublisherBuilder;
 import com.rbkmoney.eventstock.client.poll.PollingEventPublisherBuilder;
 import com.rbkmoney.eventstock.client.poll.RatesPollingEventPublisherBuilder;
+import com.rbkmoney.newway.listener.OnStart;
 import com.rbkmoney.newway.poller.event_stock.*;
+import com.rbkmoney.newway.service.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -14,6 +17,51 @@ import java.io.IOException;
 
 @Configuration
 public class EventStockConfig {
+
+    @Bean
+    @ConditionalOnProperty(value = "info.single-instance-mode", havingValue = "true")
+    public OnStart eventSinkListener(
+            EventPublisher partyManagementEventPublisher,
+            EventPublisher payoutEventPublisher,
+            EventPublisher identityEventPublisher,
+            EventPublisher withdrawalEventPublisher,
+            EventPublisher walletEventPublisher,
+            EventPublisher sourceEventPublisher,
+            EventPublisher destinationEventPublisher,
+            EventPublisher depositEventPublisher,
+            EventPublisher withdrawalSessionEventPublisher,
+            EventPublisher rateEventPublisher,
+            PartyManagementService partyManagementService,
+            PayoutService payoutService,
+            WalletService walletService,
+            IdentityService identityService,
+            WithdrawalService withdrawalService,
+            SourceService sourceService,
+            DestinationService destinationService,
+            DepositService depositService,
+            WithdrawalSessionService withdrawalSessionService,
+            RateService rateService) {
+        return new OnStart(partyManagementEventPublisher,
+                payoutEventPublisher,
+                identityEventPublisher,
+                withdrawalEventPublisher,
+                walletEventPublisher,
+                sourceEventPublisher,
+                destinationEventPublisher,
+                depositEventPublisher,
+                withdrawalSessionEventPublisher,
+                rateEventPublisher,
+                partyManagementService,
+                payoutService,
+                walletService,
+                identityService,
+                withdrawalService,
+                sourceService,
+                destinationService,
+                depositService,
+                withdrawalSessionService,
+                rateService);
+    }
 
     @Bean
     public EventPublisher partyManagementEventPublisher(

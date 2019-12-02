@@ -60,9 +60,9 @@ public abstract class AbstractAppDaoTests extends AbstractTestUtils {
 
     private static Consumer<EnvironmentProperties> getEnvironmentPropertiesConsumer() {
         return environmentProperties -> {
-            environmentProperties.put("kafka.topics.invoice.enabled", "false");
-            environmentProperties.put("bm.pollingEnabled", "false");
-            environmentProperties.put("dmt.polling.enable", "false");
+            environmentProperties.put("info.single-instance-mode", "true");
+            environmentProperties.put("bm.polling.enabled", "false");
+            environmentProperties.put("dmt.polling.enabled", "false");
         };
     }
 }

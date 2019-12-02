@@ -6,6 +6,7 @@ import com.rbkmoney.eventstock.client.EventPublisher;
 import com.rbkmoney.eventstock.client.SubscriberConfig;
 import com.rbkmoney.eventstock.client.poll.EventFlowFilter;
 import com.rbkmoney.newway.service.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component
+@RequiredArgsConstructor
 public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private final EventPublisher partyManagementEventPublisher;
     private final EventPublisher payoutEventPublisher;
@@ -37,53 +38,8 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private final WithdrawalSessionService withdrawalSessionService;
     private final RateService rateService;
 
-    @Value("${bm.pollingEnabled}")
+    @Value("${bm.polling.enabled}")
     private boolean pollingEnabled;
-
-    public OnStart(EventPublisher partyManagementEventPublisher,
-                   EventPublisher payoutEventPublisher,
-                   EventPublisher identityEventPublisher,
-                   EventPublisher withdrawalEventPublisher,
-                   EventPublisher walletEventPublisher,
-                   EventPublisher sourceEventPublisher,
-                   EventPublisher destinationEventPublisher,
-                   EventPublisher depositEventPublisher,
-                   EventPublisher withdrawalSessionEventPublisher,
-                   EventPublisher rateEventPublisher,
-
-                   PartyManagementService partyManagementService,
-                   InvoicingService invoicingService,
-                   PayoutService payoutService,
-                   WalletService walletService,
-                   IdentityService identityService,
-                   WithdrawalService withdrawalService,
-                   SourceService sourceService,
-                   DestinationService destinationService,
-                   DepositService depositService,
-                   WithdrawalSessionService withdrawalSessionService,
-                   RateService rateService) {
-        this.partyManagementEventPublisher = partyManagementEventPublisher;
-        this.payoutEventPublisher = payoutEventPublisher;
-        this.identityEventPublisher = identityEventPublisher;
-        this.walletEventPublisher = walletEventPublisher;
-        this.withdrawalEventPublisher = withdrawalEventPublisher;
-        this.depositEventPublisher = depositEventPublisher;
-        this.sourceEventPublisher = sourceEventPublisher;
-        this.destinationEventPublisher = destinationEventPublisher;
-        this.withdrawalSessionEventPublisher = withdrawalSessionEventPublisher;
-        this.rateEventPublisher = rateEventPublisher;
-
-        this.partyManagementService = partyManagementService;
-        this.payoutService = payoutService;
-        this.walletService = walletService;
-        this.identityService = identityService;
-        this.withdrawalService = withdrawalService;
-        this.sourceService = sourceService;
-        this.destinationService = destinationService;
-        this.depositService = depositService;
-        this.withdrawalSessionService = withdrawalSessionService;
-        this.rateService = rateService;
-    }
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
