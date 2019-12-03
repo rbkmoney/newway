@@ -123,11 +123,12 @@ dmt:
     maxQuerySize: 10
     enabled: true
 recurrentPaymentTool:
-  url: http://hellgate:8022/v1/eventsink/recurrentPaymentTool
+  url: http://hellgate:8022/v1/recpaytool/eventsink
   networkTimeout: 5000
   polling:
     delay: 10000
     limit: 500
+    enabled: true
 
 cache:
   invoice:
