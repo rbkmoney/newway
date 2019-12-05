@@ -21,9 +21,9 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private final EventPublisher identityEventPublisher;
     private final EventPublisher withdrawalEventPublisher;
     private final EventPublisher walletEventPublisher;
-    private final EventPublisher depositEventPublisher;
     private final EventPublisher sourceEventPublisher;
     private final EventPublisher destinationEventPublisher;
+    private final EventPublisher depositEventPublisher;
     private final EventPublisher withdrawalSessionEventPublisher;
     private final EventPublisher rateEventPublisher;
 
