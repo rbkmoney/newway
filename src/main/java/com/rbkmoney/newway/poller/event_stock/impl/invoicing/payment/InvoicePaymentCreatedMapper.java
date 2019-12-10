@@ -59,6 +59,7 @@ public class InvoicePaymentCreatedMapper extends AbstractInvoicingPaymentMapper 
         payment.setPaymentId(paymentId);
         payment.setCreatedAt(TypeUtil.stringToLocalDateTime(invoicePayment.getCreatedAt()));
         payment.setInvoiceId(invoiceId);
+        payment.setExternalId(invoicePayment.getExternalId());
 
         Invoice invoice = invoiceWrapperService.get(invoiceId, storage).getInvoice();
 

@@ -72,6 +72,7 @@ public class InvoicePaymentRefundCreatedHandler extends AbstractInvoicingHandler
         refund.setRefundId(refundId);
         refund.setPaymentId(paymentId);
         refund.setInvoiceId(invoiceId);
+        refund.setExternalId(invoicePaymentRefund.getExternalId());
 
         Payment payment = paymentDao.get(invoiceId, paymentId);
         if (payment == null) {
