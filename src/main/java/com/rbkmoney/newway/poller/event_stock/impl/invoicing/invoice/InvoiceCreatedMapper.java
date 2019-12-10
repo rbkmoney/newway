@@ -45,6 +45,7 @@ public class InvoiceCreatedMapper extends AbstractInvoicingInvoiceMapper {
         com.rbkmoney.newway.domain.tables.pojos.Invoice invoiceRecord = new com.rbkmoney.newway.domain.tables.pojos.Invoice();
         setDefaultProperties(invoiceRecord, sequenceId, changeId, event.getCreatedAt());
         invoiceRecord.setInvoiceId(invoice.getId());
+        invoiceRecord.setExternalId(invoice.getExternalId());
         invoiceRecord.setPartyId(invoice.getOwnerId());
         invoiceRecord.setShopId(invoice.getShopId());
         invoiceRecord.setPartyRevision(invoice.getPartyRevision());
