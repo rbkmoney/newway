@@ -14,8 +14,8 @@ import com.rbkmoney.newway.domain.enums.*;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
-import com.rbkmoney.newway.poller.event_stock.*;
 import com.rbkmoney.newway.model.PaymentWrapper;
+import com.rbkmoney.newway.poller.event_stock.LocalStorage;
 import com.rbkmoney.newway.service.InvoiceWrapperService;
 import com.rbkmoney.newway.util.CashFlowType;
 import com.rbkmoney.newway.util.CashFlowUtil;
@@ -140,6 +140,10 @@ public class InvoicePaymentCreatedMapper extends AbstractInvoicingPaymentMapper 
             payment.setPayerBankCardPaymentSystem(paymentTool.getBankCard().getPaymentSystem().name());
             payment.setPayerBankCardBin(paymentTool.getBankCard().getBin());
             payment.setPayerBankCardMaskedPan(paymentTool.getBankCard().getMaskedPan());
+
+            payment.setPayerBankName(paymentTool.getBankCard().getBankName());
+            payment.setPayerIssuerCountry(paymentTool.getBankCard().getIssuerCountry().name());
+
             if (paymentTool.getBankCard().isSetTokenProvider()) {
                 payment.setPayerBankCardTokenProvider(paymentTool.getBankCard().getTokenProvider().name());
             }
