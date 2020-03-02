@@ -41,8 +41,8 @@ public class DepositCreatedHandler extends AbstractDepositHandler {
         deposit.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         deposit.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         deposit.setDepositId(event.getSource());
-        deposit.setSourceId(depositDamsel.getSource());
-        deposit.setWalletId(depositDamsel.getWallet());
+        deposit.setSourceId(depositDamsel.getSourceId());
+        deposit.setWalletId(depositDamsel.getWalletId());
 
         Cash cash = depositDamsel.getBody();
         deposit.setAmount(cash.getAmount());
