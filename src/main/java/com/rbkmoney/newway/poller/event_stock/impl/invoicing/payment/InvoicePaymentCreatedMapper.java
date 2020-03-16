@@ -139,7 +139,7 @@ public class InvoicePaymentCreatedMapper extends AbstractInvoicingPaymentMapper 
             payment.setPayerBankCardToken(paymentTool.getBankCard().getToken());
             payment.setPayerBankCardPaymentSystem(paymentTool.getBankCard().getPaymentSystem().name());
             payment.setPayerBankCardBin(paymentTool.getBankCard().getBin());
-            payment.setPayerBankCardMaskedPan(paymentTool.getBankCard().getMaskedPan());
+            payment.setPayerBankCardMaskedPan(paymentTool.getBankCard().getLastDigits());
             payment.setPayerBankName(paymentTool.getBankCard().getBankName());
 
             if (paymentTool.getBankCard().isSetIssuerCountry()) {

@@ -121,7 +121,7 @@ public class RecurrentPaymentToolHasCreatedHandler extends AbstractRecurrentPaym
         recurrentPaymentTool.setBankCardToken(bankCard.getToken());
         recurrentPaymentTool.setBankCardPaymentSystem(bankCard.getPaymentSystem().name());
         recurrentPaymentTool.setBankCardBin(bankCard.getBin());
-        recurrentPaymentTool.setBankCardMaskedPan(bankCard.getMaskedPan());
+        recurrentPaymentTool.setBankCardMaskedPan(bankCard.getLastDigits());
         if (bankCard.isSetTokenProvider()) {
             recurrentPaymentTool.setBankCardTokenProvider(bankCard.getTokenProvider().name());
         }
