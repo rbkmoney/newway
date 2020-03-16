@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>newway</artifactId>
-    <version>1.0.62-SNAPSHOT</version>
+    <version>1.0.63-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
@@ -31,7 +31,7 @@
         <db.schema>nw</db.schema>
         <local.pg.url>jdbc:postgresql://localhost:5432/newway</local.pg.url>
         <local.pg.port>5432</local.pg.port>
-        <damsel.version>1.362-cdb9559</damsel.version>
+        <damsel.version>1.391-8fe5f98</damsel.version>
         <fistful-proto.version>1.57-c43acb5</fistful-proto.version>
         <sonar.jacoco.reportPath>target/sites/jacoco/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.cobertura.reportPath>target/site/cobertura/coverage.xml</sonar.cobertura.reportPath>
