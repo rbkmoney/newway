@@ -1,10 +1,8 @@
 package com.rbkmoney.newway.poller.event_stock.impl.destination;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.rbkmoney.fistful.base.BankCard;
-import com.rbkmoney.fistful.base.CryptoWallet;
+import com.rbkmoney.fistful.base.*;
 import com.rbkmoney.fistful.destination.Change;
-import com.rbkmoney.fistful.destination.Resource;
 import com.rbkmoney.fistful.destination.SinkEvent;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
@@ -66,7 +64,8 @@ public class DestinationCreatedHandler extends AbstractDestinationHandler {
         Resource resource = change.getCreated().getResource();
         destination.setResourceType(TBaseUtil.unionFieldToEnum(resource, DestinationResourceType.class));
         if (resource.isSetBankCard()) {
-            BankCard bankCard = resource.getBankCard();
+            ResourceBankCard resourceBankCard = resource.getBankCard();
+            BankCard bankCard = resourceBankCard.getBankCard();
             destination.setResourceBankCardToken(bankCard.getToken());
             destination.setResourceBankCardBin(bankCard.getBin());
             destination.setResourceBankCardMaskedPan(bankCard.getMaskedPan());
@@ -81,7 +80,8 @@ public class DestinationCreatedHandler extends AbstractDestinationHandler {
                 destination.setResourceBankCardType(bankCard.getCardType().toString());
             }
         } else if (resource.isSetCryptoWallet()) {
-            CryptoWallet wallet = resource.getCryptoWallet();
+            ResourceCryptoWallet resourceCryptoWallet = resource.getCryptoWallet();
+            CryptoWallet wallet = resourceCryptoWallet.getCryptoWallet();
             destination.setResourceCryptoWalletId(wallet.getId());
             destination.setResourceCryptoWalletType(wallet.getCurrency().name());
             if (wallet.isSetData()) {

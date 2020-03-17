@@ -1,9 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.withdrawal_session;
 
-import com.rbkmoney.fistful.base.BankCard;
-import com.rbkmoney.fistful.base.Cash;
-import com.rbkmoney.fistful.base.CryptoWallet;
-import com.rbkmoney.fistful.base.Resource;
+import com.rbkmoney.fistful.base.*;
 import com.rbkmoney.fistful.withdrawal_session.Change;
 import com.rbkmoney.fistful.withdrawal_session.Session;
 import com.rbkmoney.fistful.withdrawal_session.SinkEvent;
@@ -59,7 +56,8 @@ public class WithdrawalSessionCreatedHandler extends AbstractWithdrawalSessionHa
         Resource resource = withdrawal.getDestinationResource();
         withdrawalSession.setResourceType(TBaseUtil.unionFieldToEnum(resource, DestinationResourceType.class));
         if (resource.isSetBankCard()) {
-            BankCard bankCard = resource.getBankCard();
+            ResourceBankCard resourceBankCard = resource.getBankCard();
+            BankCard bankCard = resourceBankCard.getBankCard();
             withdrawalSession.setDestinationCardToken(bankCard.getToken());
             withdrawalSession.setDestinationCardBin(bankCard.getBin());
             withdrawalSession.setDestinationCardMaskedPan(bankCard.getMaskedPan());
@@ -72,7 +70,8 @@ public class WithdrawalSessionCreatedHandler extends AbstractWithdrawalSessionHa
                 withdrawalSession.setResourceBankCardType(bankCard.getCardType().toString());
             }
         } else if (resource.isSetCryptoWallet()) {
-            CryptoWallet cryptoWallet = resource.getCryptoWallet();
+            ResourceCryptoWallet resourceCryptoWallet = resource.getCryptoWallet();
+            CryptoWallet cryptoWallet = resourceCryptoWallet.getCryptoWallet();
             withdrawalSession.setResourceCryptoWalletId(cryptoWallet.getId());
             withdrawalSession.setResourceCryptoWalletType(cryptoWallet.getCurrency().toString());
             if (cryptoWallet.isSetData()) {
