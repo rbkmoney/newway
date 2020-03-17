@@ -32,7 +32,7 @@
         <local.pg.url>jdbc:postgresql://localhost:5432/newway</local.pg.url>
         <local.pg.port>5432</local.pg.port>
         <damsel.version>1.362-cdb9559</damsel.version>
-        <fistful-proto.version>1.57-c43acb5</fistful-proto.version>
+        <fistful-proto.version>1.61-881b17e</fistful-proto.version>
         <sonar.jacoco.reportPath>target/sites/jacoco/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.cobertura.reportPath>target/site/cobertura/coverage.xml</sonar.cobertura.reportPath>
     </properties>
