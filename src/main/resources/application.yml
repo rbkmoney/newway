@@ -50,6 +50,9 @@ kafka:
     invoice:
       id: mg-invoice-100-2
       enabled: false
+    party-management:
+      id: mg-events-party
+      enabled: false
 
 bm:
   partyManagement:
