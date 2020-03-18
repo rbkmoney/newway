@@ -71,13 +71,13 @@ public class RateCreatedHandler extends AbstractRateHandler {
                     Currency source = quote.getSource();
                     Currency destination = quote.getDestination();
                     Rational exchangeRate = quote.getExchangeRate();
-                    rate.setPaymentSystem(Objects.toString(quote.getPaymentSystem(), null));
 
                     // Currency
                     rate.setSourceSymbolicCode(source.getSymbolicCode());
                     rate.setSourceExponent(source.getExponent());
                     rate.setDestinationSymbolicCode(destination.getSymbolicCode());
                     rate.setDestinationExponent(destination.getExponent());
+                    rate.setPaymentSystem(Objects.toString(quote.getPaymentSystem(), null));
 
                     // ExchangeRate
                     rate.setExchangeRateRationalP(exchangeRate.getP());
