@@ -21,7 +21,6 @@ public class EventStockConfig {
     @Bean
     @ConditionalOnProperty(value = "info.single-instance-mode", havingValue = "true")
     public OnStart eventSinkListener(
-            EventPublisher partyManagementEventPublisher,
             EventPublisher payoutEventPublisher,
             EventPublisher identityEventPublisher,
             EventPublisher withdrawalEventPublisher,
@@ -41,7 +40,7 @@ public class EventStockConfig {
             DepositService depositService,
             WithdrawalSessionService withdrawalSessionService,
             RateService rateService) {
-        return new OnStart(partyManagementEventPublisher,
+        return new OnStart(
                 payoutEventPublisher,
                 identityEventPublisher,
                 withdrawalEventPublisher,

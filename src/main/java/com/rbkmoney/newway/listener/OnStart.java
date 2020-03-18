@@ -10,13 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @RequiredArgsConstructor
 public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
-    private final EventPublisher partyManagementEventPublisher;
+
     private final EventPublisher payoutEventPublisher;
     private final EventPublisher identityEventPublisher;
     private final EventPublisher withdrawalEventPublisher;
