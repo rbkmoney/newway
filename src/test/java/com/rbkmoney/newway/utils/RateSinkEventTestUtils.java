@@ -16,7 +16,7 @@ import static io.github.benas.randombeans.api.EnhancedRandom.randomListOf;
 public class RateSinkEventTestUtils extends AbstractTestUtils {
 
     public static Dto create(String sourceId, String... excludedFields) {
-        List<Quote> quotes = randomListOf(4, Quote.class);
+        List<Quote> quotes = randomListOf(4, Quote.class, excludedFields);
 
         Event event = new Event(
                 Collections.singletonList(
