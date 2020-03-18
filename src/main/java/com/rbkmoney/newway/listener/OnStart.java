@@ -44,7 +44,6 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         if (pollingEnabled) {
-            partyManagementEventPublisher.subscribe(buildSubscriberConfig(partyManagementService.getLastEventId()));
             payoutEventPublisher.subscribe(buildSubscriberConfig(payoutService.getLastEventId()));
             identityEventPublisher.subscribe(buildSubscriberConfig(identityService.getLastEventId()));
             walletEventPublisher.subscribe(buildSubscriberConfig(walletService.getLastEventId()));

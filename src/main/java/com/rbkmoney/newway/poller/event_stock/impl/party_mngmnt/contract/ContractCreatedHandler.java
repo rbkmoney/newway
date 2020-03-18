@@ -1,10 +1,10 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contract;
 
 import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
-import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.domain.enums.ContractStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Contract;
@@ -14,8 +14,8 @@ import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractClaimChangedHandler;
 import com.rbkmoney.newway.util.ContractUtil;
 import com.rbkmoney.newway.util.ContractorUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -26,11 +26,11 @@ import java.util.UUID;
 
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
+@Slf4j
 @Component
 @Order(HIGHEST_PRECEDENCE)
+@RequiredArgsConstructor
 public class ContractCreatedHandler extends AbstractClaimChangedHandler {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final ContractDao contractDao;
     private final ContractorDao contractorDao;
@@ -38,24 +38,16 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
     private final ContractAdjustmentDao contractAdjustmentDao;
     private final PayoutToolDao payoutToolDao;
 
-    public ContractCreatedHandler(ContractDao contractDao, ContractorDao contractorDao, PartyDao partyDao, ContractAdjustmentDao contractAdjustmentDao, PayoutToolDao payoutToolDao) {
-        this.contractDao = contractDao;
-        this.contractorDao = contractorDao;
-        this.partyDao = partyDao;
-        this.contractAdjustmentDao = contractAdjustmentDao;
-        this.payoutToolDao = payoutToolDao;
-    }
-
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
-        long eventId = event.getId();
+    public void handle(PartyChange change, MachineEvent event) {
+        long eventId = event.getEventId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetCreated()).forEach(e -> {
             ContractEffectUnit contractEffectUnit = e.getContractEffect();
             com.rbkmoney.damsel.domain.Contract contractCreated = contractEffectUnit.getEffect().getCreated();
             String contractId = contractEffectUnit.getContractId();
-            String partyId = event.getSource().getPartyId();
+            String partyId = event.getSourceId();
             log.info("Start contract created handling, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
             Contract contract = new Contract();
             contract.setEventId(eventId);

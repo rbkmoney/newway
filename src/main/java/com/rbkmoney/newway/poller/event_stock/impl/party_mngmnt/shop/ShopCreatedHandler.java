@@ -6,12 +6,15 @@ import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.ShopEffectUnit;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.dao.party.iface.ShopDao;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractClaimChangedHandler;
 import com.rbkmoney.newway.util.ShopUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
@@ -21,30 +24,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
+@Slf4j
 @Component
 @Order(HIGHEST_PRECEDENCE)
+@RequiredArgsConstructor
 public class ShopCreatedHandler extends AbstractClaimChangedHandler {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final ShopDao shopDao;
     private final PartyDao partyDao;
 
-    public ShopCreatedHandler(ShopDao shopDao, PartyDao partyDao) {
-        this.shopDao = shopDao;
-        this.partyDao = partyDao;
-    }
-
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, MachineEvent event) {
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetCreated()).forEach(e -> {
-            long eventId = event.getId();
+            long eventId = event.getEventId();
             ShopEffectUnit shopEffect = e.getShopEffect();
             Shop shopCreated = shopEffect.getEffect().getCreated();
             String shopId = shopEffect.getShopId();
-            String partyId = event.getSource().getPartyId();
+            String partyId = event.getSourceId();
             log.info("Start shop created handling, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
             com.rbkmoney.newway.domain.tables.pojos.Shop shop = new com.rbkmoney.newway.domain.tables.pojos.Shop();
             shop.setEventId(eventId);

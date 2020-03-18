@@ -9,6 +9,7 @@ import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
 import com.rbkmoney.newway.exception.NotFoundException;
@@ -37,10 +38,10 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
-        long eventId = event.getId();
+    public void handle(PartyChange change, MachineEvent event) {
+        long eventId = event.getEventId();
         Suspension partySuspension = change.getPartySuspension();
-        String partyId = event.getSource().getPartyId();
+        String partyId = event.getSourceId();
         log.info("Start party suspension handling, eventId={}, partyId={}", eventId, partyId);
         Party partySource = partyDao.get(partyId);
         if (partySource == null) {

@@ -78,15 +78,25 @@ public class InvoicingService {
     }
 
     private void handleOtherEvent(InvoiceChange change, MachineEvent me, int i) {
-        otherHandlers.stream().filter(m -> m.accept(change)).findFirst().ifPresent(m -> m.handle(change, me, i));
+        otherHandlers.stream()
+                .filter(m -> m.accept(change))
+                .findFirst()
+                .ifPresent(m -> m.handle(change, me, i));
     }
 
     private PaymentWrapper mapPayment(InvoiceChange change, MachineEvent me, int i, LocalStorage storage) {
-        return paymentMappers.stream().filter(m -> m.accept(change)).findFirst().map(m -> m.map(change, me, i, storage)).orElse(null);
+        return paymentMappers.stream()
+                .filter(m -> m.accept(change))
+                .findFirst()
+                .map(m -> m.map(change, me, i, storage))
+                .orElse(null);
     }
 
     private InvoiceWrapper mapInvoice(InvoiceChange change, MachineEvent me, int i, LocalStorage storage) {
-        return invoiceMappers.stream().filter(m -> m.accept(change)).findFirst().map(m -> m.map(change, me, i, storage)).orElse(null);
-
+        return invoiceMappers.stream()
+                .filter(m -> m.accept(change))
+                .findFirst()
+                .map(m -> m.map(change, me, i, storage))
+                .orElse(null);
     }
 }
