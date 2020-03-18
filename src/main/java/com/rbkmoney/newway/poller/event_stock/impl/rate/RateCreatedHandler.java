@@ -1,5 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.rate;
 
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -14,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
@@ -70,6 +73,7 @@ public class RateCreatedHandler extends AbstractRateHandler {
                     Currency source = quote.getSource();
                     Currency destination = quote.getDestination();
                     Rational exchangeRate = quote.getExchangeRate();
+                    rate.setPaymentSystem(Objects.toString(quote.getPaymentSystem(), null));
 
                     // Currency
                     rate.setSourceSymbolicCode(source.getSymbolicCode());
