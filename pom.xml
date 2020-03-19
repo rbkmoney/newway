@@ -35,6 +35,7 @@
         <damsel.version>1.391-8fe5f98</damsel.version>
         <sonar.jacoco.reportPath>target/sites/jacoco/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.cobertura.reportPath>target/site/cobertura/coverage.xml</sonar.cobertura.reportPath>
+        <sink-common-lib.version>0.0.4</sink-common-lib.version>
     </properties>
 
     <dependencies>
@@ -131,7 +132,7 @@
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>sink-common-lib</artifactId>
-            <version>0.0.3</version>
+            <version>${sink-common-lib.version}</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>

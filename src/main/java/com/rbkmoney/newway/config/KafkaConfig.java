@@ -1,14 +1,9 @@
 package com.rbkmoney.newway.config;
 
-import com.rbkmoney.damsel.payment_processing.EventPayload;
 import com.rbkmoney.kafka.common.exception.handler.SeekToCurrentWithSleepBatchErrorHandler;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.config.properties.KafkaSslProperties;
 import com.rbkmoney.newway.serde.SinkEventDeserializer;
-import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
-import com.rbkmoney.sink.common.parser.impl.PaymentEventPayloadMachineEventParser;
-import com.rbkmoney.sink.common.serialization.BinaryDeserializer;
-import com.rbkmoney.sink.common.serialization.impl.PaymentEventPayloadDeserializer;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SslConfigs;
@@ -22,7 +17,9 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.listener.*;
+import org.springframework.kafka.listener.BatchErrorHandler;
+import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
+import org.springframework.kafka.listener.ContainerProperties;
 
 import java.io.File;
 import java.util.HashMap;
@@ -42,6 +39,10 @@ public class KafkaConfig {
     private String clientId;
     @Value("${kafka.consumer.max-poll-records}")
     private int maxPollRecords;
+    @Value("${kafka.consumer.max-poll-interval-ms}")
+    private int maxPollIntervalMs;
+    @Value("${kafka.consumer.session-timeout-ms}")
+    private int sessionTimeoutMs;
 
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
@@ -61,9 +62,9 @@ public class KafkaConfig {
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, enableAutoCommit);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
         props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, maxPollRecords);
-
+        props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, sessionTimeoutMs);
+        props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, maxPollIntervalMs);
         configureSsl(props, kafkaSslProperties);
-
         return props;
     }
 
@@ -87,15 +88,25 @@ public class KafkaConfig {
 
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> kafkaListenerContainerFactory(
-            ConsumerFactory<String, MachineEvent> consumerFactory
-    ) {
+            ConsumerFactory<String, MachineEvent> consumerFactory) {
+        return createConcurrentFactory(consumerFactory, concurrency);
+    }
+
+    @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> partyManagementContainerFactory(
+            ConsumerFactory<String, MachineEvent> consumerFactory) {
+        return createConcurrentFactory(consumerFactory, concurrency);
+    }
+
+    private KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> createConcurrentFactory(
+            ConsumerFactory<String, MachineEvent> consumerFactory, int threadsNumber) {
         ConcurrentKafkaListenerContainerFactory<String, MachineEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         factory.setBatchListener(true);
         factory.getContainerProperties().setAckOnError(false);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         factory.setBatchErrorHandler(kafkaErrorHandler());
-        factory.setConcurrency(concurrency);
+        factory.setConcurrency(threadsNumber);
         return factory;
     }
 
@@ -103,13 +114,4 @@ public class KafkaConfig {
         return new SeekToCurrentWithSleepBatchErrorHandler();
     }
 
-    @Bean
-    public BinaryDeserializer<EventPayload> paymentEventPayloadDeserializer() {
-        return new PaymentEventPayloadDeserializer();
-    }
-
-    @Bean
-    public MachineEventParser<EventPayload> paymentEventPayloadMachineEventParser(BinaryDeserializer<EventPayload> paymentEventPayloadDeserializer) {
-        return new PaymentEventPayloadMachineEventParser(paymentEventPayloadDeserializer);
-    }
 }

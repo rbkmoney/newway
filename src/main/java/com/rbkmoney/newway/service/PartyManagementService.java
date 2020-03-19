@@ -1,8 +1,7 @@
 package com.rbkmoney.newway.service;
 
-import com.rbkmoney.damsel.payment_processing.EventPayload;
+import com.rbkmoney.damsel.payment_processing.PartyEventData;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractPartyManagementHandler;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PartyManagementService {
 
-    private final PartyDao partyDao;
     private final List<AbstractPartyManagementHandler> partyManagementHandlers;
-    private final MachineEventParser<EventPayload> parser;
+    private final MachineEventParser<PartyEventData> parser;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(List<MachineEvent> machineEvents) {
@@ -28,14 +26,14 @@ public class PartyManagementService {
     }
 
     private void handleIfAccept(MachineEvent machineEvent) {
-        EventPayload eventPayload = parser.parse(machineEvent);
-        if(eventPayload.isSetPartyChanges()){
-            eventPayload.getPartyChanges().
-                forEach(payload -> partyManagementHandlers.stream()
+        PartyEventData eventPayload = parser.parse(machineEvent);
+        if (eventPayload.isSetChanges()) {
+            eventPayload.getChanges().forEach(payload ->
+                    partyManagementHandlers.stream()
                             .filter(handler -> handler.accept(payload))
                             .findFirst()
                             .ifPresent(handler -> handler.handle(payload, machineEvent))
-                );
+            );
         }
     }
 
