@@ -46,8 +46,10 @@ public class KafkaConfig {
 
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
-    @Value("${kafka.consumer.concurrency}")
+    @Value("${kafka.consumer.invoicing.concurrency}")
     private int concurrency;
+    @Value("${kafka.consumer.party-management.concurrency}")
+    private int partyConcurrency;
     @Value("${retry-policy.maxAttempts}")
     int maxAttempts;
 
@@ -95,7 +97,7 @@ public class KafkaConfig {
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> partyManagementContainerFactory(
             ConsumerFactory<String, MachineEvent> consumerFactory) {
-        return createConcurrentFactory(consumerFactory, concurrency);
+        return createConcurrentFactory(consumerFactory, partyConcurrency);
     }
 
     private KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> createConcurrentFactory(
