@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
@@ -76,6 +77,7 @@ public class RateCreatedHandler extends AbstractRateHandler {
                     rate.setSourceExponent(source.getExponent());
                     rate.setDestinationSymbolicCode(destination.getSymbolicCode());
                     rate.setDestinationExponent(destination.getExponent());
+                    rate.setPaymentSystem(Objects.toString(quote.getPaymentSystem(), null));
 
                     // ExchangeRate
                     rate.setExchangeRateRationalP(exchangeRate.getP());
