@@ -466,7 +466,8 @@ public class DaoTests extends AbstractAppDaoTests {
         assertEquals(1, contracts.size());
         assertEquals(contract, contracts.get(0));
         contractDao.switchCurrent(contract.getPartyId(), contract.getContractId());
-        Assert.assertNull(contractDao.get(contract.getPartyId(), contract.getContractId()));
+        assertEquals(1, contracts.size());
+        assertEquals(contract, contracts.get(0));
     }
 
     @Test
@@ -480,8 +481,16 @@ public class DaoTests extends AbstractAppDaoTests {
         List<Contractor> contractors = contractorDao.getByPartyId(contractor.getPartyId());
         assertEquals(1, contractors.size());
         assertEquals(contractor, contractors.get(0));
+
+        Integer changeId = contractor.getChangeId() + 1;
+        contractor.setChangeId(changeId);
+        contractor.setId(contractor.getId() + 1);
+        contractorDao.save(contractor);
         contractorDao.switchCurrent(contractor.getPartyId(), contractor.getContractorId());
-        Assert.assertNull(contractorDao.get(contractor.getPartyId(), contractor.getContractorId()));
+
+        contractors = contractorDao.getByPartyId(contractor.getPartyId());
+        assertEquals(1, contractors.size());
+        assertEquals(changeId, contractors.get(0).getChangeId());
     }
 
     @Test
@@ -492,8 +501,15 @@ public class DaoTests extends AbstractAppDaoTests {
         partyDao.save(party);
         Party partyGet = partyDao.get(party.getPartyId());
         assertEquals(party, partyGet);
+
+        Integer changeId = party.getChangeId() + 1;
+        party.setChangeId(changeId);
+        party.setId(party.getId() + 1);
+        partyDao.save(party);
         partyDao.switchCurrent(party.getPartyId());
-        Assert.assertNull(partyDao.get(party.getPartyId()));
+
+        partyGet = partyDao.get(party.getPartyId());
+        assertEquals(changeId, partyGet.getChangeId());
     }
 
     @Test
@@ -521,8 +537,15 @@ public class DaoTests extends AbstractAppDaoTests {
         List<Shop> shops = shopDao.getByPartyId(shop.getPartyId());
         assertEquals(1, shops.size());
         assertEquals(shop, shops.get(0));
+
+        Integer changeId = shop.getChangeId() + 1;
+        shop.setChangeId(changeId);
+        shop.setId(null);
+        shopDao.save(shop);
         shopDao.switchCurrent(shop.getPartyId(), shop.getShopId());
-        Assert.assertNull(shopDao.get(shop.getPartyId(), shop.getShopId()));
+        shops = shopDao.getByPartyId(shop.getPartyId());
+        assertEquals(1, shops.size());
+        assertEquals(changeId, shops.get(0).getChangeId());
     }
 
     @Test
@@ -666,11 +689,11 @@ public class DaoTests extends AbstractAppDaoTests {
     public void idsGeneratorTest() {
         List<Long> list = idsGeneratorDao.get(100);
         assertEquals(100, list.size());
-        assertEquals(99,list.get(99) - list.get(0));
+        assertEquals(99, list.get(99) - list.get(0));
     }
 
     @Test
-    public void recurrentPaymentToolDaoTest(){
+    public void recurrentPaymentToolDaoTest() {
         jdbcTemplate.execute("truncate table nw.recurrent_payment_tool cascade");
         RecurrentPaymentTool recurrentPaymentTool = random(RecurrentPaymentTool.class);
         recurrentPaymentTool.setCurrent(true);

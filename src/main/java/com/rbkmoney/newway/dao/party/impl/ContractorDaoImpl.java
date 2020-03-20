@@ -51,7 +51,7 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     @Override
     public void switchCurrent(String partyId, String contractorId) throws DaoException {
         this.getNamedParameterJdbcTemplate().update("update nw.contractor set current = false where party_id =:party_id and contractor_id =:contractor_id and current;" +
-                        "update nw.contractor set current = true where id = (select max(id) from nw.shop where party_id =:party_id and contractor_id =:contractor_id);",
+                        "update nw.contractor set current = true where id = (select max(id) from nw.contractor where party_id =:party_id and contractor_id =:contractor_id);",
                 new MapSqlParameterSource("party_id", partyId)
                         .addValue("contractor_id", contractorId));
     }
