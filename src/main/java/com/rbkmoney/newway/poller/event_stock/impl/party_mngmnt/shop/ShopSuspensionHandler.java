@@ -31,12 +31,13 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, MachineEvent event) {
-        long eventId = event.getEventId();
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         Suspension suspension = change.getShopSuspension().getSuspension();
         String shopId = change.getShopSuspension().getShopId();
         String partyId = event.getSourceId();
-        log.info("Start shop suspension handling, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
+        log.info("Start shop suspension handling, sequenceId={}, partyId={}, shopId={}, changeId={}",
+                sequenceId, partyId, shopId, changeId);
         Shop shopSource = shopDao.get(partyId, shopId);
         if (shopSource == null) {
             throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
@@ -44,7 +45,8 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
         shopSource.setId(null);
         shopSource.setRevision(null);
         shopSource.setWtime(null);
-        shopSource.setEventId(eventId);
+        shopSource.setSequenceId(sequenceId);
+        shopSource.setChangeId(changeId);
         shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         shopSource.setSuspension(TBaseUtil.unionFieldToEnum(suspension, com.rbkmoney.newway.domain.enums.Suspension.class));
         if (suspension.isSetActive()) {
@@ -54,9 +56,10 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
             shopSource.setSuspensionActiveSince(null);
             shopSource.setSuspensionSuspendedSince(TypeUtil.stringToLocalDateTime(suspension.getSuspended().getSince()));
         }
-        shopDao.updateNotCurrent(partyId, shopId);
         shopDao.save(shopSource);
-        log.info("Shop suspension has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
+        shopDao.switchCurrent(partyId, shopId);
+        log.info("Shop suspension has been saved, sequenceId={}, partyId={}, shopId={}, changeId={}",
+                sequenceId, partyId, shopId, changeId);
     }
 
     @Override

@@ -12,8 +12,6 @@ import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractClaimCha
 import com.rbkmoney.newway.util.ShopUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,15 +25,16 @@ public class ShopAccountCreatedHandler extends AbstractClaimChangedHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, MachineEvent event) {
-        long eventId = event.getEventId();
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetAccountCreated()).forEach(e -> {
             ShopEffectUnit shopEffect = e.getShopEffect();
             ShopAccount accountCreated = shopEffect.getEffect().getAccountCreated();
             String shopId = shopEffect.getShopId();
             String partyId = event.getSourceId();
-            log.info("Start shop accountCreated handling, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
+            log.info("Start shop accountCreated handling, sequenceId={}, partyId={}, shopId={}, changeId={}",
+                    sequenceId, partyId, shopId, changeId);
             Shop shopSource = shopDao.get(partyId, shopId);
             if (shopSource == null) {
                 throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
@@ -43,13 +42,15 @@ public class ShopAccountCreatedHandler extends AbstractClaimChangedHandler {
             shopSource.setId(null);
             shopSource.setRevision(null);
             shopSource.setWtime(null);
-            shopSource.setEventId(eventId);
+            shopSource.setSequenceId(sequenceId);
+            shopSource.setChangeId(changeId);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             ShopUtil.fillShopAccount(shopSource, accountCreated);
 
-            shopDao.updateNotCurrent(partyId, shopId);
             shopDao.save(shopSource);
-            log.info("Shop accountCreated has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
+            shopDao.switchCurrent(partyId, shopId);
+            log.info("Shop accountCreated has been saved, sequenceId={}, partyId={}, shopId={}, changeId={}",
+                    sequenceId, partyId, shopId, changeId);
         });
     }
 }

@@ -1,6 +1,5 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.party;
 
-import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.PartyRevisionChanged;
 import com.rbkmoney.geck.common.util.TypeUtil;
@@ -36,73 +35,77 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
     private final ShopDao shopDao;
 
     private final Filter filter = new PathConditionFilter(new PathConditionRule(
-                "revision_changed",
-                new IsNullCondition().not()));
+            "revision_changed",
+            new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, MachineEvent event) {
-        long eventId = event.getEventId();
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         PartyRevisionChanged partyRevisionChanged = change.getRevisionChanged();
         String partyId = event.getSourceId();
-        log.info("Start partySource revision changed handling, eventId={}, partyId={}", eventId, partyId);
+        log.info("Start partySource revision changed handling, eventId={}, partyId={}, changeId={}", sequenceId, partyId, changeId);
         Party partySource = partyDao.get(partyId);
         if (partySource == null) {
             throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
         }
         partySource.setId(null);
         partySource.setWtime(null);
-        partySource.setEventId(eventId);
+        partySource.setSequenceId(sequenceId);
+        partySource.setChangeId(changeId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         long revision = partyRevisionChanged.getRevision();
         partySource.setRevision(revision);
         partySource.setRevisionChangedAt(TypeUtil.stringToLocalDateTime(partyRevisionChanged.getTimestamp()));
-        partyDao.updateNotCurrent(partyId);
         partyDao.save(partySource);
-        updateContractorsRevision(event, partyId, revision);
-        updateContractsRevision(event, partyId, revision);
-        updateShopsRevision(event, partyId, revision);
-        log.info("Party revision changed has been saved, eventId={}, partyId={}", eventId, partyId);
+        partyDao.switchCurrent(partyId);
+        updateContractorsRevision(event, partyId, revision, changeId);
+        updateContractsRevision(event, partyId, revision, changeId);
+        updateShopsRevision(event, partyId, revision, changeId);
+        log.info("Party revision changed has been saved, eventId={}, partyId={}", sequenceId, partyId);
     }
 
-    private void updateShopsRevision(MachineEvent event, String partyId, long revision) {
+    private void updateShopsRevision(MachineEvent event, String partyId, long revision, Integer changeId) {
         shopDao.getByPartyId(partyId).forEach(shopSource -> {
             String shopId = shopSource.getShopId();
             shopSource.setId(null);
             shopSource.setWtime(null);
-            shopSource.setEventId(event.getEventId());
+            shopSource.setChangeId(changeId);
+            shopSource.setSequenceId(event.getEventId());
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             shopSource.setRevision(revision);
-            shopDao.updateNotCurrent(partyId, shopId);
             shopDao.save(shopSource);
+            shopDao.switchCurrent(partyId, shopId);
             log.info("Shop revision has been saved, eventId={}, partyId={}, shopId={}", event.getEventId(), partyId, shopId);
         });
     }
 
-    private void updateContractorsRevision(MachineEvent event, String partyId, long revision) {
+    private void updateContractorsRevision(MachineEvent event, String partyId, long revision, Integer changeId) {
         contractorDao.getByPartyId(partyId).forEach(contractorSource -> {
             String contractorId = contractorSource.getContractorId();
             contractorSource.setId(null);
             contractorSource.setWtime(null);
-            contractorSource.setEventId(event.getEventId());
+            contractorSource.setSequenceId(event.getEventId());
+            contractorSource.setChangeId(changeId);
             contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractorSource.setRevision(revision);
-            contractorDao.updateNotCurrent(partyId, contractorId);
+            contractorDao.switchCurrent(partyId, contractorId);
             contractorDao.save(contractorSource);
             log.info("Contractor revision has been saved, eventId={}, partyId={}, contractorId={}", event.getEventId(), partyId, contractorId);
         });
     }
 
-    private void updateContractsRevision(MachineEvent event, String partyId, long revision) {
+    private void updateContractsRevision(MachineEvent event, String partyId, long revision, Integer changeId) {
         contractDao.getByPartyId(partyId).forEach(contractSource -> {
             Long contractSourceId = contractSource.getId();
             String contractId = contractSource.getContractId();
             contractSource.setId(null);
             contractSource.setWtime(null);
-            contractSource.setEventId(event.getEventId());
+            contractSource.setSequenceId(event.getEventId());
+            contractSource.setChangeId(changeId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractSource.setRevision(revision);
-            contractDao.updateNotCurrent(partyId, contractId);
+            contractDao.switchCurrent(partyId, contractId);
             long cntrctId = contractDao.save(contractSource);
 
             List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);

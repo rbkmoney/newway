@@ -28,18 +28,19 @@ public class PartyCreatedHandler extends AbstractPartyManagementHandler {
 
     private final PartyDao partyDao;
     private final Filter filter = new PathConditionFilter(new PathConditionRule(
-                "party_created",
-                new IsNullCondition().not()));
+            "party_created",
+            new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, MachineEvent event) {
-        long eventId = event.getEventId();
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         PartyCreated partyCreated = change.getPartyCreated();
         String partyId = partyCreated.getId();
-        log.info("Start party created handling, eventId={}, partyId={}", eventId, partyId);
+        log.info("Start party created handling, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId);
         Party party = new Party();
-        party.setEventId(eventId);
+        party.setSequenceId(sequenceId);
+        party.setChangeId(changeId);
         party.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         party.setPartyId(partyId);
         party.setContactInfoEmail(partyCreated.getContactInfo().getEmail());
@@ -52,8 +53,9 @@ public class PartyCreatedHandler extends AbstractPartyManagementHandler {
         party.setSuspensionActiveSince(partyCreatedAt);
         party.setRevision(0L);
         party.setRevisionChangedAt(partyCreatedAt);
+        party.setCurrent(true);
         partyDao.save(party);
-        log.info("Party has been saved, eventId={}, partyId={}", eventId, partyId);
+        log.info("Party has been saved, sequenceId={}, partyId={}", sequenceId, partyId);
     }
 
     @Override

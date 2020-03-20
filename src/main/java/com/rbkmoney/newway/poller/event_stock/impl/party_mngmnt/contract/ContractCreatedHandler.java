@@ -40,17 +40,19 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, MachineEvent event) {
-        long eventId = event.getEventId();
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetCreated()).forEach(e -> {
             ContractEffectUnit contractEffectUnit = e.getContractEffect();
             com.rbkmoney.damsel.domain.Contract contractCreated = contractEffectUnit.getEffect().getCreated();
             String contractId = contractEffectUnit.getContractId();
             String partyId = event.getSourceId();
-            log.info("Start contract created handling, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
+            log.info("Start contract created handling, sequenceId={}, partyId={}, contractId={}, changeId={}",
+                    sequenceId, partyId, contractId, changeId);
             Contract contract = new Contract();
-            contract.setEventId(eventId);
+            contract.setSequenceId(sequenceId);
+            contract.setChangeId(changeId);
             contract.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             Party partySource = partyDao.get(partyId);
             if (partySource == null) {
@@ -88,10 +90,12 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             }
 
             contract.setContractorId(contractorId);
+            contract.setCurrent(true);
+
             long cntrctId = contractDao.save(contract);
 
             if (contractCreated.isSetContractor()) {
-                Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractCreated.getContractor(), contractorId);
+                Contractor contractor = ContractorUtil.convertContractor(sequenceId, event.getCreatedAt(), partyId, contractCreated.getContractor(), contractorId, changeId);
                 contractorDao.save(contractor);
             }
 
@@ -101,7 +105,8 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             List<com.rbkmoney.newway.domain.tables.pojos.PayoutTool> payoutTools = ContractUtil.convertPayoutTools(contractCreated, cntrctId);
             payoutToolDao.save(payoutTools);
 
-            log.info("Contract has been saved, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
+            log.info("Contract has been saved, sequenceId={}, partyId={}, contractId={}, changeId={}",
+                    sequenceId, partyId, contractId, changeId);
         });
     }
 }

@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.shop;
 
 import com.rbkmoney.damsel.domain.Shop;
-import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.ShopEffectUnit;
 import com.rbkmoney.geck.common.util.TBaseUtil;
@@ -15,8 +14,6 @@ import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractClaimCha
 import com.rbkmoney.newway.util.ShopUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -35,17 +32,19 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, MachineEvent event) {
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetCreated()).forEach(e -> {
-            long eventId = event.getEventId();
+            long sequenceId = event.getEventId();
             ShopEffectUnit shopEffect = e.getShopEffect();
             Shop shopCreated = shopEffect.getEffect().getCreated();
             String shopId = shopEffect.getShopId();
             String partyId = event.getSourceId();
-            log.info("Start shop created handling, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
+            log.info("Start shop created handling, sequenceId={}, partyId={}, shopId={}, changeId={}",
+                    sequenceId, partyId, shopId, changeId);
             com.rbkmoney.newway.domain.tables.pojos.Shop shop = new com.rbkmoney.newway.domain.tables.pojos.Shop();
-            shop.setEventId(eventId);
+            shop.setSequenceId(sequenceId);
+            shop.setChangeId(changeId);
             shop.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             Party partySource = partyDao.get(partyId);
             if (partySource == null) {
@@ -84,8 +83,10 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
             if (shopCreated.isSetPayoutSchedule()) {
                 shop.setPayoutScheduleId(shopCreated.getPayoutSchedule().getId());
             }
+            shop.setCurrent(true);
             shopDao.save(shop);
-            log.info("Shop has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
+            log.info("Shop has been saved, sequenceId={}, ppartyId={}, shopId={}, changeId={}",
+                    sequenceId, partyId, shopId, changeId);
         });
     }
 }

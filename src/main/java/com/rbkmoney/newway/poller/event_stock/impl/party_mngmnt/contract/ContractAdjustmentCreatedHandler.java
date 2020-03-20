@@ -33,15 +33,16 @@ public class ContractAdjustmentCreatedHandler extends AbstractClaimChangedHandle
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, MachineEvent event) {
-        long eventId = event.getEventId();
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetAdjustmentCreated()).forEach(e -> {
             ContractEffectUnit contractEffectUnit = e.getContractEffect();
             com.rbkmoney.damsel.domain.ContractAdjustment adjustmentCreated = contractEffectUnit.getEffect().getAdjustmentCreated();
             String contractId = contractEffectUnit.getContractId();
             String partyId = event.getSourceId();
-            log.info("Start contract adjustment created handling, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
+            log.info("Start contract adjustment created handling, sequenceId={}, partyId={}, contractId={}, changeId={}",
+                    sequenceId, partyId, contractId, changeId);
             Contract contractSource = contractDao.get(partyId, contractId);
             if (contractSource == null) {
                 throw new NotFoundException(String.format("Contract not found, contractId='%s'", contractId));
@@ -50,9 +51,10 @@ public class ContractAdjustmentCreatedHandler extends AbstractClaimChangedHandle
             contractSource.setId(null);
             contractSource.setRevision(null);
             contractSource.setWtime(null);
-            contractSource.setEventId(eventId);
+            contractSource.setSequenceId(sequenceId);
+            contractSource.setChangeId(changeId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-            contractDao.updateNotCurrent(partyId, contractId);
+            contractDao.switchCurrent(partyId, contractId);
             long cntrctId = contractDao.save(contractSource);
 
             List<ContractAdjustment> adjustments = new ArrayList<>(contractAdjustmentDao.getByCntrctId(contractSourceId));
@@ -70,7 +72,8 @@ public class ContractAdjustmentCreatedHandler extends AbstractClaimChangedHandle
             });
             payoutToolDao.save(payoutTools);
 
-            log.info("Contract adjustment has been saved, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
+            log.info("Contract adjustment has been saved, sequenceId={}, partyId={}, contractId={}, changeId={}",
+                    sequenceId, partyId, contractId, changeId);
         });
     }
 }

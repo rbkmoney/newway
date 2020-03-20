@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.party;
 
 import com.rbkmoney.damsel.domain.Suspension;
-import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
@@ -38,11 +37,11 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, MachineEvent event) {
-        long eventId = event.getEventId();
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         Suspension partySuspension = change.getPartySuspension();
         String partyId = event.getSourceId();
-        log.info("Start party suspension handling, eventId={}, partyId={}", eventId, partyId);
+        log.info("Start party suspension handling, eventId={}, partyId={}, changeId={}", sequenceId, partyId, changeId);
         Party partySource = partyDao.get(partyId);
         if (partySource == null) {
             throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
@@ -50,7 +49,8 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
         partySource.setId(null);
         partySource.setRevision(null);
         partySource.setWtime(null);
-        partySource.setEventId(eventId);
+        partySource.setSequenceId(sequenceId);
+        partySource.setChangeId(changeId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         partySource.setSuspension(TBaseUtil.unionFieldToEnum(partySuspension, com.rbkmoney.newway.domain.enums.Suspension.class));
         if (partySuspension.isSetActive()) {
@@ -60,9 +60,9 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
             partySource.setSuspensionActiveSince(null);
             partySource.setSuspensionSuspendedSince(TypeUtil.stringToLocalDateTime(partySuspension.getSuspended().getSince()));
         }
-        partyDao.updateNotCurrent(partyId);
         partyDao.save(partySource);
-        log.info("Party suspension has been saved, eventId={}, partyId={}", eventId, partyId);
+        partyDao.switchCurrent(partyId);
+        log.info("Party suspension has been saved, eventId={}, partyId={}", sequenceId, partyId);
     }
 
     @Override

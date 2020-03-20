@@ -9,6 +9,6 @@ import java.util.List;
 public interface ContractDao extends GenericDao {
     Long save(Contract contract) throws DaoException;
     Contract get(String partyId, String contractId) throws DaoException;
-    void updateNotCurrent(String partyId, String contractId) throws DaoException;
+    void switchCurrent(String partyId, String contractId) throws DaoException;
     List<Contract> getByPartyId(String partyId);
 }

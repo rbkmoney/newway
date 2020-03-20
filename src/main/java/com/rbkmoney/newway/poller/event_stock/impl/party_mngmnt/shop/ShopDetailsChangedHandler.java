@@ -24,15 +24,16 @@ public class ShopDetailsChangedHandler extends AbstractClaimChangedHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, MachineEvent event) {
-        long eventId = event.getEventId();
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetDetailsChanged()).forEach(e -> {
             ShopEffectUnit shopEffect = e.getShopEffect();
             ShopDetails detailsChanged = shopEffect.getEffect().getDetailsChanged();
             String shopId = shopEffect.getShopId();
             String partyId = event.getSourceId();
-            log.info("Start shop detailsChanged handling, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
+            log.info("Start shop detailsChanged handling, sequenceId={}, partyId={}, shopId={}, changeId={}",
+                    sequenceId, partyId, shopId, changeId);
             Shop shopSource = shopDao.get(partyId, shopId);
             if (shopSource == null) {
                 throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
@@ -40,13 +41,15 @@ public class ShopDetailsChangedHandler extends AbstractClaimChangedHandler {
             shopSource.setId(null);
             shopSource.setRevision(null);
             shopSource.setWtime(null);
-            shopSource.setEventId(eventId);
+            shopSource.setSequenceId(sequenceId);
+            shopSource.setChangeId(changeId);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             shopSource.setDetailsName(detailsChanged.getName());
             shopSource.setDetailsDescription(detailsChanged.getDescription());
-            shopDao.updateNotCurrent(partyId, shopId);
             shopDao.save(shopSource);
-            log.info("Shop detailsChanged has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
+            shopDao.switchCurrent(partyId, shopId);
+            log.info("Shop detailsChanged has been saved, sequenceId={}, partyId={}, shopId={}, changeId={}",
+                    sequenceId, partyId, shopId, changeId);
         });
     }
 }

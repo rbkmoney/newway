@@ -7,14 +7,14 @@ import com.rbkmoney.newway.domain.tables.pojos.Party;
 import com.rbkmoney.newway.domain.tables.records.PartyRecord;
 import com.rbkmoney.newway.exception.DaoException;
 import org.jooq.Query;
-import org.jooq.impl.DSL;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
-import static com.rbkmoney.newway.domain.Tables.*;
+import static com.rbkmoney.newway.domain.Tables.PARTY;
 
 @Component
 public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
@@ -27,20 +27,12 @@ public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
     }
 
     @Override
-    public Long getLastEventId() throws DaoException {
-        Query query = getDslContext().select(DSL.max(DSL.field("event_id"))).from(
-                getDslContext().select(PARTY.EVENT_ID.max().as("event_id")).from(PARTY)
-                        .unionAll(getDslContext().select(CONTRACT.EVENT_ID.max().as("event_id")).from(CONTRACT))
-                        .unionAll(getDslContext().select(CONTRACTOR.EVENT_ID.max().as("event_id")).from(CONTRACTOR))
-                        .unionAll(getDslContext().select(SHOP.EVENT_ID.max().as("event_id")).from(SHOP))
-        );
-        return fetchOne(query, Long.class);
-    }
-
-    @Override
     public Long save(Party party) throws DaoException {
         PartyRecord record = getDslContext().newRecord(PARTY, party);
-        Query query = getDslContext().insertInto(PARTY).set(record).returning(PARTY.ID);
+        Query query = getDslContext().insertInto(PARTY).set(record)
+                .onConflict(PARTY.PARTY_ID, PARTY.SEQUENCE_ID, PARTY.CHANGE_ID)
+                .doNothing()
+                .returning(PARTY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
@@ -55,9 +47,9 @@ public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
     }
 
     @Override
-    public void updateNotCurrent(String partyId) throws DaoException {
-        Query query = getDslContext().update(PARTY).set(PARTY.CURRENT, false)
-                .where(PARTY.PARTY_ID.eq(partyId).and(PARTY.CURRENT));
-        executeOne(query);
+    public void switchCurrent(String partyId) throws DaoException {
+        this.getNamedParameterJdbcTemplate().update("update nw.party set current = false where party_id =:party_id and current;" +
+                        "update nw.party set current = true where id = (select max(id) from nw.party where party_id =:party_id);",
+                new MapSqlParameterSource("party_id", partyId));
     }
 }

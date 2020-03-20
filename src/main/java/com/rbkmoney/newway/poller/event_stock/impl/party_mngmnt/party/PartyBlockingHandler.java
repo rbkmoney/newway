@@ -15,8 +15,6 @@ import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractPartyManagementHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,11 +31,11 @@ public class PartyBlockingHandler extends AbstractPartyManagementHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, MachineEvent event) {
-        long eventId = event.getEventId();
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         Blocking partyBlocking = change.getPartyBlocking();
         String partyId = event.getSourceId();
-        log.info("Start party blocking handling, eventId={}, partyId={}", eventId, partyId);
+        log.info("Start party blocking handling, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId);
         Party partySource = partyDao.get(partyId);
         if (partySource == null) {
             throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
@@ -45,7 +43,8 @@ public class PartyBlockingHandler extends AbstractPartyManagementHandler {
         partySource.setId(null);
         partySource.setRevision(null);
         partySource.setWtime(null);
-        partySource.setEventId(eventId);
+        partySource.setSequenceId(sequenceId);
+        partySource.setChangeId(changeId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         partySource.setBlocking(TBaseUtil.unionFieldToEnum(partyBlocking, com.rbkmoney.newway.domain.enums.Blocking.class));
         if (partyBlocking.isSetUnblocked()) {
@@ -59,9 +58,9 @@ public class PartyBlockingHandler extends AbstractPartyManagementHandler {
             partySource.setBlockingBlockedReason(partyBlocking.getBlocked().getReason());
             partySource.setBlockingBlockedSince(TypeUtil.stringToLocalDateTime(partyBlocking.getBlocked().getSince()));
         }
-        partyDao.updateNotCurrent(partyId);
         partyDao.save(partySource);
-        log.info("Party blocking has been saved, eventId={}, partyId={}", eventId, partyId);
+        partyDao.switchCurrent(partyId);
+        log.info("Party blocking has been saved, eventId={}, partyId={}", sequenceId, partyId);
     }
 
     @Override

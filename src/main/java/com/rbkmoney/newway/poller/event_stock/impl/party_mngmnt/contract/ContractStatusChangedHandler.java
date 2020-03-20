@@ -33,15 +33,16 @@ public class ContractStatusChangedHandler extends AbstractClaimChangedHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, MachineEvent event) {
-        long eventId = event.getEventId();
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetStatusChanged()).forEach(e -> {
             ContractEffectUnit contractEffectUnit = e.getContractEffect();
             ContractStatus statusChanged = contractEffectUnit.getEffect().getStatusChanged();
             String contractId = contractEffectUnit.getContractId();
             String partyId = event.getSourceId();
-            log.info("Start contractSource status changed handling, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
+            log.info("Start contractSource status changed handling, sequenceId={}, partyId={}, contractId={}, changeId={}",
+                    sequenceId, partyId, contractId, changeId);
             Contract contractSource = contractDao.get(partyId, contractId);
             if (contractSource == null) {
                 throw new NotFoundException(String.format("Contract not found, contractId='%s'", contractId));
@@ -50,14 +51,15 @@ public class ContractStatusChangedHandler extends AbstractClaimChangedHandler {
             contractSource.setId(null);
             contractSource.setRevision(null);
             contractSource.setWtime(null);
-            contractSource.setEventId(eventId);
+            contractSource.setSequenceId(sequenceId);
+            contractSource.setChangeId(changeId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractSource.setStatus(TBaseUtil.unionFieldToEnum(statusChanged, com.rbkmoney.newway.domain.enums.ContractStatus.class));
             if (statusChanged.isSetTerminated()) {
                 contractSource.setStatusTerminatedAt(TypeUtil.stringToLocalDateTime(statusChanged.getTerminated().getTerminatedAt()));
             }
-            contractDao.updateNotCurrent(partyId, contractId);
             long cntrctId = contractDao.save(contractSource);
+            contractDao.switchCurrent(partyId, contractId);
 
             List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);
             adjustments.forEach(a -> {
@@ -73,7 +75,8 @@ public class ContractStatusChangedHandler extends AbstractClaimChangedHandler {
             });
             payoutToolDao.save(payoutTools);
 
-            log.info("Contract status has been saved, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
+            log.info("Contract status has been saved, sequenceId={}, partyId={}, contractId={}, changeId={}",
+                    sequenceId, partyId, contractId, changeId);
         });
     }
 }

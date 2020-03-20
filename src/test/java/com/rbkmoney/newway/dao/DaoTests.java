@@ -26,8 +26,6 @@ import com.rbkmoney.newway.domain.tables.pojos.*;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.InvoicingType;
 import com.rbkmoney.newway.service.CashFlowService;
-import com.rbkmoney.newway.util.CashFlowType;
-import com.rbkmoney.newway.util.CashFlowUtil;
 import com.rbkmoney.newway.util.HashUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,7 +39,6 @@ import java.util.*;
 import java.util.stream.LongStream;
 
 import static com.rbkmoney.newway.dao.DaoUtils.createCashFlow;
-import static com.rbkmoney.newway.dao.DaoUtils.getFees;
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
 import static io.github.benas.randombeans.api.EnhancedRandom.randomListOf;
 import static junit.framework.TestCase.assertNull;
@@ -468,7 +465,7 @@ public class DaoTests extends AbstractAppDaoTests {
         List<Contract> contracts = contractDao.getByPartyId(contract.getPartyId());
         assertEquals(1, contracts.size());
         assertEquals(contract, contracts.get(0));
-        contractDao.updateNotCurrent(contract.getPartyId(), contract.getContractId());
+        contractDao.switchCurrent(contract.getPartyId(), contract.getContractId());
         Assert.assertNull(contractDao.get(contract.getPartyId(), contract.getContractId()));
     }
 
@@ -483,7 +480,7 @@ public class DaoTests extends AbstractAppDaoTests {
         List<Contractor> contractors = contractorDao.getByPartyId(contractor.getPartyId());
         assertEquals(1, contractors.size());
         assertEquals(contractor, contractors.get(0));
-        contractorDao.updateNotCurrent(contractor.getPartyId(), contractor.getContractorId());
+        contractorDao.switchCurrent(contractor.getPartyId(), contractor.getContractorId());
         Assert.assertNull(contractorDao.get(contractor.getPartyId(), contractor.getContractorId()));
     }
 
@@ -495,9 +492,8 @@ public class DaoTests extends AbstractAppDaoTests {
         partyDao.save(party);
         Party partyGet = partyDao.get(party.getPartyId());
         assertEquals(party, partyGet);
-        partyDao.updateNotCurrent(party.getPartyId());
+        partyDao.switchCurrent(party.getPartyId());
         Assert.assertNull(partyDao.get(party.getPartyId()));
-        assertEquals(partyDao.getLastEventId(), party.getEventId());
     }
 
     @Test
@@ -525,7 +521,7 @@ public class DaoTests extends AbstractAppDaoTests {
         List<Shop> shops = shopDao.getByPartyId(shop.getPartyId());
         assertEquals(1, shops.size());
         assertEquals(shop, shops.get(0));
-        shopDao.updateNotCurrent(shop.getPartyId(), shop.getShopId());
+        shopDao.switchCurrent(shop.getPartyId(), shop.getShopId());
         Assert.assertNull(shopDao.get(shop.getPartyId(), shop.getShopId()));
     }
 

@@ -8,13 +8,15 @@ import com.rbkmoney.newway.domain.tables.records.ContractRecord;
 import com.rbkmoney.newway.exception.DaoException;
 import org.jooq.Query;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.List;
 
-import static com.rbkmoney.newway.domain.Tables.CONTRACT;
+import static com.rbkmoney.newway.domain.Tables.*;
+import static com.rbkmoney.newway.domain.Tables.PARTY;
 
 @Component
 public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
@@ -29,7 +31,10 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
     @Override
     public Long save(Contract contract) throws DaoException {
         ContractRecord record = getDslContext().newRecord(CONTRACT, contract);
-        Query query = getDslContext().insertInto(CONTRACT).set(record).returning(CONTRACT.ID);
+        Query query = getDslContext().insertInto(CONTRACT).set(record)
+                .onConflict(CONTRACT.PARTY_ID, CONTRACT.SEQUENCE_ID, CONTRACT.CHANGE_ID)
+                .doNothing()
+                .returning(CONTRACT.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
@@ -44,10 +49,11 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
     }
 
     @Override
-    public void updateNotCurrent(String partyId, String contractId) throws DaoException {
-        Query query = getDslContext().update(CONTRACT).set(CONTRACT.CURRENT, false)
-                .where(CONTRACT.PARTY_ID.eq(partyId).and(CONTRACT.CONTRACT_ID.eq(contractId)).and(CONTRACT.CURRENT));
-        executeOne(query);
+    public void switchCurrent(String partyId, String contractId) throws DaoException {
+        this.getNamedParameterJdbcTemplate().update("update nw.contract set current = false where party_id =:party_id and contract_id =:contract_id and current;" +
+                        "update nw.contract set current = true where id = (select max(id) from nw.contract where party_id =:party_id and contract_id =:contract_id);",
+                new MapSqlParameterSource("party_id", partyId)
+                        .addValue("contract_id", contractId));
     }
 
     @Override

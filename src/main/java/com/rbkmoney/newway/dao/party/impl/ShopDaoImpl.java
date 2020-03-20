@@ -8,6 +8,7 @@ import com.rbkmoney.newway.domain.tables.records.ShopRecord;
 import com.rbkmoney.newway.exception.DaoException;
 import org.jooq.Query;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +30,10 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     @Override
     public Long save(Shop shop) throws DaoException {
         ShopRecord record = getDslContext().newRecord(SHOP, shop);
-        Query query = getDslContext().insertInto(SHOP).set(record).returning(SHOP.ID);
+        Query query = getDslContext().insertInto(SHOP).set(record)
+                .onConflict(SHOP.PARTY_ID, SHOP.SEQUENCE_ID, SHOP.CHANGE_ID)
+                .doNothing()
+                .returning(SHOP.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
@@ -39,17 +43,16 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     public Shop get(String partyId, String shopId) throws DaoException {
         Query query = getDslContext().selectFrom(SHOP)
                 .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.SHOP_ID.eq(shopId)).and(SHOP.CURRENT));
-
         return fetchOne(query, shopRowMapper);
     }
 
     @Override
-    public void updateNotCurrent(String partyId, String shopId) throws DaoException {
-        Query query = getDslContext().update(SHOP).set(SHOP.CURRENT, false)
-                .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.SHOP_ID.eq(shopId)).and(SHOP.CURRENT));
-        executeOne(query);
+    public void switchCurrent(String partyId, String shopId) throws DaoException {
+        this.getNamedParameterJdbcTemplate().update("update nw.shop set current = false where party_id =:party_id and shop_id =:shop_id and current;" +
+                        "update nw.shop set current = true where id = (select max(id) from nw.shop where party_id =:party_id and shop_id =:shop_id);",
+                new MapSqlParameterSource("party_id", partyId)
+                        .addValue("shop_id", shopId));
     }
-
 
     @Override
     public List<Shop> getByPartyId(String partyId) {

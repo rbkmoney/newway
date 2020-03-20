@@ -32,11 +32,11 @@ public class PartyMetaSetHandler extends AbstractPartyManagementHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, MachineEvent event) {
-        long eventId = event.getEventId();
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         PartyMetaSet partyMetaSet = change.getPartyMetaSet();
         String partyId = event.getSourceId();
-        log.info("Start party metaset handling, eventId={}, partyId={}", eventId, partyId);
+        log.info("Start party metaset handling, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId);
         Party partySource = partyDao.get(partyId);
         if (partySource == null) {
             throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
@@ -44,13 +44,14 @@ public class PartyMetaSetHandler extends AbstractPartyManagementHandler {
         partySource.setId(null);
         partySource.setRevision(null);
         partySource.setWtime(null);
-        partySource.setEventId(eventId);
+        partySource.setSequenceId(sequenceId);
+        partySource.setChangeId(changeId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         partySource.setPartyMetaSetNs(partyMetaSet.getNs());
         partySource.setPartyMetaSetDataJson(JsonUtil.tBaseToJsonString(partyMetaSet.getData()));
-        partyDao.updateNotCurrent(partyId);
         partyDao.save(partySource);
-        log.info("Party metaset has been saved, eventId={}, partyId={}", eventId, partyId);
+        partyDao.switchCurrent(partyId);
+        log.info("Party metaset has been saved, eventId={}, partyId={}", sequenceId, partyId);
     }
 
     @Override

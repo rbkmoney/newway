@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contract;
 
 import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
-import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
@@ -15,8 +14,6 @@ import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractClaimChangedHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,15 +31,16 @@ public class ContractContractorIDChangedHandler extends AbstractClaimChangedHand
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, MachineEvent event) {
-        long eventId = event.getEventId();
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetContractorChanged()).forEach(e -> {
             ContractEffectUnit contractEffectUnit = e.getContractEffect();
             String contractorChanged = contractEffectUnit.getEffect().getContractorChanged();
             String contractId = contractEffectUnit.getContractId();
             String partyId = event.getSourceId();
-            log.info("Start contract contractorChanged changed handling, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
+            log.info("Start contract contractorChanged changed handling, sequenceId={}, partyId={}, contractId={}, changeId={}",
+                    sequenceId, partyId, contractId, changeId);
             Contract contractSource = contractDao.get(partyId, contractId);
             if (contractSource == null) {
                 throw new NotFoundException(String.format("Contract not found, contractId='%s'", contractId));
@@ -51,11 +49,11 @@ public class ContractContractorIDChangedHandler extends AbstractClaimChangedHand
             contractSource.setId(null);
             contractSource.setRevision(null);
             contractSource.setWtime(null);
-            contractSource.setEventId(eventId);
+            contractSource.setSequenceId(sequenceId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractSource.setContractorId(contractorChanged);
-            contractDao.updateNotCurrent(partyId, contractId);
             long cntrctId = contractDao.save(contractSource);
+            contractDao.switchCurrent(partyId, contractId);
 
             List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);
             adjustments.forEach(a -> {
@@ -71,7 +69,8 @@ public class ContractContractorIDChangedHandler extends AbstractClaimChangedHand
             });
             payoutToolDao.save(payoutTools);
 
-            log.info("Contract contractorID has been saved, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
+            log.info("Contract contractorID has been saved, sequenceId={}, partyId={}, contractId={}, changeId={}",
+                    sequenceId, partyId, contractId, changeId);
         });
     }
 }

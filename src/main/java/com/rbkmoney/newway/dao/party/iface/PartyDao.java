@@ -5,8 +5,7 @@ import com.rbkmoney.newway.domain.tables.pojos.Party;
 import com.rbkmoney.newway.exception.DaoException;
 
 public interface PartyDao extends GenericDao {
-    Long getLastEventId() throws DaoException;
     Long save(Party party) throws DaoException;
     Party get(String partyId) throws DaoException;
-    void updateNotCurrent(String partyId) throws DaoException;
+    void switchCurrent(String partyId) throws DaoException;
 }

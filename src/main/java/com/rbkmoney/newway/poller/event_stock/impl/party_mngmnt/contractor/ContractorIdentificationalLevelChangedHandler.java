@@ -25,14 +25,14 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, MachineEvent event) {
-        long eventId = event.getEventId();
+        long sequenceId = event.getEventId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractorEffect() && e.getContractorEffect().getEffect().isSetIdentificationLevelChanged()).forEach(e -> {
             ContractorEffectUnit contractorEffect = e.getContractorEffect();
             ContractorIdentificationLevel identificationLevelChanged = contractorEffect.getEffect().getIdentificationLevelChanged();
             String contractorId = contractorEffect.getId();
             String partyId = event.getSourceId();
-            log.info("Start identificational level changed handling, eventId={}, partyId={}, contractorId={}", eventId, partyId, contractorId);
+            log.info("Start identificational level changed handling, sequenceId={}, partyId={}, contractorId={}", sequenceId, partyId, contractorId);
             Contractor contractorSource = contractorDao.get(partyId, contractorId);
             if (contractorSource == null) {
                 throw new NotFoundException(String.format("Contractor not found, contractorId='%s'", contractorId));
@@ -40,12 +40,12 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
             contractorSource.setId(null);
             contractorSource.setRevision(null);
             contractorSource.setWtime(null);
-            contractorSource.setEventId(eventId);
+            contractorSource.setSequenceId(sequenceId);
             contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractorSource.setIdentificationalLevel(identificationLevelChanged.name());
-            contractorDao.updateNotCurrent(partyId, contractorId);
+            contractorDao.switchCurrent(partyId, contractorId);
             contractorDao.save(contractorSource);
-            log.info("Contract identificational level has been saved, eventId={}, contractorId={}", eventId, contractorId);
+            log.info("Contract identificational level has been saved, sequenceId={}, contractorId={}", sequenceId, contractorId);
         });
     }
 }

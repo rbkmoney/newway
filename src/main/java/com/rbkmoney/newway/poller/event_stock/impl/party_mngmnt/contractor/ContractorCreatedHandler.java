@@ -2,7 +2,6 @@ package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contractor;
 
 import com.rbkmoney.damsel.domain.PartyContractor;
 import com.rbkmoney.damsel.payment_processing.ContractorEffectUnit;
-import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.ContractorDao;
@@ -32,7 +31,7 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, MachineEvent event) {
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
         long eventId = event.getEventId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractorEffect() && e.getContractorEffect().getEffect().isSetCreated()).forEach(e -> {
@@ -46,7 +45,7 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
             if (partySource == null) {
                 throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
             }
-            Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractorCreated, contractorId);
+            Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractorCreated, contractorId, changeId);
             contractor.setIdentificationalLevel(partyContractor.getStatus().name());
             contractorDao.save(contractor);
             log.info("Contract contractor has been saved, eventId={}, partyId={}, contractorId={}", eventId, partyId, contractorId);
