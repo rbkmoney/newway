@@ -1,6 +1,5 @@
 package com.rbkmoney.newway.poller.event_stock.impl.withdrawal;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.rbkmoney.fistful.base.Cash;
 import com.rbkmoney.fistful.withdrawal.Change;
 import com.rbkmoney.fistful.withdrawal.SinkEvent;
@@ -13,13 +12,9 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.withdrawal.iface.WithdrawalDao;
 import com.rbkmoney.newway.domain.enums.WithdrawalStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Withdrawal;
-import com.rbkmoney.newway.util.JsonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class WithdrawalCreatedHandler extends AbstractWithdrawalHandler {
@@ -47,17 +42,13 @@ public class WithdrawalCreatedHandler extends AbstractWithdrawalHandler {
         withdrawal.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         withdrawal.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawal.setWithdrawalId(event.getSource());
-        withdrawal.setWalletId(withdrawalDamsel.getSource());
-        withdrawal.setDestinationId(withdrawalDamsel.getDestination());
+        withdrawal.setWalletId(withdrawalDamsel.getWalletId());
+        withdrawal.setDestinationId(withdrawalDamsel.getDestinationId());
         withdrawal.setExternalId(withdrawalDamsel.getExternalId());
         if (withdrawalDamsel.isSetStatus()) {
             withdrawal.setWithdrawalStatus(TBaseUtil.unionFieldToEnum(withdrawalDamsel.getStatus(), WithdrawalStatus.class));
         }
-        if (withdrawalDamsel.isSetContext()) {
-            Map<String, JsonNode> jsonNodeMap = withdrawalDamsel.getContext().entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, e -> JsonUtil.tBaseToJsonNode(e.getValue())));
-            withdrawal.setContextJson(JsonUtil.objectToJsonString(jsonNodeMap));
-        }
+
         Cash cash = withdrawalDamsel.getBody();
         withdrawal.setAmount(cash.getAmount());
         withdrawal.setCurrencyCode(cash.getCurrency().getSymbolicCode());

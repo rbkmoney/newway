@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.identity;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.rbkmoney.fistful.Blocking;
 import com.rbkmoney.fistful.identity.Change;
 import com.rbkmoney.fistful.identity.SinkEvent;
 import com.rbkmoney.geck.common.util.TypeUtil;
@@ -49,8 +50,8 @@ public class IdentityCreatedHandler extends AbstractIdentityHandler {
         identity.setIdentityProviderId(changeCreated.getProvider());
         identity.setExternalId(changeCreated.getExternalId());
         identity.setIdentityEffectiveChalengeId(changeCreated.getEffectiveChallenge());
-        if (changeCreated.isSetBlocked()) {
-            identity.setBlocked(changeCreated.isBlocked());
+        if (changeCreated.isSetBlocking()) {
+            identity.setBlocked(changeCreated.getBlocking() == Blocking.blocked);
         }
         if (changeCreated.isSetContext()) {
             Map<String, JsonNode> jsonNodeMap = changeCreated.getContext().entrySet().stream()
