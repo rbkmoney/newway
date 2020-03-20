@@ -540,7 +540,7 @@ public class DaoTests extends AbstractAppDaoTests {
 
         Integer changeId = shop.getChangeId() + 1;
         shop.setChangeId(changeId);
-        shop.setId(null);
+        shop.setId(shop.getId() + 1);
         shopDao.save(shop);
         shopDao.switchCurrent(shop.getPartyId(), shop.getShopId());
         shops = shopDao.getByPartyId(shop.getPartyId());
