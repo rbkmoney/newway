@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.invoicing.adjustment;
 
 import com.rbkmoney.damsel.domain.InvoicePaymentAdjustment;
+import com.rbkmoney.damsel.domain.InvoicePaymentAdjustmentState;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentAdjustmentChange;
 import com.rbkmoney.damsel.payment_processing.InvoicePaymentChange;
@@ -17,6 +18,7 @@ import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
 import com.rbkmoney.newway.domain.enums.AdjustmentStatus;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
+import com.rbkmoney.newway.domain.enums.PaymentStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Adjustment;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
@@ -86,12 +88,30 @@ public class InvoicePaymentAdjustmentCreatedHandler extends AbstractInvoicingHan
         if (invoicePaymentAdjustment.isSetPartyRevision()) {
             adjustment.setPartyRevision(invoicePaymentAdjustment.getPartyRevision());
         }
+        if (invoicePaymentAdjustment.isSetState()) {
+            InvoicePaymentAdjustmentState invoicePaymentAdjustmentState = invoicePaymentAdjustment.getState();
+            if (invoicePaymentAdjustmentState.isSetCashFlow()) {
+                adjustment.setDomainRevision(invoicePaymentAdjustmentState.getCashFlow().getScenario().getDomainRevision());
+            } else if (invoicePaymentAdjustmentState.isSetStatusChange()) {
+                PaymentStatus paymentStatus = TBaseUtil.unionFieldToEnum(
+                        invoicePaymentAdjustmentState.getStatusChange().getScenario().getTargetStatus(), PaymentStatus.class);
+                adjustment.setPaymentStatus(paymentStatus);
+            }
+        }
 
         Long adjId = adjustmentDao.save(adjustment);
         if (adjId != null) {
-            List<CashFlow> newCashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentAdjustment.getNewCashFlow(), adjId, PaymentChangeType.adjustment, AdjustmentCashFlowType.new_cash_flow);
+            List<CashFlow> newCashFlowList = CashFlowUtil.convertCashFlows(
+                    invoicePaymentAdjustment.getNewCashFlow(),
+                    adjId,
+                    PaymentChangeType.adjustment,
+                    AdjustmentCashFlowType.new_cash_flow);
             cashFlowDao.save(newCashFlowList);
-            List<CashFlow> oldCashFlowList = CashFlowUtil.convertCashFlows(invoicePaymentAdjustment.getOldCashFlowInverse(), adjId, PaymentChangeType.adjustment, AdjustmentCashFlowType.old_cash_flow_inverse);
+            List<CashFlow> oldCashFlowList = CashFlowUtil.convertCashFlows(
+                    invoicePaymentAdjustment.getOldCashFlowInverse(),
+                    adjId,
+                    PaymentChangeType.adjustment,
+                    AdjustmentCashFlowType.old_cash_flow_inverse);
             cashFlowDao.save(oldCashFlowList);
             adjustmentDao.updateCommissions(adjId);
         }

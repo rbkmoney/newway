@@ -4,8 +4,10 @@ import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
+import com.rbkmoney.newway.domain.tables.records.PaymentRecord;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.model.InvoicingKey;
+import org.jooq.InsertOnDuplicateSetStep;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -42,6 +44,17 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
                 )
                 .collect(Collectors.toList());
         batchExecute(queries);
+    }
+
+    @Override
+    public void upsert(Payment payment) {
+        PaymentRecord paymentRecord = getDslContext().newRecord(PAYMENT, payment);
+        Query query = getDslContext().insertInto(PAYMENT)
+                .set(paymentRecord)
+                .onConflict(PAYMENT.INVOICE_ID, PAYMENT.SEQUENCE_ID, PAYMENT.CHANGE_ID)
+                .doUpdate()
+                .set(paymentRecord);
+        execute(query);
     }
 
     @Override

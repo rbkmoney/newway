@@ -20,6 +20,7 @@ import com.rbkmoney.newway.dao.withdrawal_session.iface.WithdrawalSessionDao;
 import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
 import com.rbkmoney.newway.domain.enums.CashFlowAccount;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
+import com.rbkmoney.newway.domain.enums.PaymentStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Calendar;
 import com.rbkmoney.newway.domain.tables.pojos.Currency;
 import com.rbkmoney.newway.domain.tables.pojos.*;
@@ -429,6 +430,18 @@ public class DaoTests extends AbstractAppDaoTests {
         paymentGet.setId(null);
         paymentTwo.setCurrent(true);
         assertEquals(paymentTwo, paymentGet);
+    }
+
+    @Test
+    public void paymentUpsertTest() {
+        jdbcTemplate.execute("truncate table nw.payment cascade");
+        Payment payment = random(Payment.class, "id");
+        Payment paymentTwo = random(Payment.class, "id");
+        paymentDao.saveBatch(Arrays.asList(payment, paymentTwo));
+        paymentTwo.setStatus(PaymentStatus.pending);
+        paymentDao.upsert(paymentTwo);
+        Payment savedPayment = paymentDao.get(paymentTwo.getInvoiceId(), paymentTwo.getPaymentId());
+        Assert.assertEquals(PaymentStatus.pending, savedPayment.getStatus());
     }
 
     @Test

@@ -13,10 +13,12 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.invoicing.iface.AdjustmentDao;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
+import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
 import com.rbkmoney.newway.domain.enums.AdjustmentStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Adjustment;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
+import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -33,6 +36,7 @@ import java.util.List;
 public class InvoicePaymentAdjustmentStatusChangedHandler extends AbstractInvoicingHandler {
 
     private final AdjustmentDao adjustmentDao;
+    private final PaymentDao paymentDao;
     private final CashFlowDao cashFlowDao;
 
     private Filter filter = new PathConditionFilter(new PathConditionRule(
@@ -67,6 +71,18 @@ public class InvoicePaymentAdjustmentStatusChangedHandler extends AbstractInvoic
         if (invoicePaymentAdjustmentStatus.isSetCaptured()) {
             adjustmentSource.setStatusCapturedAt(TypeUtil.stringToLocalDateTime(invoicePaymentAdjustmentStatus.getCaptured().getAt()));
             adjustmentSource.setStatusCancelledAt(null);
+
+            // Update payment status
+            if (adjustmentSource.getPaymentStatus() != null) {
+                Payment payment = paymentDao.get(invoiceId, paymentId);
+                if (payment == null) {
+                    throw new NotFoundException(String.format("Payment on adjustment not found, invoiceId='%s', paymentId='%s'",
+                            invoiceId, paymentId));
+                }
+                payment.setStatus(adjustmentSource.getPaymentStatus());
+                paymentDao.upsert(payment);
+                log.info("Payment status change to '{}'. invoiceId={}, paymentId={}", adjustmentSource.getPaymentStatus(), invoiceId, paymentId);
+            }
         } else if (invoicePaymentAdjustmentStatus.isSetCancelled()) {
             adjustmentSource.setStatusCapturedAt(null);
             adjustmentSource.setStatusCancelledAt(TypeUtil.stringToLocalDateTime(invoicePaymentAdjustmentStatus.getCancelled().getAt()));
