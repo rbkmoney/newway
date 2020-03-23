@@ -12,7 +12,7 @@ public interface PaymentDao extends GenericDao {
 
     void saveBatch(List<Payment> payments) throws DaoException;
 
-    void upsert(Payment payment);
+    void updateCurrentPayment(Payment payment);
 
     Payment get(String invoiceId, String paymentId) throws DaoException;
 

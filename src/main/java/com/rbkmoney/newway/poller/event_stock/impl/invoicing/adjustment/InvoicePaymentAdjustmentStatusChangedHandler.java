@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -80,7 +79,7 @@ public class InvoicePaymentAdjustmentStatusChangedHandler extends AbstractInvoic
                             invoiceId, paymentId));
                 }
                 payment.setStatus(adjustmentSource.getPaymentStatus());
-                paymentDao.upsert(payment);
+                paymentDao.updateCurrentPayment(payment);
                 log.info("Payment status change to '{}'. invoiceId={}, paymentId={}", adjustmentSource.getPaymentStatus(), invoiceId, paymentId);
             }
         } else if (invoicePaymentAdjustmentStatus.isSetCancelled()) {

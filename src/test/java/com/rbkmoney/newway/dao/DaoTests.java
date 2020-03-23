@@ -27,8 +27,6 @@ import com.rbkmoney.newway.domain.tables.pojos.*;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.InvoicingType;
 import com.rbkmoney.newway.service.CashFlowService;
-import com.rbkmoney.newway.util.CashFlowType;
-import com.rbkmoney.newway.util.CashFlowUtil;
 import com.rbkmoney.newway.util.HashUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -42,7 +40,6 @@ import java.util.*;
 import java.util.stream.LongStream;
 
 import static com.rbkmoney.newway.dao.DaoUtils.createCashFlow;
-import static com.rbkmoney.newway.dao.DaoUtils.getFees;
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
 import static io.github.benas.randombeans.api.EnhancedRandom.randomListOf;
 import static junit.framework.TestCase.assertNull;
@@ -433,13 +430,14 @@ public class DaoTests extends AbstractAppDaoTests {
     }
 
     @Test
-    public void paymentUpsertTest() {
+    public void paymentUpdateTest() {
         jdbcTemplate.execute("truncate table nw.payment cascade");
         Payment payment = random(Payment.class, "id");
         Payment paymentTwo = random(Payment.class, "id");
+        paymentTwo.setCurrent(true);
         paymentDao.saveBatch(Arrays.asList(payment, paymentTwo));
         paymentTwo.setStatus(PaymentStatus.pending);
-        paymentDao.upsert(paymentTwo);
+        paymentDao.updateCurrentPayment(paymentTwo);
         Payment savedPayment = paymentDao.get(paymentTwo.getInvoiceId(), paymentTwo.getPaymentId());
         Assert.assertEquals(PaymentStatus.pending, savedPayment.getStatus());
     }
