@@ -70,18 +70,6 @@ public class InvoicePaymentAdjustmentStatusChangedHandler extends AbstractInvoic
         if (invoicePaymentAdjustmentStatus.isSetCaptured()) {
             adjustmentSource.setStatusCapturedAt(TypeUtil.stringToLocalDateTime(invoicePaymentAdjustmentStatus.getCaptured().getAt()));
             adjustmentSource.setStatusCancelledAt(null);
-
-            // Update payment status
-            if (adjustmentSource.getPaymentStatus() != null) {
-                Payment payment = paymentDao.get(invoiceId, paymentId);
-                if (payment == null) {
-                    throw new NotFoundException(String.format("Payment on adjustment not found, invoiceId='%s', paymentId='%s'",
-                            invoiceId, paymentId));
-                }
-                payment.setStatus(adjustmentSource.getPaymentStatus());
-                paymentDao.updateCurrentPayment(payment);
-                log.info("Payment status change to '{}'. invoiceId={}, paymentId={}", adjustmentSource.getPaymentStatus(), invoiceId, paymentId);
-            }
         } else if (invoicePaymentAdjustmentStatus.isSetCancelled()) {
             adjustmentSource.setStatusCapturedAt(null);
             adjustmentSource.setStatusCancelledAt(TypeUtil.stringToLocalDateTime(invoicePaymentAdjustmentStatus.getCancelled().getAt()));
