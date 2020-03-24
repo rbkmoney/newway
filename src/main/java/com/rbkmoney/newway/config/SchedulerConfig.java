@@ -27,7 +27,7 @@ public class SchedulerConfig {
 
     @Bean
     @ConditionalOnProperty(value = "info.single-instance-mode", havingValue = "true")
-    public TemporaryDominantPoller dominantPoller(RepositorySrv.Iface dominantClient,
+    public TemporaryDominantPoller temporaryDominantPoller(RepositorySrv.Iface dominantClient,
                                                   TemporaryDominantService dominantService,
                                                   @Value("${dmt.polling.maxQuerySize}") int maxQuerySize,
                                                   @Value("${dmt.polling.enabled}") boolean pollingEnabled){
