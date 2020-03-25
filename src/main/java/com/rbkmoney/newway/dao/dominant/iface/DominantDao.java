@@ -5,4 +5,5 @@ import com.rbkmoney.newway.exception.DaoException;
 
 public interface DominantDao extends GenericDao {
     Long getLastVersionId() throws DaoException;
+    Long getTemporaryLastVersionId() throws DaoException;
 }

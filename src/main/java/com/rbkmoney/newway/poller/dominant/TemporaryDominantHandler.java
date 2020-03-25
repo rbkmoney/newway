@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.poller.dominant;
 
-public interface DominantHandler<T> {
+public interface TemporaryDominantHandler<T> {
 
     boolean acceptAndSet(T change);
 

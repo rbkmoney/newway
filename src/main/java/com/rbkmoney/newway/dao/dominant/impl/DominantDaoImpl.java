@@ -35,4 +35,10 @@ public class DominantDaoImpl extends AbstractGenericDao implements DominantDao {
         );
         return fetchOne(query, Long.class);
     }
+
+    @Override
+    public Long getTemporaryLastVersionId() throws DaoException {
+        Query query = getDslContext().select(WITHDRAWAL_PROVIDER.VERSION_ID.max().as("version_id")).from(WITHDRAWAL_PROVIDER);
+        return fetchOne(query, Long.class);
+    }
 }

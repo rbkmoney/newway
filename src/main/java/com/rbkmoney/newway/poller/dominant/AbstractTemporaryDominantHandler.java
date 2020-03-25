@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @param <C> - jooq object class (Category, Currency etc.)
  * @param <I> - object reference id class (Integer, String etc.)
  */
-public abstract class AbstractDominantHandler<T, C, I> implements DominantHandler<Operation> {
+public abstract class AbstractTemporaryDominantHandler<T, C, I> implements TemporaryDominantHandler<Operation> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 

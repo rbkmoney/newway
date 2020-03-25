@@ -69,6 +69,8 @@ public class DaoTests extends AbstractAppDaoTests {
     @Autowired
     private ProviderDaoImpl providerDao;
     @Autowired
+    private WithdrawalProviderDaoImpl withdrawalProviderDao;
+    @Autowired
     private ProxyDaoImpl proxyDao;
     @Autowired
     private TerminalDaoImpl terminalDao;
@@ -159,6 +161,7 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.payment_method cascade");
         jdbcTemplate.execute("truncate table nw.payout_method cascade");
         jdbcTemplate.execute("truncate table nw.provider cascade");
+        jdbcTemplate.execute("truncate table nw.withdrawal_provider cascade");
         jdbcTemplate.execute("truncate table nw.proxy cascade");
         jdbcTemplate.execute("truncate table nw.terminal cascade");
         jdbcTemplate.execute("truncate table nw.term_set_hierarchy cascade");
@@ -202,6 +205,11 @@ public class DaoTests extends AbstractAppDaoTests {
         provider.setCurrent(true);
         providerDao.save(provider);
         providerDao.updateNotCurrent(provider.getProviderRefId());
+
+        WithdrawalProvider withdrawalProvider = random(WithdrawalProvider.class);
+        withdrawalProvider.setCurrent(true);
+        withdrawalProviderDao.save(withdrawalProvider);
+        withdrawalProviderDao.updateNotCurrent(withdrawalProvider.getWithdrawalProviderRefId());
 
         Proxy proxy = random(Proxy.class);
         proxy.setCurrent(true);

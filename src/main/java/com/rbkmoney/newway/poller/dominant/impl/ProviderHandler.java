@@ -58,7 +58,7 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
         if (data.isSetRecurrentPaytoolTerms()) {
             provider.setRecurrentPaytoolTermsJson(JsonUtil.tBaseToJsonString(data.getRecurrentPaytoolTerms()));
         }
-        if (data.isSetAbsAccount()) {
+        if (data.isSetAccounts()) {
             Map<String, Long> accountsMap = data.getAccounts().entrySet()
                     .stream()
                     .collect(Collectors.toMap(e -> e.getKey().getSymbolicCode(), e -> e.getValue().getSettlement()));
