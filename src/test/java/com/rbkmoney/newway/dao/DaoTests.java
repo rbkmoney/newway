@@ -20,6 +20,7 @@ import com.rbkmoney.newway.dao.withdrawal_session.iface.WithdrawalSessionDao;
 import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
 import com.rbkmoney.newway.domain.enums.CashFlowAccount;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
+import com.rbkmoney.newway.domain.enums.PaymentStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Calendar;
 import com.rbkmoney.newway.domain.tables.pojos.Currency;
 import com.rbkmoney.newway.domain.tables.pojos.*;
