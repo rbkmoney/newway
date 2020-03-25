@@ -446,7 +446,7 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.contract cascade");
         Contract contract = random(Contract.class);
         contract.setCurrent(true);
-        Long cntrctId = contractDao.save(contract);
+        Long cntrctId = contractDao.save(contract).get();
         List<ContractAdjustment> contractAdjustments = randomListOf(10, ContractAdjustment.class);
         contractAdjustments.forEach(ca -> ca.setCntrctId(cntrctId));
         contractAdjustmentDao.save(contractAdjustments);
@@ -465,9 +465,6 @@ public class DaoTests extends AbstractAppDaoTests {
         List<Contract> contracts = contractDao.getByPartyId(contract.getPartyId());
         assertEquals(1, contracts.size());
         assertEquals(contract, contracts.get(0));
-        contractDao.switchCurrent(contract.getPartyId(), contract.getContractId());
-        assertEquals(1, contracts.size());
-        assertEquals(contract, contracts.get(0));
     }
 
     @Test
@@ -484,9 +481,10 @@ public class DaoTests extends AbstractAppDaoTests {
 
         Integer changeId = contractor.getChangeId() + 1;
         contractor.setChangeId(changeId);
+        Long oldId = contractor.getId();
         contractor.setId(contractor.getId() + 1);
         contractorDao.save(contractor);
-        contractorDao.switchCurrent(contractor.getPartyId(), contractor.getContractorId());
+        contractorDao.updateNotCurrent(oldId);
 
         contractors = contractorDao.getByPartyId(contractor.getPartyId());
         assertEquals(1, contractors.size());
@@ -502,11 +500,12 @@ public class DaoTests extends AbstractAppDaoTests {
         Party partyGet = partyDao.get(party.getPartyId());
         assertEquals(party, partyGet);
 
+        Long oldId = party.getId();
         Integer changeId = party.getChangeId() + 1;
         party.setChangeId(changeId);
         party.setId(party.getId() + 1);
         partyDao.save(party);
-        partyDao.switchCurrent(party.getPartyId());
+        partyDao.updateNotCurrent(oldId);
 
         partyGet = partyDao.get(party.getPartyId());
         assertEquals(changeId, partyGet.getChangeId());
@@ -518,7 +517,7 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.payout_tool cascade");
         Contract contract = random(Contract.class);
         contract.setCurrent(true);
-        Long cntrctId = contractDao.save(contract);
+        Long cntrctId = contractDao.save(contract).get();
         List<PayoutTool> payoutTools = randomListOf(10, PayoutTool.class);
         payoutTools.forEach(pt -> pt.setCntrctId(cntrctId));
         payoutToolDao.save(payoutTools);
@@ -540,9 +539,10 @@ public class DaoTests extends AbstractAppDaoTests {
 
         Integer changeId = shop.getChangeId() + 1;
         shop.setChangeId(changeId);
-        shop.setId(shop.getId() + 1);
+        Long id = shop.getId();
+        shop.setId(id + 1);
         shopDao.save(shop);
-        shopDao.switchCurrent(shop.getPartyId(), shop.getShopId());
+        shopDao.updateNotCurrent(id);
         shops = shopDao.getByPartyId(shop.getPartyId());
         assertEquals(1, shops.size());
         assertEquals(changeId, shops.get(0).getChangeId());

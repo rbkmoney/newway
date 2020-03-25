@@ -1,14 +1,14 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.shop;
 
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.ShopContractChanged;
 import com.rbkmoney.damsel.payment_processing.ShopEffectUnit;
-import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.ShopDao;
 import com.rbkmoney.newway.domain.tables.pojos.Shop;
-import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractClaimChangedHandler;
+import com.rbkmoney.newway.util.ShopUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -27,29 +27,25 @@ public class ShopContractChangedHandler extends AbstractClaimChangedHandler {
     public void handle(PartyChange change, MachineEvent event, Integer changeId) {
         long sequenceId = event.getEventId();
         getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetContractChanged()).forEach(e -> {
-            ShopEffectUnit shopEffect = e.getShopEffect();
-            ShopContractChanged contractChanged = shopEffect.getEffect().getContractChanged();
-            String shopId = shopEffect.getShopId();
-            String partyId = event.getSourceId();
-            log.info("Start shop contractChanged handling, sequenceId={}, partyId={}, shopId={}, changeId={}",
-                    sequenceId, partyId, shopId, changeId);
-            Shop shopSource = shopDao.get(partyId, shopId);
-            if (shopSource == null) {
-                throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
-            }
-            shopSource.setId(null);
-            shopSource.setRevision(null);
-            shopSource.setWtime(null);
-            shopSource.setSequenceId(sequenceId);
-            shopSource.setChangeId(changeId);
-            shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-            shopSource.setContractId(contractChanged.getContractId());
-            shopSource.setPayoutToolId(contractChanged.getPayoutToolId());
-            shopDao.save(shopSource);
-            shopDao.switchCurrent(partyId, shopId);
-            log.info("Shop contractChanged has been saved, sequenceId={}, partyId={}, shopId={}, changeId={}",
-                    sequenceId, partyId, shopId, changeId);
-        });
+                .filter(claimEffect -> claimEffect.isSetShopEffect() && claimEffect.getShopEffect().getEffect().isSetContractChanged())
+                .forEach(claimEffect -> handleEvent(event, changeId, sequenceId, claimEffect));
+    }
+
+    private void handleEvent(MachineEvent event, Integer changeId, long sequenceId, ClaimEffect claimEffect) {
+        ShopEffectUnit shopEffect = claimEffect.getShopEffect();
+        ShopContractChanged contractChanged = shopEffect.getEffect().getContractChanged();
+        String shopId = shopEffect.getShopId();
+        String partyId = event.getSourceId();
+        log.info("Start shop contractChanged handling, sequenceId={}, partyId={}, shopId={}, changeId={}",
+                sequenceId, partyId, shopId, changeId);
+
+        Shop shopSource = shopDao.get(partyId, shopId);
+        Long oldEventId = shopSource.getId();
+        ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource);
+
+        shopSource.setContractId(contractChanged.getContractId());
+        shopSource.setPayoutToolId(contractChanged.getPayoutToolId());
+
+        shopDao.saveWithUpdateCurrent(partyId, changeId, shopSource, shopId, sequenceId, oldEventId, "contractChanged");
     }
 }

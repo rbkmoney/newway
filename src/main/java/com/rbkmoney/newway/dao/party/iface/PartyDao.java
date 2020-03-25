@@ -4,8 +4,14 @@ import com.rbkmoney.dao.GenericDao;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
 import com.rbkmoney.newway.exception.DaoException;
 
+import java.util.Optional;
+
 public interface PartyDao extends GenericDao {
-    Long save(Party party) throws DaoException;
+    Optional<Long> save(Party party) throws DaoException;
+
     Party get(String partyId) throws DaoException;
-    void switchCurrent(String partyId) throws DaoException;
+
+    void updateNotCurrent(Long partyId) throws DaoException;
+
+    void saveWithUpdateCurrent(Integer changeId, long sequenceId, String partyId, Party partySource, Long oldId, String eventName);
 }

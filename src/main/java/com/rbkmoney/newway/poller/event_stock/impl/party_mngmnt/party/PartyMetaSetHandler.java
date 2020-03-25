@@ -2,7 +2,6 @@ package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.party;
 
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.PartyMetaSet;
-import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -10,9 +9,9 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
-import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractPartyManagementHandler;
 import com.rbkmoney.newway.util.JsonUtil;
+import com.rbkmoney.newway.util.PartyUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -37,21 +36,14 @@ public class PartyMetaSetHandler extends AbstractPartyManagementHandler {
         PartyMetaSet partyMetaSet = change.getPartyMetaSet();
         String partyId = event.getSourceId();
         log.info("Start party metaset handling, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId);
+
         Party partySource = partyDao.get(partyId);
-        if (partySource == null) {
-            throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
-        }
-        partySource.setId(null);
-        partySource.setRevision(null);
-        partySource.setWtime(null);
-        partySource.setSequenceId(sequenceId);
-        partySource.setChangeId(changeId);
-        partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+        Long oldId = partySource.getId();
+        PartyUtil.resetBaseFields(event, changeId, sequenceId, partySource);
         partySource.setPartyMetaSetNs(partyMetaSet.getNs());
         partySource.setPartyMetaSetDataJson(JsonUtil.tBaseToJsonString(partyMetaSet.getData()));
-        partyDao.save(partySource);
-        partyDao.switchCurrent(partyId);
-        log.info("Party metaset has been saved, eventId={}, partyId={}", sequenceId, partyId);
+
+        partyDao.saveWithUpdateCurrent(changeId, sequenceId, partyId, partySource, oldId, "metaset");
     }
 
     @Override

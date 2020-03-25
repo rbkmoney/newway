@@ -6,16 +6,19 @@ import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
 import com.rbkmoney.newway.domain.tables.records.PartyRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Query;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 import static com.rbkmoney.newway.domain.Tables.PARTY;
 
+@Slf4j
 @Component
 public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
 
@@ -27,15 +30,15 @@ public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
     }
 
     @Override
-    public Long save(Party party) throws DaoException {
+    public Optional<Long> save(Party party) throws DaoException {
         PartyRecord record = getDslContext().newRecord(PARTY, party);
         Query query = getDslContext().insertInto(PARTY).set(record)
                 .onConflict(PARTY.PARTY_ID, PARTY.SEQUENCE_ID, PARTY.CHANGE_ID)
                 .doNothing()
                 .returning(PARTY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        execute(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override
@@ -43,13 +46,30 @@ public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
         Query query = getDslContext().selectFrom(PARTY)
                 .where(PARTY.PARTY_ID.eq(partyId).and(PARTY.CURRENT));
 
-        return fetchOne(query, partyRowMapper);
+        Party party = fetchOne(query, partyRowMapper);
+
+        if (party == null) {
+            throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
+        }
+        return party;
     }
 
     @Override
-    public void switchCurrent(String partyId) throws DaoException {
-        this.getNamedParameterJdbcTemplate().update("update nw.party set current = false where party_id =:party_id and current;" +
-                        "update nw.party set current = true where id = (select max(id) from nw.party where party_id =:party_id);",
-                new MapSqlParameterSource("party_id", partyId));
+    public void updateNotCurrent(Long id) throws DaoException {
+        Query query = getDslContext().update(PARTY).set(PARTY.CURRENT, false)
+                .where(PARTY.ID.eq(id));
+        executeOne(query);
+    }
+
+    @Override
+    public void saveWithUpdateCurrent(Integer changeId, long sequenceId, String partyId, Party partySource, Long oldId, String eventName) {
+        save(partySource)
+                .ifPresentOrElse(
+                        saveResult -> {
+                            updateNotCurrent(oldId);
+                            log.info("Party {} has been saved, sequenceId={}, partyId={}, changeId={}", eventName, sequenceId, partyId, changeId);
+                        },
+                        () -> log.info("Party {} duplicated, sequenceId={}, partyId={}, changeId={}", eventName, sequenceId, partyId, changeId)
+                );
     }
 }

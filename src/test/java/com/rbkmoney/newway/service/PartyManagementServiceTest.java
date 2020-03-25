@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -39,7 +40,7 @@ public class PartyManagementServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        when(partyDao.save(any())).thenReturn(1L);
+        when(partyDao.save(any())).thenReturn(Optional.of(1L));
     }
 
     @Test

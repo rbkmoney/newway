@@ -53,9 +53,10 @@ public class PartyCreatedHandler extends AbstractPartyManagementHandler {
         party.setSuspensionActiveSince(partyCreatedAt);
         party.setRevision(0L);
         party.setRevisionChangedAt(partyCreatedAt);
-        party.setCurrent(true);
-        partyDao.save(party);
-        log.info("Party has been saved, sequenceId={}, partyId={}", sequenceId, partyId);
+
+        partyDao.save(party).ifPresentOrElse(
+                aLong -> log.info("Party has been saved, sequenceId={}, ppartyId={}, changeId={}", sequenceId, partyId, changeId),
+                () -> log.info("Party create duplicated, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId));
     }
 
     @Override

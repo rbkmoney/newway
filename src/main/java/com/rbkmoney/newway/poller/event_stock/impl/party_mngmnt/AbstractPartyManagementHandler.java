@@ -6,4 +6,7 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.poller.event_stock.Handler;
 
 public abstract class AbstractPartyManagementHandler implements Handler<PartyChange, MachineEvent> {
+
+
+
 }

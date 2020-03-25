@@ -6,17 +6,17 @@ import com.rbkmoney.newway.dao.party.iface.ContractorDao;
 import com.rbkmoney.newway.domain.tables.pojos.Contractor;
 import com.rbkmoney.newway.domain.tables.records.ContractorRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.jooq.Query;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 import static com.rbkmoney.newway.domain.Tables.CONTRACTOR;
-import static com.rbkmoney.newway.domain.Tables.PARTY;
 
 @Component
 public class ContractorDaoImpl extends AbstractGenericDao implements ContractorDao {
@@ -29,31 +29,33 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     }
 
     @Override
-    public Long save(Contractor contractor) throws DaoException {
+    public Optional<Long> save(Contractor contractor) throws DaoException {
         ContractorRecord record = getDslContext().newRecord(CONTRACTOR, contractor);
         Query query = getDslContext().insertInto(CONTRACTOR).set(record)
                 .onConflict(CONTRACTOR.PARTY_ID, CONTRACTOR.SEQUENCE_ID, CONTRACTOR.CHANGE_ID)
                 .doNothing()
                 .returning(CONTRACTOR.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        execute(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override
     public Contractor get(String partyId, String contractorId) throws DaoException {
         Query query = getDslContext().selectFrom(CONTRACTOR)
                 .where(CONTRACTOR.PARTY_ID.eq(partyId).and(CONTRACTOR.CONTRACTOR_ID.eq(contractorId)).and(CONTRACTOR.CURRENT));
-
-        return fetchOne(query, contractorRowMapper);
+        Contractor contractor = fetchOne(query, contractorRowMapper);
+        if (contractor == null) {
+            throw new NotFoundException(String.format("Contractor not found, contractorId='%s'", contractorId));
+        }
+        return contractor;
     }
 
     @Override
-    public void switchCurrent(String partyId, String contractorId) throws DaoException {
-        this.getNamedParameterJdbcTemplate().update("update nw.contractor set current = false where party_id =:party_id and contractor_id =:contractor_id and current;" +
-                        "update nw.contractor set current = true where id = (select max(id) from nw.contractor where party_id =:party_id and contractor_id =:contractor_id);",
-                new MapSqlParameterSource("party_id", partyId)
-                        .addValue("contractor_id", contractorId));
+    public void updateNotCurrent(Long id) throws DaoException {
+        Query query = getDslContext().update(CONTRACTOR).set(CONTRACTOR.CURRENT, false)
+                .where(CONTRACTOR.ID.eq(id));
+        executeOne(query);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.rbkmoney.damsel.domain.RussianLegalEntity;
 import com.rbkmoney.damsel.domain.RussianPrivateEntity;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.domain.enums.ContractorType;
 import com.rbkmoney.newway.domain.enums.LegalEntity;
 import com.rbkmoney.newway.domain.enums.PrivateEntity;
@@ -58,5 +59,14 @@ public class ContractorUtil {
             }
         }
         return contractor;
+    }
+
+
+    public static void resetBaseFields(MachineEvent event, long sequenceId, Contractor contractorSource) {
+        contractorSource.setId(null);
+        contractorSource.setRevision(null);
+        contractorSource.setWtime(null);
+        contractorSource.setSequenceId(sequenceId);
+        contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
     }
 }

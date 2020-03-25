@@ -1,5 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contract;
 
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
 import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
@@ -8,9 +9,8 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.domain.enums.ContractStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Contract;
+import com.rbkmoney.newway.domain.tables.pojos.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.pojos.Contractor;
-import com.rbkmoney.newway.domain.tables.pojos.Party;
-import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractClaimChangedHandler;
 import com.rbkmoney.newway.util.ContractUtil;
 import com.rbkmoney.newway.util.ContractorUtil;
@@ -43,70 +43,80 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
     public void handle(PartyChange change, MachineEvent event, Integer changeId) {
         long sequenceId = event.getEventId();
         getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetCreated()).forEach(e -> {
-            ContractEffectUnit contractEffectUnit = e.getContractEffect();
-            com.rbkmoney.damsel.domain.Contract contractCreated = contractEffectUnit.getEffect().getCreated();
-            String contractId = contractEffectUnit.getContractId();
-            String partyId = event.getSourceId();
-            log.info("Start contract created handling, sequenceId={}, partyId={}, contractId={}, changeId={}",
-                    sequenceId, partyId, contractId, changeId);
-            Contract contract = new Contract();
-            contract.setSequenceId(sequenceId);
-            contract.setChangeId(changeId);
-            contract.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-            Party partySource = partyDao.get(partyId);
-            if (partySource == null) {
-                throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
-            }
-            contract.setContractId(contractId);
-            contract.setPartyId(partyId);
-            if (contractCreated.isSetPaymentInstitution()) {
-                contract.setPaymentInstitutionId(contractCreated.getPaymentInstitution().getId());
-            }
-            contract.setCreatedAt(TypeUtil.stringToLocalDateTime(contractCreated.getCreatedAt()));
-            if (contractCreated.isSetValidSince()) {
-                contract.setValidSince(TypeUtil.stringToLocalDateTime(contractCreated.getValidSince()));
-            }
-            if (contractCreated.isSetValidUntil()) {
-                contract.setValidUntil(TypeUtil.stringToLocalDateTime(contractCreated.getValidUntil()));
-            }
-            contract.setStatus(TBaseUtil.unionFieldToEnum(contractCreated.getStatus(), ContractStatus.class));
-            if (contractCreated.getStatus().isSetTerminated()) {
-                contract.setStatusTerminatedAt(TypeUtil.stringToLocalDateTime(contractCreated.getStatus().getTerminated().getTerminatedAt()));
-            }
-            contract.setTermsId(contractCreated.getTerms().getId());
-            if (contractCreated.isSetLegalAgreement()) {
-                ContractUtil.fillContractLegalAgreementFields(contract, contractCreated.getLegalAgreement());
-            }
-            if (contractCreated.isSetReportPreferences() && contractCreated.getReportPreferences().isSetServiceAcceptanceActPreferences()) {
-                ContractUtil.fillReportPreferences(contract, contractCreated.getReportPreferences().getServiceAcceptanceActPreferences());
-            }
+                .filter(claimEffect -> claimEffect.isSetContractEffect() && claimEffect.getContractEffect().getEffect().isSetCreated())
+                .forEach(claimEffect -> handleEvent(event, changeId, sequenceId, claimEffect));
+    }
 
-            String contractorId = "";
-            if (contractCreated.isSetContractorId()) {
-                contractorId = contractCreated.getContractorId();
-            } else if (contractCreated.isSetContractor()) {
-                contractorId = UUID.randomUUID().toString();
-            }
+    private void handleEvent(MachineEvent event, Integer changeId, long sequenceId, ClaimEffect e) {
+        ContractEffectUnit contractEffectUnit = e.getContractEffect();
+        com.rbkmoney.damsel.domain.Contract contractCreated = contractEffectUnit.getEffect().getCreated();
+        String contractId = contractEffectUnit.getContractId();
+        String partyId = event.getSourceId();
+        log.info("Start contract created handling, sequenceId={}, partyId={}, contractId={}, changeId={}",
+                sequenceId, partyId, contractId, changeId);
+        Contract contract = new Contract();
+        contract.setSequenceId(sequenceId);
+        contract.setChangeId(changeId);
+        contract.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+        partyDao.get(partyId); //check party is exist
 
-            contract.setContractorId(contractorId);
-            contract.setCurrent(true);
+        contract.setContractId(contractId);
+        contract.setPartyId(partyId);
+        if (contractCreated.isSetPaymentInstitution()) {
+            contract.setPaymentInstitutionId(contractCreated.getPaymentInstitution().getId());
+        }
+        contract.setCreatedAt(TypeUtil.stringToLocalDateTime(contractCreated.getCreatedAt()));
+        if (contractCreated.isSetValidSince()) {
+            contract.setValidSince(TypeUtil.stringToLocalDateTime(contractCreated.getValidSince()));
+        }
+        if (contractCreated.isSetValidUntil()) {
+            contract.setValidUntil(TypeUtil.stringToLocalDateTime(contractCreated.getValidUntil()));
+        }
+        contract.setStatus(TBaseUtil.unionFieldToEnum(contractCreated.getStatus(), ContractStatus.class));
+        if (contractCreated.getStatus().isSetTerminated()) {
+            contract.setStatusTerminatedAt(TypeUtil.stringToLocalDateTime(contractCreated.getStatus().getTerminated().getTerminatedAt()));
+        }
+        contract.setTermsId(contractCreated.getTerms().getId());
+        if (contractCreated.isSetLegalAgreement()) {
+            ContractUtil.fillContractLegalAgreementFields(contract, contractCreated.getLegalAgreement());
+        }
+        if (contractCreated.isSetReportPreferences() && contractCreated.getReportPreferences().isSetServiceAcceptanceActPreferences()) {
+            ContractUtil.fillReportPreferences(contract, contractCreated.getReportPreferences().getServiceAcceptanceActPreferences());
+        }
 
-            long cntrctId = contractDao.save(contract);
+        String contractorId = initContractorId(contractCreated);
+        contract.setContractorId(contractorId);
 
-            if (contractCreated.isSetContractor()) {
-                Contractor contractor = ContractorUtil.convertContractor(sequenceId, event.getCreatedAt(), partyId, contractCreated.getContractor(), contractorId, changeId);
-                contractorDao.save(contractor);
-            }
+        contractDao.save(contract).ifPresentOrElse(
+                cntrctId -> updateContractReference(event, changeId, sequenceId, contractCreated, contractId, partyId, contractorId, cntrctId),
+                () -> log.info("contract create duplicated, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId)
+        );
+    }
 
-            List<com.rbkmoney.newway.domain.tables.pojos.ContractAdjustment> adjustments = ContractUtil.convertContractAdjustments(contractCreated, cntrctId);
-            contractAdjustmentDao.save(adjustments);
+    private String initContractorId(com.rbkmoney.damsel.domain.Contract contractCreated) {
+        String contractorId = "";
+        if (contractCreated.isSetContractorId()) {
+            contractorId = contractCreated.getContractorId();
+        } else if (contractCreated.isSetContractor()) {
+            contractorId = UUID.randomUUID().toString();
+        }
+        return contractorId;
+    }
 
-            List<com.rbkmoney.newway.domain.tables.pojos.PayoutTool> payoutTools = ContractUtil.convertPayoutTools(contractCreated, cntrctId);
-            payoutToolDao.save(payoutTools);
+    private void updateContractReference(MachineEvent event, Integer changeId, long sequenceId, com.rbkmoney.damsel.domain.Contract contractCreated,
+                                         String contractId, String partyId, String contractorId, Long cntrctId) {
+        if (contractCreated.isSetContractor()) {
+            Contractor contractor = ContractorUtil.convertContractor(sequenceId, event.getCreatedAt(), partyId, contractCreated.getContractor(), contractorId, changeId);
+            contractorDao.save(contractor);
+        }
 
-            log.info("Contract has been saved, sequenceId={}, partyId={}, contractId={}, changeId={}",
-                    sequenceId, partyId, contractId, changeId);
-        });
+        List<ContractAdjustment> adjustments = ContractUtil.convertContractAdjustments(contractCreated, cntrctId);
+        contractAdjustmentDao.save(adjustments);
+
+        List<com.rbkmoney.newway.domain.tables.pojos.PayoutTool> payoutTools = ContractUtil.convertPayoutTools(contractCreated, cntrctId);
+        payoutToolDao.save(payoutTools);
+
+        log.info("Contract has been saved, sequenceId={}, partyId={}, contractId={}, changeId={}",
+                sequenceId, partyId, contractId, changeId);
     }
 }

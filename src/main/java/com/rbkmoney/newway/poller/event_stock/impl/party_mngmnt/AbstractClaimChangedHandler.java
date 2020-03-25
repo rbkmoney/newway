@@ -34,4 +34,5 @@ public abstract class AbstractClaimChangedHandler extends AbstractPartyManagemen
         }
         return claimStatus;
     }
+
 }
