@@ -35,7 +35,6 @@ import java.util.List;
 public class InvoicePaymentAdjustmentStatusChangedHandler extends AbstractInvoicingHandler {
 
     private final AdjustmentDao adjustmentDao;
-    private final PaymentDao paymentDao;
     private final CashFlowDao cashFlowDao;
 
     private Filter filter = new PathConditionFilter(new PathConditionRule(
