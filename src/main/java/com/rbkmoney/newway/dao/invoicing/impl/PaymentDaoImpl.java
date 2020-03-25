@@ -47,17 +47,6 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
     }
 
     @Override
-    public void updateCurrentPayment(Payment payment) {
-        PaymentRecord paymentRecord = getDslContext().newRecord(PAYMENT, payment);
-        Query query = getDslContext().update(PAYMENT)
-                .set(paymentRecord)
-                    .where(PAYMENT.INVOICE_ID.eq(payment.getInvoiceId())
-                        .and(PAYMENT.PAYMENT_ID.eq(payment.getPaymentId()))
-                        .and(PAYMENT.CURRENT));
-        executeOne(query);
-    }
-
-    @Override
     public Payment get(String invoiceId, String paymentId) throws DaoException {
         Query query = getDslContext().selectFrom(PAYMENT)
                 .where(PAYMENT.INVOICE_ID.eq(invoiceId).and(PAYMENT.PAYMENT_ID.eq(paymentId)).and(PAYMENT.CURRENT));

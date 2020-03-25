@@ -430,19 +430,6 @@ public class DaoTests extends AbstractAppDaoTests {
     }
 
     @Test
-    public void paymentUpdateTest() {
-        jdbcTemplate.execute("truncate table nw.payment cascade");
-        Payment payment = random(Payment.class, "id");
-        Payment paymentTwo = random(Payment.class, "id");
-        paymentTwo.setCurrent(true);
-        paymentDao.saveBatch(Arrays.asList(payment, paymentTwo));
-        paymentTwo.setStatus(PaymentStatus.pending);
-        paymentDao.updateCurrentPayment(paymentTwo);
-        Payment savedPayment = paymentDao.get(paymentTwo.getInvoiceId(), paymentTwo.getPaymentId());
-        Assert.assertEquals(PaymentStatus.pending, savedPayment.getStatus());
-    }
-
-    @Test
     public void refundDaoTest() {
         jdbcTemplate.execute("truncate table nw.refund cascade");
         Refund refund = random(Refund.class);
