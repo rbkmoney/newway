@@ -4,7 +4,7 @@ import com.rbkmoney.damsel.domain.WithdrawalProviderObject;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.dao.dominant.impl.WithdrawalProviderDaoImpl;
 import com.rbkmoney.newway.domain.tables.pojos.WithdrawalProvider;
-import com.rbkmoney.newway.poller.dominant.AbstractTemporaryDominantHandler;
+import com.rbkmoney.newway.poller.dominant.AbstractDominantHandler;
 import com.rbkmoney.newway.util.JsonUtil;
 import org.springframework.stereotype.Component;
 
@@ -12,11 +12,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class TemporaryWithdrawalProviderHandler extends AbstractTemporaryDominantHandler<WithdrawalProviderObject, WithdrawalProvider, Integer> {
+public class WithdrawalProviderHandler extends AbstractDominantHandler<WithdrawalProviderObject, WithdrawalProvider, Integer> {
 
     private final WithdrawalProviderDaoImpl withdrawalProviderDao;
 
-    public TemporaryWithdrawalProviderHandler(WithdrawalProviderDaoImpl withdrawalProviderDao) {
+    public WithdrawalProviderHandler(WithdrawalProviderDaoImpl withdrawalProviderDao) {
         this.withdrawalProviderDao = withdrawalProviderDao;
     }
 

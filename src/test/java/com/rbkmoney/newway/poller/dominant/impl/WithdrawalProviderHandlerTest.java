@@ -10,7 +10,7 @@ import java.util.Map;
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
 import static org.junit.Assert.*;
 
-public class TemporaryWithdrawalProviderHandlerTest {
+public class WithdrawalProviderHandlerTest {
 
     @Mock
     private WithdrawalProviderDaoImpl withdrawalProviderDao;
@@ -19,7 +19,7 @@ public class TemporaryWithdrawalProviderHandlerTest {
     public void convertToDatabaseObject() {
         WithdrawalProviderObject withdrawalProviderObject = buildWithdrawalProviderObject();
 
-        TemporaryWithdrawalProviderHandler handler = new TemporaryWithdrawalProviderHandler(withdrawalProviderDao);
+        WithdrawalProviderHandler handler = new WithdrawalProviderHandler(withdrawalProviderDao);
         handler.setDomainObject(DomainObject.withdrawal_provider(withdrawalProviderObject));
         var withdrawalProvider = handler.convertToDatabaseObject(withdrawalProviderObject, 123L, true);
         assertNotNull(withdrawalProvider);
