@@ -46,9 +46,9 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
                 .ifPresentOrElse(
                         saveResult -> {
                             contractorDao.updateNotCurrent(oldId);
-                            log.info("Party identificational has been saved, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId);
+                            log.info("Contractor identificational has been saved, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId);
                         },
-                        () -> log.info("Party identificational duplicated, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId)
+                        () -> log.info("Contractor identificational duplicated, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId)
                 );
     }
 }

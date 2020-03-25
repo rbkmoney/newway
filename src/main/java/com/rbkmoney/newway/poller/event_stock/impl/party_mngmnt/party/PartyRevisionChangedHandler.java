@@ -93,9 +93,9 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
                     .ifPresentOrElse(
                             saveResult -> {
                                 contractorDao.updateNotCurrent(oldId);
-                                log.info("Party revision has been saved, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId);
+                                log.info("Contractor revision has been saved, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId);
                             },
-                            () -> log.info("Party revision duplicated, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId)
+                            () -> log.info("Contractor revision duplicated, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId)
                     );
         });
     }

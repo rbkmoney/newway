@@ -34,8 +34,7 @@ public class PartyManagementService {
                 Integer changeId = i;
                 partyManagementHandlers.stream()
                         .filter(handler -> handler.accept(partyChange))
-                        .findFirst()
-                        .ifPresent(handler -> handler.handle(partyChange, machineEvent, changeId));
+                        .forEach(handler -> handler.handle(partyChange, machineEvent, changeId));
             }
         }
     }
