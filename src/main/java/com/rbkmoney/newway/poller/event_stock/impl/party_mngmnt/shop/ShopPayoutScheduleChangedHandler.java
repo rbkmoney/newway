@@ -49,6 +49,6 @@ public class ShopPayoutScheduleChangedHandler extends AbstractClaimChangedHandle
             shopSource.setPayoutScheduleId(null);
         }
 
-        shopDao.saveWithUpdateCurrent(partyId, changeId, shopSource, shopId, sequenceId, oldEventId, "payoutScheduleChanged");
+        shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "payoutScheduleChanged");
     }
 }

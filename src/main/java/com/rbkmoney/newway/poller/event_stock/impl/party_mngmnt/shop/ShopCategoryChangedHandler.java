@@ -44,6 +44,6 @@ public class ShopCategoryChangedHandler extends AbstractClaimChangedHandler {
 
         shopSource.setCategoryId(categoryId);
 
-        shopDao.saveWithUpdateCurrent(partyId, changeId, shopSource, shopId, sequenceId, oldEventId, "categoryId");
+        shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "categoryId");
     }
 }

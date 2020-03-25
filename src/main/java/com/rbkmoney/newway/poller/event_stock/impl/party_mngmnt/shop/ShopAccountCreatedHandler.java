@@ -45,7 +45,7 @@ public class ShopAccountCreatedHandler extends AbstractClaimChangedHandler {
         ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource);
         ShopUtil.fillShopAccount(shopSource, accountCreated);
 
-        shopDao.saveWithUpdateCurrent(partyId, changeId, shopSource, shopId, sequenceId, oldEventId, "accountCreated");
+        shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "accountCreated");
     }
 
 }

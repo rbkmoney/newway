@@ -79,7 +79,7 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
             Long oldEventId = shopSource.getId();
             ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource);
             shopSource.setRevision(revision);
-            shopDao.saveWithUpdateCurrent(partyId, changeId, shopSource, shopId, sequenceId, oldEventId, "revision");
+            shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "revision");
         });
     }
 

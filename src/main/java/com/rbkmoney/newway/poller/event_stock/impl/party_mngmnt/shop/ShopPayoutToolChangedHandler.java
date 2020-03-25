@@ -43,6 +43,6 @@ public class ShopPayoutToolChangedHandler extends AbstractClaimChangedHandler {
         ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource);
         shopSource.setPayoutToolId(payoutToolChanged);
 
-        shopDao.saveWithUpdateCurrent(partyId, changeId, shopSource, shopId, sequenceId, oldEventId, "payoutToolChanged");
+        shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "payoutToolChanged");
     }
 }

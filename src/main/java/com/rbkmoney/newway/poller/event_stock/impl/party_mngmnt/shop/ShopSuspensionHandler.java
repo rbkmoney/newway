@@ -51,7 +51,7 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
             shopSource.setSuspensionSuspendedSince(TypeUtil.stringToLocalDateTime(suspension.getSuspended().getSince()));
         }
 
-        shopDao.saveWithUpdateCurrent(partyId, changeId, shopSource, shopId, sequenceId, oldEventId, "suspension");
+        shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "suspension");
     }
 
     @Override

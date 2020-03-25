@@ -54,10 +54,10 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     }
 
     @Override
-    public void updateNotCurrent(Long shopId) throws DaoException {
+    public void updateNotCurrent(Long id) throws DaoException {
         Query query = getDslContext()
                 .update(SHOP).set(SHOP.CURRENT, false)
-                .where(SHOP.ID.eq(shopId));
+                .where(SHOP.ID.eq(id));
         executeOne(query);
     }
 
@@ -69,15 +69,15 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     }
 
     @Override
-    public void saveWithUpdateCurrent(String partyId, Integer changeId, Shop shopSource, String shopId, long sequenceId, Long oldEventId, String eventName) {
+    public void saveWithUpdateCurrent(Shop shopSource, Long oldEventId, String eventName) {
         save(shopSource).ifPresentOrElse(
                 aLong -> {
                     updateNotCurrent(oldEventId);
                     log.info("Shop {} has been saved, sequenceId={}, partyId={}, shopId={}, changeId={}",
-                            eventName, sequenceId, partyId, shopId, changeId);
+                            eventName, shopSource.getSequenceId(), shopSource.getPartyId(), shopSource.getShopId(), shopSource.getChangeId());
                 },
                 () -> log.info("Shop {}} duplicated, sequenceId={}, partyId={}, shopId={}, changeId={}",
-                        eventName, sequenceId, partyId, shopId, changeId)
+                        eventName, shopSource.getSequenceId(), shopSource.getPartyId(), shopSource.getShopId(), shopSource.getChangeId())
         );
     }
 }

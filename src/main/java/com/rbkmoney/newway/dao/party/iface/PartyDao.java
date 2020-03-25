@@ -13,5 +13,5 @@ public interface PartyDao extends GenericDao {
 
     void updateNotCurrent(Long partyId) throws DaoException;
 
-    void saveWithUpdateCurrent(Integer changeId, long sequenceId, String partyId, Party partySource, Long oldId, String eventName);
+    void saveWithUpdateCurrent(Party partySource, Long oldId, String eventName);
 }

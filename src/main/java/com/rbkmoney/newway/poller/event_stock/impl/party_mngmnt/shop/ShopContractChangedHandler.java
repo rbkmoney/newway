@@ -46,6 +46,6 @@ public class ShopContractChangedHandler extends AbstractClaimChangedHandler {
         shopSource.setContractId(contractChanged.getContractId());
         shopSource.setPayoutToolId(contractChanged.getPayoutToolId());
 
-        shopDao.saveWithUpdateCurrent(partyId, changeId, shopSource, shopId, sequenceId, oldEventId, "contractChanged");
+        shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "contractChanged");
     }
 }

@@ -56,7 +56,7 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
             partySource.setSuspensionSuspendedSince(TypeUtil.stringToLocalDateTime(partySuspension.getSuspended().getSince()));
         }
 
-        partyDao.saveWithUpdateCurrent(changeId, sequenceId, partyId, partySource, oldId, PARTY_SUSPENSION);
+        partyDao.saveWithUpdateCurrent(partySource, oldId, PARTY_SUSPENSION);
     }
 
     @Override

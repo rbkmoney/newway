@@ -62,14 +62,16 @@ public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
     }
 
     @Override
-    public void saveWithUpdateCurrent(Integer changeId, long sequenceId, String partyId, Party partySource, Long oldId, String eventName) {
+    public void saveWithUpdateCurrent(Party partySource, Long oldId, String eventName) {
         save(partySource)
                 .ifPresentOrElse(
                         saveResult -> {
                             updateNotCurrent(oldId);
-                            log.info("Party {} has been saved, sequenceId={}, partyId={}, changeId={}", eventName, sequenceId, partyId, changeId);
+                            log.info("Party {} has been saved, sequenceId={}, partyId={}, changeId={}", eventName,
+                                    partySource.getSequenceId(), partySource.getPartyId(), partySource.getChangeId());
                         },
-                        () -> log.info("Party {} duplicated, sequenceId={}, partyId={}, changeId={}", eventName, sequenceId, partyId, changeId)
+                        () -> log.info("Party {} duplicated, sequenceId={}, partyId={}, changeId={}", eventName,
+                                partySource.getSequenceId(), partySource.getPartyId(), partySource.getChangeId())
                 );
     }
 }

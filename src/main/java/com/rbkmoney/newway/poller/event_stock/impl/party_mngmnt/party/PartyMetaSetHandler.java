@@ -43,7 +43,7 @@ public class PartyMetaSetHandler extends AbstractPartyManagementHandler {
         partySource.setPartyMetaSetNs(partyMetaSet.getNs());
         partySource.setPartyMetaSetDataJson(JsonUtil.tBaseToJsonString(partyMetaSet.getData()));
 
-        partyDao.saveWithUpdateCurrent(changeId, sequenceId, partyId, partySource, oldId, "metaset");
+        partyDao.saveWithUpdateCurrent(partySource, oldId, "metaset");
     }
 
     @Override

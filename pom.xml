@@ -398,9 +398,6 @@
                 <configuration>
                     <destFile>${sonar.jacoco.reportPath}</destFile>
                     <append>true</append>
-                    <excludes>
-                        <exclude>com/rbkmoney/newway/util/**/*</exclude>
-                    </excludes>
                 </configuration>
                 <executions>
                     <execution>

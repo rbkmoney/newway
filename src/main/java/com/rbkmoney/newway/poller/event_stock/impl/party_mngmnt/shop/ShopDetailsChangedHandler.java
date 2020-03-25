@@ -46,6 +46,6 @@ public class ShopDetailsChangedHandler extends AbstractClaimChangedHandler {
         shopSource.setDetailsName(detailsChanged.getName());
         shopSource.setDetailsDescription(detailsChanged.getDescription());
 
-        shopDao.saveWithUpdateCurrent(partyId, changeId, shopSource, shopId, sequenceId, oldEventId, "detailsChanged");
+        shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "detailsChanged");
     }
 }

@@ -53,7 +53,7 @@ public class PartyBlockingHandler extends AbstractPartyManagementHandler {
             partySource.setBlockingBlockedSince(TypeUtil.stringToLocalDateTime(partyBlocking.getBlocked().getSince()));
         }
 
-        partyDao.saveWithUpdateCurrent(changeId, sequenceId, partyId, partySource, oldId, "blocking");
+        partyDao.saveWithUpdateCurrent(partySource, oldId, "blocking");
     }
 
     @Override

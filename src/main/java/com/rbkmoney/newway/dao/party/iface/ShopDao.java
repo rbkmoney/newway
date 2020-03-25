@@ -16,5 +16,5 @@ public interface ShopDao extends GenericDao {
 
     List<Shop> getByPartyId(String partyId);
 
-    void saveWithUpdateCurrent(String partyId, Integer changeId, Shop shopSource, String shopId, long sequenceId, Long oldEventId, String eventName);
+    void saveWithUpdateCurrent(Shop shopSource, Long oldEventId, String eventName);
 }

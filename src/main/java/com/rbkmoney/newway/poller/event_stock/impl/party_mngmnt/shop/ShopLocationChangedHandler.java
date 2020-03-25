@@ -48,6 +48,6 @@ public class ShopLocationChangedHandler extends AbstractClaimChangedHandler {
             throw new IllegalArgumentException("Illegal shop location " + locationChanged);
         }
 
-        shopDao.saveWithUpdateCurrent(partyId, changeId, shopSource, shopId, sequenceId, oldEventId, "locationChanged");
+        shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "locationChanged");
     }
 }
