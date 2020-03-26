@@ -36,7 +36,7 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
         Suspension suspension = change.getShopSuspension().getSuspension();
         String shopId = change.getShopSuspension().getShopId();
@@ -50,6 +50,8 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
         shopSource.setRevision(null);
         shopSource.setWtime(null);
         shopSource.setEventId(eventId);
+        shopSource.setSequenceId(eventId);
+        shopSource.setChangeId(changeId);
         shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         shopSource.setSuspension(TBaseUtil.unionFieldToEnum(suspension, com.rbkmoney.newway.domain.enums.Suspension.class));
         if (suspension.isSetActive()) {

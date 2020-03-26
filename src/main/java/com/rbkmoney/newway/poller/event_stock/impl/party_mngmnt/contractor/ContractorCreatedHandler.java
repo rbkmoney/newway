@@ -36,7 +36,7 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractorEffect() && e.getContractorEffect().getEffect().isSetCreated()).forEach(e -> {
@@ -50,7 +50,7 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
             if (partySource == null) {
                 throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
             }
-            Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractorCreated, contractorId);
+            Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractorCreated, contractorId, changeId);
             contractor.setIdentificationalLevel(partyContractor.getStatus().name());
             contractorDao.save(contractor);
             log.info("Contract contractor has been saved, eventId={}, partyId={}, contractorId={}", eventId, partyId, contractorId);

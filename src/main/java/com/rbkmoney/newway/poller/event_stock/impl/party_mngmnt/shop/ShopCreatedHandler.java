@@ -37,7 +37,7 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetCreated()).forEach(e -> {
             long eventId = event.getId();
@@ -48,6 +48,8 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
             log.info("Start shop created handling, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
             com.rbkmoney.newway.domain.tables.pojos.Shop shop = new com.rbkmoney.newway.domain.tables.pojos.Shop();
             shop.setEventId(eventId);
+            shop.setSequenceId(eventId);
+            shop.setChangeId(changeId);
             shop.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             Party partySource = partyDao.get(partyId);
             if (partySource == null) {

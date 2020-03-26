@@ -37,7 +37,7 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
         Suspension partySuspension = change.getPartySuspension();
         String partyId = event.getSource().getPartyId();
@@ -50,6 +50,8 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
         partySource.setRevision(null);
         partySource.setWtime(null);
         partySource.setEventId(eventId);
+        partySource.setSequenceId(eventId);
+        partySource.setChangeId(changeId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         partySource.setSuspension(TBaseUtil.unionFieldToEnum(partySuspension, com.rbkmoney.newway.domain.enums.Suspension.class));
         if (partySuspension.isSetActive()) {

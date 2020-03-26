@@ -37,7 +37,7 @@ public class PartyBlockingHandler extends AbstractPartyManagementHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
         Blocking partyBlocking = change.getPartyBlocking();
         String partyId = event.getSource().getPartyId();
@@ -50,6 +50,8 @@ public class PartyBlockingHandler extends AbstractPartyManagementHandler {
         partySource.setRevision(null);
         partySource.setWtime(null);
         partySource.setEventId(eventId);
+        partySource.setSequenceId(eventId);
+        partySource.setChangeId(changeId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         partySource.setBlocking(TBaseUtil.unionFieldToEnum(partyBlocking, com.rbkmoney.newway.domain.enums.Blocking.class));
         if (partyBlocking.isSetUnblocked()) {

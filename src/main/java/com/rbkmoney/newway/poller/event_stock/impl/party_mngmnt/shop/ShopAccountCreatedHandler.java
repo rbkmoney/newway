@@ -30,7 +30,7 @@ public class ShopAccountCreatedHandler extends AbstractClaimChangedHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetAccountCreated()).forEach(e -> {
@@ -47,6 +47,8 @@ public class ShopAccountCreatedHandler extends AbstractClaimChangedHandler {
             shopSource.setRevision(null);
             shopSource.setWtime(null);
             shopSource.setEventId(eventId);
+            shopSource.setChangeId(changeId);
+            shopSource.setSequenceId(eventId);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             ShopUtil.fillShopAccount(shopSource, accountCreated);
 

@@ -39,7 +39,7 @@ public class ContractLegalAgreementBoundHandler extends AbstractClaimChangedHand
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetLegalAgreementBound()).forEach(e -> {
@@ -57,6 +57,8 @@ public class ContractLegalAgreementBoundHandler extends AbstractClaimChangedHand
             contractSource.setRevision(null);
             contractSource.setWtime(null);
             contractSource.setEventId(eventId);
+            contractSource.setSequenceId(eventId);
+            contractSource.setChangeId(changeId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             ContractUtil.fillContractLegalAgreementFields(contractSource, legalAgreementBound);
             contractDao.updateNotCurrent(partyId, contractId);

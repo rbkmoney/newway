@@ -28,7 +28,7 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractorEffect() && e.getContractorEffect().getEffect().isSetIdentificationLevelChanged()).forEach(e -> {
@@ -45,6 +45,8 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
             contractorSource.setRevision(null);
             contractorSource.setWtime(null);
             contractorSource.setEventId(eventId);
+            contractorSource.setSequenceId(eventId);
+            contractorSource.setChangeId(changeId);
             contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractorSource.setIdentificationalLevel(identificationLevelChanged.name());
             contractorDao.updateNotCurrent(partyId, contractorId);

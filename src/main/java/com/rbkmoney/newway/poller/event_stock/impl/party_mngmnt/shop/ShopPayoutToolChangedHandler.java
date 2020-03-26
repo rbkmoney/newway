@@ -28,7 +28,7 @@ public class ShopPayoutToolChangedHandler extends AbstractClaimChangedHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetPayoutToolChanged()).forEach(e -> {
@@ -45,6 +45,8 @@ public class ShopPayoutToolChangedHandler extends AbstractClaimChangedHandler {
             shopSource.setRevision(null);
             shopSource.setWtime(null);
             shopSource.setEventId(eventId);
+            shopSource.setSequenceId(eventId);
+            shopSource.setChangeId(changeId);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             shopSource.setPayoutToolId(payoutToolChanged);
             shopDao.updateNotCurrent(partyId, shopId);

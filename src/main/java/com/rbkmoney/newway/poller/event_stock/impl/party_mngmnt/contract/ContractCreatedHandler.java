@@ -48,7 +48,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
         getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetCreated()).forEach(e -> {
@@ -59,6 +59,8 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             log.info("Start contract created handling, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
             Contract contract = new Contract();
             contract.setEventId(eventId);
+            contract.setSequenceId(eventId);
+            contract.setChangeId(changeId);
             contract.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             Party partySource = partyDao.get(partyId);
             if (partySource == null) {
@@ -99,7 +101,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             long cntrctId = contractDao.save(contract);
 
             if (contractCreated.isSetContractor()) {
-                Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractCreated.getContractor(), contractorId);
+                Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractCreated.getContractor(), contractorId, changeId);
                 contractorDao.save(contractor);
             }
 
