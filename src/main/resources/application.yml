@@ -46,10 +46,18 @@ kafka:
     enable-auto-commit: false
     auto-offset-reset: earliest
     max-poll-records: 20
+    max-poll-interval-ms: 30000
+    session-timeout-ms: 30000
+    invoicing:
+      concurrency: 7
+    recurrent-payment-tool:
+      concurrency: 7
   topics:
     invoice:
       id: mg-invoice-100-2
       enabled: false
+    recurrent-payment-tool:
+      id: mg-events-recurrent-paytools
 
 bm:
   partyManagement:

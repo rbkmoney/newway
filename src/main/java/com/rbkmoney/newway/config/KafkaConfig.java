@@ -42,11 +42,16 @@ public class KafkaConfig {
     private String clientId;
     @Value("${kafka.consumer.max-poll-records}")
     private int maxPollRecords;
-
+    @Value("${kafka.consumer.max-poll-interval-ms}")
+    private int maxPollIntervalMs;
+    @Value("${kafka.consumer.session-timeout-ms}")
+    private int sessionTimeoutMs;
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
-    @Value("${kafka.consumer.concurrency}")
-    private int concurrency;
+    @Value("${kafka.consumer.invoicing.concurrency}")
+    private int invoicingConcurrency;
+    @Value("${kafka.consumer.recurrent-payment-tool.concurrency}")
+    private int recPayToolConcurrency;
     @Value("${retry-policy.maxAttempts}")
     int maxAttempts;
 
@@ -61,7 +66,8 @@ public class KafkaConfig {
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, enableAutoCommit);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
         props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, maxPollRecords);
-
+        props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, sessionTimeoutMs);
+        props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, maxPollIntervalMs);
         configureSsl(props, kafkaSslProperties);
 
         return props;
@@ -89,13 +95,24 @@ public class KafkaConfig {
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> kafkaListenerContainerFactory(
             ConsumerFactory<String, MachineEvent> consumerFactory
     ) {
+        return createConcurrentFactory(consumerFactory, invoicingConcurrency);
+    }
+
+    @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> recPayToolContainerFactory(
+            ConsumerFactory<String, MachineEvent> consumerFactory) {
+        return createConcurrentFactory(consumerFactory, recPayToolConcurrency);
+    }
+
+    private KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> createConcurrentFactory(
+            ConsumerFactory<String, MachineEvent> consumerFactory, int threadsNumber) {
         ConcurrentKafkaListenerContainerFactory<String, MachineEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         factory.setBatchListener(true);
         factory.getContainerProperties().setAckOnError(false);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         factory.setBatchErrorHandler(kafkaErrorHandler());
-        factory.setConcurrency(concurrency);
+        factory.setConcurrency(threadsNumber);
         return factory;
     }
 
@@ -103,13 +120,4 @@ public class KafkaConfig {
         return new SeekToCurrentWithSleepBatchErrorHandler();
     }
 
-    @Bean
-    public BinaryDeserializer<EventPayload> paymentEventPayloadDeserializer() {
-        return new PaymentEventPayloadDeserializer();
-    }
-
-    @Bean
-    public MachineEventParser<EventPayload> paymentEventPayloadMachineEventParser(BinaryDeserializer<EventPayload> paymentEventPayloadDeserializer) {
-        return new PaymentEventPayloadMachineEventParser(paymentEventPayloadDeserializer);
-    }
 }
