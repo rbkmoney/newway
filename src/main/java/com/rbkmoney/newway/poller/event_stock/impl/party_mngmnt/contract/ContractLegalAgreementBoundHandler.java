@@ -57,7 +57,7 @@ public class ContractLegalAgreementBoundHandler extends AbstractClaimChangedHand
             contractSource.setRevision(null);
             contractSource.setWtime(null);
             contractSource.setEventId(eventId);
-            contractSource.setSequenceId(eventId);
+            contractSource.setSequenceId((long) event.getSequence());
             contractSource.setChangeId(changeId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             ContractUtil.fillContractLegalAgreementFields(contractSource, legalAgreementBound);

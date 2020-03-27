@@ -57,7 +57,7 @@ public class ContractAdjustmentCreatedHandler extends AbstractClaimChangedHandle
             contractSource.setRevision(null);
             contractSource.setWtime(null);
             contractSource.setEventId(eventId);
-            contractSource.setSequenceId(eventId);
+            contractSource.setSequenceId((long) event.getSequence());
             contractSource.setChangeId(changeId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractDao.updateNotCurrent(partyId, contractId);

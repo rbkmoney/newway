@@ -45,7 +45,7 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
             contractorSource.setRevision(null);
             contractorSource.setWtime(null);
             contractorSource.setEventId(eventId);
-            contractorSource.setSequenceId(eventId);
+            contractorSource.setSequenceId((long) event.getSequence());
             contractorSource.setChangeId(changeId);
             contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractorSource.setIdentificationalLevel(identificationLevelChanged.name());

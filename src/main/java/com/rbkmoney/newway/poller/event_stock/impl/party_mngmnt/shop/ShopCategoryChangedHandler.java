@@ -43,7 +43,7 @@ public class ShopCategoryChangedHandler extends AbstractClaimChangedHandler {
             shopSource.setId(null);
             shopSource.setRevision(null);
             shopSource.setWtime(null);
-            shopSource.setSequenceId(eventId);
+            shopSource.setSequenceId((long) event.getSequence());
             shopSource.setChangeId(changeId);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             shopSource.setCategoryId(categoryId);

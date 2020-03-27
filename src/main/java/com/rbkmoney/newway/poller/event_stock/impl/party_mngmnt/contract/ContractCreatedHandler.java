@@ -59,7 +59,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             log.info("Start contract created handling, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
             Contract contract = new Contract();
             contract.setEventId(eventId);
-            contract.setSequenceId(eventId);
+            contract.setSequenceId((long) event.getSequence());
             contract.setChangeId(changeId);
             contract.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             Party partySource = partyDao.get(partyId);
@@ -101,7 +101,8 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             long cntrctId = contractDao.save(contract);
 
             if (contractCreated.isSetContractor()) {
-                Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractCreated.getContractor(), contractorId, changeId);
+                Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId,
+                        contractCreated.getContractor(), contractorId, changeId, event.getSequence());
                 contractorDao.save(contractor);
             }
 

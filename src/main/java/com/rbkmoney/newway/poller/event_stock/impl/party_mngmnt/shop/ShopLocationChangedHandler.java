@@ -46,7 +46,7 @@ public class ShopLocationChangedHandler extends AbstractClaimChangedHandler {
             shopSource.setRevision(null);
             shopSource.setWtime(null);
             shopSource.setEventId(eventId);
-            shopSource.setSequenceId(eventId);
+            shopSource.setSequenceId((long) event.getSequence());
             shopSource.setChangeId(changeId);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             if (locationChanged.isSetUrl()) {

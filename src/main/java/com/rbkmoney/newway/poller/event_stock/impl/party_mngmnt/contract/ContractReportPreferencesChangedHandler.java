@@ -57,7 +57,7 @@ public class ContractReportPreferencesChangedHandler extends AbstractClaimChange
             contractSource.setRevision(null);
             contractSource.setWtime(null);
             contractSource.setEventId(eventId);
-            contractSource.setSequenceId(eventId);
+            contractSource.setSequenceId((long) event.getSequence());
             contractSource.setChangeId(changeId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             if (reportPreferencesChanged != null && reportPreferencesChanged.isSetServiceAcceptanceActPreferences()) {

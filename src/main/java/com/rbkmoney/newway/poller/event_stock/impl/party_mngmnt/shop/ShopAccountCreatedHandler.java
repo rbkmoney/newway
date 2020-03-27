@@ -48,7 +48,7 @@ public class ShopAccountCreatedHandler extends AbstractClaimChangedHandler {
             shopSource.setWtime(null);
             shopSource.setEventId(eventId);
             shopSource.setChangeId(changeId);
-            shopSource.setSequenceId(eventId);
+            shopSource.setSequenceId((long) event.getSequence());
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             ShopUtil.fillShopAccount(shopSource, accountCreated);
 

@@ -57,7 +57,7 @@ public class ContractStatusChangedHandler extends AbstractClaimChangedHandler {
             contractSource.setRevision(null);
             contractSource.setWtime(null);
             contractSource.setEventId(eventId);
-            contractSource.setSequenceId(eventId);
+            contractSource.setSequenceId((long) event.getSequence());
             contractSource.setChangeId(changeId);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractSource.setStatus(TBaseUtil.unionFieldToEnum(statusChanged, com.rbkmoney.newway.domain.enums.ContractStatus.class));

@@ -50,7 +50,7 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
         partySource.setRevision(null);
         partySource.setWtime(null);
         partySource.setEventId(eventId);
-        partySource.setSequenceId(eventId);
+        partySource.setSequenceId((long) event.getSequence());
         partySource.setChangeId(changeId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         partySource.setSuspension(TBaseUtil.unionFieldToEnum(partySuspension, com.rbkmoney.newway.domain.enums.Suspension.class));
