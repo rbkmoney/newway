@@ -27,7 +27,7 @@ public class RecurrentPaymentToolService {
     public void handleEvents(List<MachineEvent> events) {
         events.forEach(event -> {
             AtomicInteger cnt = new AtomicInteger(0);
-            List<RecurrentPaymentToolChange> changes = parser.parse(event).getChanges();
+            var changes = parser.parse(event).getChanges();
             changes.forEach(change -> {
                 for (var handler : handlers) {
                     if (handler.accept(change)) {
