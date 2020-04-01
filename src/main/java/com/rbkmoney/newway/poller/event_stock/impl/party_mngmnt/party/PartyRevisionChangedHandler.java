@@ -62,7 +62,7 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
         partySource.setId(null);
         partySource.setWtime(null);
         partySource.setEventId(eventId);
-        partySource.setSequenceId((long) event.getSequence());
+        partySource.setSequenceId(event.getSequence());
         partySource.setChangeId(changeId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         long revision = partyRevisionChanged.getRevision();

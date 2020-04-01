@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.shop;
 
 import com.rbkmoney.damsel.domain.ShopDetails;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.ShopEffectUnit;
@@ -14,6 +15,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -31,8 +35,11 @@ public class ShopDetailsChangedHandler extends AbstractClaimChangedHandler {
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetDetailsChanged()).forEach(e -> {
+        List<ClaimEffect> collect = getClaimStatus(change).getAccepted().getEffects().stream()
+                .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetDetailsChanged())
+                .collect(Collectors.toList());
+        for (int i = 0; i < collect.size(); i++) {
+            ClaimEffect e = collect.get(i);
             ShopEffectUnit shopEffect = e.getShopEffect();
             ShopDetails detailsChanged = shopEffect.getEffect().getDetailsChanged();
             String shopId = shopEffect.getShopId();
@@ -46,14 +53,15 @@ public class ShopDetailsChangedHandler extends AbstractClaimChangedHandler {
             shopSource.setRevision(null);
             shopSource.setWtime(null);
             shopSource.setEventId(eventId);
-            shopSource.setSequenceId((long) event.getSequence());
+            shopSource.setSequenceId(event.getSequence());
             shopSource.setChangeId(changeId);
+            shopSource.setClaimId(i);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             shopSource.setDetailsName(detailsChanged.getName());
             shopSource.setDetailsDescription(detailsChanged.getDescription());
             shopDao.updateNotCurrent(partyId, shopId);
             shopDao.save(shopSource);
             log.info("Shop detailsChanged has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
-        });
+        }
     }
 }

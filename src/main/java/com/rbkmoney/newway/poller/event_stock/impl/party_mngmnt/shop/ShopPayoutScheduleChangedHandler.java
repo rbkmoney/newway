@@ -1,9 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.shop;
 
-import com.rbkmoney.damsel.payment_processing.Event;
-import com.rbkmoney.damsel.payment_processing.PartyChange;
-import com.rbkmoney.damsel.payment_processing.ScheduleChanged;
-import com.rbkmoney.damsel.payment_processing.ShopEffectUnit;
+import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.dao.party.iface.ShopDao;
 import com.rbkmoney.newway.domain.tables.pojos.Shop;
@@ -14,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ShopPayoutScheduleChangedHandler extends AbstractClaimChangedHandler {
@@ -30,8 +30,11 @@ public class ShopPayoutScheduleChangedHandler extends AbstractClaimChangedHandle
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetPayoutScheduleChanged()).forEach(e -> {
+        List<ClaimEffect> collect = getClaimStatus(change).getAccepted().getEffects().stream()
+                .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetPayoutScheduleChanged())
+                .collect(Collectors.toList());
+        for (int i = 0; i < collect.size(); i++) {
+            ClaimEffect e = collect.get(i);
             ShopEffectUnit shopEffect = e.getShopEffect();
             ScheduleChanged payoutScheduleChanged = shopEffect.getEffect().getPayoutScheduleChanged();
             String shopId = shopEffect.getShopId();
@@ -45,8 +48,9 @@ public class ShopPayoutScheduleChangedHandler extends AbstractClaimChangedHandle
             shopSource.setRevision(null);
             shopSource.setWtime(null);
             shopSource.setEventId(eventId);
-            shopSource.setSequenceId((long) event.getSequence());
+            shopSource.setSequenceId(event.getSequence());
             shopSource.setChangeId(changeId);
+            shopSource.setClaimId(i);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             if (payoutScheduleChanged.isSetSchedule()) {
                 shopSource.setPayoutScheduleId(payoutScheduleChanged.getSchedule().getId());
@@ -56,6 +60,6 @@ public class ShopPayoutScheduleChangedHandler extends AbstractClaimChangedHandle
             shopDao.updateNotCurrent(partyId, shopId);
             shopDao.save(shopSource);
             log.info("Shop payoutScheduleChanged has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
-        });
+        }
     }
 }

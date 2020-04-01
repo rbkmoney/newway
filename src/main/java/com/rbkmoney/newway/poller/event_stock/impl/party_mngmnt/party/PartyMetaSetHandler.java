@@ -49,8 +49,8 @@ public class PartyMetaSetHandler extends AbstractPartyManagementHandler {
         partySource.setId(null);
         partySource.setRevision(null);
         partySource.setWtime(null);
-        partySource.setSequenceId((long) event.getSequence());
-        partySource.setSequenceId(eventId);
+        partySource.setEventId(eventId);
+        partySource.setSequenceId(event.getSequence());
         partySource.setChangeId(changeId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         partySource.setPartyMetaSetNs(partyMetaSet.getNs());

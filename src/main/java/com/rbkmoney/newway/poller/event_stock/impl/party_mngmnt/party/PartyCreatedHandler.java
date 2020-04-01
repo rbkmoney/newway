@@ -46,7 +46,7 @@ public class PartyCreatedHandler extends AbstractPartyManagementHandler {
         log.info("Start party created handling, eventId={}, partyId={}", eventId, partyId);
         Party party = new Party();
         party.setEventId(eventId);
-        party.setSequenceId((long) event.getSequence());
+        party.setSequenceId(event.getSequence());
         party.setChangeId(changeId);
         party.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         party.setPartyId(partyId);

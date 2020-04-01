@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contractor;
 
 import com.rbkmoney.damsel.domain.ContractorIdentificationLevel;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
 import com.rbkmoney.damsel.payment_processing.ContractorEffectUnit;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
@@ -14,6 +15,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ContractorIdentificationalLevelChangedHandler extends AbstractClaimChangedHandler {
@@ -30,8 +34,11 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(e -> e.isSetContractorEffect() && e.getContractorEffect().getEffect().isSetIdentificationLevelChanged()).forEach(e -> {
+        List<ClaimEffect> collect = getClaimStatus(change).getAccepted().getEffects().stream()
+                .filter(e -> e.isSetContractorEffect() && e.getContractorEffect().getEffect().isSetIdentificationLevelChanged())
+                .collect(Collectors.toList());
+        for (int i = 0; i < collect.size(); i++) {
+            ClaimEffect e = collect.get(i);
             ContractorEffectUnit contractorEffect = e.getContractorEffect();
             ContractorIdentificationLevel identificationLevelChanged = contractorEffect.getEffect().getIdentificationLevelChanged();
             String contractorId = contractorEffect.getId();
@@ -45,13 +52,14 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
             contractorSource.setRevision(null);
             contractorSource.setWtime(null);
             contractorSource.setEventId(eventId);
-            contractorSource.setSequenceId((long) event.getSequence());
+            contractorSource.setSequenceId(event.getSequence());
             contractorSource.setChangeId(changeId);
+            contractorSource.setClaimId(i);
             contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractorSource.setIdentificationalLevel(identificationLevelChanged.name());
             contractorDao.updateNotCurrent(partyId, contractorId);
             contractorDao.save(contractorSource);
             log.info("Contract identificational level has been saved, eventId={}, contractorId={}", eventId, contractorId);
-        });
+        }
     }
 }

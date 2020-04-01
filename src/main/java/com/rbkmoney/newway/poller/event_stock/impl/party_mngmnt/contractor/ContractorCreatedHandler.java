@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contractor;
 
 import com.rbkmoney.damsel.domain.PartyContractor;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
 import com.rbkmoney.damsel.payment_processing.ContractorEffectUnit;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
@@ -17,6 +18,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
@@ -38,8 +42,11 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(e -> e.isSetContractorEffect() && e.getContractorEffect().getEffect().isSetCreated()).forEach(e -> {
+        List<ClaimEffect> collect = getClaimStatus(change).getAccepted().getEffects().stream()
+                .filter(e -> e.isSetContractorEffect() && e.getContractorEffect().getEffect().isSetCreated())
+                .collect(Collectors.toList());
+        for (int i = 0; i < collect.size(); i++) {
+            ClaimEffect e = collect.get(i);
             ContractorEffectUnit contractorEffect = e.getContractorEffect();
             PartyContractor partyContractor = contractorEffect.getEffect().getCreated();
             com.rbkmoney.damsel.domain.Contractor contractorCreated = partyContractor.getContractor();
@@ -53,10 +60,11 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
             Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractorCreated,
                     contractorId, changeId, event.getSequence());
             contractor.setIdentificationalLevel(partyContractor.getStatus().name());
+            contractor.setClaimId(i);
             contractorDao.save(contractor);
             log.info("Contract contractor has been saved, eventId={}, partyId={}, contractorId={}", eventId, partyId, contractorId);
 
-        });
+        }
     }
 
 

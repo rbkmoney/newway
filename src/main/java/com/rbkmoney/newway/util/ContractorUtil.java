@@ -16,7 +16,7 @@ public class ContractorUtil {
                                                String contractorId, Integer changeId, Integer sequenceId) {
         Contractor contractor = new Contractor();
         contractor.setEventId(eventId);
-        contractor.setSequenceId((long) sequenceId);
+        contractor.setSequenceId(sequenceId);
         contractor.setChangeId(changeId);
         contractor.setEventCreatedAt(TypeUtil.stringToLocalDateTime(eventCreatedAt));
         contractor.setPartyId(partyId);
