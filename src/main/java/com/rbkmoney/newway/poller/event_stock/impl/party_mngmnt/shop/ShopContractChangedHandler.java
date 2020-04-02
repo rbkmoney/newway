@@ -31,12 +31,12 @@ public class ShopContractChangedHandler extends AbstractClaimChangedHandler {
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        List<ClaimEffect> collect = getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetContractChanged())
                 .collect(Collectors.toList());
-        for (int i = 0; i < collect.size(); i++) {
-            ClaimEffect e = collect.get(i);
-            ShopEffectUnit shopEffect = e.getShopEffect();
+        for (int i = 0; i < claimEffects.size(); i++) {
+            ClaimEffect claimEffect = claimEffects.get(i);
+            ShopEffectUnit shopEffect = claimEffect.getShopEffect();
             ShopContractChanged contractChanged = shopEffect.getEffect().getContractChanged();
             String shopId = shopEffect.getShopId();
             String partyId = event.getSource().getPartyId();
@@ -51,7 +51,7 @@ public class ShopContractChangedHandler extends AbstractClaimChangedHandler {
             shopSource.setEventId(eventId);
             shopSource.setSequenceId(event.getSequence());
             shopSource.setChangeId(changeId);
-            shopSource.setClaimId(i);
+            shopSource.setClaimEffectId(i);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             shopSource.setContractId(contractChanged.getContractId());
             shopSource.setPayoutToolId(contractChanged.getPayoutToolId());

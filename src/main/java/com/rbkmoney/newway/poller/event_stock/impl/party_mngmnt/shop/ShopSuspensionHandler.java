@@ -52,7 +52,7 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
         shopSource.setEventId(eventId);
         shopSource.setSequenceId(event.getSequence());
         shopSource.setChangeId(changeId);
-        shopSource.setClaimId(0);
+        shopSource.setClaimEffectId(0);
         shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         shopSource.setSuspension(TBaseUtil.unionFieldToEnum(suspension, com.rbkmoney.newway.domain.enums.Suspension.class));
         if (suspension.isSetActive()) {

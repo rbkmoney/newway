@@ -41,12 +41,12 @@ public class ContractContractorIDChangedHandler extends AbstractClaimChangedHand
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        List<ClaimEffect> collect = getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetContractorChanged())
                 .collect(Collectors.toList());
-        for (int i = 0; i < collect.size(); i++) {
-            ClaimEffect e = collect.get(i);
-            ContractEffectUnit contractEffectUnit = e.getContractEffect();
+        for (int i = 0; i < claimEffects.size(); i++) {
+            ClaimEffect claimEffect = claimEffects.get(i);
+            ContractEffectUnit contractEffectUnit = claimEffect.getContractEffect();
             String contractorChanged = contractEffectUnit.getEffect().getContractorChanged();
             String contractId = contractEffectUnit.getContractId();
             String partyId = event.getSource().getPartyId();
@@ -62,7 +62,7 @@ public class ContractContractorIDChangedHandler extends AbstractClaimChangedHand
             contractSource.setEventId(eventId);
             contractSource.setSequenceId(event.getSequence());
             contractSource.setChangeId(changeId);
-            contractSource.setClaimId(i);
+            contractSource.setClaimEffectId(i);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractSource.setContractorId(contractorChanged);
             contractDao.updateNotCurrent(partyId, contractId);

@@ -42,13 +42,13 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event, Integer changeId) {
-        List<ClaimEffect> collect = getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetCreated())
                 .collect(Collectors.toList());
-        for (int i = 0; i < collect.size(); i++) {
-            ClaimEffect e = collect.get(i);
+        for (int i = 0; i < claimEffects.size(); i++) {
+            ClaimEffect claimEffect = claimEffects.get(i);
             long eventId = event.getId();
-            ShopEffectUnit shopEffect = e.getShopEffect();
+            ShopEffectUnit shopEffect = claimEffect.getShopEffect();
             Shop shopCreated = shopEffect.getEffect().getCreated();
             String shopId = shopEffect.getShopId();
             String partyId = event.getSource().getPartyId();
@@ -57,7 +57,7 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
             shop.setEventId(eventId);
             shop.setSequenceId(event.getSequence());
             shop.setChangeId(changeId);
-            shop.setClaimId(i);
+            shop.setClaimEffectId(i);
             shop.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             Party partySource = partyDao.get(partyId);
             if (partySource == null) {

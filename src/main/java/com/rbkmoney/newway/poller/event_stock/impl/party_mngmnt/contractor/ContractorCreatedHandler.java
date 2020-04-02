@@ -42,12 +42,12 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        List<ClaimEffect> collect = getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractorEffect() && e.getContractorEffect().getEffect().isSetCreated())
                 .collect(Collectors.toList());
-        for (int i = 0; i < collect.size(); i++) {
-            ClaimEffect e = collect.get(i);
-            ContractorEffectUnit contractorEffect = e.getContractorEffect();
+        for (int i = 0; i < claimEffects.size(); i++) {
+            ClaimEffect claimEffect = claimEffects.get(i);
+            ContractorEffectUnit contractorEffect = claimEffect.getContractorEffect();
             PartyContractor partyContractor = contractorEffect.getEffect().getCreated();
             com.rbkmoney.damsel.domain.Contractor contractorCreated = partyContractor.getContractor();
             String contractorId = contractorEffect.getId();
@@ -60,7 +60,7 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
             Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractorCreated,
                     contractorId, changeId, event.getSequence());
             contractor.setIdentificationalLevel(partyContractor.getStatus().name());
-            contractor.setClaimId(i);
+            contractor.setClaimEffectId(i);
             contractorDao.save(contractor);
             log.info("Contract contractor has been saved, eventId={}, partyId={}, contractorId={}", eventId, partyId, contractorId);
 

@@ -53,7 +53,7 @@ public class ShopBlockingHandler extends AbstractPartyManagementHandler {
         shopSource.setEventId(eventId);
         shopSource.setSequenceId(event.getSequence());
         shopSource.setChangeId(changeId);
-        shopSource.setClaimId(0);
+        shopSource.setClaimEffectId(0);
         shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         shopSource.setBlocking(TBaseUtil.unionFieldToEnum(blocking, com.rbkmoney.newway.domain.enums.Blocking.class));
         if (blocking.isSetUnblocked()) {

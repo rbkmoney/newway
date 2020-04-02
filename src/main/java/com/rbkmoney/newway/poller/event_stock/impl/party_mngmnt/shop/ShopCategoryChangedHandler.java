@@ -33,11 +33,11 @@ public class ShopCategoryChangedHandler extends AbstractClaimChangedHandler {
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        List<ClaimEffect> collect = getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetCategoryChanged())
                 .collect(Collectors.toList());
-        for (int i = 0; i < collect.size(); i++) {
-            ClaimEffect e = collect.get(i);
+        for (int i = 0; i < claimEffects.size(); i++) {
+            ClaimEffect e = claimEffects.get(i);
             ShopEffectUnit shopEffect = e.getShopEffect();
             int categoryId = shopEffect.getEffect().getCategoryChanged().getId();
             String shopId = shopEffect.getShopId();
@@ -52,7 +52,7 @@ public class ShopCategoryChangedHandler extends AbstractClaimChangedHandler {
             shopSource.setWtime(null);
             shopSource.setSequenceId(event.getSequence());
             shopSource.setChangeId(changeId);
-            shopSource.setClaimId(i);
+            shopSource.setClaimEffectId(i);
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             shopSource.setCategoryId(categoryId);
             shopDao.updateNotCurrent(partyId, shopId);

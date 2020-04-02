@@ -43,12 +43,12 @@ public class ContractPayoutToolCreatedHandler extends AbstractClaimChangedHandle
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        List<ClaimEffect> collect = getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetPayoutToolCreated())
                 .collect(Collectors.toList());
-        for (int i = 0; i < collect.size(); i++) {
-            ClaimEffect e = collect.get(i);
-            ContractEffectUnit contractEffectUnit = e.getContractEffect();
+        for (int i = 0; i < claimEffects.size(); i++) {
+            ClaimEffect claimEffect = claimEffects.get(i);
+            ContractEffectUnit contractEffectUnit = claimEffect.getContractEffect();
             com.rbkmoney.damsel.domain.PayoutTool payoutToolCreated = contractEffectUnit.getEffect().getPayoutToolCreated();
             String contractId = contractEffectUnit.getContractId();
             String partyId = event.getSource().getPartyId();
@@ -64,7 +64,7 @@ public class ContractPayoutToolCreatedHandler extends AbstractClaimChangedHandle
             contractSource.setEventId(eventId);
             contractSource.setSequenceId(event.getSequence());
             contractSource.setChangeId(changeId);
-            contractSource.setClaimId(i);
+            contractSource.setClaimEffectId(i);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractDao.updateNotCurrent(partyId, contractId);
             long cntrctId = contractDao.save(contractSource);

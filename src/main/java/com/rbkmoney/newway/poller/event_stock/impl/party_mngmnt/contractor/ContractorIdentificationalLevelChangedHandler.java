@@ -34,12 +34,12 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        List<ClaimEffect> collect = getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetContractorEffect() && e.getContractorEffect().getEffect().isSetIdentificationLevelChanged())
                 .collect(Collectors.toList());
-        for (int i = 0; i < collect.size(); i++) {
-            ClaimEffect e = collect.get(i);
-            ContractorEffectUnit contractorEffect = e.getContractorEffect();
+        for (int i = 0; i < claimEffects.size(); i++) {
+            ClaimEffect claimEffect = claimEffects.get(i);
+            ContractorEffectUnit contractorEffect = claimEffect.getContractorEffect();
             ContractorIdentificationLevel identificationLevelChanged = contractorEffect.getEffect().getIdentificationLevelChanged();
             String contractorId = contractorEffect.getId();
             String partyId = event.getSource().getPartyId();
@@ -54,7 +54,7 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
             contractorSource.setEventId(eventId);
             contractorSource.setSequenceId(event.getSequence());
             contractorSource.setChangeId(changeId);
-            contractorSource.setClaimId(i);
+            contractorSource.setClaimEffectId(i);
             contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractorSource.setIdentificationalLevel(identificationLevelChanged.name());
             contractorDao.updateNotCurrent(partyId, contractorId);

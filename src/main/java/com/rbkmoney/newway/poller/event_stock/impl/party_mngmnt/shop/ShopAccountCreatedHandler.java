@@ -36,12 +36,12 @@ public class ShopAccountCreatedHandler extends AbstractClaimChangedHandler {
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        List<ClaimEffect> collect = getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetAccountCreated())
                 .collect(Collectors.toList());
-        for (int i = 0; i < collect.size(); i++) {
-            ClaimEffect e = collect.get(i);
-            ShopEffectUnit shopEffect = e.getShopEffect();
+        for (int i = 0; i < claimEffects.size(); i++) {
+            ClaimEffect claimEffect = claimEffects.get(i);
+            ShopEffectUnit shopEffect = claimEffect.getShopEffect();
             ShopAccount accountCreated = shopEffect.getEffect().getAccountCreated();
             String shopId = shopEffect.getShopId();
             String partyId = event.getSource().getPartyId();
@@ -55,7 +55,7 @@ public class ShopAccountCreatedHandler extends AbstractClaimChangedHandler {
             shopSource.setWtime(null);
             shopSource.setEventId(eventId);
             shopSource.setChangeId(changeId);
-            shopSource.setClaimId(i);
+            shopSource.setClaimEffectId(i);
             shopSource.setSequenceId(event.getSequence());
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             ShopUtil.fillShopAccount(shopSource, accountCreated);
