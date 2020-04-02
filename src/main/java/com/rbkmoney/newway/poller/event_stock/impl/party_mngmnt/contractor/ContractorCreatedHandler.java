@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contractor;
 
 import com.rbkmoney.damsel.domain.PartyContractor;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
 import com.rbkmoney.damsel.payment_processing.ContractorEffectUnit;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
@@ -17,6 +18,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
@@ -36,11 +40,14 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(e -> e.isSetContractorEffect() && e.getContractorEffect().getEffect().isSetCreated()).forEach(e -> {
-            ContractorEffectUnit contractorEffect = e.getContractorEffect();
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
+                .filter(e -> e.isSetContractorEffect() && e.getContractorEffect().getEffect().isSetCreated())
+                .collect(Collectors.toList());
+        for (int i = 0; i < claimEffects.size(); i++) {
+            ClaimEffect claimEffect = claimEffects.get(i);
+            ContractorEffectUnit contractorEffect = claimEffect.getContractorEffect();
             PartyContractor partyContractor = contractorEffect.getEffect().getCreated();
             com.rbkmoney.damsel.domain.Contractor contractorCreated = partyContractor.getContractor();
             String contractorId = contractorEffect.getId();
@@ -50,12 +57,14 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
             if (partySource == null) {
                 throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
             }
-            Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractorCreated, contractorId);
+            Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractorCreated,
+                    contractorId, changeId, event.getSequence());
             contractor.setIdentificationalLevel(partyContractor.getStatus().name());
+            contractor.setClaimEffectId(i);
             contractorDao.save(contractor);
             log.info("Contract contractor has been saved, eventId={}, partyId={}, contractorId={}", eventId, partyId, contractorId);
 
-        });
+        }
     }
 
 

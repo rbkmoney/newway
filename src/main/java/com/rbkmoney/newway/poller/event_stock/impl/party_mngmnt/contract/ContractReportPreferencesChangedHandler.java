@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contract;
 
 import com.rbkmoney.damsel.domain.ReportPreferences;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
 import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ContractReportPreferencesChangedHandler extends AbstractClaimChangedHandler {
@@ -39,11 +41,14 @@ public class ContractReportPreferencesChangedHandler extends AbstractClaimChange
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetReportPreferencesChanged()).forEach(e -> {
-            ContractEffectUnit contractEffectUnit = e.getContractEffect();
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
+                .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetReportPreferencesChanged())
+                .collect(Collectors.toList());
+        for (int i = 0; i < claimEffects.size(); i++) {
+            ClaimEffect claimEffect = claimEffects.get(i);
+            ContractEffectUnit contractEffectUnit = claimEffect.getContractEffect();
             ReportPreferences reportPreferencesChanged = contractEffectUnit.getEffect().getReportPreferencesChanged();
             String contractId = contractEffectUnit.getContractId();
             String partyId = event.getSource().getPartyId();
@@ -57,6 +62,9 @@ public class ContractReportPreferencesChangedHandler extends AbstractClaimChange
             contractSource.setRevision(null);
             contractSource.setWtime(null);
             contractSource.setEventId(eventId);
+            contractSource.setSequenceId(event.getSequence());
+            contractSource.setChangeId(changeId);
+            contractSource.setClaimEffectId(i);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             if (reportPreferencesChanged != null && reportPreferencesChanged.isSetServiceAcceptanceActPreferences()) {
                 ContractUtil.fillReportPreferences(contractSource, reportPreferencesChanged.getServiceAcceptanceActPreferences());
@@ -81,6 +89,6 @@ public class ContractReportPreferencesChangedHandler extends AbstractClaimChange
             payoutToolDao.save(payoutTools);
 
             log.info("Contract report preferences has been saved, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
-        });
+        }
     }
 }

@@ -50,7 +50,7 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
         PartyRevisionChanged partyRevisionChanged = change.getRevisionChanged();
         String partyId = event.getSource().getPartyId();
@@ -62,6 +62,8 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
         partySource.setId(null);
         partySource.setWtime(null);
         partySource.setEventId(eventId);
+        partySource.setSequenceId(event.getSequence());
+        partySource.setChangeId(changeId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         long revision = partyRevisionChanged.getRevision();
         partySource.setRevision(revision);

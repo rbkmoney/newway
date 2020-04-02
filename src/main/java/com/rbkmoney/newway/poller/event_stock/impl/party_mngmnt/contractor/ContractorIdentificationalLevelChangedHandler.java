@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contractor;
 
 import com.rbkmoney.damsel.domain.ContractorIdentificationLevel;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
 import com.rbkmoney.damsel.payment_processing.ContractorEffectUnit;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class ContractorIdentificationalLevelChangedHandler extends AbstractClaimChangedHandler {
 
@@ -28,11 +32,14 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(e -> e.isSetContractorEffect() && e.getContractorEffect().getEffect().isSetIdentificationLevelChanged()).forEach(e -> {
-            ContractorEffectUnit contractorEffect = e.getContractorEffect();
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
+                .filter(e -> e.isSetContractorEffect() && e.getContractorEffect().getEffect().isSetIdentificationLevelChanged())
+                .collect(Collectors.toList());
+        for (int i = 0; i < claimEffects.size(); i++) {
+            ClaimEffect claimEffect = claimEffects.get(i);
+            ContractorEffectUnit contractorEffect = claimEffect.getContractorEffect();
             ContractorIdentificationLevel identificationLevelChanged = contractorEffect.getEffect().getIdentificationLevelChanged();
             String contractorId = contractorEffect.getId();
             String partyId = event.getSource().getPartyId();
@@ -45,11 +52,14 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
             contractorSource.setRevision(null);
             contractorSource.setWtime(null);
             contractorSource.setEventId(eventId);
+            contractorSource.setSequenceId(event.getSequence());
+            contractorSource.setChangeId(changeId);
+            contractorSource.setClaimEffectId(i);
             contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractorSource.setIdentificationalLevel(identificationLevelChanged.name());
             contractorDao.updateNotCurrent(partyId, contractorId);
             contractorDao.save(contractorSource);
             log.info("Contract identificational level has been saved, eventId={}, contractorId={}", eventId, contractorId);
-        });
+        }
     }
 }
