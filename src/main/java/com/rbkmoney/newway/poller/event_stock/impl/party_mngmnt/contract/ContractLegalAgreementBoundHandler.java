@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contract;
 
 import com.rbkmoney.damsel.domain.LegalAgreement;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
 import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class ContractLegalAgreementBoundHandler extends AbstractClaimChangedHandler {
@@ -39,11 +41,14 @@ public class ContractLegalAgreementBoundHandler extends AbstractClaimChangedHand
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetLegalAgreementBound()).forEach(e -> {
-            ContractEffectUnit contractEffectUnit = e.getContractEffect();
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
+                .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetLegalAgreementBound())
+                .collect(Collectors.toList());
+        for (int i = 0; i < claimEffects.size(); i++) {
+            ClaimEffect claimEffect = claimEffects.get(i);
+            ContractEffectUnit contractEffectUnit = claimEffect.getContractEffect();
             LegalAgreement legalAgreementBound = contractEffectUnit.getEffect().getLegalAgreementBound();
             String contractId = contractEffectUnit.getContractId();
             String partyId = event.getSource().getPartyId();
@@ -57,6 +62,9 @@ public class ContractLegalAgreementBoundHandler extends AbstractClaimChangedHand
             contractSource.setRevision(null);
             contractSource.setWtime(null);
             contractSource.setEventId(eventId);
+            contractSource.setSequenceId(event.getSequence());
+            contractSource.setChangeId(changeId);
+            contractSource.setClaimEffectId(i);
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             ContractUtil.fillContractLegalAgreementFields(contractSource, legalAgreementBound);
             contractDao.updateNotCurrent(partyId, contractId);
@@ -77,6 +85,6 @@ public class ContractLegalAgreementBoundHandler extends AbstractClaimChangedHand
             payoutToolDao.save(payoutTools);
 
             log.info("Contract legal agreement bound has been saved, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
-        });
+        }
     }
 }

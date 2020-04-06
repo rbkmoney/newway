@@ -1,5 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contract;
 
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
 import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
@@ -48,17 +50,23 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetCreated()).forEach(e -> {
-            ContractEffectUnit contractEffectUnit = e.getContractEffect();
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
+                .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetCreated())
+                .collect(Collectors.toList());
+        for (int i = 0; i < claimEffects.size(); i++) {
+            ClaimEffect claimEffect = claimEffects.get(i);
+            ContractEffectUnit contractEffectUnit = claimEffect.getContractEffect();
             com.rbkmoney.damsel.domain.Contract contractCreated = contractEffectUnit.getEffect().getCreated();
             String contractId = contractEffectUnit.getContractId();
             String partyId = event.getSource().getPartyId();
             log.info("Start contract created handling, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
             Contract contract = new Contract();
             contract.setEventId(eventId);
+            contract.setSequenceId(event.getSequence());
+            contract.setChangeId(changeId);
+            contract.setClaimEffectId(i);
             contract.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             Party partySource = partyDao.get(partyId);
             if (partySource == null) {
@@ -99,7 +107,8 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             long cntrctId = contractDao.save(contract);
 
             if (contractCreated.isSetContractor()) {
-                Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractCreated.getContractor(), contractorId);
+                Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId,
+                        contractCreated.getContractor(), contractorId, changeId, event.getSequence());
                 contractorDao.save(contractor);
             }
 
@@ -110,6 +119,6 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             payoutToolDao.save(payoutTools);
 
             log.info("Contract has been saved, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
-        });
+        }
     }
 }

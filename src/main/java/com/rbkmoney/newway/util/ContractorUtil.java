@@ -11,9 +11,13 @@ import com.rbkmoney.newway.domain.enums.PrivateEntity;
 import com.rbkmoney.newway.domain.tables.pojos.Contractor;
 
 public class ContractorUtil {
-    public static Contractor convertContractor(long eventId, String eventCreatedAt, String partyId, com.rbkmoney.damsel.domain.Contractor contractorSource, String contractorId) {
+    public static Contractor convertContractor(long eventId, String eventCreatedAt, String partyId,
+                                               com.rbkmoney.damsel.domain.Contractor contractorSource,
+                                               String contractorId, Integer changeId, Integer sequenceId) {
         Contractor contractor = new Contractor();
         contractor.setEventId(eventId);
+        contractor.setSequenceId(sequenceId);
+        contractor.setChangeId(changeId);
         contractor.setEventCreatedAt(TypeUtil.stringToLocalDateTime(eventCreatedAt));
         contractor.setPartyId(partyId);
         contractor.setContractorId(contractorId);

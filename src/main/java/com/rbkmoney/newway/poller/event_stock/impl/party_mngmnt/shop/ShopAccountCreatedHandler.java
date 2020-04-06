@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.shop;
 
 import com.rbkmoney.damsel.domain.ShopAccount;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.ShopEffectUnit;
@@ -16,6 +17,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Component
 public class ShopAccountCreatedHandler extends AbstractClaimChangedHandler {
@@ -30,11 +34,14 @@ public class ShopAccountCreatedHandler extends AbstractClaimChangedHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetAccountCreated()).forEach(e -> {
-            ShopEffectUnit shopEffect = e.getShopEffect();
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
+                .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetAccountCreated())
+                .collect(Collectors.toList());
+        for (int i = 0; i < claimEffects.size(); i++) {
+            ClaimEffect claimEffect = claimEffects.get(i);
+            ShopEffectUnit shopEffect = claimEffect.getShopEffect();
             ShopAccount accountCreated = shopEffect.getEffect().getAccountCreated();
             String shopId = shopEffect.getShopId();
             String partyId = event.getSource().getPartyId();
@@ -47,12 +54,15 @@ public class ShopAccountCreatedHandler extends AbstractClaimChangedHandler {
             shopSource.setRevision(null);
             shopSource.setWtime(null);
             shopSource.setEventId(eventId);
+            shopSource.setChangeId(changeId);
+            shopSource.setClaimEffectId(i);
+            shopSource.setSequenceId(event.getSequence());
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             ShopUtil.fillShopAccount(shopSource, accountCreated);
 
             shopDao.updateNotCurrent(partyId, shopId);
             shopDao.save(shopSource);
             log.info("Shop accountCreated has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
-        });
+        }
     }
 }

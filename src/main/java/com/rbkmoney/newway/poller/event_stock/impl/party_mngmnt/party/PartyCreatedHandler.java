@@ -39,13 +39,15 @@ public class PartyCreatedHandler extends AbstractPartyManagementHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
         PartyCreated partyCreated = change.getPartyCreated();
         String partyId = partyCreated.getId();
         log.info("Start party created handling, eventId={}, partyId={}", eventId, partyId);
         Party party = new Party();
         party.setEventId(eventId);
+        party.setSequenceId(event.getSequence());
+        party.setChangeId(changeId);
         party.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         party.setPartyId(partyId);
         party.setContactInfoEmail(partyCreated.getContactInfo().getEmail());

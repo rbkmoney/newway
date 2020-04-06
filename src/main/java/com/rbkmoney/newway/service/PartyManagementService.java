@@ -2,6 +2,7 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.EventPayload;
+import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractPartyManagementHandler;
@@ -32,11 +33,15 @@ public class PartyManagementService implements EventService<Event, EventPayload>
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(Event processingEvent, EventPayload payload) {
         if (payload.isSetPartyChanges()) {
-            payload.getPartyChanges().forEach(cc -> partyManagementHandlers.forEach(ph -> {
-                if (ph.accept(cc)) {
-                    ph.handle(cc, processingEvent);
-                }
-            }));
+            for (int i = 0; i < payload.getPartyChanges().size(); i++) {
+                PartyChange partyChange = payload.getPartyChanges().get(i);
+                Integer changeId = i;
+                partyManagementHandlers.forEach(ph -> {
+                    if (ph.accept(partyChange)) {
+                        ph.handle(partyChange, processingEvent, changeId);
+                    }
+                });
+            }
         }
     }
 

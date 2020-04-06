@@ -37,7 +37,7 @@ public class ShopBlockingHandler extends AbstractPartyManagementHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event) {
+    public void handle(PartyChange change, Event event, Integer changeId) {
         long eventId = event.getId();
         Blocking blocking = change.getShopBlocking().getBlocking();
         String shopId = change.getShopBlocking().getShopId();
@@ -51,6 +51,9 @@ public class ShopBlockingHandler extends AbstractPartyManagementHandler {
         shopSource.setRevision(null);
         shopSource.setWtime(null);
         shopSource.setEventId(eventId);
+        shopSource.setSequenceId(event.getSequence());
+        shopSource.setChangeId(changeId);
+        shopSource.setClaimEffectId(0);
         shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         shopSource.setBlocking(TBaseUtil.unionFieldToEnum(blocking, com.rbkmoney.newway.domain.enums.Blocking.class));
         if (blocking.isSetUnblocked()) {
