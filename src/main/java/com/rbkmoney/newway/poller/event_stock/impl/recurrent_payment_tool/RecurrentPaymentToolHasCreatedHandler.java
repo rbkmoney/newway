@@ -12,6 +12,7 @@ import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.recurrent_payment_tool.iface.RecurrentPaymentToolDao;
 import com.rbkmoney.newway.domain.enums.MobileOperatorType;
 import com.rbkmoney.newway.domain.enums.PaymentToolType;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -39,14 +41,14 @@ public class RecurrentPaymentToolHasCreatedHandler extends AbstractRecurrentPaym
     }
 
     @Override
-    @Transactional
-    public void handle(RecurrentPaymentToolChange change, RecurrentPaymentToolEvent event, Integer changeId) {
-        log.info("Start recurrent payment tool created handling, eventId={}, recurrent_payment_tool_id={}", event.getId(), event.getSource());
+    public void handle(RecurrentPaymentToolChange change, MachineEvent event, Integer changeId) {
+        log.info("Start recurrent payment tool created handling, sourceId={}, sequenceId={}, changeId={}",
+                event.getSourceId(), event.getEventId(), changeId);
         RecurrentPaymentToolHasCreated recPaymentToolCreated = change.getRecPaymentToolCreated();
         var recurrentPaymentToolOrigin = recPaymentToolCreated.getRecPaymentTool();
         RecurrentPaymentTool recurrentPaymentTool = new RecurrentPaymentTool();
         setDefaultProperties(recurrentPaymentTool, event, changeId);
-        recurrentPaymentTool.setRecurrentPaymentToolId(event.getSource());
+        recurrentPaymentTool.setRecurrentPaymentToolId(event.getSourceId());
         recurrentPaymentTool.setCreatedAt(TypeUtil.stringToLocalDateTime(recurrentPaymentToolOrigin.getCreatedAt()));
         recurrentPaymentTool.setPartyId(recurrentPaymentToolOrigin.getPartyId());
         recurrentPaymentTool.setShopId(recurrentPaymentToolOrigin.getShopId());
@@ -77,7 +79,8 @@ public class RecurrentPaymentToolHasCreatedHandler extends AbstractRecurrentPaym
             recurrentPaymentTool.setRiskScore(recPaymentToolCreated.getRiskScore().name());
         }
         recurrentPaymentToolDao.save(recurrentPaymentTool);
-        log.info("End recurrent payment tool created handling, eventId={}, recurrent_payment_tool_id={}", event.getId(), event.getSource());
+        log.info("End recurrent payment tool created handling, sourceId={}, sequenceId={}, changeId={}",
+                event.getSourceId(), event.getEventId(), changeId);
     }
 
     private void fillPaymentTool(RecurrentPaymentTool recurrentPaymentTool, PaymentTool paymentTool) {
@@ -132,7 +135,7 @@ public class RecurrentPaymentToolHasCreatedHandler extends AbstractRecurrentPaym
         if (bankCard.isSetMetadata()) {
             recurrentPaymentTool.setBankCardMetadataJson(JsonUtil.objectToJsonString(
                     bankCard.getMetadata().entrySet().stream().collect(Collectors.toMap(
-                            e -> e.getKey(),
+                            Map.Entry::getKey,
                             e -> JsonUtil.tBaseToJsonNode(e.getValue())
                     ))));
         }

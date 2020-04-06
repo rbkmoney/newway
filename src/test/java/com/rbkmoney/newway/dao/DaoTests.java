@@ -684,10 +684,10 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.recurrent_payment_tool cascade");
         RecurrentPaymentTool recurrentPaymentTool = random(RecurrentPaymentTool.class);
         recurrentPaymentTool.setCurrent(true);
-        Long id = recurrentPaymentToolDao.save(recurrentPaymentTool);
-        recurrentPaymentTool.setId(id);
+        Optional<Long> id = recurrentPaymentToolDao.save(recurrentPaymentTool);
+        assertTrue(id.isPresent());
+        recurrentPaymentTool.setId(id.get());
         assertEquals(recurrentPaymentTool, recurrentPaymentToolDao.get(recurrentPaymentTool.getRecurrentPaymentToolId()));
-        assertEquals(recurrentPaymentTool.getEventId(), recurrentPaymentToolDao.getLastEventId());
         recurrentPaymentToolDao.updateNotCurrent(recurrentPaymentTool.getId());
         assertNull(recurrentPaymentToolDao.get(recurrentPaymentTool.getRecurrentPaymentToolId()));
     }
