@@ -64,6 +64,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
             log.info("Start contract created handling, eventId={}, partyId={}, contractId={}", eventId, partyId, contractId);
             Contract contract = new Contract();
             contract.setEventId(eventId);
+            contract.setRevision(-1L);
             contract.setSequenceId(event.getSequence());
             contract.setChangeId(changeId);
             contract.setClaimEffectId(i);
