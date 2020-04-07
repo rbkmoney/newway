@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static com.rbkmoney.newway.domain.Tables.CONTRACT;
+import static com.rbkmoney.newway.domain.Tables.SHOP;
 
 @Component
 public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
@@ -29,7 +30,10 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
     @Override
     public Long save(Contract contract) throws DaoException {
         ContractRecord record = getDslContext().newRecord(CONTRACT, contract);
-        Query query = getDslContext().insertInto(CONTRACT).set(record).returning(CONTRACT.ID);
+        Query query = getDslContext().insertInto(CONTRACT).set(record)
+                .onConflict(CONTRACT.PARTY_ID, CONTRACT.SEQUENCE_ID, CONTRACT.CHANGE_ID, CONTRACT.CLAIM_EFFECT_ID, CONTRACT.REVISION)
+                .doNothing()
+                .returning(CONTRACT.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
