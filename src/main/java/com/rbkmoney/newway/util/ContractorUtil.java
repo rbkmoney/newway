@@ -15,6 +15,7 @@ public class ContractorUtil {
                                                com.rbkmoney.damsel.domain.Contractor contractorSource,
                                                String contractorId, Integer changeId, Integer sequenceId) {
         Contractor contractor = new Contractor();
+        contractor.setRevision(-1L);
         contractor.setEventId(eventId);
         contractor.setSequenceId(sequenceId);
         contractor.setChangeId(changeId);

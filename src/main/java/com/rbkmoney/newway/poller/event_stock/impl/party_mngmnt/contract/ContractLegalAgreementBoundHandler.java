@@ -59,7 +59,7 @@ public class ContractLegalAgreementBoundHandler extends AbstractClaimChangedHand
             }
             Long contractSourceId = contractSource.getId();
             contractSource.setId(null);
-            contractSource.setRevision(null);
+            contractSource.setRevision(-1L);
             contractSource.setWtime(null);
             contractSource.setEventId(eventId);
             contractSource.setSequenceId(event.getSequence());

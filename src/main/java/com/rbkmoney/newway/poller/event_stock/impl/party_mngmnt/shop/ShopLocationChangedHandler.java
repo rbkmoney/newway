@@ -50,7 +50,7 @@ public class ShopLocationChangedHandler extends AbstractClaimChangedHandler {
                 throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
             }
             shopSource.setId(null);
-            shopSource.setRevision(null);
+            shopSource.setRevision(-1L);
             shopSource.setWtime(null);
             shopSource.setEventId(eventId);
             shopSource.setSequenceId(event.getSequence());

@@ -29,7 +29,10 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     @Override
     public Long save(Contractor contractor) throws DaoException {
         ContractorRecord record = getDslContext().newRecord(CONTRACTOR, contractor);
-        Query query = getDslContext().insertInto(CONTRACTOR).set(record).returning(CONTRACTOR.ID);
+        Query query = getDslContext().insertInto(CONTRACTOR).set(record)
+                .onConflict(CONTRACTOR.PARTY_ID, CONTRACTOR.SEQUENCE_ID, CONTRACTOR.CHANGE_ID, CONTRACTOR.CLAIM_EFFECT_ID, CONTRACTOR.REVISION)
+                .doNothing()
+                .returning(CONTRACTOR.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
