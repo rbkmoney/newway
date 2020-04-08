@@ -8,10 +8,9 @@ import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
+import com.rbkmoney.newway.dao.invoicing.impl.ContractIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.dao.party.iface.*;
-import com.rbkmoney.newway.domain.tables.pojos.ContractAdjustment;
-import com.rbkmoney.newway.domain.tables.pojos.Party;
-import com.rbkmoney.newway.domain.tables.pojos.PayoutTool;
+import com.rbkmoney.newway.domain.tables.pojos.*;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractPartyManagementHandler;
 import org.slf4j.Logger;
@@ -20,7 +19,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler {
@@ -33,16 +34,18 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
     private final PayoutToolDao payoutToolDao;
     private final ContractorDao contractorDao;
     private final ShopDao shopDao;
+    private final ContractIdsGeneratorDaoImpl contractIdsGeneratorDao;
 
     private final Filter filter;
 
-    public PartyRevisionChangedHandler(PartyDao partyDao, ContractDao contractDao, ContractAdjustmentDao contractAdjustmentDao, PayoutToolDao payoutToolDao, ContractorDao contractorDao, ShopDao shopDao) {
+    public PartyRevisionChangedHandler(PartyDao partyDao, ContractDao contractDao, ContractAdjustmentDao contractAdjustmentDao, PayoutToolDao payoutToolDao, ContractorDao contractorDao, ShopDao shopDao, ContractIdsGeneratorDaoImpl contractIdsGeneratorDao) {
         this.partyDao = partyDao;
         this.contractDao = contractDao;
         this.contractAdjustmentDao = contractAdjustmentDao;
         this.payoutToolDao = payoutToolDao;
         this.contractorDao = contractorDao;
         this.shopDao = shopDao;
+        this.contractIdsGeneratorDao = contractIdsGeneratorDao;
         this.filter = new PathConditionFilter(new PathConditionRule(
                 "revision_changed",
                 new IsNullCondition().not()));
@@ -77,60 +80,74 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
     }
 
     private void updateShopsRevision(Event event, String partyId, long revision) {
-        shopDao.getByPartyId(partyId).forEach(shopSource -> {
-            String shopId = shopSource.getShopId();
+        List<Shop> shops = shopDao.getByPartyId(partyId);
+        shops.forEach(shopSource -> {
             shopSource.setId(null);
             shopSource.setWtime(null);
             shopSource.setEventId(event.getId());
             shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             shopSource.setRevision(revision);
-            shopDao.updateNotCurrent(partyId, shopId);
-            shopDao.save(shopSource);
-            log.info("Shop revision has been saved, eventId={}, partyId={}, shopId={}", event.getId(), partyId, shopId);
         });
+
+        List<String> shopIds = shops.stream().map(Shop::getShopId).collect(Collectors.toList());
+        shopDao.updateNotCurrent(partyId, shopIds);
+        shopDao.saveBatch(shops);
+        log.info("Shops revisions has been saved, eventId={}, partyId={}, shopIds={}", event.getId(), partyId, shopIds);
     }
 
     private void updateContractorsRevision(Event event, String partyId, long revision) {
-        contractorDao.getByPartyId(partyId).forEach(contractorSource -> {
-            String contractorId = contractorSource.getContractorId();
+        List<Contractor> contractors = contractorDao.getByPartyId(partyId);
+        contractors.forEach(contractorSource -> {
             contractorSource.setId(null);
             contractorSource.setWtime(null);
             contractorSource.setEventId(event.getId());
             contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractorSource.setRevision(revision);
-            contractorDao.updateNotCurrent(partyId, contractorId);
-            contractorDao.save(contractorSource);
-            log.info("Contractor revision has been saved, eventId={}, partyId={}, contractorId={}", event.getId(), partyId, contractorId);
         });
+
+        List<String> contractorIds = contractors.stream().map(Contractor::getContractorId).collect(Collectors.toList());
+        contractorDao.updateNotCurrent(partyId, contractorIds);
+        contractorDao.saveBatch(contractors);
+        log.info("Contractors revisions has been saved, eventId={}, partyId={}, contractorIds={}", event.getId(), partyId, contractorIds);
     }
 
     private void updateContractsRevision(Event event, String partyId, long revision) {
-        contractDao.getByPartyId(partyId).forEach(contractSource -> {
+        List<Contract> contracts = contractDao.getByPartyId(partyId);
+        List<Long> ids = contractIdsGeneratorDao.get(contracts.size());
+        List<ContractAdjustment> allAdjustments = new ArrayList<>();
+        List<PayoutTool> allPayoutTools = new ArrayList<>();
+        for (int i = 0; i < contracts.size(); ++ i) {
+            Contract contractSource = contracts.get(i);
             Long contractSourceId = contractSource.getId();
             String contractId = contractSource.getContractId();
-            contractSource.setId(null);
+            Long cntrctId = ids.get(i);
+            contractSource.setId(cntrctId);
             contractSource.setWtime(null);
             contractSource.setEventId(event.getId());
             contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
             contractSource.setRevision(revision);
-            contractDao.updateNotCurrent(partyId, contractId);
-            long cntrctId = contractDao.save(contractSource);
 
             List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);
             adjustments.forEach(a -> {
                 a.setId(null);
                 a.setCntrctId(cntrctId);
             });
-            contractAdjustmentDao.save(adjustments);
+            allAdjustments.addAll(adjustments);
 
             List<PayoutTool> payoutTools = payoutToolDao.getByCntrctId(contractSourceId);
             payoutTools.forEach(pt -> {
                 pt.setId(null);
                 pt.setCntrctId(cntrctId);
             });
-            payoutToolDao.save(payoutTools);
+            allPayoutTools.addAll(payoutTools);
             log.info("Contract revision has been saved, eventId={}, partyId={}, contractId={}", event.getId(), partyId, contractId);
-        });
+        }
+
+        List<String> contractIds = contracts.stream().map(Contract::getContractId).collect(Collectors.toList());
+        contractDao.updateNotCurrent(partyId, contractIds);
+        contractDao.saveBatch(contracts);
+        contractAdjustmentDao.save(allAdjustments);
+        payoutToolDao.save(allPayoutTools);
     }
 
     @Override

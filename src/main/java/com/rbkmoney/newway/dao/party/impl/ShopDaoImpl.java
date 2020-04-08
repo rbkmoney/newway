@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.Tables.SHOP;
 
@@ -39,6 +40,19 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     }
 
     @Override
+    public void saveBatch(List<Shop> shops) throws DaoException {
+        List<Query> queries = shops.stream()
+                .map(contractor -> getDslContext().newRecord(SHOP, contractor))
+                .map(contractorRecord -> getDslContext().insertInto(SHOP)
+                        .set(contractorRecord)
+                        .onConflict(SHOP.PARTY_ID, SHOP.SEQUENCE_ID, SHOP.CHANGE_ID, SHOP.CLAIM_EFFECT_ID, SHOP.REVISION)
+                        .doNothing()
+                )
+                .collect(Collectors.toList());
+        batchExecute(queries);
+    }
+
+    @Override
     public Shop get(String partyId, String shopId) throws DaoException {
         Query query = getDslContext().selectFrom(SHOP)
                 .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.SHOP_ID.eq(shopId)).and(SHOP.CURRENT));
@@ -51,6 +65,15 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
         Query query = getDslContext().update(SHOP).set(SHOP.CURRENT, false)
                 .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.SHOP_ID.eq(shopId)).and(SHOP.CURRENT));
         executeOne(query);
+    }
+
+    @Override
+    public void updateNotCurrent(String partyId, List<String> shopIds) throws DaoException {
+        List<Query> queries = shopIds.stream()
+                .map(shopId -> getDslContext().update(SHOP).set(SHOP.CURRENT, false)
+                        .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.SHOP_ID.eq(shopId)).and(SHOP.CURRENT)))
+                .collect(Collectors.toList());
+        batchExecute(queries);
     }
 
 

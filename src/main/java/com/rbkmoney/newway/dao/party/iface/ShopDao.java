@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface ShopDao extends GenericDao {
     Long save(Shop shop) throws DaoException;
+    void saveBatch(List<Shop> shops) throws DaoException;
     Shop get(String partyId, String shopId) throws DaoException;
     void updateNotCurrent(String partyId, String shopId) throws DaoException;
+    void updateNotCurrent(String partyId, List<String> shopIds) throws DaoException;
     List<Shop> getByPartyId(String partyId);
 }

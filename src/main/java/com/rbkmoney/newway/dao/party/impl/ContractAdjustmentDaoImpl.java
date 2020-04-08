@@ -4,7 +4,6 @@ import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.party.iface.ContractAdjustmentDao;
 import com.rbkmoney.newway.domain.tables.pojos.ContractAdjustment;
-import com.rbkmoney.newway.domain.tables.records.ContractAdjustmentRecord;
 import com.rbkmoney.newway.exception.DaoException;
 import org.jooq.Query;
 import org.springframework.jdbc.core.RowMapper;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.Tables.CONTRACT_ADJUSTMENT;
 
@@ -27,12 +27,11 @@ public class ContractAdjustmentDaoImpl extends AbstractGenericDao implements Con
 
     @Override
     public void save(List<ContractAdjustment> contractAdjustmentList) throws DaoException {
-        //todo: Batch insert
-        for (ContractAdjustment contractAdjustment : contractAdjustmentList) {
-            ContractAdjustmentRecord record = getDslContext().newRecord(CONTRACT_ADJUSTMENT, contractAdjustment);
-            Query query = getDslContext().insertInto(CONTRACT_ADJUSTMENT).set(record);
-            executeOne(query);
-        }
+        List<Query> queries = contractAdjustmentList.stream()
+                .map(contractAdjustment -> getDslContext().newRecord(CONTRACT_ADJUSTMENT, contractAdjustment))
+                .map(payoutToolRecord -> getDslContext().insertInto(CONTRACT_ADJUSTMENT).set(payoutToolRecord))
+                .collect(Collectors.toList());
+        batchExecute(queries);
     }
 
     @Override
