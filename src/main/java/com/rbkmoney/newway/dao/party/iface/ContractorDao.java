@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface ContractorDao extends GenericDao {
     Long save(Contractor contractor) throws DaoException;
+    void saveBatch(List<Contractor> contractor) throws DaoException;
     Contractor get(String partyId, String contractorId) throws DaoException;
     void updateNotCurrent(String partyId, String contractorId) throws DaoException;
+    void updateNotCurrent(String partyId, List<String> contractorId) throws DaoException;
     List<Contractor> getByPartyId(String partyId);
 }

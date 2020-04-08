@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.Tables.PAYOUT_TOOL;
 
@@ -27,12 +28,11 @@ public class PayoutToolDaoImpl extends AbstractGenericDao implements PayoutToolD
 
     @Override
     public void save(List<PayoutTool> payoutToolList) throws DaoException {
-        //todo: Batch insert
-        for (PayoutTool payoutTool : payoutToolList) {
-            PayoutToolRecord record = getDslContext().newRecord(PAYOUT_TOOL, payoutTool);
-            Query query = getDslContext().insertInto(PAYOUT_TOOL).set(record);
-            executeOne(query);
-        }
+        List<Query> queries = payoutToolList.stream()
+                .map(payoutTool -> getDslContext().newRecord(PAYOUT_TOOL, payoutTool))
+                .map(payoutToolRecord -> getDslContext().insertInto(PAYOUT_TOOL).set(payoutToolRecord))
+                .collect(Collectors.toList());
+        batchExecute(queries);
     }
 
     @Override
