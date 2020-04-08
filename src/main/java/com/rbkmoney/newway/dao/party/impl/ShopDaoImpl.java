@@ -34,7 +34,7 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     public Optional<Long> save(Shop shop) throws DaoException {
         ShopRecord record = getDslContext().newRecord(SHOP, shop);
         Query query = getDslContext().insertInto(SHOP).set(record)
-                .onConflict(SHOP.PARTY_ID, SHOP.SEQUENCE_ID, SHOP.CHANGE_ID)
+                .onConflict(SHOP.PARTY_ID, SHOP.SEQUENCE_ID, SHOP.CHANGE_ID, SHOP.CLAIM_EFFECT_ID, SHOP.REVISION)
                 .doNothing()
                 .returning(SHOP.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();

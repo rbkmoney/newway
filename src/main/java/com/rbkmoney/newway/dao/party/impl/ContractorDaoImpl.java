@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
+import static com.rbkmoney.newway.domain.Tables.CONTRACT;
 import static com.rbkmoney.newway.domain.Tables.CONTRACTOR;
 
 @Component
@@ -32,7 +33,8 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     public Optional<Long> save(Contractor contractor) throws DaoException {
         ContractorRecord record = getDslContext().newRecord(CONTRACTOR, contractor);
         Query query = getDslContext().insertInto(CONTRACTOR).set(record)
-                .onConflict(CONTRACTOR.PARTY_ID, CONTRACTOR.SEQUENCE_ID, CONTRACTOR.CHANGE_ID)
+                .onConflict(CONTRACTOR.PARTY_ID, CONTRACTOR.SEQUENCE_ID, CONTRACTOR.CHANGE_ID,
+                        CONTRACTOR.CLAIM_EFFECT_ID, CONTRACTOR.REVISION)
                 .doNothing()
                 .returning(CONTRACTOR.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();

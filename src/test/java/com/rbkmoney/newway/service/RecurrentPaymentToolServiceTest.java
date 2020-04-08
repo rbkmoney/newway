@@ -1,16 +1,19 @@
 package com.rbkmoney.newway.service;
 
 import com.rbkmoney.damsel.domain.*;
-import com.rbkmoney.damsel.msgpack.Value;
 import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
+import com.rbkmoney.machinegun.msgpack.Value;
 import com.rbkmoney.newway.dao.AbstractAppDaoTests;
 import com.rbkmoney.newway.domain.enums.PaymentToolType;
+import com.rbkmoney.sink.common.serialization.impl.ThriftBinarySerializer;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +30,8 @@ public class RecurrentPaymentToolServiceTest extends AbstractAppDaoTests {
     @Test
     public void handleEventsTest() {
         String recurrentId = "recurrentId";
-        RecurrentPaymentToolEvent event = buildEvent(recurrentId);
-        recurrentPaymentToolService.handleEvents(event, event);
+        List<MachineEvent> events = buildEvent(recurrentId);
+        recurrentPaymentToolService.handleEvents(events);
 
         String sql = "select * from nw.recurrent_payment_tool where recurrent_payment_tool_id = :id";
         List<com.rbkmoney.newway.domain.tables.pojos.RecurrentPaymentTool> recurrentPaymentTools =
@@ -38,7 +41,6 @@ public class RecurrentPaymentToolServiceTest extends AbstractAppDaoTests {
 
         var created = recurrentPaymentTools.get(0);
         assertEquals(recurrentId, created.getRecurrentPaymentToolId());
-        assertEquals(123, created.getEventId().longValue());
         assertEquals("shop_id", created.getShopId());
         assertEquals(com.rbkmoney.newway.domain.enums.RecurrentPaymentToolStatus.created, created.getStatus());
         assertEquals(PaymentToolType.bank_card, created.getPaymentToolType());
@@ -49,7 +51,7 @@ public class RecurrentPaymentToolServiceTest extends AbstractAppDaoTests {
 
         var riskScoreChanged = recurrentPaymentTools.get(1);
         assertEquals("fatal", riskScoreChanged.getRiskScore());
-        assertNotEquals(created.getWtime(), riskScoreChanged.getWtime());
+        assertNotEquals(created.getId(), riskScoreChanged.getId());
         assertFalse(riskScoreChanged.getCurrent());
 
         var routeChanged = recurrentPaymentTools.get(2);
@@ -77,81 +79,83 @@ public class RecurrentPaymentToolServiceTest extends AbstractAppDaoTests {
 
     }
 
-    private RecurrentPaymentToolEvent buildEvent(String recurrentId) {
-        return new RecurrentPaymentToolEvent()
-                .setId(123L)
+    private List<MachineEvent> buildEvent(String recurrentId) {
+        ThriftBinarySerializer<RecurrentPaymentToolEventData> serializer = new ThriftBinarySerializer<>();
+        return Collections.singletonList(new MachineEvent()
+                .setSourceId("")
+                .setEventId(123L)
                 .setCreatedAt("2016-03-22T06:12:27Z")
-                .setSource(recurrentId)
-                .setSequence(12)
-                .setPayload(List.of(
-                        RecurrentPaymentToolChange.rec_payment_tool_created(
-                                new RecurrentPaymentToolHasCreated()
-                                        .setRecPaymentTool(new RecurrentPaymentTool()
-                                                .setId(recurrentId)
-                                                .setShopId("shop_id")
-                                                .setPartyId("party_id")
-                                                .setPartyRevision(124)
-                                                .setDomainRevision(1245)
-                                                .setStatus(RecurrentPaymentToolStatus.created(new RecurrentPaymentToolCreated()))
-                                                .setCreatedAt("2016-03-22T06:12:27Z")
-                                                .setPaymentResource(new DisposablePaymentResource()
-                                                        .setPaymentTool(PaymentTool.bank_card(new BankCard()
-                                                                .setToken("kkekekek_token")
-                                                                .setPaymentSystem(BankCardPaymentSystem.amex)
-                                                                .setBin("bin")
-                                                                .setLastDigits("masked")
-                                                                .setTokenProvider(BankCardTokenProvider.applepay)
-                                                                .setIssuerCountry(Residence.ABH)
-                                                                .setBankName("bank_name")
-                                                                .setMetadata(Map.of("kek", Value.b(true)))))
-                                                        .setPaymentSessionId("kek_session_id")
-                                                        .setClientInfo(new ClientInfo()
-                                                                .setIpAddress("127.0.0.1")
-                                                                .setFingerprint("kekksiki")))
-                                                .setRecToken("kek_token_111")
+                .setSourceId(recurrentId)
+                .setData(Value.bin(serializer.serialize(new RecurrentPaymentToolEventData().setChanges(
+                        List.of(
+                                RecurrentPaymentToolChange.rec_payment_tool_created(
+                                        new RecurrentPaymentToolHasCreated()
+                                                .setRecPaymentTool(new RecurrentPaymentTool()
+                                                        .setId(recurrentId)
+                                                        .setShopId("shop_id")
+                                                        .setPartyId("party_id")
+                                                        .setPartyRevision(124)
+                                                        .setDomainRevision(1245)
+                                                        .setStatus(RecurrentPaymentToolStatus.created(new RecurrentPaymentToolCreated()))
+                                                        .setCreatedAt("2016-03-22T06:12:27Z")
+                                                        .setPaymentResource(new DisposablePaymentResource()
+                                                                .setPaymentTool(PaymentTool.bank_card(new BankCard()
+                                                                        .setToken("kkekekek_token")
+                                                                        .setPaymentSystem(BankCardPaymentSystem.amex)
+                                                                        .setBin("bin")
+                                                                        .setLastDigits("masked")
+                                                                        .setTokenProvider(BankCardTokenProvider.applepay)
+                                                                        .setIssuerCountry(Residence.ABH)
+                                                                        .setBankName("bank_name")
+                                                                        .setMetadata(Map.of("kek", com.rbkmoney.damsel.msgpack.Value.b(true)))))
+                                                                .setPaymentSessionId("kek_session_id")
+                                                                .setClientInfo(new ClientInfo()
+                                                                        .setIpAddress("127.0.0.1")
+                                                                        .setFingerprint("kekksiki")))
+                                                        .setRecToken("kek_token_111")
+                                                        .setRoute(new PaymentRoute()
+                                                                .setProvider(new ProviderRef(888))
+                                                                .setTerminal(new TerminalRef(9999)))
+                                                        .setMinimalPaymentCost(new Cash(123, new CurrencyRef("RUB")))
+                                                )
+                                                .setRiskScore(RiskScore.high)
                                                 .setRoute(new PaymentRoute()
-                                                        .setProvider(new ProviderRef(888))
-                                                        .setTerminal(new TerminalRef(9999)))
-                                                .setMinimalPaymentCost(new Cash(123, new CurrencyRef("RUB")))
-                                        )
-                                        .setRiskScore(RiskScore.high)
-                                        .setRoute(new PaymentRoute()
-                                                .setProvider(new ProviderRef(54))
-                                                .setTerminal(new TerminalRef(9883)))
-                        ),
-                        RecurrentPaymentToolChange.rec_payment_tool_risk_score_changed(
-                                new RecurrentPaymentToolRiskScoreChanged()
-                                        .setRiskScore(RiskScore.fatal)
-                        ),
-                        RecurrentPaymentToolChange.rec_payment_tool_route_changed(
-                                new RecurrentPaymentToolRouteChanged()
-                                        .setRoute(new PaymentRoute()
-                                                .setProvider(new ProviderRef(123))
-                                                .setTerminal(new TerminalRef(456)))
-                        ),
-                        RecurrentPaymentToolChange.rec_payment_tool_abandoned(
-                                new RecurrentPaymentToolHasAbandoned()
-                        ),
-                        RecurrentPaymentToolChange.rec_payment_tool_acquired(
-                                new RecurrentPaymentToolHasAcquired()
-                                        .setToken("kek_token")
-                        ),
-                        RecurrentPaymentToolChange.rec_payment_tool_failed(
-                                new RecurrentPaymentToolHasFailed()
-                                        .setFailure(OperationFailure.failure(new Failure().setCode("code")))
-                        ),
-                        RecurrentPaymentToolChange.rec_payment_tool_session_changed(
-                                new RecurrentPaymentToolSessionChange()
-                                        .setPayload(SessionChangePayload.session_transaction_bound(
-                                                new SessionTransactionBound()
-                                                        .setTrx(new TransactionInfo()
-                                                                .setId("trxId")
-                                                                .setExtra(Map.of("lol", "kek"))
-                                                                .setAdditionalInfo(new AdditionalTransactionInfo()
-                                                                        .setRrn("rrn")))
+                                                        .setProvider(new ProviderRef(54))
+                                                        .setTerminal(new TerminalRef(9883)))
+                                ),
+                                RecurrentPaymentToolChange.rec_payment_tool_risk_score_changed(
+                                        new RecurrentPaymentToolRiskScoreChanged()
+                                                .setRiskScore(RiskScore.fatal)
+                                ),
+                                RecurrentPaymentToolChange.rec_payment_tool_route_changed(
+                                        new RecurrentPaymentToolRouteChanged()
+                                                .setRoute(new PaymentRoute()
+                                                        .setProvider(new ProviderRef(123))
+                                                        .setTerminal(new TerminalRef(456)))
+                                ),
+                                RecurrentPaymentToolChange.rec_payment_tool_abandoned(
+                                        new RecurrentPaymentToolHasAbandoned()
+                                ),
+                                RecurrentPaymentToolChange.rec_payment_tool_acquired(
+                                        new RecurrentPaymentToolHasAcquired()
+                                                .setToken("kek_token")
+                                ),
+                                RecurrentPaymentToolChange.rec_payment_tool_failed(
+                                        new RecurrentPaymentToolHasFailed()
+                                                .setFailure(OperationFailure.failure(new Failure().setCode("code")))
+                                ),
+                                RecurrentPaymentToolChange.rec_payment_tool_session_changed(
+                                        new RecurrentPaymentToolSessionChange()
+                                                .setPayload(SessionChangePayload.session_transaction_bound(
+                                                        new SessionTransactionBound()
+                                                                .setTrx(new TransactionInfo()
+                                                                        .setId("trxId")
+                                                                        .setExtra(Map.of("lol", "kek"))
+                                                                        .setAdditionalInfo(new AdditionalTransactionInfo()
+                                                                                .setRrn("rrn")))
 
-                                        ))
-                        )
-                ));
+                                                ))
+                                )
+                        ))))));
     }
 }

@@ -15,7 +15,8 @@ public class ContractorUtil {
     public static Contractor convertContractor(long sequenceId, String eventCreatedAt, String partyId,
                                                com.rbkmoney.damsel.domain.Contractor contractorSource, String contractorId, Integer changeId) {
         Contractor contractor = new Contractor();
-        contractor.setSequenceId(sequenceId);
+        contractor.setRevision(-1L);
+        contractor.setSequenceId((int) sequenceId);
         contractor.setChangeId(changeId);
         contractor.setEventCreatedAt(TypeUtil.stringToLocalDateTime(eventCreatedAt));
         contractor.setPartyId(partyId);
@@ -64,9 +65,9 @@ public class ContractorUtil {
 
     public static void resetBaseFields(MachineEvent event, long sequenceId, Contractor contractorSource) {
         contractorSource.setId(null);
-        contractorSource.setRevision(null);
+        contractorSource.setRevision(-1L);
         contractorSource.setWtime(null);
-        contractorSource.setSequenceId(sequenceId);
+        contractorSource.setSequenceId((int) sequenceId);
         contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
     }
 }

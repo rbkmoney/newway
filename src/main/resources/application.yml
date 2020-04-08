@@ -41,6 +41,7 @@ kafka:
     key-store-type: PKCS12
     trust-store-type: PKCS12
   consumer:
+    concurrency: 8
     group-id: "NewwayListener"
     enable-auto-commit: false
     auto-offset-reset: earliest
@@ -51,10 +52,14 @@ kafka:
       concurrency: 7
     party-management:
       concurrency: 7
+    recurrent-payment-tool:
+      concurrency: 7
   topics:
     invoice:
       id: mg-invoice-100-2
       enabled: false
+    recurrent-payment-tool:
+      id: mg-events-recurrent-paytools
     party-management:
       id: mg-events-party
       enabled: false

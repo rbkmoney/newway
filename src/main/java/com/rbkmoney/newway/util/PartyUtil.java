@@ -12,7 +12,7 @@ public class PartyUtil {
         partySource.setId(null);
         partySource.setRevision(null);
         partySource.setWtime(null);
-        partySource.setSequenceId(sequenceId);
+        partySource.setSequenceId((int) sequenceId);
         partySource.setChangeId(changeId);
         partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
     }

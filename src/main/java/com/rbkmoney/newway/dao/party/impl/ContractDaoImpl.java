@@ -32,7 +32,8 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
     public Optional<Long> save(Contract contract) throws DaoException {
         ContractRecord record = getDslContext().newRecord(CONTRACT, contract);
         Query query = getDslContext().insertInto(CONTRACT).set(record)
-                .onConflict(CONTRACT.PARTY_ID, CONTRACT.SEQUENCE_ID, CONTRACT.CHANGE_ID)
+                .onConflict(CONTRACT.PARTY_ID, CONTRACT.SEQUENCE_ID, CONTRACT.CHANGE_ID,
+                        CONTRACT.CLAIM_EFFECT_ID, CONTRACT.REVISION)
                 .doNothing()
                 .returning(CONTRACT.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();

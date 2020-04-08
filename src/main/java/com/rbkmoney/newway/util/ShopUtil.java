@@ -18,7 +18,7 @@ public class ShopUtil {
         shopSource.setId(null);
         shopSource.setRevision(null);
         shopSource.setWtime(null);
-        shopSource.setSequenceId(sequenceId);
+        shopSource.setSequenceId((int) sequenceId);
         shopSource.setChangeId(changeId);
         shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
     }

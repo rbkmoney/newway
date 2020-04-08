@@ -74,7 +74,6 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
 
     private void updateShopsRevision(MachineEvent event, String partyId, long revision, Integer changeId) {
         shopDao.getByPartyId(partyId).forEach(shopSource -> {
-            String shopId = shopSource.getShopId();
             long sequenceId = event.getEventId();
             Long oldEventId = shopSource.getId();
             ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource);

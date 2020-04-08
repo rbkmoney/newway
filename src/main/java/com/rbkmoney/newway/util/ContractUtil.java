@@ -135,9 +135,9 @@ public class ContractUtil {
 
     public static void resetBaseFields(MachineEvent event, Integer changeId, long sequenceId, com.rbkmoney.newway.domain.tables.pojos.Contract contractSource) {
         contractSource.setId(null);
-        contractSource.setRevision(null);
+        contractSource.setRevision(-1L);
         contractSource.setWtime(null);
-        contractSource.setSequenceId(sequenceId);
+        contractSource.setSequenceId((int) sequenceId);
         contractSource.setChangeId(changeId);
         contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
     }

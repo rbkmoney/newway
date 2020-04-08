@@ -27,13 +27,7 @@ public class RecurrentPaymentToolDaoImpl extends AbstractGenericDao implements R
     }
 
     @Override
-    public Long getLastEventId() throws DaoException {
-        Query query = getDslContext().select(RECURRENT_PAYMENT_TOOL.EVENT_ID.max()).from(RECURRENT_PAYMENT_TOOL);
-        return fetchOne(query, Long.class);
-    }
-
-    @Override
-    public Long save(RecurrentPaymentTool source) throws DaoException {
+    public Optional<Long> save(RecurrentPaymentTool source) throws DaoException {
         RecurrentPaymentToolRecord record = getDslContext().newRecord(RECURRENT_PAYMENT_TOOL, source);
         Query query = getDslContext().insertInto(RECURRENT_PAYMENT_TOOL)
                 .set(record)
@@ -44,7 +38,7 @@ public class RecurrentPaymentToolDaoImpl extends AbstractGenericDao implements R
                 .returning(RECURRENT_PAYMENT_TOOL.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         execute(query, keyHolder);
-        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override

@@ -56,7 +56,7 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
 
     private com.rbkmoney.newway.domain.tables.pojos.Shop createShop(MachineEvent event, Integer changeId, long sequenceId, Shop shopCreated, String shopId, String partyId) {
         com.rbkmoney.newway.domain.tables.pojos.Shop shop = new com.rbkmoney.newway.domain.tables.pojos.Shop();
-        shop.setSequenceId(sequenceId);
+        shop.setSequenceId((int) sequenceId);
         shop.setChangeId(changeId);
         shop.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         shop.setShopId(shopId);
