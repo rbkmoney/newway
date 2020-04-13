@@ -68,12 +68,9 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     }
 
     @Override
-    public void updateNotCurrent(String partyId, List<String> shopIds) throws DaoException {
-        List<Query> queries = shopIds.stream()
-                .map(shopId -> getDslContext().update(SHOP).set(SHOP.CURRENT, false)
-                        .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.SHOP_ID.eq(shopId)).and(SHOP.CURRENT)))
-                .collect(Collectors.toList());
-        batchExecute(queries);
+    public void updateNotCurrent(List<Long> ids) throws DaoException {
+        Query query = getDslContext().update(SHOP).set(SHOP.CURRENT, false).where(SHOP.ID.in(ids));
+        execute(query);
     }
 
 

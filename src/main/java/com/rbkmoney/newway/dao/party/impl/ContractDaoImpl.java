@@ -69,12 +69,9 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
     }
 
     @Override
-    public void updateNotCurrent(String partyId, List<String> contractIds) throws DaoException {
-        List<Query> queries = contractIds.stream()
-                .map(contractId -> getDslContext().update(CONTRACT).set(CONTRACT.CURRENT, false)
-                        .where(CONTRACT.PARTY_ID.eq(partyId).and(CONTRACT.CONTRACT_ID.eq(contractId)).and(CONTRACT.CURRENT)))
-                .collect(Collectors.toList());
-        batchExecute(queries);
+    public void updateNotCurrent(List<Long> ids) throws DaoException {
+        Query query = getDslContext().update(CONTRACT).set(CONTRACT.CURRENT, false).where(CONTRACT.ID.in(ids));
+        execute(query);
     }
 
     @Override
