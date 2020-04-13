@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.jdbc.support.JdbcUtils;
@@ -50,15 +51,13 @@ public class PartyRevisionChangedHandlerTest extends AbstractAppDaoTests {
     @Autowired
     private PartyDao partyDao;
 
-    private static final int CNT = 500;
+    private static final int CNT = 100;
 
     private static final String PARTY_ID = "partyId";
 
     @Before
     public void setUp() throws Exception {
-
         log.info("setUp");
-
         Party party = random(Party.class, "id","current","wtime");
         party.setPartyId(PARTY_ID);
         partyDao.save(party);
@@ -66,6 +65,7 @@ public class PartyRevisionChangedHandlerTest extends AbstractAppDaoTests {
         List<ContractAdjustment> allAdjustments = new ArrayList<>();
         List<PayoutTool> allPayoutTools = new ArrayList<>();
         contracts.forEach(c -> {
+            c.setContractId(UUID.randomUUID().toString());
             c.setPartyId(party.getPartyId());
             List<ContractAdjustment> adjustments = randomListOf(2, ContractAdjustment.class, "id");
             adjustments.forEach(ca -> ca.setCntrctId(c.getId()));
@@ -74,24 +74,30 @@ public class PartyRevisionChangedHandlerTest extends AbstractAppDaoTests {
             payoutTools.forEach(pt -> pt.setCntrctId(c.getId()));
             allPayoutTools.addAll(payoutTools);
         });
-        contracts.forEach(c -> contractDao.save(c));
+        contractDao.saveBatch(contracts);
         contractAdjustmentDao.save(allAdjustments);
         payoutToolDao.save(allPayoutTools);
 
         List<Shop> shops = randomListOf(CNT, Shop.class, "id","current", "wtime");
-        shops.forEach(s -> s.setPartyId(party.getPartyId()));
-        shops.forEach(s -> shopDao.save(s));
+        shops.forEach(s -> {
+            s.setShopId(UUID.randomUUID().toString());
+            s.setPartyId(party.getPartyId());
+        });
+        shopDao.saveBatch(shops);
 
-        List<Contractor> contractors = randomListOf(CNT, Contractor.class, "id","current", "wtime");
-        contractors.forEach(c -> c.setPartyId(party.getPartyId()));
-        contractors.forEach(c -> contractorDao.save(c));
+        List<Contractor> contractors = randomListOf(CNT, Contractor.class, "id", "current", "wtime");
+        contractors.forEach(c -> {
+            c.setPartyId(party.getPartyId());
+            c.setContractorId(UUID.randomUUID().toString());
+        });
+        contractorDao.saveBatch(contractors);
 
-        log.info("All staff has been saved for partyId {}", party.getPartyId());
+        log.info("All staff has been saved for partyId={}", party.getPartyId());
 
     }
 
     @Test
-    public void testHandle() throws SQLException {
+    public void testPerfomanceHandle() throws SQLException {
         PartyChange change = PartyChange.revision_changed(new PartyRevisionChanged()
                 .setTimestamp("2016-03-22T06:12:27Z")
                 .setRevision(1L));
