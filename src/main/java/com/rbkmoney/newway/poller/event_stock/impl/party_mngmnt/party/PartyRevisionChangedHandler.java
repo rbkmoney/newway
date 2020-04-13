@@ -91,8 +91,11 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
 
         List<String> shopIds = shops.stream().map(Shop::getShopId).collect(Collectors.toList());
         shopDao.updateNotCurrent(partyId, shopIds);
+        log.info("Shops current has been updated, eventId={}, partyId={}, count={}",
+                event.getId(), partyId, shops.size());
         shopDao.saveBatch(shops);
-        log.info("Shops revisions has been saved, eventId={}, partyId={}, shopIds={}", event.getId(), partyId, shopIds);
+        log.info("Shops revisions has been saved, eventId={}, partyId={}, count={}, shopIds={}",
+                event.getId(), partyId, shops.size(), shopIds);
     }
 
     private void updateContractorsRevision(Event event, String partyId, long revision) {
@@ -107,8 +110,11 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
 
         List<String> contractorIds = contractors.stream().map(Contractor::getContractorId).collect(Collectors.toList());
         contractorDao.updateNotCurrent(partyId, contractorIds);
+        log.info("Contractors current has been updated, eventId={}, partyId={}, count={}",
+                event.getId(), partyId, contractors.size());
         contractorDao.saveBatch(contractors);
-        log.info("Contractors revisions has been saved, eventId={}, partyId={}, contractorIds={}", event.getId(), partyId, contractorIds);
+        log.info("Contractors revisions has been saved, eventId={}, partyId={}, count={}, contractorIds={}",
+                event.getId(), partyId, contractors.size(), contractorIds);
     }
 
     private void updateContractsRevision(Event event, String partyId, long revision) {
@@ -140,14 +146,21 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
                 pt.setCntrctId(cntrctId);
             });
             allPayoutTools.addAll(payoutTools);
-            log.info("Contract revision has been saved, eventId={}, partyId={}, contractId={}", event.getId(), partyId, contractId);
         }
+        log.info("Contracts has been prepared for saving, eventId={}, partyId={}", event.getId(), partyId);
 
         List<String> contractIds = contracts.stream().map(Contract::getContractId).collect(Collectors.toList());
         contractDao.updateNotCurrent(partyId, contractIds);
+        log.info("Contracts current has been updated, eventId={}, partyId={}, count={}",
+                event.getId(), partyId, contracts.size());
         contractDao.saveBatch(contracts);
+        log.info("Contracts has been saved, eventId={}, partyId={}, count={}",
+                event.getId(), partyId, contracts.size());
         contractAdjustmentDao.save(allAdjustments);
+        log.info("ContractAdjustments has been saved, eventId={}, partyId={}, count={}",
+                event.getId(), partyId, allAdjustments.size());
         payoutToolDao.save(allPayoutTools);
+        log.info("Contracts revision has been saved, eventId={}, partyId={}, contractId={}", event.getId(), partyId, contractIds);
     }
 
     @Override
