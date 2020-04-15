@@ -9,6 +9,7 @@ import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.exception.NotFoundException;
 import org.jooq.Query;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
@@ -17,8 +18,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.rbkmoney.newway.domain.Tables.CONTRACT;
-import static com.rbkmoney.newway.domain.Tables.CONTRACTOR;
+import static com.rbkmoney.newway.domain.Tables.*;
+import static com.rbkmoney.newway.domain.Tables.SHOP;
 
 @Component
 public class ContractorDaoImpl extends AbstractGenericDao implements ContractorDao {
@@ -78,6 +79,14 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     public void updateNotCurrent(List<Long> ids) throws DaoException {
         Query query = getDslContext().update(CONTRACTOR).set(CONTRACTOR.CURRENT, false).where(CONTRACTOR.ID.in(ids));
         execute(query);
+    }
+
+    @Override
+    public void switchCurrent(List<Long> ids) throws DaoException {
+        ids.forEach(id ->
+                this.getNamedParameterJdbcTemplate().update("update nw.contractor set current = false where id =:id and current;" +
+                                "update nw.contractor set current = true where id = (select max(id) from nw.contractor where id =:id);",
+                        new MapSqlParameterSource("id", id)));
     }
 
     @Override

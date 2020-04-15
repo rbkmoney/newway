@@ -88,10 +88,8 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
         });
         log.info("Shops has been prepared for saving, eventId={}, partyId={}, count={}",
                 event.getEventId(), partyId, shops.size());
-        shopDao.updateNotCurrent(shopIds);
-        log.info("Shops current has been updated, eventId={}, partyId={}, count={}",
-                event.getEventId(), partyId, shops.size());
         shopDao.saveBatch(shops);
+        shopDao.switchCurrent(shopIds);
         log.info("Shops revisions has been saved, eventId={}, partyId={}, count={}",
                 event.getEventId(), partyId, shops.size());
     }
@@ -107,10 +105,8 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
         });
         log.info("Contractors has been prepared for saving, eventId={}, partyId={}, count={}",
                 event.getEventId(), partyId, contractors.size());
-        contractorDao.updateNotCurrent(contractorIds);
-        log.info("Contractors current has been updated, eventId={}, partyId={}, count={}",
-                event.getEventId(), partyId, contractors.size());
         contractorDao.saveBatch(contractors);
+        contractorDao.switchCurrent(contractorIds);
         log.info("Contractors revisions has been saved, eventId={}, partyId={}, count={}",
                 event.getEventId(), partyId, contractors.size());
     }
@@ -147,11 +143,8 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
             allPayoutTools.addAll(payoutTools);
         }
         log.info("Contracts has been prepared for saving, eventId={}, partyId={}", eventId, partyId);
-
-        contractDao.updateNotCurrent(contractIds);
-        log.info("Contracts current has been updated, eventId={}, partyId={}, count={}",
-                eventId, partyId, contracts.size());
         contractDao.saveBatch(contracts);
+        contractDao.switchCurrent(contractIds);
         log.info("Contracts has been saved, eventId={}, partyId={}, count={}",
                 eventId, partyId, contracts.size());
         contractAdjustmentDao.save(allAdjustments);

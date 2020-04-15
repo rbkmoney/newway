@@ -10,6 +10,7 @@ import com.rbkmoney.newway.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Query;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
@@ -81,6 +82,13 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
         execute(query);
     }
 
+    @Override
+    public void switchCurrent(List<Long> ids) throws DaoException {
+        ids.forEach(id ->
+                this.getNamedParameterJdbcTemplate().update("update nw.shop set current = false where id =:id and current;" +
+                                "update nw.shop set current = true where id = (select max(id) from nw.shop where id =:id);",
+                        new MapSqlParameterSource("id", id)));
+    }
 
     @Override
     public List<Shop> getByPartyId(String partyId) {

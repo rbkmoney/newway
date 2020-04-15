@@ -9,10 +9,16 @@ import java.util.Optional;
 
 public interface ContractDao extends GenericDao {
     void saveBatch(List<Contract> contracts) throws DaoException;
+
     Optional<Long> save(Contract contract) throws DaoException;
 
     Contract get(String partyId, String contractId) throws DaoException;
+
     void updateNotCurrent(Long contractId) throws DaoException;
+
     void updateNotCurrent(List<Long> ids) throws DaoException;
+
+    void switchCurrent(List<Long> ids) throws DaoException;
+
     List<Contract> getByPartyId(String partyId);
 }
