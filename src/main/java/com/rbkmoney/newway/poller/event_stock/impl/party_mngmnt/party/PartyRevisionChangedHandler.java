@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -79,17 +80,20 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
 
     private void updateShopsRevision(MachineEvent event, String partyId, long revision, Integer changeId) {
         List<Shop> shops = shopDao.getByPartyId(partyId);
-        List<Long> shopIds = new ArrayList<>();
+        List<Long> ids = new ArrayList<>();
         shops.forEach(shopSource -> {
             long sequenceId = event.getEventId();
-            shopIds.add(shopSource.getId());
+            ids.add(shopSource.getId());
             ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource);
             shopSource.setRevision(revision);
         });
         log.info("Shops has been prepared for saving, eventId={}, partyId={}, count={}",
                 event.getEventId(), partyId, shops.size());
         shopDao.saveBatch(shops);
-        shopDao.switchCurrent(shopIds);
+        List<String> shopIds = shops.stream()
+                .map(Shop::getShopId)
+                .collect(Collectors.toList());
+        shopDao.switchCurrent(shopIds, partyId);
         log.info("Shops revisions has been saved, eventId={}, partyId={}, count={}",
                 event.getEventId(), partyId, shops.size());
     }
@@ -106,7 +110,10 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
         log.info("Contractors has been prepared for saving, eventId={}, partyId={}, count={}",
                 event.getEventId(), partyId, contractors.size());
         contractorDao.saveBatch(contractors);
-        contractorDao.switchCurrent(contractorIds);
+        List<String> ids = contractors.stream()
+                .map(Contractor::getContractorId)
+                .collect(Collectors.toList());
+        contractorDao.switchCurrent(ids, partyId);
         log.info("Contractors revisions has been saved, eventId={}, partyId={}, count={}",
                 event.getEventId(), partyId, contractors.size());
     }
@@ -144,7 +151,10 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
         }
         log.info("Contracts has been prepared for saving, eventId={}, partyId={}", eventId, partyId);
         contractDao.saveBatch(contracts);
-        contractDao.switchCurrent(contractIds);
+        List<String> contIds = contracts.stream()
+                .map(Contract::getContractId)
+                .collect(Collectors.toList());
+        contractDao.switchCurrent(contIds, partyId);
         log.info("Contracts has been saved, eventId={}, partyId={}, count={}",
                 eventId, partyId, contracts.size());
         contractAdjustmentDao.save(allAdjustments);

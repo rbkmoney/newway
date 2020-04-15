@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.rbkmoney.newway.domain.Tables.*;
-import static com.rbkmoney.newway.domain.Tables.SHOP;
+import static com.rbkmoney.newway.domain.Tables.CONTRACTOR;
 
 @Component
 public class ContractorDaoImpl extends AbstractGenericDao implements ContractorDao {
@@ -82,11 +82,12 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     }
 
     @Override
-    public void switchCurrent(List<Long> ids) throws DaoException {
+    public void switchCurrent(List<String> ids, String partyId) throws DaoException {
         ids.forEach(id ->
-                this.getNamedParameterJdbcTemplate().update("update nw.contractor set current = false where id =:id and current;" +
-                                "update nw.contractor set current = true where id = (select max(id) from nw.contractor where id =:id);",
-                        new MapSqlParameterSource("id", id)));
+                this.getNamedParameterJdbcTemplate()
+                        .update("update nw.contractor set current = false where contractor_id =:contractor_id and party_id=:party_id and current;" +
+                                        "update nw.contractor set current = true where id = (select max(id) from nw.contractor where contractor_id =:contractor_id and party_id=:party_id);",
+                                new MapSqlParameterSource(Map.of("contractor_id", id, "party_id", partyId))));
     }
 
     @Override

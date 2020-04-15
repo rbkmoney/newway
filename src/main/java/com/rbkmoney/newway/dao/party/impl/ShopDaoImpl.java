@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -83,11 +84,12 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     }
 
     @Override
-    public void switchCurrent(List<Long> ids) throws DaoException {
+    public void switchCurrent(List<String> ids, String partyId) throws DaoException {
         ids.forEach(id ->
-                this.getNamedParameterJdbcTemplate().update("update nw.shop set current = false where id =:id and current;" +
-                                "update nw.shop set current = true where id = (select max(id) from nw.shop where id =:id);",
-                        new MapSqlParameterSource("id", id)));
+                this.getNamedParameterJdbcTemplate()
+                        .update("update nw.shop set current = false where shop_id =:shop_id and party_id=:party_id and current;" +
+                                        "update nw.shop set current = true where id = (select max(id) from nw.shop where shop_id =:shop_id and party_id=:party_id);",
+                                new MapSqlParameterSource(Map.of("shop_id", id, "party_id", partyId))));
     }
 
     @Override

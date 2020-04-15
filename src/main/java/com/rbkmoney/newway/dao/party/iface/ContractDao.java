@@ -18,7 +18,7 @@ public interface ContractDao extends GenericDao {
 
     void updateNotCurrent(List<Long> ids) throws DaoException;
 
-    void switchCurrent(List<Long> ids) throws DaoException;
+    void switchCurrent(List<String> ids, String partyId) throws DaoException;
 
     List<Contract> getByPartyId(String partyId);
 }
