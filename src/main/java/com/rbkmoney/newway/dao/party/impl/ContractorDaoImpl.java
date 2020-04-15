@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.Tables.CONTRACT;
 import static com.rbkmoney.newway.domain.Tables.CONTRACTOR;
@@ -43,6 +44,19 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     }
 
     @Override
+    public void saveBatch(List<Contractor> contractors) throws DaoException {
+        List<Query> queries = contractors.stream()
+                .map(contractor -> getDslContext().newRecord(CONTRACTOR, contractor))
+                .map(contractorRecord -> getDslContext().insertInto(CONTRACTOR)
+                        .set(contractorRecord)
+                        .onConflict(CONTRACTOR.PARTY_ID, CONTRACTOR.SEQUENCE_ID, CONTRACTOR.CHANGE_ID, CONTRACTOR.CLAIM_EFFECT_ID, CONTRACTOR.REVISION)
+                        .doNothing()
+                )
+                .collect(Collectors.toList());
+        batchExecute(queries);
+    }
+
+    @Override
     public Contractor get(String partyId, String contractorId) throws DaoException {
         Query query = getDslContext().selectFrom(CONTRACTOR)
                 .where(CONTRACTOR.PARTY_ID.eq(partyId).and(CONTRACTOR.CONTRACTOR_ID.eq(contractorId)).and(CONTRACTOR.CURRENT));
@@ -56,8 +70,14 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     @Override
     public void updateNotCurrent(Long id) throws DaoException {
         Query query = getDslContext().update(CONTRACTOR).set(CONTRACTOR.CURRENT, false)
-                .where(CONTRACTOR.ID.eq(id));
+                .where(CONTRACTOR.ID.eq(id).and(CONTRACTOR.CURRENT));
         executeOne(query);
+    }
+
+    @Override
+    public void updateNotCurrent(List<Long> ids) throws DaoException {
+        Query query = getDslContext().update(CONTRACTOR).set(CONTRACTOR.CURRENT, false).where(CONTRACTOR.ID.in(ids));
+        execute(query);
     }
 
     @Override

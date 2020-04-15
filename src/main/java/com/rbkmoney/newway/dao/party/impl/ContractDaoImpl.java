@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.Tables.CONTRACT;
 
@@ -42,6 +43,19 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
     }
 
     @Override
+    public void saveBatch(List<Contract> contracts) throws DaoException {
+        List<Query> queries = contracts.stream()
+                .map(contractor -> getDslContext().newRecord(CONTRACT, contractor))
+                .map(contractorRecord -> getDslContext().insertInto(CONTRACT)
+                        .set(contractorRecord)
+                        .onConflict(CONTRACT.PARTY_ID, CONTRACT.SEQUENCE_ID, CONTRACT.CHANGE_ID, CONTRACT.CLAIM_EFFECT_ID, CONTRACT.REVISION)
+                        .doNothing()
+                )
+                .collect(Collectors.toList());
+        batchExecute(queries);
+    }
+
+    @Override
     public Contract get(String partyId, String contractId) throws DaoException {
         Query query = getDslContext().selectFrom(CONTRACT)
                 .where(CONTRACT.PARTY_ID.eq(partyId).and(CONTRACT.CONTRACT_ID.eq(contractId)).and(CONTRACT.CURRENT));
@@ -58,6 +72,12 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
         Query query = getDslContext().update(CONTRACT).set(CONTRACT.CURRENT, false)
                 .where(CONTRACT.ID.eq(id));
         executeOne(query);
+    }
+
+    @Override
+    public void updateNotCurrent(List<Long> ids) throws DaoException {
+        Query query = getDslContext().update(CONTRACT).set(CONTRACT.CURRENT, false).where(CONTRACT.ID.in(ids));
+        execute(query);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.rbkmoney.newway.dao.dominant.impl.*;
 import com.rbkmoney.newway.dao.identity.iface.ChallengeDao;
 import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.dao.invoicing.iface.*;
+import com.rbkmoney.newway.dao.invoicing.impl.ContractIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.dao.invoicing.impl.PaymentIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
@@ -127,6 +128,8 @@ public class DaoTests extends AbstractAppDaoTests {
     private PaymentIdsGeneratorDaoImpl idsGeneratorDao;
     @Autowired
     private RecurrentPaymentToolDao recurrentPaymentToolDao;
+    @Autowired
+    private ContractIdsGeneratorDaoImpl contractIdsGeneratorDao;
 
     @Test
     public void depositDaoTest() {
@@ -699,6 +702,13 @@ public class DaoTests extends AbstractAppDaoTests {
         List<Long> list = idsGeneratorDao.get(100);
         assertEquals(100, list.size());
         assertEquals(99, list.get(99) - list.get(0));
+    }
+
+    @Test
+    public void contractIdsGeneratorTest() {
+        List<Long> list = contractIdsGeneratorDao.get(100);
+        assertEquals(100, list.size());
+        assertEquals(99,list.get(99) - list.get(0));
     }
 
     @Test
