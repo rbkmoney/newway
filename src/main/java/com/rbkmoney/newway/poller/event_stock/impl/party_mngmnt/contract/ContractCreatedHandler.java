@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
@@ -42,12 +43,15 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, MachineEvent event, Integer changeId) {
         long sequenceId = event.getEventId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(claimEffect -> claimEffect.isSetContractEffect() && claimEffect.getContractEffect().getEffect().isSetCreated())
-                .forEach(claimEffect -> handleEvent(event, changeId, sequenceId, claimEffect));
+                .collect(Collectors.toList());
+        for (int i = 0; i < claimEffects.size(); i++) {
+            handleEvent(event, changeId, sequenceId, claimEffects.get(i), i);
+        }
     }
 
-    private void handleEvent(MachineEvent event, Integer changeId, long sequenceId, ClaimEffect e) {
+    private void handleEvent(MachineEvent event, Integer changeId, long sequenceId, ClaimEffect e, Integer claimEffectId) {
         ContractEffectUnit contractEffectUnit = e.getContractEffect();
         com.rbkmoney.damsel.domain.Contract contractCreated = contractEffectUnit.getEffect().getCreated();
         String contractId = contractEffectUnit.getContractId();
@@ -58,6 +62,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
         contract.setRevision(-1L);
         contract.setSequenceId((int) sequenceId);
         contract.setChangeId(changeId);
+        contract.setClaimEffectId(claimEffectId);
         contract.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         partyDao.get(partyId); //check party is exist
 

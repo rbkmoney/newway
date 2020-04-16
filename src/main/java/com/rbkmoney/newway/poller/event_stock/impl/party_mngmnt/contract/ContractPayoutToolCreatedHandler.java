@@ -15,6 +15,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -27,12 +30,15 @@ public class ContractPayoutToolCreatedHandler extends AbstractClaimChangedHandle
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, MachineEvent event, Integer changeId) {
         long sequenceId = event.getEventId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(claimEffect -> claimEffect.isSetContractEffect() && claimEffect.getContractEffect().getEffect().isSetPayoutToolCreated())
-                .forEach(claimEffect -> handleEvent(event, changeId, sequenceId, claimEffect));
+                .collect(Collectors.toList());
+        for (int i = 0; i < claimEffects.size(); i++) {
+            handleEvent(event, changeId, sequenceId, claimEffects.get(i), i);
+        }
     }
 
-    private void handleEvent(MachineEvent event, Integer changeId, long sequenceId, ClaimEffect claimEffect) {
+    private void handleEvent(MachineEvent event, Integer changeId, long sequenceId, ClaimEffect claimEffect, Integer claimEffectId) {
         ContractEffectUnit contractEffectUnit = claimEffect.getContractEffect();
         com.rbkmoney.damsel.domain.PayoutTool payoutToolCreated = contractEffectUnit.getEffect().getPayoutToolCreated();
         String contractId = contractEffectUnit.getContractId();
@@ -41,7 +47,7 @@ public class ContractPayoutToolCreatedHandler extends AbstractClaimChangedHandle
                 sequenceId, partyId, contractId, changeId);
         Contract contractSource = contractDao.get(partyId, contractId);
         Long contractSourceId = contractSource.getId();
-        ContractUtil.resetBaseFields(event, changeId, sequenceId, contractSource);
+        ContractUtil.resetBaseFields(event, changeId, sequenceId, contractSource, claimEffectId);
 
         contractDao.save(contractSource).ifPresentOrElse(
                 dbContractId -> {

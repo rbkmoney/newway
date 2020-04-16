@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -25,12 +28,15 @@ public class ShopCategoryChangedHandler extends AbstractClaimChangedHandler {
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, MachineEvent event, Integer changeId) {
         long sequenceId = event.getEventId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(claimEffect -> claimEffect.isSetShopEffect() && claimEffect.getShopEffect().getEffect().isSetCategoryChanged())
-                .forEach(claimEffect -> handleEvent(event, changeId, sequenceId, claimEffect));
+                .collect(Collectors.toList());
+        for (int i = 0; i < claimEffects.size(); i++) {
+            handleEvent(event, changeId, sequenceId, claimEffects.get(i), i);
+        }
     }
 
-    private void handleEvent(MachineEvent event, Integer changeId, long sequenceId, ClaimEffect e) {
+    private void handleEvent(MachineEvent event, Integer changeId, long sequenceId, ClaimEffect e, Integer claimEffectId) {
         ShopEffectUnit shopEffect = e.getShopEffect();
         int categoryId = shopEffect.getEffect().getCategoryChanged().getId();
         String shopId = shopEffect.getShopId();
@@ -40,7 +46,7 @@ public class ShopCategoryChangedHandler extends AbstractClaimChangedHandler {
 
         Shop shopSource = shopDao.get(partyId, shopId);
         Long oldEventId = shopSource.getId();
-        ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource);
+        ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource, claimEffectId);
 
         shopSource.setCategoryId(categoryId);
 

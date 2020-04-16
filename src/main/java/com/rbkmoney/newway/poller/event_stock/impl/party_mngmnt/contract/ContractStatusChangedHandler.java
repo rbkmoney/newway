@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contract;
 
 import com.rbkmoney.damsel.domain.ContractStatus;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
 import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
@@ -17,6 +18,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -29,37 +33,43 @@ public class ContractStatusChangedHandler extends AbstractClaimChangedHandler {
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, MachineEvent event, Integer changeId) {
         long sequenceId = event.getEventId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetStatusChanged()).forEach(e -> {
-            ContractEffectUnit contractEffectUnit = e.getContractEffect();
-            ContractStatus statusChanged = contractEffectUnit.getEffect().getStatusChanged();
-            String contractId = contractEffectUnit.getContractId();
-            String partyId = event.getSourceId();
-            log.info("Start contractSource status changed handling, sequenceId={}, partyId={}, contractId={}, changeId={}",
-                    sequenceId, partyId, contractId, changeId);
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
+                .filter(e -> e.isSetContractEffect() && e.getContractEffect().getEffect().isSetStatusChanged())
+                .collect(Collectors.toList());
+        for (int i = 0; i < claimEffects.size(); i++) {
+            handleEvent(event, changeId, sequenceId, claimEffects.get(i), i);
+        }
+    }
 
-            Contract contractSource = contractDao.get(partyId, contractId);
-            Long contractSourceId = contractSource.getId();
-            ContractUtil.resetBaseFields(event, changeId, sequenceId, contractSource);
+    private void handleEvent(MachineEvent event, Integer changeId, long sequenceId, ClaimEffect e, Integer claimEffectId) {
+        ContractEffectUnit contractEffectUnit = e.getContractEffect();
+        ContractStatus statusChanged = contractEffectUnit.getEffect().getStatusChanged();
+        String contractId = contractEffectUnit.getContractId();
+        String partyId = event.getSourceId();
+        log.info("Start contractSource status changed handling, sequenceId={}, partyId={}, contractId={}, changeId={}",
+                sequenceId, partyId, contractId, changeId);
 
-            contractSource.setStatus(TBaseUtil.unionFieldToEnum(statusChanged, com.rbkmoney.newway.domain.enums.ContractStatus.class));
-            if (statusChanged.isSetTerminated()) {
-                contractSource.setStatusTerminatedAt(TypeUtil.stringToLocalDateTime(statusChanged.getTerminated().getTerminatedAt()));
-            }
+        Contract contractSource = contractDao.get(partyId, contractId);
+        Long contractSourceId = contractSource.getId();
+        ContractUtil.resetBaseFields(event, changeId, sequenceId, contractSource, claimEffectId);
 
-            contractDao.save(contractSource).ifPresentOrElse(
-                    dbContractId -> {
-                        contractDao.updateNotCurrent(contractSourceId);
-                        contractReferenceService.updateContractReference(contractSourceId, dbContractId);
-                        log.info("Contract status has been saved, sequenceId={}, partyId={}, contractId={}, changeId={}",
-                                sequenceId, partyId, contractId, changeId);
-                    },
-                    () -> log.info("Contract status duplicated, sequenceId={}, partyId={}, contractId={}, changeId={}",
-                            sequenceId, partyId, contractId, changeId)
-            );
+        contractSource.setStatus(TBaseUtil.unionFieldToEnum(statusChanged, com.rbkmoney.newway.domain.enums.ContractStatus.class));
+        if (statusChanged.isSetTerminated()) {
+            contractSource.setStatusTerminatedAt(TypeUtil.stringToLocalDateTime(statusChanged.getTerminated().getTerminatedAt()));
+        }
 
-            log.info("Contract status has been saved, sequenceId={}, partyId={}, contractId={}, changeId={}",
-                    sequenceId, partyId, contractId, changeId);
-        });
+        contractDao.save(contractSource).ifPresentOrElse(
+                dbContractId -> {
+                    contractDao.updateNotCurrent(contractSourceId);
+                    contractReferenceService.updateContractReference(contractSourceId, dbContractId);
+                    log.info("Contract status has been saved, sequenceId={}, partyId={}, contractId={}, changeId={}",
+                            sequenceId, partyId, contractId, changeId);
+                },
+                () -> log.info("Contract status duplicated, sequenceId={}, partyId={}, contractId={}, changeId={}",
+                        sequenceId, partyId, contractId, changeId)
+        );
+
+        log.info("Contract status has been saved, sequenceId={}, partyId={}, contractId={}, changeId={}",
+                sequenceId, partyId, contractId, changeId);
     }
 }

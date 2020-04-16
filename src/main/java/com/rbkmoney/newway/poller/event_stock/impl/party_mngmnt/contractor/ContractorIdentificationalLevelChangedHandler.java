@@ -15,6 +15,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -26,12 +29,15 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, MachineEvent event, Integer changeId) {
         long sequenceId = event.getEventId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(claimEffect -> claimEffect.isSetContractorEffect() && claimEffect.getContractorEffect().getEffect().isSetIdentificationLevelChanged())
-                .forEach(claimEffect -> handleEvent(event, changeId, sequenceId, claimEffect));
+                .collect(Collectors.toList());
+        for (int i = 0; i < claimEffects.size(); i++) {
+            handleEvent(event, changeId, sequenceId, claimEffects.get(i), i);
+        }
     }
 
-    private void handleEvent(MachineEvent event, Integer changeId, long sequenceId, ClaimEffect claimEffect) {
+    private void handleEvent(MachineEvent event, Integer changeId, long sequenceId, ClaimEffect claimEffect, Integer claimEffectId) {
         ContractorEffectUnit contractorEffect = claimEffect.getContractorEffect();
         ContractorIdentificationLevel identificationLevelChanged = contractorEffect.getEffect().getIdentificationLevelChanged();
         String contractorId = contractorEffect.getId();
@@ -39,7 +45,7 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
         log.info("Start identificational level changed handling, sequenceId={}, partyId={}, contractorId={}", sequenceId, partyId, contractorId);
         Contractor contractorSource = contractorDao.get(partyId, contractorId);
         Long oldId = contractorSource.getId();
-        ContractorUtil.resetBaseFields(event, sequenceId, contractorSource);
+        ContractorUtil.resetBaseFields(event, sequenceId, contractorSource, claimEffectId);
         contractorSource.setIdentificationalLevel(identificationLevelChanged.name());
 
         contractorDao.save(contractorSource)

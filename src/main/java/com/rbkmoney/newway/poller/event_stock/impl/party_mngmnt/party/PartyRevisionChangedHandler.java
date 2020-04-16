@@ -84,7 +84,7 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
         shops.forEach(shopSource -> {
             long sequenceId = event.getEventId();
             ids.add(shopSource.getId());
-            ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource);
+            ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource, shopSource.getClaimEffectId());
             shopSource.setRevision(revision);
         });
         log.info("Shops has been prepared for saving, eventId={}, partyId={}, count={}",
@@ -104,7 +104,7 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
         contractors.forEach(contractorSource -> {
             contractorIds.add(contractorSource.getId());
             long sequenceId = event.getEventId();
-            ContractorUtil.resetBaseFields(event, sequenceId, contractorSource);
+            ContractorUtil.resetBaseFields(event, sequenceId, contractorSource, contractorSource.getClaimEffectId());
             contractorSource.setRevision(revision);
         });
         log.info("Contractors has been prepared for saving, eventId={}, partyId={}, count={}",
@@ -131,7 +131,7 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
             contractIds.add(contractSourceId);
             Long contractId = ids.get(i);
             long sequenceId = event.getEventId();
-            ContractUtil.resetBaseFields(event, changeId, sequenceId, contractSource);
+            ContractUtil.resetBaseFields(event, changeId, sequenceId, contractSource, contractSource.getClaimEffectId());
             contractSource.setId(contractId);
             contractSource.setRevision(revision);
 

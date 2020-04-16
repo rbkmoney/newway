@@ -18,6 +18,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 @Slf4j
@@ -32,12 +35,15 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, MachineEvent event, Integer changeId) {
-        getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetCreated())
-                .forEach(e -> handleEvent(event, changeId, e));
+                .collect(Collectors.toList());
+        for (int i = 0; i < claimEffects.size(); i++) {
+            handleEvent(event, changeId, claimEffects.get(i), i);
+        }
     }
 
-    private void handleEvent(MachineEvent event, Integer changeId, ClaimEffect e) {
+    private void handleEvent(MachineEvent event, Integer changeId, ClaimEffect e, Integer claimEffectId) {
         long sequenceId = event.getEventId();
         ShopEffectUnit shopEffect = e.getShopEffect();
         Shop shopCreated = shopEffect.getEffect().getCreated();
@@ -47,20 +53,22 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
                 sequenceId, partyId, shopId, changeId);
 
         partyDao.get(partyId); //check party is exist
-        com.rbkmoney.newway.domain.tables.pojos.Shop shop = createShop(event, changeId, sequenceId, shopCreated, shopId, partyId);
+        com.rbkmoney.newway.domain.tables.pojos.Shop shop = createShop(event, changeId, sequenceId, shopCreated, shopId, partyId, claimEffectId);
 
         shopDao.save(shop).ifPresentOrElse(
                 aLong -> log.info("Shop has been saved, sequenceId={}, ppartyId={}, shopId={}, changeId={}", sequenceId, partyId, shopId, changeId),
                 () -> log.info("Shop create duplicated, sequenceId={}, partyId={}, shopId={}, changeId={}", sequenceId, partyId, shopId, changeId));
     }
 
-    private com.rbkmoney.newway.domain.tables.pojos.Shop createShop(MachineEvent event, Integer changeId, long sequenceId, Shop shopCreated, String shopId, String partyId) {
+    private com.rbkmoney.newway.domain.tables.pojos.Shop createShop(MachineEvent event, Integer changeId, long sequenceId,
+                                                                    Shop shopCreated, String shopId, String partyId, Integer claimEffectId) {
         com.rbkmoney.newway.domain.tables.pojos.Shop shop = new com.rbkmoney.newway.domain.tables.pojos.Shop();
         shop.setSequenceId((int) sequenceId);
         shop.setChangeId(changeId);
         shop.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         shop.setShopId(shopId);
         shop.setPartyId(partyId);
+        shop.setClaimEffectId(claimEffectId);
         shop.setCreatedAt(TypeUtil.stringToLocalDateTime(shopCreated.getCreatedAt()));
         shop.setBlocking(TBaseUtil.unionFieldToEnum(shopCreated.getBlocking(), com.rbkmoney.newway.domain.enums.Blocking.class));
         if (shopCreated.getBlocking().isSetUnblocked()) {

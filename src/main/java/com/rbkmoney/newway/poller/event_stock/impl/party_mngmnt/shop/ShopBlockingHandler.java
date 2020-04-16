@@ -41,7 +41,7 @@ public class ShopBlockingHandler extends AbstractPartyManagementHandler {
 
         Shop shopSource = shopDao.get(partyId, shopId);
         Long oldEventId = shopSource.getId();
-        ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource);
+        ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource, -1);
         initBlockingFields(blocking, shopSource);
 
         shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "blocking");
