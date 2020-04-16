@@ -63,10 +63,11 @@ public class ContractorUtil {
     }
 
 
-    public static void resetBaseFields(MachineEvent event, long sequenceId, Contractor contractorSource) {
+    public static void resetBaseFields(MachineEvent event, long sequenceId, Contractor contractorSource, Integer claimEffectId) {
         contractorSource.setId(null);
         contractorSource.setRevision(-1L);
         contractorSource.setWtime(null);
+        contractorSource.setClaimEffectId(claimEffectId);
         contractorSource.setSequenceId((int) sequenceId);
         contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
     }

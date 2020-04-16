@@ -41,7 +41,7 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
 
         Shop shopSource = shopDao.get(partyId, shopId);
         Long oldEventId = shopSource.getId();
-        ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource);
+        ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource, -1);
         shopSource.setSuspension(TBaseUtil.unionFieldToEnum(suspension, com.rbkmoney.newway.domain.enums.Suspension.class));
         if (suspension.isSetActive()) {
             shopSource.setSuspensionActiveSince(TypeUtil.stringToLocalDateTime(suspension.getActive().getSince()));

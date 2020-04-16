@@ -14,12 +14,13 @@ public class ShopUtil {
         shop.setAccountPayout(shopAccount.getPayout());
     }
 
-    public static void resetBaseFields(MachineEvent event, Integer changeId, long sequenceId, Shop shopSource) {
+    public static void resetBaseFields(MachineEvent event, Integer changeId, long sequenceId, Shop shopSource, Integer claimEffectId) {
         shopSource.setId(null);
         shopSource.setRevision(null);
         shopSource.setWtime(null);
         shopSource.setSequenceId((int) sequenceId);
         shopSource.setChangeId(changeId);
+        shopSource.setClaimEffectId(claimEffectId);
         shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
     }
 }

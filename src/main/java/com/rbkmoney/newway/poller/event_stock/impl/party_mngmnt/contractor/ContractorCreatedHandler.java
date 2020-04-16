@@ -17,6 +17,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 @Slf4j
@@ -33,12 +36,15 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
     public void handle(PartyChange change, MachineEvent event, Integer changeId) {
         long eventId = event.getEventId();
         long sequenceId = event.getEventId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(claimEffect -> claimEffect.isSetContractorEffect() && claimEffect.getContractorEffect().getEffect().isSetCreated())
-                .forEach(claimEffect -> handleEvent(event, changeId, eventId, sequenceId, claimEffect));
+                .collect(Collectors.toList());
+        for (int i = 0; i < claimEffects.size(); i++) {
+            handleEvent(event, changeId, eventId, sequenceId, claimEffects.get(i), i);
+        }
     }
 
-    private void handleEvent(MachineEvent event, Integer changeId, long eventId, long sequenceId, ClaimEffect claimEffect) {
+    private void handleEvent(MachineEvent event, Integer changeId, long eventId, long sequenceId, ClaimEffect claimEffect, Integer claimEffectId) {
         ContractorEffectUnit contractorEffect = claimEffect.getContractorEffect();
         PartyContractor partyContractor = contractorEffect.getEffect().getCreated();
         com.rbkmoney.damsel.domain.Contractor contractorCreated = partyContractor.getContractor();
@@ -49,7 +55,7 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
 
         Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractorCreated, contractorId, changeId);
         contractor.setIdentificationalLevel(partyContractor.getStatus().name());
-
+        contractor.setClaimEffectId(claimEffectId);
         contractorDao.save(contractor).ifPresentOrElse(
                 cntrctId -> log.info("Contract contractor has been saved, eventId={}, partyId={}, contractorId={}", eventId, partyId, contractorId),
                 () -> log.info("contract contractor duplicated, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId)

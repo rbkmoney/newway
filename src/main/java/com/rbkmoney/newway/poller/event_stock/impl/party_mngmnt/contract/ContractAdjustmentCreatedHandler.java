@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -34,12 +35,15 @@ public class ContractAdjustmentCreatedHandler extends AbstractClaimChangedHandle
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, MachineEvent event, Integer changeId) {
         long sequenceId = event.getEventId();
-        getClaimStatus(change).getAccepted().getEffects().stream()
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
                 .filter(claimEffect -> claimEffect.isSetContractEffect() && claimEffect.getContractEffect().getEffect().isSetAdjustmentCreated())
-                .forEach(claimEffect -> handleEvent(event, changeId, sequenceId, claimEffect));
+                .collect(Collectors.toList());
+        for (int i = 0; i < claimEffects.size(); i++) {
+            handleEvent(event, changeId, sequenceId, claimEffects.get(i), i);
+        }
     }
 
-    private void handleEvent(MachineEvent event, Integer changeId, long sequenceId, ClaimEffect claimEffect) {
+    private void handleEvent(MachineEvent event, Integer changeId, long sequenceId, ClaimEffect claimEffect, Integer claimEffectId) {
         ContractEffectUnit contractEffectUnit = claimEffect.getContractEffect();
         com.rbkmoney.damsel.domain.ContractAdjustment adjustmentCreated = contractEffectUnit.getEffect().getAdjustmentCreated();
         String contractId = contractEffectUnit.getContractId();
@@ -49,7 +53,7 @@ public class ContractAdjustmentCreatedHandler extends AbstractClaimChangedHandle
 
         Contract contractSource = contractDao.get(partyId, contractId);
         Long contractSourceId = contractSource.getId();
-        ContractUtil.resetBaseFields(event, changeId, sequenceId, contractSource);
+        ContractUtil.resetBaseFields(event, changeId, sequenceId, contractSource, claimEffectId);
 
         contractDao.save(contractSource).ifPresentOrElse(
                 cntrctId -> {
