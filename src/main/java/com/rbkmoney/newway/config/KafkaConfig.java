@@ -1,14 +1,9 @@
 package com.rbkmoney.newway.config;
 
-import com.rbkmoney.damsel.payment_processing.EventPayload;
 import com.rbkmoney.kafka.common.exception.handler.SeekToCurrentWithSleepBatchErrorHandler;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.config.properties.KafkaSslProperties;
 import com.rbkmoney.newway.serde.SinkEventDeserializer;
-import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
-import com.rbkmoney.sink.common.parser.impl.PaymentEventPayloadMachineEventParser;
-import com.rbkmoney.sink.common.serialization.BinaryDeserializer;
-import com.rbkmoney.sink.common.serialization.impl.PaymentEventPayloadDeserializer;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SslConfigs;
@@ -22,7 +17,9 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.listener.*;
+import org.springframework.kafka.listener.BatchErrorHandler;
+import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
+import org.springframework.kafka.listener.ContainerProperties;
 
 import java.io.File;
 import java.util.HashMap;
@@ -46,12 +43,13 @@ public class KafkaConfig {
     private int maxPollIntervalMs;
     @Value("${kafka.consumer.session-timeout-ms}")
     private int sessionTimeoutMs;
+
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
     @Value("${kafka.consumer.invoicing.concurrency}")
-    private int invoicingConcurrency;
-    @Value("${kafka.consumer.recurrent-payment-tool.concurrency}")
-    private int recPayToolConcurrency;
+    private int concurrency;
+    @Value("${kafka.consumer.party-management.concurrency}")
+    private int partyConcurrency;
     @Value("${retry-policy.maxAttempts}")
     int maxAttempts;
 
@@ -69,7 +67,6 @@ public class KafkaConfig {
         props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, sessionTimeoutMs);
         props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, maxPollIntervalMs);
         configureSsl(props, kafkaSslProperties);
-
         return props;
     }
 
@@ -93,15 +90,14 @@ public class KafkaConfig {
 
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> kafkaListenerContainerFactory(
-            ConsumerFactory<String, MachineEvent> consumerFactory
-    ) {
-        return createConcurrentFactory(consumerFactory, invoicingConcurrency);
+            ConsumerFactory<String, MachineEvent> consumerFactory) {
+        return createConcurrentFactory(consumerFactory, concurrency);
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> recPayToolContainerFactory(
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> partyManagementContainerFactory(
             ConsumerFactory<String, MachineEvent> consumerFactory) {
-        return createConcurrentFactory(consumerFactory, recPayToolConcurrency);
+        return createConcurrentFactory(consumerFactory, partyConcurrency);
     }
 
     private KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> createConcurrentFactory(

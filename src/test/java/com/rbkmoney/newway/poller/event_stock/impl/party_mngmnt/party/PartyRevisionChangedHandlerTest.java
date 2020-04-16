@@ -1,28 +1,31 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.party;
 
-import com.rbkmoney.damsel.payment_processing.Event;
-import com.rbkmoney.damsel.payment_processing.EventSource;
+import com.rbkmoney.damsel.payment_processing.EventPayload;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.damsel.payment_processing.PartyRevisionChanged;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.AbstractAppDaoTests;
 import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.domain.tables.pojos.*;
+import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.support.JdbcUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.jdbc.support.JdbcUtils;
-
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
 import static io.github.benas.randombeans.api.EnhancedRandom.randomListOf;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @Slf4j
 public class PartyRevisionChangedHandlerTest extends AbstractAppDaoTests {
@@ -50,6 +53,8 @@ public class PartyRevisionChangedHandlerTest extends AbstractAppDaoTests {
 
     @Autowired
     private PartyDao partyDao;
+    @Mock
+    private MachineEventParser eventParser;
 
     private static final int CNT = 100;
 
@@ -58,7 +63,7 @@ public class PartyRevisionChangedHandlerTest extends AbstractAppDaoTests {
     @Before
     public void setUp() throws Exception {
         log.info("setUp");
-        Party party = random(Party.class, "id","current","wtime");
+        Party party = random(Party.class, "id", "current", "wtime");
         party.setPartyId(PARTY_ID);
         partyDao.save(party);
         List<Contract> contracts = randomListOf(CNT, Contract.class, "current");
@@ -78,7 +83,7 @@ public class PartyRevisionChangedHandlerTest extends AbstractAppDaoTests {
         contractAdjustmentDao.save(allAdjustments);
         payoutToolDao.save(allPayoutTools);
 
-        List<Shop> shops = randomListOf(CNT, Shop.class, "id","current", "wtime");
+        List<Shop> shops = randomListOf(CNT, Shop.class, "id", "current", "wtime");
         shops.forEach(s -> {
             s.setShopId(UUID.randomUUID().toString());
             s.setPartyId(party.getPartyId());
@@ -101,11 +106,16 @@ public class PartyRevisionChangedHandlerTest extends AbstractAppDaoTests {
         PartyChange change = PartyChange.revision_changed(new PartyRevisionChanged()
                 .setTimestamp("2016-03-22T06:12:27Z")
                 .setRevision(1L));
-        Event event = new Event()
-                .setSource(EventSource.party_id(PARTY_ID))
+        MachineEvent message = new MachineEvent()
+                .setSourceId(PARTY_ID)
                 .setCreatedAt("2016-03-22T06:12:27Z");
+
+        EventPayload payload = new EventPayload();
+        payload.setPartyChanges(List.of(change));
+
+        Mockito.when(eventParser.parse(message)).thenReturn(payload);
         assertTrue(JdbcUtils.supportsBatchUpdates(dataSource.getConnection()));
         assertEquals("true", dataSource.getDataSourceProperties().get("reWriteBatchedInserts"));
-        partyRevisionChangedHandler.handle(change, event, 1);
+        partyRevisionChangedHandler.handle(change, message, 1);
     }
 }

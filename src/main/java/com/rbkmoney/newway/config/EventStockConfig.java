@@ -21,7 +21,6 @@ public class EventStockConfig {
     @Bean
     @ConditionalOnProperty(value = "info.single-instance-mode", havingValue = "true")
     public OnStart eventSinkListener(
-            EventPublisher partyManagementEventPublisher,
             EventPublisher payoutEventPublisher,
             EventPublisher identityEventPublisher,
             EventPublisher withdrawalEventPublisher,
@@ -41,7 +40,7 @@ public class EventStockConfig {
             DepositService depositService,
             WithdrawalSessionService withdrawalSessionService,
             RateService rateService) {
-        return new OnStart(partyManagementEventPublisher,
+        return new OnStart(
                 payoutEventPublisher,
                 identityEventPublisher,
                 withdrawalEventPublisher,
@@ -61,25 +60,6 @@ public class EventStockConfig {
                 depositService,
                 withdrawalSessionService,
                 rateService);
-    }
-
-    @Bean
-    public EventPublisher partyManagementEventPublisher(
-            PartyManagementEventStockHandler partyManagementEventStockHandler,
-            @Value("${bm.partyManagement.url}") Resource resource,
-            @Value("${bm.partyManagement.polling.delay}") int pollDelay,
-            @Value("${bm.partyManagement.polling.retryDelay}") int retryDelay,
-            @Value("${bm.partyManagement.polling.maxPoolSize}") int maxPoolSize,
-            @Value("${bm.partyManagement.polling.maxQuerySize}") int maxQuerySize
-    ) throws IOException {
-        return new PollingEventPublisherBuilder()
-                .withURI(resource.getURI())
-                .withEventHandler(partyManagementEventStockHandler)
-                .withMaxPoolSize(maxPoolSize)
-                .withEventRetryDelay(retryDelay)
-                .withPollDelay(pollDelay)
-                .withMaxQuerySize(maxQuerySize)
-                .build();
     }
 
     @Bean

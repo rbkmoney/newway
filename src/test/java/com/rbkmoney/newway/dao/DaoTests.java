@@ -458,7 +458,7 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.contract cascade");
         Contract contract = random(Contract.class);
         contract.setCurrent(true);
-        Long cntrctId = contractDao.save(contract);
+        Long cntrctId = contractDao.save(contract).get();
         List<ContractAdjustment> contractAdjustments = randomListOf(10, ContractAdjustment.class);
         contractAdjustments.forEach(ca -> ca.setCntrctId(cntrctId));
         contractAdjustmentDao.save(contractAdjustments);
@@ -477,8 +477,6 @@ public class DaoTests extends AbstractAppDaoTests {
         List<Contract> contracts = contractDao.getByPartyId(contract.getPartyId());
         assertEquals(1, contracts.size());
         assertEquals(contract, contracts.get(0));
-        contractDao.updateNotCurrent(contract.getPartyId(), contract.getContractId());
-        Assert.assertNull(contractDao.get(contract.getPartyId(), contract.getContractId()));
     }
 
     @Test
@@ -492,8 +490,17 @@ public class DaoTests extends AbstractAppDaoTests {
         List<Contractor> contractors = contractorDao.getByPartyId(contractor.getPartyId());
         assertEquals(1, contractors.size());
         assertEquals(contractor, contractors.get(0));
-        contractorDao.updateNotCurrent(contractor.getPartyId(), contractor.getContractorId());
-        Assert.assertNull(contractorDao.get(contractor.getPartyId(), contractor.getContractorId()));
+
+        Integer changeId = contractor.getChangeId() + 1;
+        contractor.setChangeId(changeId);
+        Long oldId = contractor.getId();
+        contractor.setId(contractor.getId() + 1);
+        contractorDao.save(contractor);
+        contractorDao.updateNotCurrent(oldId);
+
+        contractors = contractorDao.getByPartyId(contractor.getPartyId());
+        assertEquals(1, contractors.size());
+        assertEquals(changeId, contractors.get(0).getChangeId());
     }
 
     @Test
@@ -504,9 +511,16 @@ public class DaoTests extends AbstractAppDaoTests {
         partyDao.save(party);
         Party partyGet = partyDao.get(party.getPartyId());
         assertEquals(party, partyGet);
-        partyDao.updateNotCurrent(party.getPartyId());
-        Assert.assertNull(partyDao.get(party.getPartyId()));
-        assertEquals(partyDao.getLastEventId(), party.getEventId());
+
+        Long oldId = party.getId();
+        Integer changeId = party.getChangeId() + 1;
+        party.setChangeId(changeId);
+        party.setId(party.getId() + 1);
+        partyDao.save(party);
+        partyDao.updateNotCurrent(oldId);
+
+        partyGet = partyDao.get(party.getPartyId());
+        assertEquals(changeId, partyGet.getChangeId());
     }
 
     @Test
@@ -515,7 +529,7 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.payout_tool cascade");
         Contract contract = random(Contract.class);
         contract.setCurrent(true);
-        Long cntrctId = contractDao.save(contract);
+        Long cntrctId = contractDao.save(contract).get();
         List<PayoutTool> payoutTools = randomListOf(10, PayoutTool.class);
         payoutTools.forEach(pt -> pt.setCntrctId(cntrctId));
         payoutToolDao.save(payoutTools);
@@ -534,8 +548,16 @@ public class DaoTests extends AbstractAppDaoTests {
         List<Shop> shops = shopDao.getByPartyId(shop.getPartyId());
         assertEquals(1, shops.size());
         assertEquals(shop, shops.get(0));
-        shopDao.updateNotCurrent(shop.getPartyId(), shop.getShopId());
-        Assert.assertNull(shopDao.get(shop.getPartyId(), shop.getShopId()));
+
+        Integer changeId = shop.getChangeId() + 1;
+        shop.setChangeId(changeId);
+        Long id = shop.getId();
+        shop.setId(id + 1);
+        shopDao.save(shop);
+        shopDao.updateNotCurrent(id);
+        shops = shopDao.getByPartyId(shop.getPartyId());
+        assertEquals(1, shops.size());
+        assertEquals(changeId, shops.get(0).getChangeId());
     }
 
     @Test
@@ -679,7 +701,7 @@ public class DaoTests extends AbstractAppDaoTests {
     public void idsGeneratorTest() {
         List<Long> list = idsGeneratorDao.get(100);
         assertEquals(100, list.size());
-        assertEquals(99,list.get(99) - list.get(0));
+        assertEquals(99, list.get(99) - list.get(0));
     }
 
     @Test
@@ -690,7 +712,7 @@ public class DaoTests extends AbstractAppDaoTests {
     }
 
     @Test
-    public void recurrentPaymentToolDaoTest(){
+    public void recurrentPaymentToolDaoTest() {
         jdbcTemplate.execute("truncate table nw.recurrent_payment_tool cascade");
         RecurrentPaymentTool recurrentPaymentTool = random(RecurrentPaymentTool.class);
         recurrentPaymentTool.setCurrent(true);

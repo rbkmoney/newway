@@ -1,54 +1,42 @@
 package com.rbkmoney.newway.service;
 
-import com.rbkmoney.damsel.payment_processing.Event;
-import com.rbkmoney.damsel.payment_processing.EventPayload;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
-import com.rbkmoney.newway.dao.party.iface.PartyDao;
-import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.damsel.payment_processing.PartyEventData;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractPartyManagementHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
+@Slf4j
 @Service
-public class PartyManagementService implements EventService<Event, EventPayload> {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    private final PartyDao partyDao;
+@RequiredArgsConstructor
+public class PartyManagementService {
 
     private final List<AbstractPartyManagementHandler> partyManagementHandlers;
+    private final MachineEventParser<PartyEventData> parser;
 
-    public PartyManagementService(PartyDao partyDao, List<AbstractPartyManagementHandler> partyManagementHandlers) {
-        this.partyDao = partyDao;
-        this.partyManagementHandlers = partyManagementHandlers;
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void handleEvents(List<MachineEvent> machineEvents) {
+        machineEvents.forEach(this::handleIfAccept);
     }
 
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void handleEvents(Event processingEvent, EventPayload payload) {
-        if (payload.isSetPartyChanges()) {
-            for (int i = 0; i < payload.getPartyChanges().size(); i++) {
-                PartyChange partyChange = payload.getPartyChanges().get(i);
+    private void handleIfAccept(MachineEvent machineEvent) {
+        PartyEventData eventPayload = parser.parse(machineEvent);
+        if (eventPayload.isSetChanges()) {
+            for (int i = 0; i < eventPayload.getChanges().size(); i++) {
+                PartyChange partyChange = eventPayload.getChanges().get(i);
                 Integer changeId = i;
-                partyManagementHandlers.forEach(ph -> {
-                    if (ph.accept(partyChange)) {
-                        ph.handle(partyChange, processingEvent, changeId);
-                    }
-                });
+                partyManagementHandlers.stream()
+                        .filter(handler -> handler.accept(partyChange))
+                        .forEach(handler -> handler.handle(partyChange, machineEvent, changeId));
             }
         }
     }
 
-    @Override
-    public Optional<Long> getLastEventId() throws DaoException {
-        Optional<Long> lastEventId = Optional.ofNullable(partyDao.getLastEventId());
-        log.info("Last party management eventId={}", lastEventId);
-        return lastEventId;
-    }
 }

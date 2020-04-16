@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.party;
 
 import com.rbkmoney.damsel.domain.Suspension;
-import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
@@ -9,10 +8,11 @@ import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
-import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractPartyManagementHandler;
+import com.rbkmoney.newway.util.PartyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class PartySuspensionHandler extends AbstractPartyManagementHandler {
 
+    public static final String PARTY_SUSPENSION = "party_suspension";
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final PartyDao partyDao;
@@ -31,28 +32,21 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
     public PartySuspensionHandler(PartyDao partyDao) {
         this.partyDao = partyDao;
         this.filter = new PathConditionFilter(new PathConditionRule(
-                "party_suspension",
+                PARTY_SUSPENSION,
                 new IsNullCondition().not()));
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event, Integer changeId) {
-        long eventId = event.getId();
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         Suspension partySuspension = change.getPartySuspension();
-        String partyId = event.getSource().getPartyId();
-        log.info("Start party suspension handling, eventId={}, partyId={}", eventId, partyId);
+        String partyId = event.getSourceId();
+        log.info("Start {} handling, eventId={}, partyId={}, changeId={}", PARTY_SUSPENSION, sequenceId, partyId, changeId);
         Party partySource = partyDao.get(partyId);
-        if (partySource == null) {
-            throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
-        }
-        partySource.setId(null);
-        partySource.setRevision(null);
-        partySource.setWtime(null);
-        partySource.setEventId(eventId);
-        partySource.setSequenceId(event.getSequence());
-        partySource.setChangeId(changeId);
-        partySource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+        Long oldId = partySource.getId();
+        PartyUtil.resetBaseFields(event, changeId, sequenceId, partySource);
+
         partySource.setSuspension(TBaseUtil.unionFieldToEnum(partySuspension, com.rbkmoney.newway.domain.enums.Suspension.class));
         if (partySuspension.isSetActive()) {
             partySource.setSuspensionActiveSince(TypeUtil.stringToLocalDateTime(partySuspension.getActive().getSince()));
@@ -61,9 +55,8 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
             partySource.setSuspensionActiveSince(null);
             partySource.setSuspensionSuspendedSince(TypeUtil.stringToLocalDateTime(partySuspension.getSuspended().getSince()));
         }
-        partyDao.updateNotCurrent(partyId);
-        partyDao.save(partySource);
-        log.info("Party suspension has been saved, eventId={}, partyId={}", eventId, partyId);
+
+        partyDao.saveWithUpdateCurrent(partySource, oldId, PARTY_SUSPENSION);
     }
 
     @Override

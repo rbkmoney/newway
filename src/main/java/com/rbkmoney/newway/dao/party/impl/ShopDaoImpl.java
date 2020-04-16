@@ -6,17 +6,23 @@ import com.rbkmoney.newway.dao.party.iface.ShopDao;
 import com.rbkmoney.newway.domain.tables.pojos.Shop;
 import com.rbkmoney.newway.domain.tables.records.ShopRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Query;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.Tables.SHOP;
 
+@Slf4j
 @Component
 public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
 
@@ -28,15 +34,15 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     }
 
     @Override
-    public Long save(Shop shop) throws DaoException {
+    public Optional<Long> save(Shop shop) throws DaoException {
         ShopRecord record = getDslContext().newRecord(SHOP, shop);
         Query query = getDslContext().insertInto(SHOP).set(record)
                 .onConflict(SHOP.PARTY_ID, SHOP.SEQUENCE_ID, SHOP.CHANGE_ID, SHOP.CLAIM_EFFECT_ID, SHOP.REVISION)
                 .doNothing()
                 .returning(SHOP.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        execute(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override
@@ -56,14 +62,18 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     public Shop get(String partyId, String shopId) throws DaoException {
         Query query = getDslContext().selectFrom(SHOP)
                 .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.SHOP_ID.eq(shopId)).and(SHOP.CURRENT));
-
-        return fetchOne(query, shopRowMapper);
+        Shop shop = fetchOne(query, shopRowMapper);
+        if (shop == null) {
+            throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
+        }
+        return shop;
     }
 
     @Override
-    public void updateNotCurrent(String partyId, String shopId) throws DaoException {
-        Query query = getDslContext().update(SHOP).set(SHOP.CURRENT, false)
-                .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.SHOP_ID.eq(shopId)).and(SHOP.CURRENT));
+    public void updateNotCurrent(Long id) throws DaoException {
+        Query query = getDslContext()
+                .update(SHOP).set(SHOP.CURRENT, false)
+                .where(SHOP.ID.eq(id));
         executeOne(query);
     }
 
@@ -73,11 +83,32 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
         execute(query);
     }
 
+    @Override
+    public void switchCurrent(List<String> ids, String partyId) throws DaoException {
+        ids.forEach(id ->
+                this.getNamedParameterJdbcTemplate()
+                        .update("update nw.shop set current = false where shop_id =:shop_id and party_id=:party_id and current;" +
+                                        "update nw.shop set current = true where id = (select max(id) from nw.shop where shop_id =:shop_id and party_id=:party_id);",
+                                new MapSqlParameterSource(Map.of("shop_id", id, "party_id", partyId))));
+    }
 
     @Override
     public List<Shop> getByPartyId(String partyId) {
         Query query = getDslContext().selectFrom(SHOP)
                 .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.CURRENT));
         return fetch(query, shopRowMapper);
+    }
+
+    @Override
+    public void saveWithUpdateCurrent(Shop shopSource, Long oldEventId, String eventName) {
+        save(shopSource).ifPresentOrElse(
+                aLong -> {
+                    updateNotCurrent(oldEventId);
+                    log.info("Shop {} has been saved, sequenceId={}, partyId={}, shopId={}, changeId={}",
+                            eventName, shopSource.getSequenceId(), shopSource.getPartyId(), shopSource.getShopId(), shopSource.getChangeId());
+                },
+                () -> log.info("Shop {}} duplicated, sequenceId={}, partyId={}, shopId={}, changeId={}",
+                        eventName, shopSource.getSequenceId(), shopSource.getPartyId(), shopSource.getShopId(), shopSource.getChangeId())
+        );
     }
 }

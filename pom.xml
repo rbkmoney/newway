@@ -2,13 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <description>SQL-views of business objects</description>
 
     <artifactId>newway</artifactId>
-    <version>1.0.70-SNAPSHOT</version>
+    <version>1.0.71-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
-    <description>SQL-views of business objects</description>
+
     <parent>
         <groupId>com.rbkmoney</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -33,8 +34,8 @@
         <local.pg.port>5432</local.pg.port>
         <fistful-proto.version>1.62-509c8d3</fistful-proto.version>
         <damsel.version>1.391-8fe5f98</damsel.version>
-        <sonar.jacoco.reportPath>target/sites/jacoco/jacoco.exec</sonar.jacoco.reportPath>
-        <sonar.cobertura.reportPath>target/site/cobertura/coverage.xml</sonar.cobertura.reportPath>
+        <sonar.jacoco.reportPaths>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPaths>
+        <sink-common-lib.version>0.0.4</sink-common-lib.version>
     </properties>
 
     <dependencies>
@@ -131,7 +132,7 @@
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>sink-common-lib</artifactId>
-            <version>0.0.3</version>
+            <version>${sink-common-lib.version}</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
@@ -394,13 +395,10 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.2</version>
+                <version>0.8.5</version>
                 <configuration>
-                    <destFile>${sonar.jacoco.reportPath}</destFile>
+                    <destFile>${sonar.jacoco.reportPaths}</destFile>
                     <append>true</append>
-                    <excludes>
-                        <exclude>com/rbkmoney/newway/util/**/*</exclude>
-                    </excludes>
                 </configuration>
                 <executions>
                     <execution>

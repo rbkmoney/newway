@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.shop;
 
 import com.rbkmoney.damsel.domain.Blocking;
-import com.rbkmoney.damsel.payment_processing.Event;
 import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
@@ -9,52 +8,46 @@ import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.ShopDao;
 import com.rbkmoney.newway.domain.tables.pojos.Shop;
-import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractPartyManagementHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.rbkmoney.newway.util.ShopUtil;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class ShopBlockingHandler extends AbstractPartyManagementHandler {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
     private final ShopDao shopDao;
-    private final Filter filter;
-
-    public ShopBlockingHandler(ShopDao shopDao) {
-        this.shopDao = shopDao;
-        this.filter = new PathConditionFilter(new PathConditionRule(
-                "shop_blocking",
-                new IsNullCondition().not()));
-    }
+    private final Filter filter = new PathConditionFilter(new PathConditionRule(
+            "shop_blocking",
+            new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PartyChange change, Event event, Integer changeId) {
-        long eventId = event.getId();
+    public void handle(PartyChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         Blocking blocking = change.getShopBlocking().getBlocking();
         String shopId = change.getShopBlocking().getShopId();
-        String partyId = event.getSource().getPartyId();
-        log.info("Start shop blocking handling, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
+        String partyId = event.getSourceId();
+        log.info("Start shop blocking handling, sequenceId={}, partyId={}, shopId={}, changeId={}",
+                sequenceId, partyId, shopId, changeId);
+
         Shop shopSource = shopDao.get(partyId, shopId);
-        if (shopSource == null) {
-            throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
-        }
-        shopSource.setId(null);
-        shopSource.setRevision(-1L);
-        shopSource.setWtime(null);
-        shopSource.setEventId(eventId);
-        shopSource.setSequenceId(event.getSequence());
-        shopSource.setChangeId(changeId);
-        shopSource.setClaimEffectId(0);
-        shopSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+        Long oldEventId = shopSource.getId();
+        ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource);
+        initBlockingFields(blocking, shopSource);
+
+        shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "blocking");
+    }
+
+    private void initBlockingFields(Blocking blocking, Shop shopSource) {
         shopSource.setBlocking(TBaseUtil.unionFieldToEnum(blocking, com.rbkmoney.newway.domain.enums.Blocking.class));
         if (blocking.isSetUnblocked()) {
             shopSource.setBlockingUnblockedReason(blocking.getUnblocked().getReason());
@@ -67,9 +60,6 @@ public class ShopBlockingHandler extends AbstractPartyManagementHandler {
             shopSource.setBlockingBlockedReason(blocking.getBlocked().getReason());
             shopSource.setBlockingBlockedSince(TypeUtil.stringToLocalDateTime(blocking.getBlocked().getSince()));
         }
-        shopDao.updateNotCurrent(partyId, shopId);
-        shopDao.save(shopSource);
-        log.info("Shop blocking has been saved, eventId={}, partyId={}, shopId={}", eventId, partyId, shopId);
     }
 
     @Override

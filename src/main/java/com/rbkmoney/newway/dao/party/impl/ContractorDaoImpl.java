@@ -6,13 +6,17 @@ import com.rbkmoney.newway.dao.party.iface.ContractorDao;
 import com.rbkmoney.newway.domain.tables.pojos.Contractor;
 import com.rbkmoney.newway.domain.tables.records.ContractorRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.jooq.Query;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.Tables.CONTRACTOR;
@@ -28,15 +32,16 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     }
 
     @Override
-    public Long save(Contractor contractor) throws DaoException {
+    public Optional<Long> save(Contractor contractor) throws DaoException {
         ContractorRecord record = getDslContext().newRecord(CONTRACTOR, contractor);
         Query query = getDslContext().insertInto(CONTRACTOR).set(record)
-                .onConflict(CONTRACTOR.PARTY_ID, CONTRACTOR.SEQUENCE_ID, CONTRACTOR.CHANGE_ID, CONTRACTOR.CLAIM_EFFECT_ID, CONTRACTOR.REVISION)
+                .onConflict(CONTRACTOR.PARTY_ID, CONTRACTOR.SEQUENCE_ID, CONTRACTOR.CHANGE_ID,
+                        CONTRACTOR.CLAIM_EFFECT_ID, CONTRACTOR.REVISION)
                 .doNothing()
                 .returning(CONTRACTOR.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        execute(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override
@@ -56,14 +61,17 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     public Contractor get(String partyId, String contractorId) throws DaoException {
         Query query = getDslContext().selectFrom(CONTRACTOR)
                 .where(CONTRACTOR.PARTY_ID.eq(partyId).and(CONTRACTOR.CONTRACTOR_ID.eq(contractorId)).and(CONTRACTOR.CURRENT));
-
-        return fetchOne(query, contractorRowMapper);
+        Contractor contractor = fetchOne(query, contractorRowMapper);
+        if (contractor == null) {
+            throw new NotFoundException(String.format("Contractor not found, contractorId='%s'", contractorId));
+        }
+        return contractor;
     }
 
     @Override
-    public void updateNotCurrent(String partyId, String contractorId) throws DaoException {
+    public void updateNotCurrent(Long id) throws DaoException {
         Query query = getDslContext().update(CONTRACTOR).set(CONTRACTOR.CURRENT, false)
-                .where(CONTRACTOR.PARTY_ID.eq(partyId).and(CONTRACTOR.CONTRACTOR_ID.eq(contractorId)).and(CONTRACTOR.CURRENT));
+                .where(CONTRACTOR.ID.eq(id).and(CONTRACTOR.CURRENT));
         executeOne(query);
     }
 
@@ -71,6 +79,15 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     public void updateNotCurrent(List<Long> ids) throws DaoException {
         Query query = getDslContext().update(CONTRACTOR).set(CONTRACTOR.CURRENT, false).where(CONTRACTOR.ID.in(ids));
         execute(query);
+    }
+
+    @Override
+    public void switchCurrent(List<String> ids, String partyId) throws DaoException {
+        ids.forEach(id ->
+                this.getNamedParameterJdbcTemplate()
+                        .update("update nw.contractor set current = false where contractor_id =:contractor_id and party_id=:party_id and current;" +
+                                        "update nw.contractor set current = true where id = (select max(id) from nw.contractor where contractor_id =:contractor_id and party_id=:party_id);",
+                                new MapSqlParameterSource(Map.of("contractor_id", id, "party_id", partyId))));
     }
 
     @Override

@@ -6,16 +6,19 @@ import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
 import com.rbkmoney.newway.domain.tables.records.PartyRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.jooq.Query;
-import org.jooq.impl.DSL;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
-import static com.rbkmoney.newway.domain.Tables.*;
+import static com.rbkmoney.newway.domain.Tables.PARTY;
 
+@Slf4j
 @Component
 public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
 
@@ -27,23 +30,15 @@ public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
     }
 
     @Override
-    public Long getLastEventId() throws DaoException {
-        Query query = getDslContext().select(DSL.max(DSL.field("event_id"))).from(
-                getDslContext().select(PARTY.EVENT_ID.max().as("event_id")).from(PARTY)
-                        .unionAll(getDslContext().select(CONTRACT.EVENT_ID.max().as("event_id")).from(CONTRACT))
-                        .unionAll(getDslContext().select(CONTRACTOR.EVENT_ID.max().as("event_id")).from(CONTRACTOR))
-                        .unionAll(getDslContext().select(SHOP.EVENT_ID.max().as("event_id")).from(SHOP))
-        );
-        return fetchOne(query, Long.class);
-    }
-
-    @Override
-    public Long save(Party party) throws DaoException {
+    public Optional<Long> save(Party party) throws DaoException {
         PartyRecord record = getDslContext().newRecord(PARTY, party);
-        Query query = getDslContext().insertInto(PARTY).set(record).returning(PARTY.ID);
+        Query query = getDslContext().insertInto(PARTY).set(record)
+                .onConflict(PARTY.PARTY_ID, PARTY.SEQUENCE_ID, PARTY.CHANGE_ID)
+                .doNothing()
+                .returning(PARTY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        execute(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override
@@ -51,13 +46,32 @@ public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
         Query query = getDslContext().selectFrom(PARTY)
                 .where(PARTY.PARTY_ID.eq(partyId).and(PARTY.CURRENT));
 
-        return fetchOne(query, partyRowMapper);
+        Party party = fetchOne(query, partyRowMapper);
+
+        if (party == null) {
+            throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
+        }
+        return party;
     }
 
     @Override
-    public void updateNotCurrent(String partyId) throws DaoException {
+    public void updateNotCurrent(Long id) throws DaoException {
         Query query = getDslContext().update(PARTY).set(PARTY.CURRENT, false)
-                .where(PARTY.PARTY_ID.eq(partyId).and(PARTY.CURRENT));
+                .where(PARTY.ID.eq(id));
         executeOne(query);
+    }
+
+    @Override
+    public void saveWithUpdateCurrent(Party partySource, Long oldId, String eventName) {
+        save(partySource)
+                .ifPresentOrElse(
+                        saveResult -> {
+                            updateNotCurrent(oldId);
+                            log.info("Party {} has been saved, sequenceId={}, partyId={}, changeId={}", eventName,
+                                    partySource.getSequenceId(), partySource.getPartyId(), partySource.getChangeId());
+                        },
+                        () -> log.info("Party {} duplicated, sequenceId={}, partyId={}, changeId={}", eventName,
+                                partySource.getSequenceId(), partySource.getPartyId(), partySource.getChangeId())
+                );
     }
 }
