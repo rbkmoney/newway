@@ -62,6 +62,7 @@ kafka:
     party-management:
       id: mg-events-party
       enabled: false
+      consumer.group-id: "NewwayListenerPartyManagement"
 
 bm:
   partyManagement:

@@ -35,6 +35,8 @@ public class KafkaConfig {
     private boolean enableAutoCommit;
     @Value("${kafka.consumer.group-id}")
     private String groupId;
+    @Value("${kafka.topics.party-management.consumer.group-id}")
+    private String partyConsumerGroup;
     @Value("${kafka.client-id}")
     private String clientId;
     @Value("${kafka.consumer.max-poll-records}")
@@ -96,7 +98,10 @@ public class KafkaConfig {
 
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> partyManagementContainerFactory(
-            ConsumerFactory<String, MachineEvent> consumerFactory) {
+            KafkaSslProperties kafkaSslProperties) {
+        Map<String, Object> configs = consumerConfigs(kafkaSslProperties);
+        configs.put(ConsumerConfig.GROUP_ID_CONFIG, partyConsumerGroup);
+        ConsumerFactory<String, MachineEvent> consumerFactory = new DefaultKafkaConsumerFactory<>(configs);
         return createConcurrentFactory(consumerFactory, partyConcurrency);
     }
 
