@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -85,15 +86,17 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
 
     @Override
     public void switchCurrent(List<String> ids, String partyId) throws DaoException {
-        this.getNamedParameterJdbcTemplate()
-                .update("update nw.shop set current = false where shop_id in(:shop_ids) and party_id=:party_id and current;" +
-                                "update nw.shop set current = true where id in(" +
-                                "    SELECT max(id)" +
-                                "    FROM nw.shop" +
-                                "    where shop_id in (:shop_ids)" +
-                                "    and party_id=:party_id" +
-                                "    group by shop_id, party_id);",
-                        new MapSqlParameterSource(Map.of("shop_ids", ids, "party_id", partyId)));
+        if (!CollectionUtils.isEmpty(ids)) {
+            this.getNamedParameterJdbcTemplate()
+                    .update("update nw.shop set current = false where shop_id in(:shop_ids) and party_id=:party_id and current;" +
+                                    "update nw.shop set current = true where id in(" +
+                                    "    SELECT max(id)" +
+                                    "    FROM nw.shop" +
+                                    "    where shop_id in (:shop_ids)" +
+                                    "    and party_id=:party_id" +
+                                    "    group by shop_id, party_id);",
+                            new MapSqlParameterSource(Map.of("shop_ids", ids, "party_id", partyId)));
+        }
     }
 
     @Override
