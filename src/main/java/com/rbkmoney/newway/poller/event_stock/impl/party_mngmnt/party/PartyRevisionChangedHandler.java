@@ -131,7 +131,7 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
             contractIds.add(contractSourceId);
             Long contractId = ids.get(i);
             long sequenceId = event.getEventId();
-            ContractUtil.resetBaseFields(event, changeId, sequenceId, contractSource, contractSource.getClaimEffectId());
+            ContractUtil.resetBaseFields(event, changeId, sequenceId, contractSource, -1);
             contractSource.setId(contractId);
             contractSource.setRevision(revision);
 
