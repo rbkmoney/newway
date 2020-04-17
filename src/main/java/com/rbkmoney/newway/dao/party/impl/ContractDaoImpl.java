@@ -84,11 +84,15 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
 
     @Override
     public void switchCurrent(List<String> ids, String partyId) throws DaoException {
-        ids.forEach(id ->
-                this.getNamedParameterJdbcTemplate()
-                        .update("update nw.contract set current = false where contract_id =:contract_id and party_id=:party_id and current;" +
-                                        "update nw.contract set current = true where id = (select max(id) from nw.contract where contract_id =:contract_id and party_id=:party_id);",
-                                new MapSqlParameterSource(Map.of("contract_id", id, "party_id", partyId))));
+        this.getNamedParameterJdbcTemplate()
+                .update("update nw.contract set current = false where contract_id in(:contract_ids) and party_id=:party_id and current;" +
+                                "update nw.contract set current = true where id in(" +
+                                "    SELECT max(id)" +
+                                "    FROM nw.contract" +
+                                "    where contract_id in (:contract_ids)" +
+                                "    and party_id=:party_id" +
+                                "    group by contract_id, party_id);",
+                        new MapSqlParameterSource(Map.of("contract_ids", ids, "party_id", partyId)));
     }
 
     @Override

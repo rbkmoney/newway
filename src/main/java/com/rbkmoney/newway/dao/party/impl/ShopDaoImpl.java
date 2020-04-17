@@ -85,11 +85,15 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
 
     @Override
     public void switchCurrent(List<String> ids, String partyId) throws DaoException {
-        ids.forEach(id ->
-                this.getNamedParameterJdbcTemplate()
-                        .update("update nw.shop set current = false where shop_id =:shop_id and party_id=:party_id and current;" +
-                                        "update nw.shop set current = true where id = (select max(id) from nw.shop where shop_id =:shop_id and party_id=:party_id);",
-                                new MapSqlParameterSource(Map.of("shop_id", id, "party_id", partyId))));
+        this.getNamedParameterJdbcTemplate()
+                .update("update nw.shop set current = false where shop_id in(:shop_ids) and party_id=:party_id and current;" +
+                                "update nw.shop set current = true where id in(" +
+                                "    SELECT max(id)" +
+                                "    FROM nw.shop" +
+                                "    where shop_id in (:shop_ids)" +
+                                "    and party_id=:party_id" +
+                                "    group by shop_id, party_id);",
+                        new MapSqlParameterSource(Map.of("shop_ids", ids, "party_id", partyId)));
     }
 
     @Override
