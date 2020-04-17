@@ -83,11 +83,15 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
 
     @Override
     public void switchCurrent(List<String> ids, String partyId) throws DaoException {
-        ids.forEach(id ->
-                this.getNamedParameterJdbcTemplate()
-                        .update("update nw.contractor set current = false where contractor_id =:contractor_id and party_id=:party_id and current;" +
-                                        "update nw.contractor set current = true where id = (select max(id) from nw.contractor where contractor_id =:contractor_id and party_id=:party_id);",
-                                new MapSqlParameterSource(Map.of("contractor_id", id, "party_id", partyId))));
+        this.getNamedParameterJdbcTemplate()
+                .update("update nw.contractor set current = false where contractor_id in(:contractor_ids) and party_id=:party_id and current;" +
+                                "update nw.contractor set current = true where id in(" +
+                                "    SELECT max(id)" +
+                                "    FROM nw.contractor" +
+                                "    where contractor_id in (:contractor_ids)" +
+                                "    and party_id=:party_id" +
+                                "    group by contractor_id, party_id);",
+                        new MapSqlParameterSource(Map.of("contractor_ids", ids, "party_id", partyId)));
     }
 
     @Override
