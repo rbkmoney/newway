@@ -67,6 +67,7 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
         shop.setChangeId(changeId);
         shop.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         shop.setShopId(shopId);
+        shop.setRevision(-1L);
         shop.setPartyId(partyId);
         shop.setClaimEffectId(claimEffectId);
         shop.setCreatedAt(TypeUtil.stringToLocalDateTime(shopCreated.getCreatedAt()));

@@ -94,7 +94,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
         contract.setContractorId(contractorId);
 
         contractDao.save(contract).ifPresentOrElse(
-                cntrctId -> updateContractReference(event, changeId, sequenceId, contractCreated, contractId, partyId, contractorId, cntrctId),
+                cntrctId -> updateContractReference(event, changeId, sequenceId, contractCreated, contractId, partyId, contractorId, cntrctId, claimEffectId),
                 () -> log.info("contract create duplicated, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId)
         );
     }
@@ -110,9 +110,10 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
     }
 
     private void updateContractReference(MachineEvent event, Integer changeId, long sequenceId, com.rbkmoney.damsel.domain.Contract contractCreated,
-                                         String contractId, String partyId, String contractorId, Long cntrctId) {
+                                         String contractId, String partyId, String contractorId, Long cntrctId, Integer claimEffectId) {
         if (contractCreated.isSetContractor()) {
-            Contractor contractor = ContractorUtil.convertContractor(sequenceId, event.getCreatedAt(), partyId, contractCreated.getContractor(), contractorId, changeId);
+            Contractor contractor = ContractorUtil.convertContractor(sequenceId, event.getCreatedAt(),
+                    partyId, contractCreated.getContractor(), contractorId, changeId, claimEffectId);
             contractorDao.save(contractor);
         }
 

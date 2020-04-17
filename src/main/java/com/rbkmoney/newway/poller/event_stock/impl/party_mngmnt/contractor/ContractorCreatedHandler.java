@@ -53,9 +53,9 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
         log.info("Start contractor created handling, eventId={}, partyId={}, contractorId={}", eventId, partyId, contractorId);
         partyDao.get(partyId); //check party is exist
 
-        Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractorCreated, contractorId, changeId);
+        Contractor contractor = ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractorCreated,
+                contractorId, changeId, claimEffectId);
         contractor.setIdentificationalLevel(partyContractor.getStatus().name());
-        contractor.setClaimEffectId(claimEffectId);
         contractorDao.save(contractor).ifPresentOrElse(
                 cntrctId -> log.info("Contract contractor has been saved, eventId={}, partyId={}, contractorId={}", eventId, partyId, contractorId),
                 () -> log.info("contract contractor duplicated, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId)

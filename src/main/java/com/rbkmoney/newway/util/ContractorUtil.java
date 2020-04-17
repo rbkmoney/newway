@@ -13,11 +13,13 @@ import com.rbkmoney.newway.domain.tables.pojos.Contractor;
 
 public class ContractorUtil {
     public static Contractor convertContractor(long sequenceId, String eventCreatedAt, String partyId,
-                                               com.rbkmoney.damsel.domain.Contractor contractorSource, String contractorId, Integer changeId) {
+                                               com.rbkmoney.damsel.domain.Contractor contractorSource,
+                                               String contractorId, Integer changeId, Integer claimEffectId) {
         Contractor contractor = new Contractor();
         contractor.setRevision(-1L);
         contractor.setSequenceId((int) sequenceId);
         contractor.setChangeId(changeId);
+        contractor.setClaimEffectId(claimEffectId);
         contractor.setEventCreatedAt(TypeUtil.stringToLocalDateTime(eventCreatedAt));
         contractor.setPartyId(partyId);
         contractor.setContractorId(contractorId);
