@@ -36,7 +36,7 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
     public Optional<Long> save(Contract contract) throws DaoException {
         ContractRecord record = getDslContext().newRecord(CONTRACT, contract);
         Query query = getDslContext().insertInto(CONTRACT).set(record)
-                .onConflict(CONTRACT.PARTY_ID, CONTRACT.SEQUENCE_ID, CONTRACT.CHANGE_ID,
+                .onConflict(CONTRACT.PARTY_ID, CONTRACT.CONTRACT_ID, CONTRACT.SEQUENCE_ID, CONTRACT.CHANGE_ID,
                         CONTRACT.CLAIM_EFFECT_ID, CONTRACT.REVISION)
                 .doNothing()
                 .returning(CONTRACT.ID);
@@ -51,7 +51,8 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
                 .map(contractor -> getDslContext().newRecord(CONTRACT, contractor))
                 .map(contractorRecord -> getDslContext().insertInto(CONTRACT)
                         .set(contractorRecord)
-                        .onConflict(CONTRACT.PARTY_ID, CONTRACT.SEQUENCE_ID, CONTRACT.CHANGE_ID, CONTRACT.CLAIM_EFFECT_ID, CONTRACT.REVISION)
+                        .onConflict(CONTRACT.PARTY_ID, CONTRACT.CONTRACT_ID, CONTRACT.SEQUENCE_ID, CONTRACT.CHANGE_ID,
+                                CONTRACT.CLAIM_EFFECT_ID, CONTRACT.REVISION)
                         .doNothing()
                 )
                 .collect(Collectors.toList());
