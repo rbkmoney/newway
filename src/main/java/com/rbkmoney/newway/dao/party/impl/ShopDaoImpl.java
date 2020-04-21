@@ -10,14 +10,11 @@ import com.rbkmoney.newway.exception.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Query;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import javax.sql.DataSource;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -79,31 +76,10 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     }
 
     @Override
-    public void updateNotCurrent(List<Long> ids) throws DaoException {
-        Query query = getDslContext().update(SHOP).set(SHOP.CURRENT, false).where(SHOP.ID.in(ids));
-        execute(query);
-    }
-
-    @Override
-    public void switchCurrent(List<String> ids, String partyId) throws DaoException {
-        if (!CollectionUtils.isEmpty(ids)) {
-            this.getNamedParameterJdbcTemplate()
-                    .update("update nw.shop set current = false where shop_id in(:shop_ids) and party_id=:party_id and current;" +
-                                    "update nw.shop set current = true where id in(" +
-                                    "    SELECT max(id)" +
-                                    "    FROM nw.shop" +
-                                    "    where shop_id in (:shop_ids)" +
-                                    "    and party_id=:party_id" +
-                                    "    group by shop_id, party_id);",
-                            new MapSqlParameterSource(Map.of("shop_ids", ids, "party_id", partyId)));
-        }
-    }
-
-    @Override
-    public List<Shop> getByPartyId(String partyId) {
-        Query query = getDslContext().selectFrom(SHOP)
+    public void updateRevision(String partyId, long revision) throws DaoException {
+        Query query = getDslContext().update(SHOP).set(SHOP.REVISION, revision)
                 .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.CURRENT));
-        return fetch(query, shopRowMapper);
+        execute(query);
     }
 
     @Override

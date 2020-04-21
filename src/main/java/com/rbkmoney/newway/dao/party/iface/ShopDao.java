@@ -16,12 +16,7 @@ public interface ShopDao extends GenericDao {
 
     void updateNotCurrent(Long id) throws DaoException;
 
-    void updateNotCurrent(List<Long> ids) throws DaoException;
-
-    List<Shop> getByPartyId(String partyId);
+    void updateRevision(String partyId, long revision) throws DaoException;
 
     void saveWithUpdateCurrent(Shop shopSource, Long oldEventId, String eventName);
-
-    void switchCurrent(List<String> ids, String partyId);
-
 }

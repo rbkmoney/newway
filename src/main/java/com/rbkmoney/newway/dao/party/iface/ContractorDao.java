@@ -16,9 +16,5 @@ public interface ContractorDao extends GenericDao {
 
     void updateNotCurrent(Long id) throws DaoException;
 
-    void updateNotCurrent(List<Long> ids) throws DaoException;
-
-    void switchCurrent(List<String> ids, String partyId) throws DaoException;
-
-    List<Contractor> getByPartyId(String partyId);
+    void updateRevision(String partyId, long revision) throws DaoException;
 }

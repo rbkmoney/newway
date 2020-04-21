@@ -7,7 +7,6 @@ import com.rbkmoney.newway.dao.dominant.impl.*;
 import com.rbkmoney.newway.dao.identity.iface.ChallengeDao;
 import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.dao.invoicing.iface.*;
-import com.rbkmoney.newway.dao.invoicing.impl.ContractIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.dao.invoicing.impl.PaymentIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
@@ -21,13 +20,11 @@ import com.rbkmoney.newway.dao.withdrawal_session.iface.WithdrawalSessionDao;
 import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
 import com.rbkmoney.newway.domain.enums.CashFlowAccount;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
-import com.rbkmoney.newway.domain.enums.PaymentStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Calendar;
 import com.rbkmoney.newway.domain.tables.pojos.Currency;
 import com.rbkmoney.newway.domain.tables.pojos.*;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.InvoicingType;
-import com.rbkmoney.newway.service.CashFlowService;
 import com.rbkmoney.newway.util.HashUtil;
 import org.junit.Assert;
 import org.junit.Test;
@@ -123,13 +120,9 @@ public class DaoTests extends AbstractAppDaoTests {
     @Autowired
     private WithdrawalSessionDao withdrawalSessionDao;
     @Autowired
-    private CashFlowService cashFlowService;
-    @Autowired
     private PaymentIdsGeneratorDaoImpl idsGeneratorDao;
     @Autowired
     private RecurrentPaymentToolDao recurrentPaymentToolDao;
-    @Autowired
-    private ContractIdsGeneratorDaoImpl contractIdsGeneratorDao;
 
     @Test
     public void depositDaoTest() {
@@ -474,9 +467,6 @@ public class DaoTests extends AbstractAppDaoTests {
         contractDao.save(contract);
         Contract contractGet = contractDao.get(contract.getPartyId(), contract.getContractId());
         assertEquals(contract, contractGet);
-        List<Contract> contracts = contractDao.getByPartyId(contract.getPartyId());
-        assertEquals(1, contracts.size());
-        assertEquals(contract, contracts.get(0));
     }
 
     @Test
@@ -487,20 +477,12 @@ public class DaoTests extends AbstractAppDaoTests {
         contractorDao.save(contractor);
         Contractor contractorGet = contractorDao.get(contractor.getPartyId(), contractor.getContractorId());
         assertEquals(contractor, contractorGet);
-        List<Contractor> contractors = contractorDao.getByPartyId(contractor.getPartyId());
-        assertEquals(1, contractors.size());
-        assertEquals(contractor, contractors.get(0));
-
         Integer changeId = contractor.getChangeId() + 1;
         contractor.setChangeId(changeId);
         Long oldId = contractor.getId();
         contractor.setId(contractor.getId() + 1);
         contractorDao.save(contractor);
         contractorDao.updateNotCurrent(oldId);
-
-        contractors = contractorDao.getByPartyId(contractor.getPartyId());
-        assertEquals(1, contractors.size());
-        assertEquals(changeId, contractors.get(0).getChangeId());
     }
 
     @Test
@@ -545,9 +527,6 @@ public class DaoTests extends AbstractAppDaoTests {
         shopDao.save(shop);
         Shop shopGet = shopDao.get(shop.getPartyId(), shop.getShopId());
         assertEquals(shop, shopGet);
-        List<Shop> shops = shopDao.getByPartyId(shop.getPartyId());
-        assertEquals(1, shops.size());
-        assertEquals(shop, shops.get(0));
 
         Integer changeId = shop.getChangeId() + 1;
         shop.setChangeId(changeId);
@@ -555,9 +534,6 @@ public class DaoTests extends AbstractAppDaoTests {
         shop.setId(id + 1);
         shopDao.save(shop);
         shopDao.updateNotCurrent(id);
-        shops = shopDao.getByPartyId(shop.getPartyId());
-        assertEquals(1, shops.size());
-        assertEquals(changeId, shops.get(0).getChangeId());
     }
 
     @Test
@@ -702,13 +678,6 @@ public class DaoTests extends AbstractAppDaoTests {
         List<Long> list = idsGeneratorDao.get(100);
         assertEquals(100, list.size());
         assertEquals(99, list.get(99) - list.get(0));
-    }
-
-    @Test
-    public void contractIdsGeneratorTest() {
-        List<Long> list = contractIdsGeneratorDao.get(100);
-        assertEquals(100, list.size());
-        assertEquals(99,list.get(99) - list.get(0));
     }
 
     @Test
