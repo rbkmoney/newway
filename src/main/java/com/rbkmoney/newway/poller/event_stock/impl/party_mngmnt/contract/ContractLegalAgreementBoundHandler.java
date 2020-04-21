@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -31,11 +30,12 @@ public class ContractLegalAgreementBoundHandler extends AbstractClaimChangedHand
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, MachineEvent event, Integer changeId) {
         long sequenceId = event.getEventId();
-        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(claimEffect -> claimEffect.isSetContractEffect() && claimEffect.getContractEffect().getEffect().isSetLegalAgreementBound())
-                .collect(Collectors.toList());
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects();
         for (int i = 0; i < claimEffects.size(); i++) {
-            handleEvent(event, changeId, sequenceId, claimEffects.get(i), i);
+            ClaimEffect claimEffect = claimEffects.get(i);
+            if (claimEffect.isSetContractEffect() && claimEffect.getContractEffect().getEffect().isSetLegalAgreementBound()) {
+                handleEvent(event, changeId, sequenceId, claimEffects.get(i), i);
+            }
         }
     }
 
