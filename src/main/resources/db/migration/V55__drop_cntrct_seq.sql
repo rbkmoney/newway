@@ -1,0 +1,1 @@
+DROP SEQUENCE nw.cntrct_seq;

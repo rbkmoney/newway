@@ -78,30 +78,9 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     }
 
     @Override
-    public void updateNotCurrent(List<Long> ids) throws DaoException {
-        Query query = getDslContext().update(CONTRACTOR).set(CONTRACTOR.CURRENT, false).where(CONTRACTOR.ID.in(ids));
-        execute(query);
-    }
-
-    @Override
-    public void switchCurrent(List<String> ids, String partyId) throws DaoException {
-        if (!CollectionUtils.isEmpty(ids)) {
-            this.getNamedParameterJdbcTemplate()
-                    .update("update nw.contractor set current = false where contractor_id in(:contractor_ids) and party_id=:party_id and current;" +
-                                    "update nw.contractor set current = true where id in(" +
-                                    "    SELECT max(id)" +
-                                    "    FROM nw.contractor" +
-                                    "    where contractor_id in (:contractor_ids)" +
-                                    "    and party_id=:party_id" +
-                                    "    group by contractor_id, party_id);",
-                            new MapSqlParameterSource(Map.of("contractor_ids", ids, "party_id", partyId)));
-        }
-    }
-
-    @Override
-    public List<Contractor> getByPartyId(String partyId) {
-        Query query = getDslContext().selectFrom(CONTRACTOR)
+    public void updateRevision(String partyId, long revision) throws DaoException {
+        Query query = getDslContext().update(CONTRACTOR).set(CONTRACTOR.REVISION, revision)
                 .where(CONTRACTOR.PARTY_ID.eq(partyId).and(CONTRACTOR.CURRENT));
-        return fetch(query, contractorRowMapper);
+        execute(query);
     }
 }
