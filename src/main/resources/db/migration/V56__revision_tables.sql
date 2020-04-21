@@ -18,7 +18,7 @@ CREATE TABLE nw.shop_revision(
   wtime                          TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() at time zone 'utc'),
   CONSTRAINT shop_revision_pkey PRIMARY KEY (id)
 );
-CREATE INDEX shop_revision_idx on nw.shop_revision(obj_id, revision);
+CREATE UNIQUE INDEX shop_revision_idx on nw.shop_revision(obj_id, revision);
 
 CREATE TABLE nw.contract_revision(
   id                             BIGSERIAL NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE nw.contract_revision(
   wtime                          TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() at time zone 'utc'),
   CONSTRAINT contract_revision_pkey PRIMARY KEY (id)
 );
-CREATE INDEX contract_revision_idx on nw.contract_revision(obj_id, revision);
+CREATE UNIQUE INDEX contract_revision_idx on nw.contract_revision(obj_id, revision);
 
 CREATE TABLE nw.contractor_revision(
   id                             BIGSERIAL NOT NULL,
@@ -36,4 +36,4 @@ CREATE TABLE nw.contractor_revision(
   wtime                          TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() at time zone 'utc'),
   CONSTRAINT contractor_revision_pkey PRIMARY KEY (id)
 );
-CREATE INDEX contractor_revision_idx on nw.contractor_revision(obj_id, revision);
+CREATE UNIQUE INDEX contractor_revision_idx on nw.contractor_revision(obj_id, revision);

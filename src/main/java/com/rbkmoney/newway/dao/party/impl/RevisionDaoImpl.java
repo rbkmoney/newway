@@ -18,7 +18,7 @@ public class RevisionDaoImpl extends AbstractGenericDao implements RevisionDao {
     @Override
     public void saveShopsRevision(String partyId, long revision) throws DaoException {
         getNamedParameterJdbcTemplate().update("insert into nw.shop_revision(obj_id, revision) " +
-                        "select id, :revision from nw.shop where party_id = :partyId and current",
+                        "select id, :revision from nw.shop where party_id = :party_id and current",
                 new MapSqlParameterSource()
                         .addValue("party_id", partyId)
                         .addValue("revision", revision));
