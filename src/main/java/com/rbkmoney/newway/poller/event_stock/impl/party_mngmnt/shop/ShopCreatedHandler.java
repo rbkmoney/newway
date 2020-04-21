@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
@@ -35,11 +34,12 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PartyChange change, MachineEvent event, Integer changeId) {
-        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects().stream()
-                .filter(e -> e.isSetShopEffect() && e.getShopEffect().getEffect().isSetCreated())
-                .collect(Collectors.toList());
+        List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects();
         for (int i = 0; i < claimEffects.size(); i++) {
-            handleEvent(event, changeId, claimEffects.get(i), i);
+            ClaimEffect claimEffect = claimEffects.get(i);
+            if (claimEffect.isSetShopEffect() && claimEffect.getShopEffect().getEffect().isSetCreated()) {
+                handleEvent(event, changeId, claimEffects.get(i), i);
+            }
         }
     }
 
