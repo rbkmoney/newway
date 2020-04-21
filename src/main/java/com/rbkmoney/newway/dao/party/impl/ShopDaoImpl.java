@@ -14,9 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.Tables.SHOP;
 
@@ -35,25 +33,12 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     public Optional<Long> save(Shop shop) throws DaoException {
         ShopRecord record = getDslContext().newRecord(SHOP, shop);
         Query query = getDslContext().insertInto(SHOP).set(record)
-                .onConflict(SHOP.PARTY_ID, SHOP.SHOP_ID, SHOP.SEQUENCE_ID, SHOP.CHANGE_ID, SHOP.CLAIM_EFFECT_ID, SHOP.REVISION)
+                .onConflict(SHOP.PARTY_ID, SHOP.SHOP_ID, SHOP.SEQUENCE_ID, SHOP.CHANGE_ID, SHOP.CLAIM_EFFECT_ID)
                 .doNothing()
                 .returning(SHOP.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         execute(query, keyHolder);
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
-    }
-
-    @Override
-    public void saveBatch(List<Shop> shops) throws DaoException {
-        List<Query> queries = shops.stream()
-                .map(contractor -> getDslContext().newRecord(SHOP, contractor))
-                .map(contractorRecord -> getDslContext().insertInto(SHOP)
-                        .set(contractorRecord)
-                        .onConflict(SHOP.PARTY_ID, SHOP.SHOP_ID, SHOP.SEQUENCE_ID, SHOP.CHANGE_ID, SHOP.CLAIM_EFFECT_ID, SHOP.REVISION)
-                        .doNothing()
-                )
-                .collect(Collectors.toList());
-        batchExecute(queries);
     }
 
     @Override
@@ -73,13 +58,6 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
                 .update(SHOP).set(SHOP.CURRENT, false)
                 .where(SHOP.ID.eq(id));
         executeOne(query);
-    }
-
-    @Override
-    public void updateRevision(String partyId, long revision) throws DaoException {
-        Query query = getDslContext().update(SHOP).set(SHOP.REVISION, revision)
-                .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.CURRENT));
-        execute(query);
     }
 
     @Override
