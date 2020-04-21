@@ -26,6 +26,7 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
 
     private final PartyDao partyDao;
     private final ContractorDao contractorDao;
+    private final ContractDao contractDao;
     private final ShopDao shopDao;
 
     private final Filter filter = new PathConditionFilter(new PathConditionRule(
@@ -62,7 +63,7 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
         log.info("Start to update revisions, partyId={}, revision={}", partyId, revision);
         contractorDao.updateRevision(partyId, revision);
         log.info("Contractors revisions has been updated, partyId={}, revision={}", partyId, revision);
-        contractorDao.updateRevision(partyId, revision);
+        contractDao.updateRevision(partyId, revision);
         log.info("Contracts revision has been updated, partyId={}, revision={}", partyId, revision);
         shopDao.updateRevision(partyId, revision);
         log.info("Shops revisions has been updated, partyId={}, revision={}", partyId, revision);
