@@ -25,9 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler {
 
     private final PartyDao partyDao;
-    private final ContractorDao contractorDao;
-    private final ContractDao contractDao;
-    private final ShopDao shopDao;
+    private final RevisionDao revisionDao;
 
     private final Filter filter = new PathConditionFilter(new PathConditionRule(
             "revision_changed",
@@ -60,13 +58,13 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
     }
 
     private void updatePartyReferences(String partyId, long revision) {
-        log.info("Start to update revisions, partyId={}, revision={}", partyId, revision);
-        contractorDao.updateRevision(partyId, revision);
-        log.info("Contractors revisions has been updated, partyId={}, revision={}", partyId, revision);
-        contractDao.updateRevision(partyId, revision);
-        log.info("Contracts revision has been updated, partyId={}, revision={}", partyId, revision);
-        shopDao.updateRevision(partyId, revision);
-        log.info("Shops revisions has been updated, partyId={}, revision={}", partyId, revision);
+        log.info("Start to save revisions, partyId={}, revision={}", partyId, revision);
+        revisionDao.saveContractorsRevision(partyId, revision);
+        log.info("Contractors revisions has been saved, partyId={}, revision={}", partyId, revision);
+        revisionDao.saveContractsRevision(partyId, revision);
+        log.info("Contracts revision has been saved, partyId={}, revision={}", partyId, revision);
+        revisionDao.saveShopsRevision(partyId, revision);
+        log.info("Shops revisions has been saved, partyId={}, revision={}", partyId, revision);
     }
 
     @Override

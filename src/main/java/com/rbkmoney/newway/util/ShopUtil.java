@@ -16,7 +16,6 @@ public class ShopUtil {
 
     public static void resetBaseFields(MachineEvent event, Integer changeId, long sequenceId, Shop shopSource, Integer claimEffectId) {
         shopSource.setId(null);
-        shopSource.setRevision(-1L);
         shopSource.setWtime(null);
         shopSource.setSequenceId((int) sequenceId);
         shopSource.setChangeId(changeId);

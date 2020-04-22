@@ -15,7 +15,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -29,6 +32,9 @@ import static org.junit.Assert.assertTrue;
 
 @Slf4j
 public class PartyRevisionChangedHandlerTest extends AbstractAppDaoTests {
+
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
     private HikariDataSource dataSource;
@@ -79,7 +85,7 @@ public class PartyRevisionChangedHandlerTest extends AbstractAppDaoTests {
             payoutTools.forEach(pt -> pt.setCntrctId(c.getId()));
             allPayoutTools.addAll(payoutTools);
         });
-        contractDao.saveBatch(contracts);
+        contracts.forEach(c -> contractDao.save(c));
         contractAdjustmentDao.save(allAdjustments);
         payoutToolDao.save(allPayoutTools);
 
@@ -88,14 +94,14 @@ public class PartyRevisionChangedHandlerTest extends AbstractAppDaoTests {
             s.setShopId(UUID.randomUUID().toString());
             s.setPartyId(party.getPartyId());
         });
-        shopDao.saveBatch(shops);
+        shops.forEach(s -> shopDao.save(s));
 
         List<Contractor> contractors = randomListOf(CNT, Contractor.class, "id", "current", "wtime");
         contractors.forEach(c -> {
             c.setPartyId(party.getPartyId());
             c.setContractorId(UUID.randomUUID().toString());
         });
-        contractorDao.saveBatch(contractors);
+        contractors.forEach(c -> contractorDao.save(c));
 
         log.info("All staff has been saved for partyId={}", party.getPartyId());
 
@@ -114,8 +120,11 @@ public class PartyRevisionChangedHandlerTest extends AbstractAppDaoTests {
         payload.setPartyChanges(List.of(change));
 
         Mockito.when(eventParser.parse(message)).thenReturn(payload);
-        assertTrue(JdbcUtils.supportsBatchUpdates(dataSource.getConnection()));
-        assertEquals("true", dataSource.getDataSourceProperties().get("reWriteBatchedInserts"));
         partyRevisionChangedHandler.handle(change, message, 1);
+
+        assertEquals(Integer.valueOf(CNT), jdbcTemplate.queryForObject("select count(1) from nw.shop_revision", new MapSqlParameterSource(), Integer.class));
+        assertEquals(Integer.valueOf(CNT), jdbcTemplate.queryForObject("select count(1) from nw.contract_revision", new MapSqlParameterSource(), Integer.class));
+        assertEquals(Integer.valueOf(CNT), jdbcTemplate.queryForObject("select count(1) from nw.contractor_revision", new MapSqlParameterSource(), Integer.class));
+
     }
 }

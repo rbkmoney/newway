@@ -16,7 +16,6 @@ public class ContractorUtil {
                                                com.rbkmoney.damsel.domain.Contractor contractorSource,
                                                String contractorId, Integer changeId, Integer claimEffectId) {
         Contractor contractor = new Contractor();
-        contractor.setRevision(-1L);
         contractor.setSequenceId((int) sequenceId);
         contractor.setChangeId(changeId);
         contractor.setClaimEffectId(claimEffectId);
@@ -67,7 +66,6 @@ public class ContractorUtil {
 
     public static void resetBaseFields(MachineEvent event, long sequenceId, Contractor contractorSource, Integer claimEffectId) {
         contractorSource.setId(null);
-        contractorSource.setRevision(-1L);
         contractorSource.setWtime(null);
         contractorSource.setClaimEffectId(claimEffectId);
         contractorSource.setSequenceId((int) sequenceId);

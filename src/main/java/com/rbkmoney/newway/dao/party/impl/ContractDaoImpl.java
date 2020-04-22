@@ -9,16 +9,11 @@ import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.exception.NotFoundException;
 import org.jooq.Query;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import javax.sql.DataSource;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.Tables.CONTRACT;
 
@@ -37,26 +32,12 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
         ContractRecord record = getDslContext().newRecord(CONTRACT, contract);
         Query query = getDslContext().insertInto(CONTRACT).set(record)
                 .onConflict(CONTRACT.PARTY_ID, CONTRACT.CONTRACT_ID, CONTRACT.SEQUENCE_ID, CONTRACT.CHANGE_ID,
-                        CONTRACT.CLAIM_EFFECT_ID, CONTRACT.REVISION)
+                        CONTRACT.CLAIM_EFFECT_ID)
                 .doNothing()
                 .returning(CONTRACT.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         execute(query, keyHolder);
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
-    }
-
-    @Override
-    public void saveBatch(List<Contract> contracts) throws DaoException {
-        List<Query> queries = contracts.stream()
-                .map(contractor -> getDslContext().newRecord(CONTRACT, contractor))
-                .map(contractorRecord -> getDslContext().insertInto(CONTRACT)
-                        .set(contractorRecord)
-                        .onConflict(CONTRACT.PARTY_ID, CONTRACT.CONTRACT_ID, CONTRACT.SEQUENCE_ID, CONTRACT.CHANGE_ID,
-                                CONTRACT.CLAIM_EFFECT_ID, CONTRACT.REVISION)
-                        .doNothing()
-                )
-                .collect(Collectors.toList());
-        batchExecute(queries);
     }
 
     @Override
@@ -76,12 +57,5 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
         Query query = getDslContext().update(CONTRACT).set(CONTRACT.CURRENT, false)
                 .where(CONTRACT.ID.eq(id));
         executeOne(query);
-    }
-
-    @Override
-    public void updateRevision(String partyId, long revision) throws DaoException {
-        Query query = getDslContext().update(CONTRACT).set(CONTRACT.REVISION, revision)
-                .where(CONTRACT.PARTY_ID.eq(partyId).and(CONTRACT.CURRENT));
-        execute(query);
     }
 }
