@@ -15,6 +15,7 @@ import com.rbkmoney.newway.domain.tables.pojos.Chargeback;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
 import com.rbkmoney.newway.service.CashFlowService;
+import com.rbkmoney.newway.util.CachbackUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -53,10 +54,7 @@ public class InvoicePaymentChargebackBodyChangedHandler extends AbstractInvoicin
         }
 
         Long chargebackSourceId = chargebackSource.getId();
-        chargebackSource.setId(null);
-        chargebackSource.setWtime(null);
-        chargebackSource.setChangeId(changeId);
-        chargebackSource.setSequenceId(sequenceId);
+        CachbackUtil.resetBaseFields(chargebackSource, event, changeId, sequenceId);
         chargebackSource.setAmount(invoicePaymentChargebackBodyChanged.getBody().getAmount());
         chargebackSource.setCurrencyCode(invoicePaymentChargebackBodyChanged.getBody().getCurrency().getSymbolicCode());
         Long savedChargebackId = chargebackDao.save(chargebackSource);
