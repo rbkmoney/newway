@@ -41,3 +41,4 @@ CREATE INDEX chargeback_invoice_id on nw.chargeback (invoice_id);
 CREATE INDEX chargeback_party_id on nw.chargeback (party_id);
 CREATE INDEX chargeback_status on nw.chargeback (status);
 CREATE INDEX chargeback_created_at on nw.chargeback (created_at);
+CREATE INDEX chargeback_event_created_at on nw.chargeback (event_created_at);
