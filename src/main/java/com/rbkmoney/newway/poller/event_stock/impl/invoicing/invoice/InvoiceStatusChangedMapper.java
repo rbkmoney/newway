@@ -36,7 +36,11 @@ public class InvoiceStatusChangedMapper extends AbstractInvoicingInvoiceMapper {
         long sequenceId = event.getEventId();
         String invoiceId = event.getSourceId();
 
-        InvoiceWrapper invoiceWrapper = invoiceWrapperService.get(invoiceId, storage);
+        InvoiceWrapper invoiceWrapper = invoiceWrapperService.get(invoiceId, sequenceId, changeId, storage);
+        if (invoiceWrapper == null) {
+            return null;
+        }
+        invoiceWrapper.setShouldInsert(true);
         Invoice invoiceSource = invoiceWrapper.getInvoice();
         log.info("Start invoice status changed mapping, sequenceId={}, invoiceId={}, partyId={}, shopId={}, status={}",
                 sequenceId, invoiceId, invoiceSource.getPartyId(), invoiceSource.getShopId(), invoiceStatus.getSetField().getFieldName());

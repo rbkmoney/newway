@@ -26,29 +26,44 @@ public class InvoiceWrapperService {
     private final InvoiceCartDao invoiceCartDao;
     private final Cache<InvoicingKey, InvoiceWrapper> invoiceDataCache;
 
-    public InvoiceWrapper get(String invoiceId, LocalStorage storage) throws DaoException, NotFoundException {
-        InvoicingKey key = InvoicingKey.builder().invoiceId(invoiceId).type(InvoicingType.INVOICE).build();
+    public InvoiceWrapper get(String invoiceId, long sequenceId, Integer changeId,
+                              LocalStorage storage) throws DaoException, NotFoundException {
+        InvoicingKey key = InvoicingKey.buildKey(invoiceId);
         InvoiceWrapper invoiceWrapper = (InvoiceWrapper) storage.get(key);
         if (invoiceWrapper != null) {
-            return invoiceWrapper.copy();
+            invoiceWrapper = invoiceWrapper.copy();
+        } else {
+            invoiceWrapper = invoiceDataCache.getIfPresent(key);
+            if (invoiceWrapper != null) {
+                invoiceWrapper = invoiceWrapper.copy();
+            } else {
+                Invoice invoice = invoiceDao.get(invoiceId);
+                if (invoice == null) {
+                    throw new NotFoundException(String.format("Invoice not found, invoiceId='%s'", invoiceId));
+                }
+                List<InvoiceCart> carts = invoiceCartDao.getByInvId(invoice.getId());
+                invoiceWrapper = new InvoiceWrapper(invoice, carts);
+                invoiceWrapper.setKey(key);
+            }
         }
-        invoiceWrapper = invoiceDataCache.getIfPresent(key);
-        if (invoiceWrapper != null) {
-            return invoiceWrapper.copy();
+        if ((invoiceWrapper.getInvoice().getSequenceId() > sequenceId) ||
+                (invoiceWrapper.getInvoice().getSequenceId() == sequenceId &&
+                        invoiceWrapper.getInvoice().getChangeId() >= changeId)) {
+            invoiceWrapper = null;
         }
-        Invoice invoice = invoiceDao.get(invoiceId);
-        if (invoice == null) {
-            throw new NotFoundException(String.format("Invoice not found, invoiceId='%s'", invoiceId));
-        }
-        List<InvoiceCart> carts = invoiceCartDao.getByInvId(invoice.getId());
-        return new InvoiceWrapper(invoice, carts);
+        return invoiceWrapper;
     }
 
     public void save(List<InvoiceWrapper> invoiceWrappers) {
-        invoiceWrappers.forEach(i -> invoiceDataCache.put(InvoicingKey.builder().invoiceId(i.getInvoice().getInvoiceId()).type(InvoicingType.INVOICE).build(), i));
+        invoiceWrappers.forEach(iw -> invoiceDataCache.put(iw.getKey(), iw));
         List<Invoice> invoices = invoiceWrappers.stream().map(InvoiceWrapper::getInvoice).collect(Collectors.toList());
         invoiceDao.saveBatch(invoices);
-        List<InvoiceCart> carts = invoiceWrappers.stream().filter(i -> i.getCarts() != null).map(InvoiceWrapper::getCarts).flatMap(Collection::stream).collect(Collectors.toList());
+        List<InvoiceCart> carts = invoiceWrappers
+                .stream()
+                .filter(i -> i.getCarts() != null)
+                .map(InvoiceWrapper::getCarts)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
         invoiceCartDao.save(carts);
     }
 }

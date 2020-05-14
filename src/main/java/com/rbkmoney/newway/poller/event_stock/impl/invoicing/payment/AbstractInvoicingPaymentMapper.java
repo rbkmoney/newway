@@ -8,7 +8,6 @@ import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingMa
 public abstract class AbstractInvoicingPaymentMapper extends AbstractInvoicingMapper<PaymentWrapper> {
 
     protected void setDefaultProperties(Payment payment, Long sequenceId, Integer changeId, String eventCreatedAt){
-        payment.setId(null);
         payment.setWtime(null);
         payment.setCurrent(false);
         payment.setChangeId(changeId);

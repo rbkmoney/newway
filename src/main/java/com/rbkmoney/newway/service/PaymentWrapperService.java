@@ -10,7 +10,6 @@ import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.poller.event_stock.LocalStorage;
 import com.rbkmoney.newway.model.InvoicingKey;
-import com.rbkmoney.newway.model.InvoicingType;
 import com.rbkmoney.newway.model.PaymentWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,28 +26,44 @@ public class PaymentWrapperService {
     private final CashFlowDao cashFlowDao;
     private final Cache<InvoicingKey, PaymentWrapper> paymentDataCache;
 
-    public PaymentWrapper get(String invoiceId, String paymentId, LocalStorage storage) throws DaoException, NotFoundException {
-        InvoicingKey key = InvoicingKey.builder().invoiceId(invoiceId).paymentId(paymentId).type(InvoicingType.PAYMENT).build();
+    public PaymentWrapper get(String invoiceId, String paymentId,
+                              long sequenceId, Integer changeId,
+                              LocalStorage storage) throws DaoException, NotFoundException {
+        InvoicingKey key = InvoicingKey.buildKey(invoiceId, paymentId);
         PaymentWrapper paymentWrapper = (PaymentWrapper) storage.get(key);
         if (paymentWrapper != null) {
-            return paymentWrapper.copy();
+            paymentWrapper =  paymentWrapper.copy();
+        } else {
+            paymentWrapper = paymentDataCache.getIfPresent(key);
+            if (paymentWrapper != null) {
+                paymentWrapper = paymentWrapper.copy();
+            } else {
+                Payment payment = paymentDao.get(invoiceId, paymentId);
+                if (payment == null) {
+                    throw new NotFoundException(String.format("Payment not found, invoiceId='%s', payment='%s'", invoiceId, paymentId));
+                }
+                List<CashFlow> cashFlows = cashFlowDao.getByObjId(payment.getId(), PaymentChangeType.payment);
+                paymentWrapper = new PaymentWrapper(payment, cashFlows);
+                paymentWrapper.setKey(key);
+            }
         }
-        paymentWrapper = paymentDataCache.getIfPresent(key);
-        if (paymentWrapper != null) {
-            return paymentWrapper.copy();
+        if ((paymentWrapper.getPayment().getSequenceId() > sequenceId) ||
+                (paymentWrapper.getPayment().getSequenceId() == sequenceId &&
+                        paymentWrapper.getPayment().getChangeId() >= changeId)) {
+            paymentWrapper = null;
         }
-        Payment payment = paymentDao.get(invoiceId, paymentId);
-        if (payment == null) {
-            throw new NotFoundException(String.format("Payment not found, invoiceId='%s', payment='%s'", invoiceId, paymentId));
-        }
-        List<CashFlow> cashFlows = cashFlowDao.getByObjId(payment.getId(), PaymentChangeType.payment);
-        return new PaymentWrapper(payment, cashFlows);
+        return paymentWrapper;
     }
 
     public void save(List<PaymentWrapper> paymentWrappers) {
-        paymentWrappers.forEach(i -> paymentDataCache.put(InvoicingKey.builder().invoiceId(i.getPayment().getInvoiceId()).type(InvoicingType.INVOICE).build(), i));
+        paymentWrappers.forEach(pw -> paymentDataCache.put(pw.getKey(), pw));
         List<Payment> payments = paymentWrappers.stream().map(PaymentWrapper::getPayment).collect(Collectors.toList());
-        List<CashFlow> cashFlows = paymentWrappers.stream().filter(p -> p.getCashFlows() != null).map(PaymentWrapper::getCashFlows).flatMap(Collection::stream).collect(Collectors.toList());
+        List<CashFlow> cashFlows = paymentWrappers
+                .stream()
+                .filter(p -> p.getCashFlows() != null)
+                .map(PaymentWrapper::getCashFlows)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
         paymentDao.saveBatch(payments);
         cashFlowDao.save(cashFlows);
     }

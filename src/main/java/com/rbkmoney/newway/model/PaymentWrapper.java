@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentWrapper {
+public class PaymentWrapper extends Wrapper {
     private Payment payment;
     private List<CashFlow> cashFlows;
 
@@ -21,6 +21,7 @@ public class PaymentWrapper {
         Payment paymentTarget = new Payment();
         BeanUtils.copyProperties(payment, paymentTarget);
         PaymentWrapper paymentWrapperTarget = new PaymentWrapper();
+        paymentWrapperTarget.setKey(InvoicingKey.buildKey(this));
         paymentWrapperTarget.setPayment(paymentTarget);
         if (cashFlows != null) {
             List<CashFlow> cashFlowsTarget = new ArrayList<>();

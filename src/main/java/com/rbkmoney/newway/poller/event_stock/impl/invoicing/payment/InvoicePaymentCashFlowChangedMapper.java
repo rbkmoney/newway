@@ -41,7 +41,11 @@ public class InvoicePaymentCashFlowChangedMapper extends AbstractInvoicingPaymen
         String paymentId = invoicePaymentChange.getId();
         long sequenceId = event.getEventId();
         log.info("Start mapping payment cashflow change, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
-        PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, storage);
+        PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, sequenceId, changeId, storage);
+        if (paymentWrapper == null) {
+            return null;
+        }
+        paymentWrapper.setShouldInsert(true);
         Payment paymentSource = paymentWrapper.getPayment();
         setDefaultProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
         List<FinalCashFlowPosting> finalCashFlow = invoicePaymentChange.getPayload().getInvoicePaymentCashFlowChanged().getCashFlow();

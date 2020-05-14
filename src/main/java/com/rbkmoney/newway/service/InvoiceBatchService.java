@@ -20,30 +20,19 @@ public class InvoiceBatchService {
     private final InvoiceDao invoiceDao;
     private final InvoiceWrapperService invoiceWrapperService;
     private final InvoiceIdsGeneratorDaoImpl invoiceIdsGeneratorDao;
+    private final InvoiceSquashService invoiceSquashService;
 
     public void process(List<InvoiceWrapper> invoiceWrappers){
         log.info("Start processing of invoice batch, size={}", invoiceWrappers.size());
         List<Long> ids = invoiceIdsGeneratorDao.get(invoiceWrappers.size());
-        setIds(invoiceWrappers, ids);
-        invoiceWrapperService.save(invoiceWrappers);
-        Collection<InvoicingKey> invoicingSwitchIds = invoiceWrappers.stream().collect(
-                Collectors.groupingBy(i -> new InvoicingKey(i.getInvoice().getInvoiceId(), null, InvoicingType.INVOICE))).keySet();
+        List<InvoiceWrapper> squashedInvoiceWrappers = invoiceSquashService.squashPayments(invoiceWrappers, ids);
+        invoiceWrapperService.save(squashedInvoiceWrappers);
+        Collection<InvoicingKey> invoicingSwitchIds = squashedInvoiceWrappers
+                .stream()
+                .filter(InvoiceWrapper::isShouldInsert)
+                .collect(Collectors.groupingBy(InvoiceWrapper::getKey)).keySet();
         log.info("Switch to current ids: {}", invoicingSwitchIds);
         invoiceDao.switchCurrent(invoicingSwitchIds);
         log.info("End processing of invoice batch");
-    }
-
-    private void setIds(List<InvoiceWrapper> invoiceWrappers, List<Long> ids) {
-        for (int i = 0; i < invoiceWrappers.size(); ++i) {
-            InvoiceWrapper invoiceWrapper = invoiceWrappers.get(i);
-            Long invId = ids.get(i);
-            invoiceWrapper.getInvoice().setId(invId);
-            if (invoiceWrapper.getCarts() != null) {
-                invoiceWrapper.getCarts().forEach(c -> {
-                    c.setId(null);
-                    c.setInvId(invId);
-                });
-            }
-        }
     }
 }

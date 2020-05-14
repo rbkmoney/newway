@@ -66,6 +66,7 @@ public class InvoiceCreatedMapper extends AbstractInvoicingInvoiceMapper {
         invoiceRecord.setTemplateId(invoice.getTemplateId());
 
         InvoiceWrapper invoiceWrapper = new InvoiceWrapper();
+        invoiceWrapper.setShouldInsert(true);
         invoiceWrapper.setInvoice(invoiceRecord);
         if (invoice.getDetails().isSetCart()) {
             List<InvoiceCart> invoiceCarts = invoice.getDetails().getCart().getLines().stream().map(il -> {

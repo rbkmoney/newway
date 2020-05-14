@@ -35,7 +35,10 @@ public class InvoicePaymentRouteChangedMapper extends AbstractInvoicingPaymentMa
         PaymentRoute paymentRoute = invoicePaymentChange.getPayload().getInvoicePaymentRouteChanged().getRoute();
         long sequenceId = event.getEventId();
         log.info("Start mapping payment route change, route='{}', sequenceId='{}', invoiceId='{}', paymentId='{}'", paymentRoute, sequenceId, invoiceId, paymentId);
-        PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, storage);
+        PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, sequenceId, changeId, storage);
+        if (paymentWrapper == null) {
+            return null;
+        }
         Payment paymentSource = paymentWrapper.getPayment();
         setDefaultProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
         paymentSource.setRouteProviderId(paymentRoute.getProvider().getId());

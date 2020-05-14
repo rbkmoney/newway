@@ -43,7 +43,10 @@ public class InvoicePaymentCaptureStartedMapper extends AbstractInvoicingPayment
         InvoicePaymentCaptureParams captureParams = invoicePaymentCaptureStarted.getParams();
         log.info("Start payment capture started handling, sequenceId={}, invoiceId={}, paymentId={}", sequenceId, invoiceId, paymentId);
 
-        PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, storage);
+        PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, sequenceId, changeId, storage);
+        if (paymentWrapper == null) {
+            return null;
+        }
         Payment paymentSource = paymentWrapper.getPayment();
         setDefaultProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
         if (captureParams.isSetCash()) {
