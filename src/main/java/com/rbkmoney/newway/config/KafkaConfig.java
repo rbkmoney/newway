@@ -3,7 +3,9 @@ package com.rbkmoney.newway.config;
 import com.rbkmoney.kafka.common.exception.handler.SeekToCurrentWithSleepBatchErrorHandler;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.config.properties.KafkaSslProperties;
+import com.rbkmoney.newway.serde.RateSinkEventDeserializer;
 import com.rbkmoney.newway.serde.SinkEventDeserializer;
+import com.rbkmoney.xrates.rate.SinkEvent;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SslConfigs;
@@ -61,10 +63,19 @@ public class KafkaConfig {
 
     @Bean
     public Map<String, Object> consumerConfigs(KafkaSslProperties kafkaSslProperties) {
+        return createConsumerConfig(kafkaSslProperties, SinkEventDeserializer.class);
+    }
+
+    @Bean
+    public Map<String, Object> consumerRateConfigs(KafkaSslProperties kafkaSslProperties) {
+        return createConsumerConfig(kafkaSslProperties, RateSinkEventDeserializer.class);
+    }
+
+    private <T> Map<String, Object> createConsumerConfig(KafkaSslProperties kafkaSslProperties, Class<T> clazz) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SinkEventDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, clazz);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         props.put(ConsumerConfig.CLIENT_ID_CONFIG, clientId);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, enableAutoCommit);
@@ -95,6 +106,11 @@ public class KafkaConfig {
     }
 
     @Bean
+    public ConsumerFactory<String, SinkEvent> consumerRateFactory(KafkaSslProperties kafkaSslProperties) {
+        return new DefaultKafkaConsumerFactory<>(consumerRateConfigs(kafkaSslProperties));
+    }
+
+    @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> kafkaListenerContainerFactory(
             ConsumerFactory<String, MachineEvent> consumerFactory) {
         return createConcurrentFactory(consumerFactory, concurrency);
@@ -107,9 +123,9 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> rateContainerFactory(
-            ConsumerFactory<String, MachineEvent> consumerFactory) {
-        return createConcurrentFactory(consumerFactory, rateConcurrency);
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, SinkEvent>> rateContainerFactory(
+            ConsumerFactory<String, SinkEvent> consumerRateFactory) {
+        return createRateConcurrentFactory(consumerRateFactory, rateConcurrency);
     }
 
     @Bean
@@ -124,13 +140,24 @@ public class KafkaConfig {
     private KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> createConcurrentFactory(
             ConsumerFactory<String, MachineEvent> consumerFactory, int threadsNumber) {
         ConcurrentKafkaListenerContainerFactory<String, MachineEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        initFactory(consumerFactory, threadsNumber, factory);
+        return factory;
+    }
+
+    private KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, SinkEvent>> createRateConcurrentFactory(
+            ConsumerFactory<String, SinkEvent> consumerFactory, int threadsNumber) {
+        ConcurrentKafkaListenerContainerFactory<String, SinkEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        initFactory(consumerFactory, threadsNumber, factory);
+        return factory;
+    }
+
+    private <T> void initFactory(ConsumerFactory<String, T> consumerFactory, int threadsNumber, ConcurrentKafkaListenerContainerFactory<String, T> factory) {
         factory.setConsumerFactory(consumerFactory);
         factory.setBatchListener(true);
         factory.getContainerProperties().setAckOnError(false);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         factory.setBatchErrorHandler(kafkaErrorHandler());
         factory.setConcurrency(threadsNumber);
-        return factory;
     }
 
     public BatchErrorHandler kafkaErrorHandler() {
