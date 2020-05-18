@@ -24,9 +24,7 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private final EventPublisher destinationEventPublisher;
     private final EventPublisher depositEventPublisher;
     private final EventPublisher withdrawalSessionEventPublisher;
-    private final EventPublisher rateEventPublisher;
 
-    private final PartyManagementService partyManagementService;
     private final PayoutService payoutService;
     private final WalletService walletService;
     private final IdentityService identityService;
@@ -35,7 +33,6 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
     private final DestinationService destinationService;
     private final DepositService depositService;
     private final WithdrawalSessionService withdrawalSessionService;
-    private final RateService rateService;
 
     @Value("${bm.polling.enabled}")
     private boolean pollingEnabled;
@@ -51,7 +48,6 @@ public class OnStart implements ApplicationListener<ApplicationReadyEvent> {
             depositEventPublisher.subscribe(buildSubscriberConfig(depositService.getLastEventId()));
             withdrawalEventPublisher.subscribe(buildSubscriberConfig(withdrawalService.getLastEventId()));
             withdrawalSessionEventPublisher.subscribe(buildSubscriberConfig(withdrawalSessionService.getLastEventId()));
-            rateEventPublisher.subscribe(buildSubscriberConfig(rateService.getLastEventId()));
         }
     }
 
