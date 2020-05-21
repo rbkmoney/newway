@@ -28,7 +28,7 @@ public class ServiceTests extends AbstractAppDaoTests {
 
         RateSinkEventTestUtils.Dto dto = RateSinkEventTestUtils.create(sourceId);
 
-        rateService.handleEvents(List.of(dto.getSinkEvent()));
+        rateService.handleEvents(dto.getSinkEvent(), dto.getEvent());
 
         List<Rate> rates = jdbcTemplate.query(
                 "SELECT * FROM nw.rate AS rate WHERE rate.source_id = ? AND rate.current",
@@ -44,8 +44,8 @@ public class ServiceTests extends AbstractAppDaoTests {
         String sourceId = "CBR";
 
         RateSinkEventTestUtils.Dto dto = RateSinkEventTestUtils.create(sourceId);
-        rateService.handleEvents(List.of(dto.getSinkEvent()));
-        rateService.handleEvents(List.of(dto.getSinkEvent()));
+        rateService.handleEvents(dto.getSinkEvent(), dto.getEvent());
+        rateService.handleEvents(dto.getSinkEvent(), dto.getEvent());
 
         List<Rate> rates = jdbcTemplate.query(
                 "SELECT * FROM nw.rate AS rate WHERE rate.source_id = ? AND rate.current",
@@ -61,8 +61,8 @@ public class ServiceTests extends AbstractAppDaoTests {
         String sourceId = "CBR";
 
         RateSinkEventTestUtils.Dto dto = RateSinkEventTestUtils.create(sourceId, "payment_system");
-        rateService.handleEvents(List.of(dto.getSinkEvent()));
-        rateService.handleEvents(List.of(dto.getSinkEvent()));
+        rateService.handleEvents(dto.getSinkEvent(), dto.getEvent());
+        rateService.handleEvents(dto.getSinkEvent(), dto.getEvent());
 
         List<Rate> rates = jdbcTemplate.query(
                 "SELECT * FROM nw.rate AS rate WHERE rate.source_id = ? AND rate.current",

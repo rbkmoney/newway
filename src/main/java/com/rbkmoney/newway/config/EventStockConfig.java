@@ -3,6 +3,7 @@ package com.rbkmoney.newway.config;
 import com.rbkmoney.eventstock.client.EventPublisher;
 import com.rbkmoney.eventstock.client.poll.FistfulPollingEventPublisherBuilder;
 import com.rbkmoney.eventstock.client.poll.PollingEventPublisherBuilder;
+import com.rbkmoney.eventstock.client.poll.RatesPollingEventPublisherBuilder;
 import com.rbkmoney.newway.listener.OnStart;
 import com.rbkmoney.newway.poller.event_stock.*;
 import com.rbkmoney.newway.service.*;
@@ -28,6 +29,8 @@ public class EventStockConfig {
             EventPublisher destinationEventPublisher,
             EventPublisher depositEventPublisher,
             EventPublisher withdrawalSessionEventPublisher,
+            EventPublisher rateEventPublisher,
+            PartyManagementService partyManagementService,
             PayoutService payoutService,
             WalletService walletService,
             IdentityService identityService,
@@ -35,7 +38,8 @@ public class EventStockConfig {
             SourceService sourceService,
             DestinationService destinationService,
             DepositService depositService,
-            WithdrawalSessionService withdrawalSessionService) {
+            WithdrawalSessionService withdrawalSessionService,
+            RateService rateService) {
         return new OnStart(
                 payoutEventPublisher,
                 identityEventPublisher,
@@ -45,6 +49,8 @@ public class EventStockConfig {
                 destinationEventPublisher,
                 depositEventPublisher,
                 withdrawalSessionEventPublisher,
+                rateEventPublisher,
+                partyManagementService,
                 payoutService,
                 walletService,
                 identityService,
@@ -52,7 +58,8 @@ public class EventStockConfig {
                 sourceService,
                 destinationService,
                 depositService,
-                withdrawalSessionService);
+                withdrawalSessionService,
+                rateService);
     }
 
     @Bean
@@ -192,6 +199,23 @@ public class EventStockConfig {
                 .withWithdrawalSessionServiceAdapter()
                 .withURI(resource.getURI())
                 .withEventHandler(withdrawalSessionEventStockHandler)
+                .withMaxPoolSize(maxPoolSize)
+                .withEventRetryDelay(retryDelay)
+                .withPollDelay(pollDelay)
+                .build();
+    }
+
+    @Bean
+    public EventPublisher rateEventPublisher(
+            RateEventStockHandler handler,
+            @Value("${rate.polling.url}") Resource resource,
+            @Value("${rate.polling.delay}") int pollDelay,
+            @Value("${rate.polling.retryDelay}") int retryDelay,
+            @Value("${rate.polling.maxPoolSize}") int maxPoolSize
+    ) throws IOException {
+        return new RatesPollingEventPublisherBuilder()
+                .withURI(resource.getURI())
+                .withEventHandler(handler)
                 .withMaxPoolSize(maxPoolSize)
                 .withEventRetryDelay(retryDelay)
                 .withPollDelay(pollDelay)

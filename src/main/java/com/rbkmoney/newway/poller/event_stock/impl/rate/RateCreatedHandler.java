@@ -77,6 +77,7 @@ public class RateCreatedHandler extends AbstractRateHandler {
                     rate.setSourceExponent(source.getExponent());
                     rate.setDestinationSymbolicCode(destination.getSymbolicCode());
                     rate.setDestinationExponent(destination.getExponent());
+                    rate.setPaymentSystem(Objects.toString(quote.getPaymentSystem(), null));
 
                     // ExchangeRate
                     rate.setExchangeRateRationalP(exchangeRate.getP());

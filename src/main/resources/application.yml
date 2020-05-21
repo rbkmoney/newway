@@ -53,8 +53,6 @@ kafka:
       concurrency: 7
     recurrent-payment-tool:
       concurrency: 7
-    rate:
-      concurrency: 7
   topics:
     invoice:
       id: mg-invoice-100-2
@@ -65,8 +63,6 @@ kafka:
       id: mg-events-party
       enabled: false
       consumer.group-id: "NewwayListenerPartyManagement"
-    rate:
-      id: mg-events-rates
 
 bm:
   partyManagement:
