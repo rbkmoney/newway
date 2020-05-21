@@ -68,8 +68,9 @@ bm:
   polling:
     enabled: true
 payouter:
+  url: http://payouter:8022/repo
+  networkTimeout: 5000
   polling:
-    url: http://payouter:8022/repo
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1
