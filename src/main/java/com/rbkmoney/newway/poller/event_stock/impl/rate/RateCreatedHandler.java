@@ -5,16 +5,19 @@ import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.rate.iface.RateDao;
 import com.rbkmoney.newway.domain.tables.pojos.Rate;
 import com.rbkmoney.xrates.base.Rational;
 import com.rbkmoney.xrates.base.TimestampInterval;
-import com.rbkmoney.xrates.rate.*;
+import com.rbkmoney.xrates.rate.Change;
+import com.rbkmoney.xrates.rate.Currency;
+import com.rbkmoney.xrates.rate.ExchangeRateCreated;
+import com.rbkmoney.xrates.rate.ExchangeRateData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Component
@@ -33,21 +36,20 @@ public class RateCreatedHandler extends AbstractRateHandler {
     }
 
     @Override
-    public void handle(Change change, SinkEvent event, Integer changeId) {
+    public void handle(Change change, MachineEvent event, Integer changeId) {
         if (change.getCreated().getExchangeRateData().getQuotes().isEmpty()) {
-            log.warn("Quotes is empty, SinkEvent will not be saved, eventId={}, sourceId={}", event.getId(), event.getSource());
+            log.warn("Quotes is empty, SinkEvent will not be saved, eventId={}, sourceId={}, changeId={}",
+                    event.getEventId(), event.getSourceId(), changeId);
             return;
         }
-
-        log.info("Start rate created handling, eventId={}, sourceId={}", event.getId(), event.getSource());
+        log.info("Start rate created handling, eventId={}, sourceId={}, changeId={}", event.getEventId(), event.getSourceId(), changeId);
         Rate rate = new Rate();
 
         // SinkEvent
-        rate.setEventId(event.getId());
-        rate.setSequenceId(event.getSequenceId());
+        rate.setSourceId(event.getSourceId());
+        rate.setSequenceId(event.getEventId());
         rate.setChangeId(changeId);
         rate.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        rate.setSourceId(event.getSource());
 
         // Event
         // <-- empty now
@@ -63,7 +65,7 @@ public class RateCreatedHandler extends AbstractRateHandler {
         rate.setLowerBoundInclusive(TypeUtil.stringToLocalDateTime(interval.getLowerBoundInclusive()));
         rate.setUpperBoundExclusive(TypeUtil.stringToLocalDateTime(interval.getUpperBoundExclusive()));
 
-        List<Long> ids = rateDao.getIds(event.getSource());
+        List<Long> ids = rateDao.getIds(event.getSourceId());
         AtomicBoolean shouldUpdate = new AtomicBoolean(false);
         exchangeRateData.getQuotes().forEach(
                 quote -> {
@@ -89,7 +91,8 @@ public class RateCreatedHandler extends AbstractRateHandler {
         if (shouldUpdate.get()) {
             rateDao.updateNotCurrent(ids);
         }
-        log.info("Rate have been saved, eventId={}, sourceId={}", event.getId(), event.getSource());
+        log.info("Rate have been saved, eventId={}, sourceId={}, changeId={}", event.getEventId(), event.getSourceId(),
+                changeId);
     }
 
     @Override

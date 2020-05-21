@@ -1,16 +1,21 @@
 package com.rbkmoney.newway.service;
 
+import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolEventData;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.poller.event_stock.impl.rate.AbstractRateHandler;
+import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import com.rbkmoney.xrates.rate.Change;
 import com.rbkmoney.xrates.rate.Event;
-import com.rbkmoney.xrates.rate.SinkEvent;
 import lombok.RequiredArgsConstructor;
+import com.rbkmoney.machinegun.eventsink.SinkEvent;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Slf4j
@@ -18,6 +23,7 @@ import java.util.List;
 public class RateService {
 
     private final List<AbstractRateHandler> rateHandlers;
+    private final MachineEventParser<Event> parser;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(List<SinkEvent> events) {
@@ -25,14 +31,15 @@ public class RateService {
     }
 
     private void handleIfAccept(SinkEvent sinkEvent) {
-        Event eventPayload = sinkEvent.getPayload();
+        MachineEvent machineEvent = sinkEvent.getEvent();
+        Event eventPayload = parser.parse(machineEvent);
         if (eventPayload.isSetChanges()) {
             for (int i = 0; i < eventPayload.getChanges().size(); i++) {
                 Change change = eventPayload.getChanges().get(i);
                 Integer changeId = i;
                 rateHandlers.stream()
                         .filter(handler -> handler.accept(change))
-                        .forEach(handler -> handler.handle(change, sinkEvent, changeId));
+                        .forEach(handler -> handler.handle(change, machineEvent, changeId));
             }
         }
     }
