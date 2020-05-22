@@ -13,4 +13,5 @@ public interface RateDao extends GenericDao {
     List<Long> getIds(String sourceId) throws DaoException;
 
     void updateNotCurrent(List<Long> ids) throws DaoException;
+
 }

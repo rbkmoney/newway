@@ -24,7 +24,6 @@ public class RateSinkEventTestUtils extends AbstractTestUtils {
         List<Quote> quotes = randomListOf(4, Quote.class, excludedFields);
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(new MachineEvent()
-                .setSourceId("")
                 .setEventId(123L)
                 .setCreatedAt("2016-03-22T06:12:27Z")
                 .setSourceId(sourceId)
