@@ -38,17 +38,16 @@ public class RateCreatedHandler extends AbstractRateHandler {
     @Override
     public void handle(Change change, MachineEvent event, Integer changeId) {
         if (change.getCreated().getExchangeRateData().getQuotes().isEmpty()) {
-            log.warn("Quotes is empty, SinkEvent will not be saved, eventId={}, sourceId={}, changeId={}",
-                    event.getEventId(), event.getSourceId(), changeId);
+            log.warn("Quotes is empty, SinkEvent will not be saved, eventId={}, sourceId={}",
+                    event.getEventId(), event.getSourceId());
             return;
         }
-        log.info("Start rate created handling, eventId={}, sourceId={}, changeId={}", event.getEventId(), event.getSourceId(), changeId);
+        log.info("Start rate created handling, eventId={}, sourceId={}", event.getEventId(), event.getSourceId());
         Rate rate = new Rate();
 
         // SinkEvent
         rate.setSourceId(event.getSourceId());
         rate.setSequenceId(event.getEventId());
-        rate.setChangeId(changeId);
         rate.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
 
         // Event
@@ -91,8 +90,7 @@ public class RateCreatedHandler extends AbstractRateHandler {
         if (shouldUpdate.get()) {
             rateDao.updateNotCurrent(ids);
         }
-        log.info("Rate have been saved, eventId={}, sourceId={}, changeId={}", event.getEventId(), event.getSourceId(),
-                changeId);
+        log.info("Rate have been saved, eventId={}, sourceId={}", event.getEventId(), event.getSourceId());
     }
 
     @Override

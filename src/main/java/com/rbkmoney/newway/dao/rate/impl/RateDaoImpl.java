@@ -32,7 +32,7 @@ public class RateDaoImpl extends AbstractGenericDao implements RateDao {
     public Long save(Rate rate) throws DaoException {
         RateRecord record = getDslContext().newRecord(RATE, rate);
         Query query = getDslContext().insertInto(RATE).set(record)
-                .onConflict(RATE.SOURCE_ID, RATE.SEQUENCE_ID, RATE.CHANGE_ID, RATE.SOURCE_SYMBOLIC_CODE, RATE.DESTINATION_SYMBOLIC_CODE)
+                .onConflict(RATE.SOURCE_ID, RATE.SEQUENCE_ID, RATE.SOURCE_SYMBOLIC_CODE, RATE.DESTINATION_SYMBOLIC_CODE)
                 .doNothing()
                 .returning(RATE.ID);
 
