@@ -1,13 +1,11 @@
 package com.rbkmoney.newway.config;
 
-import com.rbkmoney.damsel.payout_processing.EventSinkSrv;
 import com.rbkmoney.eventstock.client.EventPublisher;
 import com.rbkmoney.eventstock.client.poll.FistfulPollingEventPublisherBuilder;
 import com.rbkmoney.eventstock.client.poll.PollingEventPublisherBuilder;
 import com.rbkmoney.eventstock.client.poll.RatesPollingEventPublisherBuilder;
 import com.rbkmoney.newway.listener.OnStart;
 import com.rbkmoney.newway.poller.event_stock.*;
-import com.rbkmoney.newway.poller.event_stock.impl.payout.PayoutServiceAdapter;
 import com.rbkmoney.newway.service.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -67,17 +65,18 @@ public class EventStockConfig {
     @Bean
     public EventPublisher payoutEventPublisher(
             PayoutEventStockHandler payoutEventStockHandler,
-            EventSinkSrv.Iface payouterClient,
+            @Value("${payouter.polling.url}") Resource resource,
             @Value("${payouter.polling.delay}") int pollDelay,
             @Value("${payouter.polling.retryDelay}") int retryDelay,
             @Value("${payouter.polling.maxPoolSize}") int maxPoolSize
-    ) {
+    ) throws IOException {
         return new PollingEventPublisherBuilder()
+                .withURI(resource.getURI())
+                .withPayoutServiceAdapter()
                 .withEventHandler(payoutEventStockHandler)
                 .withMaxPoolSize(maxPoolSize)
                 .withEventRetryDelay(retryDelay)
                 .withPollDelay(pollDelay)
-                .withServiceAdapter(new PayoutServiceAdapter(payouterClient))
                 .build();
     }
 
