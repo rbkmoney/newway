@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface RateDao extends GenericDao {
 
-    Long getLastEventId() throws DaoException;
-
     Long save(Rate rate) throws DaoException;
 
     List<Long> getIds(String sourceId) throws DaoException;

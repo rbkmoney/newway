@@ -162,7 +162,7 @@
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>xrates-proto</artifactId>
-            <version>1.9-f755a8c</version>
+            <version>1.8-67d5c21</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>

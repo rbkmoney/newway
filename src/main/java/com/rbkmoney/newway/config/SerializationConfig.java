@@ -2,17 +2,15 @@ package com.rbkmoney.newway.config;
 
 import com.rbkmoney.damsel.payment_processing.EventPayload;
 import com.rbkmoney.damsel.payment_processing.PartyEventData;
+import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolEventData;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import com.rbkmoney.sink.common.parser.impl.PartyEventDataMachineEventParser;
 import com.rbkmoney.sink.common.parser.impl.PaymentEventPayloadMachineEventParser;
 import com.rbkmoney.sink.common.serialization.BinaryDeserializer;
-import com.rbkmoney.sink.common.serialization.impl.PartyEventDataDeserializer;
-import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolEventData;
-import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
-import com.rbkmoney.sink.common.parser.impl.PaymentEventPayloadMachineEventParser;
-import com.rbkmoney.sink.common.serialization.BinaryDeserializer;
 import com.rbkmoney.sink.common.serialization.impl.AbstractThriftBinaryDeserializer;
+import com.rbkmoney.sink.common.serialization.impl.PartyEventDataDeserializer;
 import com.rbkmoney.sink.common.serialization.impl.PaymentEventPayloadDeserializer;
+import com.rbkmoney.xrates.rate.Event;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -45,6 +43,16 @@ public class SerializationConfig {
             @Override
             public RecurrentPaymentToolEventData deserialize(byte[] bytes) {
                 return deserialize(bytes, new RecurrentPaymentToolEventData());
+            }
+        };
+    }
+
+    @Bean
+    public BinaryDeserializer<Event> rateEventDataBinaryDeserializer() {
+        return new AbstractThriftBinaryDeserializer<>() {
+            @Override
+            public Event deserialize(byte[] bytes) {
+                return deserialize(bytes, new Event());
             }
         };
     }

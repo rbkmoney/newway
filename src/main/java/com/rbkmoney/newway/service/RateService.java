@@ -1,21 +1,18 @@
 package com.rbkmoney.newway.service;
 
-import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolEventData;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
+import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import com.rbkmoney.newway.poller.event_stock.impl.rate.AbstractRateHandler;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import com.rbkmoney.xrates.rate.Change;
 import com.rbkmoney.xrates.rate.Event;
 import lombok.RequiredArgsConstructor;
-import com.rbkmoney.machinegun.eventsink.SinkEvent;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @Slf4j
