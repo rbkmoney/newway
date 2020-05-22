@@ -50,6 +50,8 @@ public class KafkaConfig {
     private String bootstrapServers;
     @Value("${kafka.consumer.invoicing.concurrency}")
     private int concurrency;
+    @Value("${kafka.consumer.recurrent-payment-tool.concurrency}")
+    private int recPayToolConcurrency;
     @Value("${kafka.consumer.party-management.concurrency}")
     private int partyConcurrency;
     @Value("${retry-policy.maxAttempts}")
@@ -94,6 +96,12 @@ public class KafkaConfig {
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> kafkaListenerContainerFactory(
             ConsumerFactory<String, MachineEvent> consumerFactory) {
         return createConcurrentFactory(consumerFactory, concurrency);
+    }
+
+    @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> recPayToolContainerFactory(
+            ConsumerFactory<String, MachineEvent> consumerFactory) {
+        return createConcurrentFactory(consumerFactory, recPayToolConcurrency);
     }
 
     @Bean
