@@ -4,7 +4,7 @@ ALTER TABLE nw.adjustment
 UPDATE nw.adjustment a
 SET amount = (SELECT fee
               FROM nw.payment p
-              WHERE p.payment_id = a.payment_id) - (a.fee + a.provider_fee + a.external_fee);
+              WHERE p.payment_id = a.payment_id) - a.fee;
 
 ALTER TABLE nw.adjustment
     DROP COLUMN fee,
