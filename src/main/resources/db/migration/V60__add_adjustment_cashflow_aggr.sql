@@ -1,34 +1,12 @@
 ALTER TABLE nw.adjustment
-    ADD amount BIGINT;
+    ADD amount BIGINT default 0;
+
+UPDATE nw.adjustment a
+SET amount = (SELECT fee
+              FROM nw.payment p
+              WHERE p.payment_id = a.payment_id) - (a.fee + a.provider_fee + a.external_fee);
 
 ALTER TABLE nw.adjustment
-    ADD guarantee_deposit BIGINT;
-
-CREATE FUNCTION nw.get_adjustment_guarantee_deposit_sfunc(amounts BIGINT[], cash_flow nw.cash_flow)
-    RETURNS BIGINT[]
-    LANGUAGE plpgsql
-    IMMUTABLE
-    PARALLEL SAFE
-AS
-$$
-BEGIN
-    RETURN $1 || (
-        nw.get_cashflow_sum(
-                $2,
-                'adjustment'::nw.payment_change_type,
-                'merchant'::nw.cash_flow_account,
-                '{"settlement"}',
-                'merchant'::nw.cash_flow_account,
-                '{"guarantee"}'
-            )
-        );
-END;
-$$;
-
-CREATE AGGREGATE nw.get_adjustment_guarantee_deposit(nw.cash_flow)
-    (
-    SFUNC = nw.get_adjustment_guarantee_deposit_sfunc,
-    STYPE = BIGINT[],
-    PARALLEL = SAFE,
-    FINALFUNC = cashflow_sum_finalfunc
-    );
+    DROP COLUMN fee,
+    DROP COLUMN external_fee,
+    DROP COLUMN provider_fee;

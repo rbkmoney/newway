@@ -3,19 +3,16 @@ package com.rbkmoney.newway.dao.invoicing.impl;
 import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.invoicing.iface.AdjustmentDao;
-import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.Adjustment;
 import com.rbkmoney.newway.domain.tables.records.AdjustmentRecord;
 import com.rbkmoney.newway.exception.DaoException;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-
 import java.util.Optional;
 
 import static com.rbkmoney.newway.domain.Tables.ADJUSTMENT;
@@ -53,19 +50,6 @@ public class AdjustmentDaoImpl extends AbstractGenericDao implements AdjustmentD
                         .and(ADJUSTMENT.CURRENT));
 
         return fetchOne(query, adjustmentRowMapper);
-    }
-
-    @Override
-    public void updateAdjustmentCashFlow(Long adjId) throws DaoException {
-        MapSqlParameterSource params = new MapSqlParameterSource("adjId", adjId).addValue("objType", PaymentChangeType.adjustment.name());
-        this.getNamedParameterJdbcTemplate().update(
-                "UPDATE nw.adjustment SET fee = (SELECT nw.get_adjustment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :adjId AND obj_type = CAST(:objType as nw.payment_change_type)), " +
-                        "provider_fee = (SELECT nw.get_adjustment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :adjId AND obj_type = CAST(:objType as nw.payment_change_type)), " +
-                        "external_fee = (SELECT nw.get_adjustment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :adjId AND obj_type = CAST(:objType as nw.payment_change_type)), " +
-                        "gurantee_deposit = (SELECT nw.get_payment_guarantee_deposit(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :adjId AND obj_type = CAST(:objType as nw.payment_change_type)), " +
-                        "amount = (SELECT nw.get_adjustment_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = :adjId AND obj_type = CAST(:objType as nw.payment_change_type)) " +
-                        "WHERE  id = :adjId",
-                params);
     }
 
     @Override

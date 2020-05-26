@@ -99,6 +99,11 @@ public class InvoicePaymentAdjustmentCreatedHandler extends AbstractInvoicingHan
             }
         }
 
+        Long oldAmount = CashFlowUtil.computeMerchantAmount(invoicePaymentAdjustment.getOldCashFlowInverse());
+        Long newAmount = CashFlowUtil.computeMerchantAmount(invoicePaymentAdjustment.getNewCashFlow());
+        long amount = newAmount + oldAmount;
+        adjustment.setAmount(amount);
+
         Long adjId = adjustmentDao.save(adjustment);
         if (adjId != null) {
             List<CashFlow> newCashFlowList = CashFlowUtil.convertCashFlows(
@@ -113,7 +118,6 @@ public class InvoicePaymentAdjustmentCreatedHandler extends AbstractInvoicingHan
                     PaymentChangeType.adjustment,
                     AdjustmentCashFlowType.old_cash_flow_inverse);
             cashFlowDao.save(oldCashFlowList);
-            adjustmentDao.updateAdjustmentCashFlow(adjId);
         }
 
         log.info("Adjustment has been saved, sequenceId={}, invoiceId={}, paymentId={}, adjustmentId={}",
