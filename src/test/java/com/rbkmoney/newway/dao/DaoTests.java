@@ -289,6 +289,9 @@ public class DaoTests extends AbstractAppDaoTests {
         CashFlow cashFlowAdjustmentProviderFee = createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 5L, CashFlowAccount.provider, "settlement", PaymentChangeType.adjustment);
         cashFlowAdjustmentProviderFee.setAdjFlowType(AdjustmentCashFlowType.new_cash_flow);
         cashFlows.add(cashFlowAdjustmentProviderFee);
+        CashFlow cashFlowAdjustmentGuarantee = createCashFlow(1L, 8L, "RUB", 4L, CashFlowAccount.merchant, "settlement", 3L, CashFlowAccount.merchant, "guarantee", PaymentChangeType.adjustment);
+        cashFlowAdjustmentGuarantee.setAdjFlowType(AdjustmentCashFlowType.new_cash_flow);
+        cashFlows.add(cashFlowAdjustmentGuarantee);
 
         cashFlowDao.save(cashFlows);
 
@@ -311,6 +314,7 @@ public class DaoTests extends AbstractAppDaoTests {
         assertEquals(cashFlowAdjustmentFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_adjustment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
         assertEquals(cashFlowAdjustmentExternalIncomeFee.getAmount() + cashFlowAdjustmentExternalOutcomeFee.getAmount(), (long) jdbcTemplate.queryForObject("SELECT nw.get_adjustment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
         assertEquals(cashFlowAdjustmentProviderFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_adjustment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowAdjustmentGuarantee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_adjustment_guarantee_deposit(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
     }
 
     @Test

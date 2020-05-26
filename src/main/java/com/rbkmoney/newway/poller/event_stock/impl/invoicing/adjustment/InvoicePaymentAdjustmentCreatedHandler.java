@@ -113,7 +113,7 @@ public class InvoicePaymentAdjustmentCreatedHandler extends AbstractInvoicingHan
                     PaymentChangeType.adjustment,
                     AdjustmentCashFlowType.old_cash_flow_inverse);
             cashFlowDao.save(oldCashFlowList);
-            adjustmentDao.updateCommissions(adjId);
+            adjustmentDao.updateAdjustmentCashFlow(adjId);
         }
 
         log.info("Adjustment has been saved, sequenceId={}, invoiceId={}, paymentId={}, adjustmentId={}",
