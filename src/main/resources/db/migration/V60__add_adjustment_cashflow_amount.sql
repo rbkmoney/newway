@@ -1,10 +1,12 @@
 ALTER TABLE nw.adjustment
-    ADD amount BIGINT default 0;
+    ADD amount BIGINT;
 
 UPDATE nw.adjustment a
 SET amount = (SELECT fee
               FROM nw.payment p
-              WHERE p.payment_id = a.payment_id) - a.fee;
+              WHERE p.payment_id = a.payment_id AND p.invoice_id = a.invoice_id AND a.current) - a.fee;
+
+ALTER TABLE nw.adjustment ALTER COLUMN amount SET NOT NULL;
 
 ALTER TABLE nw.adjustment
     DROP COLUMN fee,
