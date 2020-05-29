@@ -172,7 +172,7 @@
         <dependency>
             <groupId>com.rbkmoney.geck</groupId>
             <artifactId>serializer</artifactId>
-            <version>0.6.4</version>
+            <version>0.6.9</version>
         </dependency>
 
         <!-- Test -->

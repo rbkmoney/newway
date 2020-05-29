@@ -54,15 +54,21 @@ public class KafkaConfig {
     private int recPayToolConcurrency;
     @Value("${kafka.consumer.party-management.concurrency}")
     private int partyConcurrency;
+    @Value("${kafka.consumer.rate.concurrency}")
+    private int rateConcurrency;
     @Value("${retry-policy.maxAttempts}")
     int maxAttempts;
 
     @Bean
     public Map<String, Object> consumerConfigs(KafkaSslProperties kafkaSslProperties) {
+        return createConsumerConfig(kafkaSslProperties, SinkEventDeserializer.class);
+    }
+
+    private <T> Map<String, Object> createConsumerConfig(KafkaSslProperties kafkaSslProperties, Class<T> clazz) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SinkEventDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, clazz);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         props.put(ConsumerConfig.CLIENT_ID_CONFIG, clientId);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, enableAutoCommit);
@@ -105,6 +111,12 @@ public class KafkaConfig {
     }
 
     @Bean
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> rateContainerFactory(
+            ConsumerFactory<String, MachineEvent> consumerFactory) {
+        return createConcurrentFactory(consumerFactory, rateConcurrency);
+    }
+
+    @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> partyManagementContainerFactory(
             KafkaSslProperties kafkaSslProperties) {
         Map<String, Object> configs = consumerConfigs(kafkaSslProperties);
@@ -116,13 +128,17 @@ public class KafkaConfig {
     private KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> createConcurrentFactory(
             ConsumerFactory<String, MachineEvent> consumerFactory, int threadsNumber) {
         ConcurrentKafkaListenerContainerFactory<String, MachineEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        initFactory(consumerFactory, threadsNumber, factory);
+        return factory;
+    }
+
+    private <T> void initFactory(ConsumerFactory<String, T> consumerFactory, int threadsNumber, ConcurrentKafkaListenerContainerFactory<String, T> factory) {
         factory.setConsumerFactory(consumerFactory);
         factory.setBatchListener(true);
         factory.getContainerProperties().setAckOnError(false);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         factory.setBatchErrorHandler(kafkaErrorHandler());
         factory.setConcurrency(threadsNumber);
-        return factory;
     }
 
     public BatchErrorHandler kafkaErrorHandler() {

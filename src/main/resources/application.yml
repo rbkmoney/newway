@@ -53,6 +53,8 @@ kafka:
       concurrency: 7
     recurrent-payment-tool:
       concurrency: 7
+    rate:
+      concurrency: 7
   topics:
     invoice:
       id: mg-invoice-100-2
@@ -63,6 +65,8 @@ kafka:
       id: mg-events-party
       enabled: false
       consumer.group-id: "NewwayListenerPartyManagement"
+    rate:
+      id: mg-events-rates
 
 bm:
   polling:
@@ -106,12 +110,6 @@ deposit:
 withdrawal:
   polling:
     url: http://wapi:8022/v1/eventsink/withdrawal
-    delay: 10000
-    retryDelay: 1000
-    maxPoolSize: 1
-rate:
-  polling:
-    url: http://xrates:8022/v1/event_sink
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1
