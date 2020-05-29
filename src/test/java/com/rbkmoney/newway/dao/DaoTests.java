@@ -277,18 +277,6 @@ public class DaoTests extends AbstractAppDaoTests {
         CashFlow cashFlowAdjustmentAmount = createCashFlow(1L, 1000L, "RUB", 1L, CashFlowAccount.provider, "settlement", 2L, CashFlowAccount.merchant, "settlement", PaymentChangeType.adjustment);
         cashFlowAdjustmentAmount.setAdjFlowType(AdjustmentCashFlowType.new_cash_flow);
         cashFlows.add(cashFlowAdjustmentAmount);
-        CashFlow cashFlowAdjustmentFee = createCashFlow(1L, 10L, "RUB", 2L, CashFlowAccount.merchant, "settlement", 2L, CashFlowAccount.system, "settlement", PaymentChangeType.adjustment);
-        cashFlowAdjustmentFee.setAdjFlowType(AdjustmentCashFlowType.new_cash_flow);
-        cashFlows.add(cashFlowAdjustmentFee);
-        CashFlow cashFlowAdjustmentExternalIncomeFee = createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 3L, CashFlowAccount.external, "income", PaymentChangeType.adjustment);
-        cashFlowAdjustmentExternalIncomeFee.setAdjFlowType(AdjustmentCashFlowType.new_cash_flow);
-        cashFlows.add(cashFlowAdjustmentExternalIncomeFee);
-        CashFlow cashFlowAdjustmentExternalOutcomeFee = createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 4L, CashFlowAccount.external, "outcome", PaymentChangeType.adjustment);
-        cashFlowAdjustmentExternalOutcomeFee.setAdjFlowType(AdjustmentCashFlowType.new_cash_flow);
-        cashFlows.add(cashFlowAdjustmentExternalOutcomeFee);
-        CashFlow cashFlowAdjustmentProviderFee = createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 5L, CashFlowAccount.provider, "settlement", PaymentChangeType.adjustment);
-        cashFlowAdjustmentProviderFee.setAdjFlowType(AdjustmentCashFlowType.new_cash_flow);
-        cashFlows.add(cashFlowAdjustmentProviderFee);
 
         cashFlowDao.save(cashFlows);
 
@@ -306,11 +294,6 @@ public class DaoTests extends AbstractAppDaoTests {
         assertEquals(cashFlowPayoutAmount.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payout_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
         assertEquals(cashFlowPayoutFixedFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payout_fixed_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
         assertEquals(cashFlowPayoutFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payout_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-
-        assertEquals(cashFlowAdjustmentAmount.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_adjustment_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowAdjustmentFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_adjustment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowAdjustmentExternalIncomeFee.getAmount() + cashFlowAdjustmentExternalOutcomeFee.getAmount(), (long) jdbcTemplate.queryForObject("SELECT nw.get_adjustment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowAdjustmentProviderFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_adjustment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
     }
 
     @Test
