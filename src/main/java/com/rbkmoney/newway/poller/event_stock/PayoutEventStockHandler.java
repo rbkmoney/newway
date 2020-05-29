@@ -1,19 +1,15 @@
 package com.rbkmoney.newway.poller.event_stock;
 
-import com.rbkmoney.damsel.event_stock.StockEvent;
 import com.rbkmoney.damsel.payout_processing.Event;
-import com.rbkmoney.damsel.payout_processing.EventPayload;
 import com.rbkmoney.eventstock.client.EventAction;
 import com.rbkmoney.eventstock.client.EventHandler;
 import com.rbkmoney.newway.service.PayoutService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
-public class PayoutEventStockHandler implements EventHandler<StockEvent> {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+public class PayoutEventStockHandler implements EventHandler<Event> {
 
     private final PayoutService payoutService;
 
@@ -22,15 +18,14 @@ public class PayoutEventStockHandler implements EventHandler<StockEvent> {
     }
 
     @Override
-    public EventAction handle(StockEvent stockEvent, String subsKey) {
-        Event payoutEvent = stockEvent.getSourceEvent().getPayoutEvent();
-        EventPayload payload = payoutEvent.getPayload();
+    public EventAction handle(Event event, String subsKey) {
         try {
-            payoutService.handleEvents(payoutEvent, payload);
+            payoutService.handleEvents(event, event.getPayload());
         } catch (RuntimeException e) {
-            log.error("Error when polling payout event with id={}", payoutEvent.getId(), e);
+            log.error("Error when polling payout event with id={}", event.getId(), e);
             return EventAction.DELAYED_RETRY;
         }
         return EventAction.CONTINUE;
     }
+
 }

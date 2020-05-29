@@ -69,21 +69,14 @@ kafka:
       id: mg-events-rates
 
 bm:
-  partyManagement:
-    url: http://bustermaze:8022/repo
-    polling:
-      delay: 10000
-      retryDelay: 1000
-      maxPoolSize: 1
-      maxQuerySize: 300
-  payout:
-    url: http://bustermaze:8022/repo/payout
-    polling:
-      delay: 10000
-      retryDelay: 1000
-      maxPoolSize: 1
   polling:
     enabled: true
+payouter:
+  polling:
+    url: http://payouter:8022/repo
+    delay: 10000
+    retryDelay: 1000
+    maxPoolSize: 1
 identity:
   polling:
     url: http://wapi:8022/v1/eventsink/identity
