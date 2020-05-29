@@ -58,14 +58,13 @@ public class EventStockConfig {
     @Bean
     public EventPublisher payoutEventPublisher(
             PayoutEventStockHandler payoutEventStockHandler,
-            @Value("${payouter.polling.url}") Resource resource,
-            @Value("${payouter.polling.delay}") int pollDelay,
-            @Value("${payouter.polling.retryDelay}") int retryDelay,
-            @Value("${payouter.polling.maxPoolSize}") int maxPoolSize
+            @Value("${bm.payout.url}") Resource resource,
+            @Value("${bm.payout.polling.delay}") int pollDelay,
+            @Value("${bm.payout.polling.retryDelay}") int retryDelay,
+            @Value("${bm.payout.polling.maxPoolSize}") int maxPoolSize
     ) throws IOException {
         return new PollingEventPublisherBuilder()
                 .withURI(resource.getURI())
-                .withPayoutServiceAdapter()
                 .withEventHandler(payoutEventStockHandler)
                 .withMaxPoolSize(maxPoolSize)
                 .withEventRetryDelay(retryDelay)
