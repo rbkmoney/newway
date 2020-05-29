@@ -234,6 +234,7 @@ public class DaoTests extends AbstractAppDaoTests {
                 paymentMethod.getVersionId(),
                 payoutMethod.getVersionId(),
                 provider.getVersionId(),
+                withdrawalProvider.getVersionId(),
                 proxy.getVersionId(),
                 terminal.getVersionId(),
                 termSetHierarchy.getVersionId()).max();
