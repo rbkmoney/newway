@@ -9,24 +9,19 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
 import com.rbkmoney.newway.dao.payout.iface.PayoutSummaryDao;
-import com.rbkmoney.newway.domain.enums.PayoutPaidStatusDetails;
-import com.rbkmoney.newway.domain.enums.UserType;
 import com.rbkmoney.newway.domain.tables.pojos.Payout;
 import com.rbkmoney.newway.domain.tables.pojos.PayoutSummary;
 import com.rbkmoney.newway.exception.NotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
+@Slf4j
 @Component
 public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final PayoutDao payoutDao;
     private final PayoutSummaryDao payoutSummaryDao;
