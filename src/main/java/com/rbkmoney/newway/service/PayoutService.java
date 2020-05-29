@@ -4,7 +4,8 @@ import com.rbkmoney.damsel.payout_processing.Event;
 import com.rbkmoney.damsel.payout_processing.EventPayload;
 import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
 import com.rbkmoney.newway.poller.event_stock.impl.payout.AbstractPayoutHandler;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,9 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @Service
 public class PayoutService implements EventService<Event,EventPayload> {
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final PayoutDao payoutDao;
 
