@@ -18,7 +18,8 @@ import com.rbkmoney.newway.domain.enums.PayoutType;
 import com.rbkmoney.newway.domain.tables.pojos.Payout;
 import com.rbkmoney.newway.domain.tables.pojos.PayoutSummary;
 import com.rbkmoney.newway.util.PayoutUtil;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,9 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @Component
 public class PayoutCreatedHandler extends AbstractPayoutHandler {
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final PayoutDao payoutDao;
     private final PayoutSummaryDao payoutSummaryDao;
