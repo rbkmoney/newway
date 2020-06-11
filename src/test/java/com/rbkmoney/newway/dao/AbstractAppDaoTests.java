@@ -52,7 +52,7 @@ public abstract class AbstractAppDaoTests extends AbstractTestUtils {
     private static Supplier<TestContainersParameters> getTestContainersParametersSupplier() {
         return () -> {
             TestContainersParameters testContainersParameters = new TestContainersParameters();
-            testContainersParameters.setPostgresqlJdbcUrl("jdbc:postgresql://localhost:5432/newway");
+            testContainersParameters.setPostgresqlJdbcUrl("jdbc:postgresql://localhost:5432/newway?currentSchema=nw&user=postgres&password=admin");
 
             return testContainersParameters;
         };

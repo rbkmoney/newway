@@ -27,7 +27,7 @@
         <exposed.ports>${server.port}</exposed.ports>
         <db.url>jdbc:postgresql://localhost:5432/newway</db.url>
         <db.user>postgres</db.user>
-        <db.password>postgres</db.password>
+        <db.password>admin</db.password>
         <db.name>newway</db.name>
         <db.schema>nw</db.schema>
         <local.pg.url>jdbc:postgresql://localhost:5432/newway</local.pg.url>
