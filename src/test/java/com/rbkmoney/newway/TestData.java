@@ -1,6 +1,7 @@
 package com.rbkmoney.newway;
 
 import com.rbkmoney.damsel.domain.*;
+import com.rbkmoney.damsel.domain.InvoicePaymentChargeback;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.fistful.cashflow.FinalCashFlow;
 import com.rbkmoney.geck.common.util.TypeUtil;
