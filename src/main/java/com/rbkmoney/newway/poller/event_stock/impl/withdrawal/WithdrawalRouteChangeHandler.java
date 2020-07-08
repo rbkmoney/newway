@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.withdrawal;
 
 import com.rbkmoney.fistful.withdrawal.Change;
+import com.rbkmoney.fistful.withdrawal.Route;
 import com.rbkmoney.fistful.withdrawal.SinkEvent;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
@@ -40,7 +41,9 @@ public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
-        String providerId = change.getRoute().getRoute().getProviderIdLegacy();
+        Route route = change.getRoute().getRoute();
+        int providerId = route.getProviderId();
+        String providerIdLegacy = route.getProviderIdLegacy();
 
         log.info("Start withdrawal provider id changed handling, eventId={}, walletId={}, providerId={}", event.getId(), event.getSource(), providerId);
 
@@ -54,6 +57,7 @@ public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
         withdrawal.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
         withdrawal.setWithdrawalId(event.getSource());
         withdrawal.setProviderId(providerId);
+        withdrawal.setProviderIdLegacy(providerIdLegacy);
 
         withdrawalDao.updateNotCurrent(event.getSource());
         long id = withdrawalDao.save(withdrawal);
