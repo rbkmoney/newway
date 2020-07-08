@@ -47,7 +47,9 @@ public class WithdrawalSessionCreatedHandler extends AbstractWithdrawalSessionHa
 
         Session session = change.getCreated();
         withdrawalSession.setWithdrawalSessionId(event.getSource());
-        withdrawalSession.setProviderId(session.getProviderLegacy());
+        withdrawalSession.setProviderId(session.getRoute().getProviderId());
+        withdrawalSession.setProviderIdLegacy(session.getProviderLegacy());
+
         withdrawalSession.setWithdrawalSessionStatus(active);
 
         Withdrawal withdrawal = session.getWithdrawal();
