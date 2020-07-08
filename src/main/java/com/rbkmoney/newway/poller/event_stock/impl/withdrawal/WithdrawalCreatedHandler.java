@@ -45,9 +45,6 @@ public class WithdrawalCreatedHandler extends AbstractWithdrawalHandler {
         withdrawal.setWalletId(withdrawalDamsel.getWalletId());
         withdrawal.setDestinationId(withdrawalDamsel.getDestinationId());
         withdrawal.setExternalId(withdrawalDamsel.getExternalId());
-        if (withdrawalDamsel.isSetStatus()) {
-            withdrawal.setWithdrawalStatus(TBaseUtil.unionFieldToEnum(withdrawalDamsel.getStatus(), WithdrawalStatus.class));
-        }
 
         Cash cash = withdrawalDamsel.getBody();
         withdrawal.setAmount(cash.getAmount());

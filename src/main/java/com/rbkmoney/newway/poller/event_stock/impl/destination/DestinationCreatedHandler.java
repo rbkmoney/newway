@@ -49,15 +49,12 @@ public class DestinationCreatedHandler extends AbstractDestinationHandler {
         destination.setDestinationStatus(DestinationStatus.unauthorized);
         destination.setExternalId(change.getCreated().getExternalId());
 
-        destination.setIdentityId(change.getCreated().getId());
-        if (change.getCreated().isSetStatus()) {
-            destination.setDestinationStatus(TBaseUtil.unionFieldToEnum(change.getCreated().getStatus(), DestinationStatus.class));
-        }
+        destination.setIdentityId(event.getSource());
         if (change.getCreated().isSetCreatedAt()) {
             destination.setCreatedAt(TypeUtil.stringToLocalDateTime(change.getCreated().getCreatedAt()));
         }
-        if (change.getCreated().isSetContext()) {
-            Map<String, JsonNode> jsonNodeMap = change.getCreated().getContext().entrySet().stream()
+        if (change.getCreated().isSetMetadata()) {
+            Map<String, JsonNode> jsonNodeMap = change.getCreated().getMetadata().entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> JsonUtil.tBaseToJsonNode(e.getValue())));
             destination.setContextJson(JsonUtil.objectToJsonString(jsonNodeMap));
         }

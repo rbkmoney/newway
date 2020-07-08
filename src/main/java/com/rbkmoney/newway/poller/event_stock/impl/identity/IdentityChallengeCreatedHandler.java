@@ -1,14 +1,15 @@
 package com.rbkmoney.newway.poller.event_stock.impl.identity;
 
-import com.rbkmoney.fistful.identity.*;
-import com.rbkmoney.geck.common.util.TBaseUtil;
+import com.rbkmoney.fistful.identity.ChallengeChange;
+import com.rbkmoney.fistful.identity.ChallengeChangePayload;
+import com.rbkmoney.fistful.identity.Change;
+import com.rbkmoney.fistful.identity.SinkEvent;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.identity.iface.ChallengeDao;
-import com.rbkmoney.newway.domain.enums.ChallengeResolution;
 import com.rbkmoney.newway.domain.enums.ChallengeStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Challenge;
 import com.rbkmoney.newway.util.JsonUtil;
@@ -51,19 +52,7 @@ public class IdentityChallengeCreatedHandler extends AbstractIdentityHandler {
         if (challengePayloadCreated.isSetProofs()) {
             challenge.setProofsJson(JsonUtil.objectToJsonString(challengePayloadCreated.getProofs().stream().map(JsonUtil::tBaseToJsonNode).collect(Collectors.toList())));
         }
-        if (challengePayloadCreated.isSetStatus()) {
-            com.rbkmoney.fistful.identity.ChallengeStatus status = challengePayloadCreated.getStatus();
-            challenge.setChallengeStatus(TBaseUtil.unionFieldToEnum(status, com.rbkmoney.newway.domain.enums.ChallengeStatus.class));
-            if (status.isSetCompleted()) {
-                ChallengeCompleted statusCompleted = status.getCompleted();
-                challenge.setChallengeResolution(TypeUtil.toEnumField(statusCompleted.getResolution().toString(), ChallengeResolution.class));
-                if (statusCompleted.isSetValidUntil()) {
-                    challenge.setChallengeValidUntil(TypeUtil.stringToLocalDateTime(statusCompleted.getValidUntil()));
-                }
-            }
-        } else {
-            challenge.setChallengeStatus(ChallengeStatus.pending);
-        }
+        challenge.setChallengeStatus(ChallengeStatus.pending);
 
         challengeDao.updateNotCurrent(event.getSource(), challengeChange.getId());
         challengeDao.save(challenge);

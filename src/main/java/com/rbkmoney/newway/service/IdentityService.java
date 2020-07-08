@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.service;
 
-import com.rbkmoney.fistful.identity.Event;
+import com.rbkmoney.fistful.identity.EventSinkPayload;
 import com.rbkmoney.fistful.identity.SinkEvent;
 import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.exception.DaoException;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class IdentityService implements EventService<SinkEvent, Event> {
+public class IdentityService implements EventService<SinkEvent, EventSinkPayload> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -30,7 +30,7 @@ public class IdentityService implements EventService<SinkEvent, Event> {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handleEvents(SinkEvent sinkEvent, Event payload) {
+    public void handleEvents(SinkEvent sinkEvent, EventSinkPayload payload) {
         payload.getChanges().forEach(cc -> identityHandlers.forEach(ph -> {
             if (ph.accept(cc)) {
                 ph.handle(cc, sinkEvent);
