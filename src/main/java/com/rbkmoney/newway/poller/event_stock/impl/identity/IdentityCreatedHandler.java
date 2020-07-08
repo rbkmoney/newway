@@ -49,12 +49,8 @@ public class IdentityCreatedHandler extends AbstractIdentityHandler {
         identity.setIdentityClassId(changeCreated.getCls());
         identity.setIdentityProviderId(changeCreated.getProvider());
         identity.setExternalId(changeCreated.getExternalId());
-        identity.setIdentityEffectiveChalengeId(changeCreated.getEffectiveChallenge());
-        if (changeCreated.isSetBlocking()) {
-            identity.setBlocked(changeCreated.getBlocking() == Blocking.blocked);
-        }
-        if (changeCreated.isSetContext()) {
-            Map<String, JsonNode> jsonNodeMap = changeCreated.getContext().entrySet().stream()
+        if (changeCreated.isSetMetadata()) {
+            Map<String, JsonNode> jsonNodeMap = changeCreated.getMetadata().entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, e -> JsonUtil.tBaseToJsonNode(e.getValue())));
             identity.setContextJson(JsonUtil.objectToJsonString(jsonNodeMap));
         }

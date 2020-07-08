@@ -40,7 +40,7 @@ public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Change change, SinkEvent event) {
-        String providerId = change.getRoute().getRoute().getProviderId();
+        String providerId = change.getRoute().getRoute().getProviderIdLegacy();
 
         log.info("Start withdrawal provider id changed handling, eventId={}, walletId={}, providerId={}", event.getId(), event.getSource(), providerId);
 
