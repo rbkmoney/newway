@@ -22,6 +22,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.Duration;
 import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -45,6 +46,7 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
 
     @BeforeClass
     public static void beforeClass() {
+        testContainers.getKafkaTestContainer().ifPresent(kafkaContainer -> kafkaContainer.withStartupTimeout(Duration.ofMinutes(10)));
         testContainers.startTestContainers();
     }
 
@@ -81,7 +83,7 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
     }
 
     protected void waitForTopicSync() throws InterruptedException {
-        Thread.sleep(5000L);
+        Thread.sleep(10000L);
     }
 
     protected void writeToTopic(String topic, SinkEvent sinkEvent) {
