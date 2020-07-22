@@ -52,12 +52,19 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
         provider.setProxyAdditionalJson(JsonUtil.objectToJsonString(data.getProxy().getAdditional()));
         provider.setTerminalJson(JsonUtil.tBaseToJsonString(data.getTerminal()));
         provider.setAbsAccount(data.getAbsAccount());
-        if (data.isSetPaymentTerms()) {
+
+        if (data.isSetTerms() && data.getTerms().isSetPayments()) {
+            provider.setPaymentTermsJson(JsonUtil.tBaseToJsonString(data.getTerms().getPayments()));
+        } else if (data.isSetPaymentTerms()) {
             provider.setPaymentTermsJson(JsonUtil.tBaseToJsonString(data.getPaymentTerms()));
         }
-        if (data.isSetRecurrentPaytoolTerms()) {
+
+        if (data.isSetTerms() && data.getTerms().isSetRecurrentPaytools()) {
+            provider.setRecurrentPaytoolTermsJson(JsonUtil.tBaseToJsonString(data.getTerms().getRecurrentPaytools()));
+        } else if (data.isSetRecurrentPaytoolTerms()) {
             provider.setRecurrentPaytoolTermsJson(JsonUtil.tBaseToJsonString(data.getRecurrentPaytoolTerms()));
         }
+
         if (data.isSetAccounts()) {
             Map<String, Long> accountsMap = data.getAccounts().entrySet()
                     .stream()
