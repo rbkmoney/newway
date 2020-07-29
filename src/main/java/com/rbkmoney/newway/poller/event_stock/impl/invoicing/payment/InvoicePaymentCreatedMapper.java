@@ -136,17 +136,18 @@ public class InvoicePaymentCreatedMapper extends AbstractInvoicingPaymentMapper 
     private void fillPaymentTool(Payment payment, PaymentTool paymentTool) {
         payment.setPayerPaymentToolType(TBaseUtil.unionFieldToEnum(paymentTool, PaymentToolType.class));
         if (paymentTool.isSetBankCard()) {
-            payment.setPayerBankCardToken(paymentTool.getBankCard().getToken());
-            payment.setPayerBankCardPaymentSystem(paymentTool.getBankCard().getPaymentSystem().name());
-            payment.setPayerBankCardBin(paymentTool.getBankCard().getBin());
-            payment.setPayerBankCardMaskedPan(paymentTool.getBankCard().getLastDigits());
-            payment.setPayerBankName(paymentTool.getBankCard().getBankName());
-
-            if (paymentTool.getBankCard().isSetIssuerCountry()) {
-                payment.setPayerIssuerCountry(paymentTool.getBankCard().getIssuerCountry().name());
+            BankCard bankCard = paymentTool.getBankCard();
+            payment.setPayerBankCardToken(bankCard.getToken());
+            payment.setPayerBankCardPaymentSystem(bankCard.getPaymentSystem().name());
+            payment.setPayerBankCardBin(bankCard.getBin());
+            payment.setPayerBankCardMaskedPan(bankCard.getLastDigits());
+            payment.setPayerBankName(bankCard.getBankName());
+            payment.setPayerBankCardCardholderName(bankCard.getCardholderName());
+            if (bankCard.isSetIssuerCountry()) {
+                payment.setPayerIssuerCountry(bankCard.getIssuerCountry().name());
             }
-            if (paymentTool.getBankCard().isSetTokenProvider()) {
-                payment.setPayerBankCardTokenProvider(paymentTool.getBankCard().getTokenProvider().name());
+            if (bankCard.isSetTokenProvider()) {
+                payment.setPayerBankCardTokenProvider(bankCard.getTokenProvider().name());
             }
         } else if (paymentTool.isSetPaymentTerminal()) {
             payment.setPayerPaymentTerminalType(paymentTool.getPaymentTerminal().getTerminalType().name());
