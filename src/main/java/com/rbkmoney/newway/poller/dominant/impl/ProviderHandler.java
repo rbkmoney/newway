@@ -50,7 +50,9 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
         provider.setDescription(data.getDescription());
         provider.setProxyRefId(data.getProxy().getRef().getId());
         provider.setProxyAdditionalJson(JsonUtil.objectToJsonString(data.getProxy().getAdditional()));
-        provider.setTerminalJson(JsonUtil.tBaseToJsonString(data.getTerminal()));
+        if (data.isSetTerminal()) {
+            provider.setTerminalJson(JsonUtil.tBaseToJsonString(data.getTerminal()));
+        }
         provider.setAbsAccount(data.getAbsAccount());
 
         if (data.isSetTerms() && data.getTerms().isSetPayments()) {
