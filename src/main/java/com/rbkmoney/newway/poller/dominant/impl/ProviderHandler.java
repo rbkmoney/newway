@@ -67,6 +67,20 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
             provider.setRecurrentPaytoolTermsJson(JsonUtil.tBaseToJsonString(data.getRecurrentPaytoolTerms()));
         }
 
+        if (data.isSetIdentity()) {
+            provider.setIdentity(data.getIdentity());
+        }
+        if (data.isSetTerms() && data.getTerms().isSetWallet()) {
+            provider.setWalletTermsJson(JsonUtil.tBaseToJsonString(data.getTerms().getWallet()));
+        }
+        if (data.isSetParamsSchema()) {
+            provider.setParamsSchemaJson(
+                    JsonUtil.objectToJsonString(
+                            data.getParamsSchema().stream().map(JsonUtil::tBaseToJsonNode).collect(Collectors.toList())
+                    )
+            );
+        }
+
         if (data.isSetAccounts()) {
             Map<String, Long> accountsMap = data.getAccounts().entrySet()
                     .stream()
