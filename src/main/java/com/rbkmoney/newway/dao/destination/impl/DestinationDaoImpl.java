@@ -13,7 +13,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
+import static com.rbkmoney.newway.domain.tables.Deposit.DEPOSIT;
 import static com.rbkmoney.newway.domain.tables.Destination.DESTINATION;
 
 @Component
@@ -28,19 +30,18 @@ public class DestinationDaoImpl extends AbstractGenericDao implements Destinatio
     }
 
     @Override
-    public Long getLastEventId() throws DaoException {
-        Query query = getDslContext().select(DESTINATION.EVENT_ID.max()).from(DESTINATION);
-        return fetchOne(query, Long.class);
-    }
-
-    @Override
-    public Long save(Destination destination) throws DaoException {
+    public Optional<Long> save(Destination destination) throws DaoException {
         DestinationRecord record = getDslContext().newRecord(DESTINATION, destination);
-        Query query = getDslContext().insertInto(DESTINATION).set(record).returning(DESTINATION.ID);
+        Query query = getDslContext()
+                .insertInto(DESTINATION)
+                .set(record)
+                .onConflict(DESTINATION.DESTINATION_ID, DEPOSIT.SEQUENCE_ID)
+                .doNothing()
+                .returning(DESTINATION.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override
@@ -53,12 +54,10 @@ public class DestinationDaoImpl extends AbstractGenericDao implements Destinatio
     }
 
     @Override
-    public void updateNotCurrent(String destinationId) throws DaoException {
+    public void updateNotCurrent(Long destinationId) throws DaoException {
         Query query = getDslContext().update(DESTINATION).set(DESTINATION.CURRENT, false)
-                .where(
-                        DESTINATION.DESTINATION_ID.eq(destinationId)
-                                .and(DESTINATION.CURRENT)
-                );
+                .where(DESTINATION.ID.eq(destinationId)
+                        .and(DESTINATION.CURRENT));
         execute(query);
     }
 }

@@ -47,14 +47,18 @@ kafka:
     max-poll-records: 20
     max-poll-interval-ms: 30000
     session-timeout-ms: 30000
-    invoicing:
-      concurrency: 7
-    party-management:
-      concurrency: 7
-    recurrent-payment-tool:
-      concurrency: 7
-    rate:
-      concurrency: 7
+    invoicing-concurrency: 7
+    party-management-concurrency: 7
+    recurrent-payment-tool-concurrency: 7
+    rate-concurrency: 7
+    deposit-concurrency: 7
+    identity-concurrency: 7
+    wallet-concurrency: 7
+    withdrawal-concurrency: 7
+    payout-concurrency: 7
+    source-concurrency: 7
+    destination-concurrency: 7
+    withdrawal-session-concurrency: 7
   topics:
     invoice:
       id: mg-invoice-100-2
@@ -67,6 +71,14 @@ kafka:
       consumer.group-id: "NewwayListenerPartyManagement"
     rate:
       id: mg-events-rates
+    identity:
+      id: mg-events-identities
+    wallet:
+      id: mg-events-wallets
+    deposit:
+      id: mg-events-deposits
+    withdrawal:
+      id: mg-events-withdrawals
 
 bm:
   polling:

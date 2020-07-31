@@ -7,7 +7,6 @@ import com.rbkmoney.newway.domain.tables.pojos.WithdrawalSession;
 import com.rbkmoney.newway.domain.tables.records.WithdrawalSessionRecord;
 import com.rbkmoney.newway.exception.DaoException;
 import org.jooq.Query;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,6 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 import static com.rbkmoney.newway.domain.tables.WithdrawalSession.WITHDRAWAL_SESSION;
 
@@ -29,21 +29,19 @@ public class WithdrawalSessionDaoImpl extends AbstractGenericDao implements With
         withdrawalSessionRowMapper = new RecordRowMapper<>(WITHDRAWAL_SESSION, WithdrawalSession.class);
     }
 
-
     @Override
-    public Long getLastEventId() throws DaoException {
-        Query query = getDslContext().select(DSL.max(WITHDRAWAL_SESSION.EVENT_ID)).from(WITHDRAWAL_SESSION);
-        return fetchOne(query, Long.class);
-    }
-
-    @Override
-    public Long save(WithdrawalSession withdrawalSession) throws DaoException {
+    public Optional<Long> save(WithdrawalSession withdrawalSession) throws DaoException {
         WithdrawalSessionRecord record = getDslContext().newRecord(WITHDRAWAL_SESSION, withdrawalSession);
-        Query query = getDslContext().insertInto(WITHDRAWAL_SESSION).set(record).returning(WITHDRAWAL_SESSION.ID);
+        Query query = getDslContext()
+                .insertInto(WITHDRAWAL_SESSION)
+                .set(record)
+                .onConflict(WITHDRAWAL_SESSION.WITHDRAWAL_SESSION_ID, WITHDRAWAL_SESSION.SEQUENCE_ID, WITHDRAWAL_SESSION.CHANGE_ID)
+                .doNothing()
+                .returning(WITHDRAWAL_SESSION.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override
@@ -55,10 +53,10 @@ public class WithdrawalSessionDaoImpl extends AbstractGenericDao implements With
     }
 
     @Override
-    public void updateNotCurrent(String sessionId) throws DaoException {
+    public void updateNotCurrent(Long id) throws DaoException {
         Query query = getDslContext().update(WITHDRAWAL_SESSION).set(WITHDRAWAL_SESSION.CURRENT, false)
-                .where(WITHDRAWAL_SESSION.WITHDRAWAL_SESSION_ID.eq(sessionId)
-                                .and(WITHDRAWAL_SESSION.CURRENT));
+                .where(WITHDRAWAL_SESSION.ID.eq(id)
+                        .and(WITHDRAWAL_SESSION.CURRENT));
         execute(query);
     }
 }

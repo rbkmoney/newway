@@ -13,7 +13,10 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
+import static com.rbkmoney.newway.domain.tables.Deposit.DEPOSIT;
+import static com.rbkmoney.newway.domain.tables.Identity.IDENTITY;
 import static com.rbkmoney.newway.domain.tables.Source.SOURCE;
 
 @Component
@@ -28,19 +31,18 @@ public class SourceDaoImpl extends AbstractGenericDao implements SourceDao {
     }
 
     @Override
-    public Long getLastEventId() throws DaoException {
-        Query query = getDslContext().select(SOURCE.EVENT_ID.max()).from(SOURCE);
-        return fetchOne(query, Long.class);
-    }
-
-    @Override
-    public Long save(Source source) throws DaoException {
+    public Optional<Long> save(Source source) throws DaoException {
         SourceRecord record = getDslContext().newRecord(SOURCE, source);
-        Query query = getDslContext().insertInto(SOURCE).set(record).returning(SOURCE.ID);
+        Query query = getDslContext()
+                .insertInto(SOURCE)
+                .set(record)
+                .onConflict(SOURCE.SOURCE_ID, SOURCE.SEQUENCE_ID)
+                .doNothing()
+                .returning(SOURCE.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override
@@ -53,12 +55,10 @@ public class SourceDaoImpl extends AbstractGenericDao implements SourceDao {
     }
 
     @Override
-    public void updateNotCurrent(String sourceId) throws DaoException {
+    public void updateNotCurrent(Long id) throws DaoException {
         Query query = getDslContext().update(SOURCE).set(SOURCE.CURRENT, false)
-                .where(
-                        SOURCE.SOURCE_ID.eq(sourceId)
-                                .and(SOURCE.CURRENT)
-                );
+                .where(SOURCE.ID.eq(id)
+                        .and(SOURCE.CURRENT));
         execute(query);
     }
 }

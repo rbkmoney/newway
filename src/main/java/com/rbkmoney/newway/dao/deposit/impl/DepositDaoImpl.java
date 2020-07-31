@@ -7,13 +7,13 @@ import com.rbkmoney.newway.domain.tables.pojos.Deposit;
 import com.rbkmoney.newway.domain.tables.records.DepositRecord;
 import com.rbkmoney.newway.exception.DaoException;
 import org.jooq.Query;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 import static com.rbkmoney.newway.domain.tables.Deposit.DEPOSIT;
 
@@ -29,19 +29,18 @@ public class DepositDaoImpl extends AbstractGenericDao implements DepositDao {
     }
 
     @Override
-    public Long getLastEventId() throws DaoException {
-        Query query = getDslContext().select(DSL.max(DEPOSIT.EVENT_ID)).from(DEPOSIT);
-        return fetchOne(query, Long.class);
-    }
-
-    @Override
-    public Long save(Deposit deposit) throws DaoException {
+    public Optional<Long> save(Deposit deposit) throws DaoException {
         DepositRecord record = getDslContext().newRecord(DEPOSIT, deposit);
-        Query query = getDslContext().insertInto(DEPOSIT).set(record).returning(DEPOSIT.ID);
+        Query query = getDslContext()
+                .insertInto(DEPOSIT)
+                .set(record)
+                .onConflict(DEPOSIT.DEPOSIT_ID, DEPOSIT.SEQUENCE_ID, DEPOSIT.CHANGE_ID)
+                .doNothing()
+                .returning(DEPOSIT.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override
@@ -49,17 +48,15 @@ public class DepositDaoImpl extends AbstractGenericDao implements DepositDao {
         Query query = getDslContext().selectFrom(DEPOSIT)
                 .where(DEPOSIT.DEPOSIT_ID.eq(depositId)
                         .and(DEPOSIT.CURRENT));
-
         return fetchOne(query, depositRowMapper);
     }
 
     @Override
-    public void updateNotCurrent(String depositId) throws DaoException {
+    public void updateNotCurrent(Long depositId) throws DaoException {
         Query query = getDslContext().update(DEPOSIT).set(DEPOSIT.CURRENT, false)
-                .where(
-                        DEPOSIT.DEPOSIT_ID.eq(depositId)
-                                .and(DEPOSIT.CURRENT)
-                );
+                .where(DEPOSIT.ID.eq(depositId)
+                        .and(DEPOSIT.CURRENT));
         execute(query);
     }
+
 }

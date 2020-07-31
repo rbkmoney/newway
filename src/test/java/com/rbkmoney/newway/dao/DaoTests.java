@@ -129,10 +129,11 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.deposit cascade");
         Deposit deposit = random(Deposit.class);
         deposit.setCurrent(true);
-        Long id = depositDao.save(deposit);
+        Long id = depositDao.save(deposit).get();
         deposit.setId(id);
-        assertEquals(deposit, depositDao.get(deposit.getDepositId()));
-        depositDao.updateNotCurrent(deposit.getDepositId());
+        Deposit actual = depositDao.get(deposit.getDepositId());
+        assertEquals(deposit, actual);
+        depositDao.updateNotCurrent(actual.getId());
         assertNull(depositDao.get(deposit.getDepositId()));
     }
 
@@ -141,10 +142,11 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.destination cascade");
         Destination destination = random(Destination.class);
         destination.setCurrent(true);
-        Long id = destinationDao.save(destination);
+        Long id = destinationDao.save(destination).get();
         destination.setId(id);
-        assertEquals(destination, destinationDao.get(destination.getDestinationId()));
-        destinationDao.updateNotCurrent(destination.getDestinationId());
+        Destination actual = destinationDao.get(destination.getDestinationId());
+        assertEquals(destination, actual);
+        destinationDao.updateNotCurrent(actual.getId());
         Assert.assertNull(destinationDao.get(destination.getDestinationId()));
     }
 
@@ -353,10 +355,11 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.challenge cascade");
         Challenge challenge = random(Challenge.class);
         challenge.setCurrent(true);
-        Long id = challengeDao.save(challenge);
+        Long id = challengeDao.save(challenge).get();
         challenge.setId(id);
-        assertEquals(challenge, challengeDao.get(challenge.getIdentityId(), challenge.getChallengeId()));
-        challengeDao.updateNotCurrent(challenge.getIdentityId(), challenge.getChallengeId());
+        Challenge actual = challengeDao.get(challenge.getIdentityId(), challenge.getChallengeId());
+        assertEquals(challenge, actual);
+        challengeDao.updateNotCurrent(challenge.getIdentityId(), actual.getId());
         assertNull(challengeDao.get(challenge.getIdentityId(), challenge.getChallengeId()));
     }
 
@@ -365,10 +368,11 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.identity cascade");
         Identity identity = random(Identity.class);
         identity.setCurrent(true);
-        Long id = identityDao.save(identity);
+        Long id = identityDao.save(identity).get();
         identity.setId(id);
-        assertEquals(identity, identityDao.get(identity.getIdentityId()));
-        identityDao.updateNotCurrent(identity.getIdentityId());
+        Identity actual = identityDao.get(identity.getIdentityId());
+        assertEquals(identity, actual);
+        identityDao.updateNotCurrent(actual.getId());
         assertNull(identityDao.get(identity.getIdentityId()));
     }
 
@@ -587,10 +591,11 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.source cascade");
         Source source = random(Source.class);
         source.setCurrent(true);
-        Long id = sourceDao.save(source);
+        Long id = sourceDao.save(source).get();
         source.setId(id);
-        assertEquals(source, sourceDao.get(source.getSourceId()));
-        sourceDao.updateNotCurrent(source.getSourceId());
+        Source actual = sourceDao.get(source.getSourceId());
+        assertEquals(source, actual);
+        sourceDao.updateNotCurrent(actual.getId());
         Assert.assertNull(sourceDao.get(source.getSourceId()));
     }
 
@@ -599,10 +604,11 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.wallet cascade");
         Wallet wallet = random(Wallet.class);
         wallet.setCurrent(true);
-        Long id = walletDao.save(wallet);
+        Long id = walletDao.save(wallet).get();
         wallet.setId(id);
-        assertEquals(wallet, walletDao.get(wallet.getWalletId()));
-        walletDao.updateNotCurrent(wallet.getWalletId());
+        Wallet actual = walletDao.get(wallet.getWalletId());
+        assertEquals(wallet, actual);
+        walletDao.updateNotCurrent(actual.getId());
         Assert.assertNull(walletDao.get(wallet.getWalletId()));
     }
 
@@ -611,10 +617,11 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.withdrawal cascade");
         Withdrawal withdrawal = random(Withdrawal.class);
         withdrawal.setCurrent(true);
-        Long id = withdrawalDao.save(withdrawal);
+        Long id = withdrawalDao.save(withdrawal).get();
         withdrawal.setId(id);
-        assertEquals(withdrawal, withdrawalDao.get(withdrawal.getWithdrawalId()));
-        withdrawalDao.updateNotCurrent(withdrawal.getWithdrawalId());
+        Withdrawal actual = withdrawalDao.get(withdrawal.getWithdrawalId());
+        assertEquals(withdrawal, actual);
+        withdrawalDao.updateNotCurrent(actual.getId());
         assertNull(withdrawalDao.get(withdrawal.getWithdrawalId()));
     }
 
@@ -623,10 +630,11 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.withdrawal_session cascade");
         WithdrawalSession withdrawalSession = random(WithdrawalSession.class);
         withdrawalSession.setCurrent(true);
-        Long id = withdrawalSessionDao.save(withdrawalSession);
+        Long id = withdrawalSessionDao.save(withdrawalSession).get();
         withdrawalSession.setId(id);
-        assertEquals(withdrawalSession, withdrawalSessionDao.get(withdrawalSession.getWithdrawalSessionId()));
-        withdrawalSessionDao.updateNotCurrent(withdrawalSession.getWithdrawalSessionId());
+        WithdrawalSession actual = withdrawalSessionDao.get(withdrawalSession.getWithdrawalSessionId());
+        assertEquals(withdrawalSession, actual);
+        withdrawalSessionDao.updateNotCurrent(actual.getId());
         assertNull(withdrawalSessionDao.get(withdrawalSession.getWithdrawalSessionId()));
     }
 

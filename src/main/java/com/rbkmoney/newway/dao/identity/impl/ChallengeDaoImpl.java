@@ -13,6 +13,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 import static com.rbkmoney.newway.domain.tables.Challenge.CHALLENGE;
 
@@ -28,13 +29,18 @@ public class ChallengeDaoImpl extends AbstractGenericDao implements ChallengeDao
     }
 
     @Override
-    public Long save(Challenge challenge) throws DaoException {
+    public Optional<Long> save(Challenge challenge) throws DaoException {
         ChallengeRecord record = getDslContext().newRecord(CHALLENGE, challenge);
-        Query query = getDslContext().insertInto(CHALLENGE).set(record).returning(CHALLENGE.ID);
+        Query query = getDslContext()
+                .insertInto(CHALLENGE)
+                .set(record)
+                .onConflict(CHALLENGE.IDENTITY_ID, CHALLENGE.CHALLENGE_ID, CHALLENGE.SEQUENCE_ID)
+                .doNothing()
+                .returning(CHALLENGE.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override
@@ -50,11 +56,11 @@ public class ChallengeDaoImpl extends AbstractGenericDao implements ChallengeDao
     }
 
     @Override
-    public void updateNotCurrent(String identityId, String challengeId) throws DaoException {
+    public void updateNotCurrent(String identityId, Long challengeId) throws DaoException {
         Query query = getDslContext().update(CHALLENGE).set(CHALLENGE.CURRENT, false)
                 .where(
-                        CHALLENGE.IDENTITY_ID.eq(identityId)
-                        .and(CHALLENGE.CHALLENGE_ID.eq(challengeId))
+                        CHALLENGE.ID.eq(challengeId)
+                                .and(CHALLENGE.IDENTITY_ID.eq(identityId))
                                 .and(CHALLENGE.CURRENT)
                 );
         execute(query);

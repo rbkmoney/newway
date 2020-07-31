@@ -2,45 +2,38 @@ package com.rbkmoney.newway.poller.event_stock.impl.deposit;
 
 import com.rbkmoney.fistful.base.Cash;
 import com.rbkmoney.fistful.deposit.Change;
-import com.rbkmoney.fistful.deposit.SinkEvent;
-import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.deposit.iface.DepositDao;
 import com.rbkmoney.newway.domain.enums.DepositStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Deposit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class DepositCreatedHandler extends AbstractDepositHandler {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final DepositDao depositDao;
 
-    private final Filter filter;
-
-    public DepositCreatedHandler(DepositDao depositDao) {
-        this.depositDao = depositDao;
-        this.filter = new PathConditionFilter(new PathConditionRule("created.deposit", new IsNullCondition().not()));
-    }
+    @Getter
+    private final Filter filter = new PathConditionFilter(
+            new PathConditionRule("created.deposit", new IsNullCondition().not()));
 
     @Override
-    public void handle(Change change, SinkEvent event) {
+    public void handle(Change change, MachineEvent event, Integer changeId) {
         var depositDamsel = change.getCreated().getDeposit();
-
-        log.info("Start deposit created handling, eventId={}, depositId={}", event.getId(), event.getSource());
-
+        long sequenceId = event.getEventId();
+        String depositId = event.getSourceId();
+        log.info("Start deposit created handling, sequenceId={}, depositId={}, changeId={}", sequenceId, depositId, changeId);
         Deposit deposit = new Deposit();
-        deposit.setEventId(event.getId());
-        deposit.setSequenceId(event.getPayload().getSequence());
-        deposit.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        deposit.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
-        deposit.setDepositId(event.getSource());
+        initDefaultFieldsDeposit(event, changeId, sequenceId, depositId, deposit);
         deposit.setSourceId(depositDamsel.getSourceId());
         deposit.setWalletId(depositDamsel.getWalletId());
 
@@ -50,13 +43,11 @@ public class DepositCreatedHandler extends AbstractDepositHandler {
         deposit.setDepositStatus(DepositStatus.pending);
         deposit.setExternalId(depositDamsel.getExternalId());
 
-        depositDao.updateNotCurrent(event.getSource());
-        depositDao.save(deposit);
-        log.info("Deposit have been saved, eventId={}, depositId={}", event.getId(), event.getSource());
+        depositDao.save(deposit).ifPresentOrElse(
+                dbContractId -> log.info("Deposit created has been saved, sequenceId={}, depositId={}, changeId={}",
+                        sequenceId, depositId, changeId),
+                () -> log.info("Deposit created bound duplicated, sequenceId={}, depositId={}, changeId={}",
+                        sequenceId, depositId, changeId));
     }
 
-    @Override
-    public Filter<Change> getFilter() {
-        return filter;
-    }
 }

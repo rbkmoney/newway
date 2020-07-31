@@ -66,7 +66,7 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
             PayoutCancelled cancelled = payoutStatus.getCancelled();
             payoutSource.setStatusCancelledDetails(cancelled.getDetails());
             payoutSource.setStatusConfirmedUserInfoType(null);
-        } if (payoutStatus.isSetConfirmed()) {
+        } else if (payoutStatus.isSetConfirmed()) {
             payoutSource.setStatusPaidDetails(null);
             payoutSource.setStatusPaidDetailsCardProviderName(null);
             payoutSource.setStatusPaidDetailsCardProviderTransactionId(null);
