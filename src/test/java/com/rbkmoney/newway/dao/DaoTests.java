@@ -529,12 +529,11 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.payout cascade");
         Payout payout = random(Payout.class);
         payout.setCurrent(true);
-        payoutDao.save(payout);
+        Optional<Long> save = payoutDao.save(payout);
         Payout payoutGet = payoutDao.get(payout.getPayoutId());
         assertEquals(payout, payoutGet);
-        payoutDao.updateNotCurrent(payout.getPayoutId());
+        payoutDao.updateNotCurrent(save.get());
         Assert.assertNull(payoutDao.get(payout.getPayoutId()));
-        assertEquals(payoutDao.getLastEventId(), payout.getEventId());
     }
 
     @Test
@@ -542,7 +541,7 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.payout_summary cascade");
         Payout payout = random(Payout.class);
         payout.setCurrent(true);
-        Long pytId = payoutDao.save(payout);
+        Long pytId = payoutDao.save(payout).get();
         List<PayoutSummary> payoutSummaries = randomListOf(10, PayoutSummary.class);
         payoutSummaries.forEach(pt -> pt.setPytId(pytId));
         payoutSummaryDao.save(payoutSummaries);

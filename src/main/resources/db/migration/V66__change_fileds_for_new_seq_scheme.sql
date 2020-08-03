@@ -32,3 +32,6 @@ drop INDEX withdrawal_session_event_id_idx;
 ALTER TABLE nw.withdrawal_session DROP COLUMN event_id;
 ALTER TABLE nw.withdrawal_session ADD COLUMN change_id INT not null;
 ALTER TABLE nw.withdrawal_session ADD CONSTRAINT withdrawal_session_uniq UNIQUE(withdrawal_session_id, sequence_id, change_id);
+
+ALTER TABLE nw.payout ADD COLUMN change_id INT not null;
+ALTER TABLE nw.payout ADD CONSTRAINT payout_uniq UNIQUE(event_id, payout_id, change_id);
