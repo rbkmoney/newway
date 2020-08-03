@@ -1,8 +1,7 @@
 package com.rbkmoney.newway.poller.listener;
 
-import com.rbkmoney.kafka.common.util.LogUtil;
-import com.rbkmoney.machinegun.eventsink.SinkEvent;
-import com.rbkmoney.newway.service.IdentityService;
+import com.rbkmoney.damsel.payout_processing.Event;
+import com.rbkmoney.newway.service.PayoutService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -16,15 +15,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PayoutKafkaListener {
 
-    private final IdentityService identityService;
+    private final PayoutService payoutService;
 
     @KafkaListener(topics = "${kafka.topics.payout.id}", containerFactory = "payoutContainerFactory")
-    public void handle(List<ConsumerRecord<String, SinkEvent>> messages, Acknowledgment ack) {
+    public void handle(List<ConsumerRecord<String, Event>> messages, Acknowledgment ack) {
         log.info("Got machineEvent batch with size: {}", messages.size());
-        identityService.handleEvents(messages.stream()
-                .map(m -> m.value().getEvent())
+        payoutService.handleEvents(messages.stream()
+                .map(ConsumerRecord::value)
                 .collect(Collectors.toList()));
         ack.acknowledge();
-        log.info("Batch has been committed, size={}, {}", messages.size(), LogUtil.toSummaryStringWithSinkEventValues(messages));
+        log.info("Batch has been committed, size={}", messages.size());
     }
 }
