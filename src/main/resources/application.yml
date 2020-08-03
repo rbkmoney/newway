@@ -79,6 +79,14 @@ kafka:
       id: mg-events-deposits
     withdrawal:
       id: mg-events-withdrawals
+    withdrawal-session:
+      id: mg-events-withdrawals-session
+    source:
+      id: mg-events-source
+    destination:
+      id: mg-events-destination
+    payout:
+      id: mg-events-payout
 
 bm:
   polling:

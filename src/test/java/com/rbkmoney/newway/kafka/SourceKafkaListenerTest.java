@@ -4,7 +4,9 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import com.rbkmoney.machinegun.msgpack.Value;
 import com.rbkmoney.newway.poller.listener.InvoicingKafkaListener;
+import com.rbkmoney.newway.poller.listener.SourceKafkaListener;
 import com.rbkmoney.newway.service.InvoicingService;
+import com.rbkmoney.newway.service.SourceService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -18,19 +20,19 @@ import java.time.format.DateTimeFormatter;
 import static org.mockito.ArgumentMatchers.anyList;
 
 @Slf4j
-@ContextConfiguration(classes = {KafkaAutoConfiguration.class, InvoicingKafkaListener.class})
-public class InvoicingKafkaListenerTest extends AbstractKafkaTest {
+@ContextConfiguration(classes = {KafkaAutoConfiguration.class, SourceKafkaListener.class})
+public class SourceKafkaListenerTest extends AbstractKafkaTest {
 
-    @org.springframework.beans.factory.annotation.Value("${kafka.topics.invoice.id}")
+    @org.springframework.beans.factory.annotation.Value("${kafka.topics.source.id}")
     public String topic;
 
     @MockBean
-    InvoicingService invoicingService;
+    SourceService sourceService;
 
     @Test
     public void listenEmptyChanges() throws InterruptedException {
         sendMessage(topic);
-        Mockito.verify(invoicingService, Mockito.times(1)).handleEvents(anyList());
+        Mockito.verify(sourceService, Mockito.times(1)).handleEvents(anyList());
     }
 
 }
