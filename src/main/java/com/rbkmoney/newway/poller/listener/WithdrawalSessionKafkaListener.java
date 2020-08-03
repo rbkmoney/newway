@@ -3,6 +3,7 @@ package com.rbkmoney.newway.poller.listener;
 import com.rbkmoney.kafka.common.util.LogUtil;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import com.rbkmoney.newway.service.WithdrawalService;
+import com.rbkmoney.newway.service.WithdrawalSessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -16,12 +17,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WithdrawalSessionKafkaListener {
 
-    private final WithdrawalService withdrawalService;
+    private final WithdrawalSessionService withdrawalSessionService;
 
     @KafkaListener(topics = "${kafka.topics.withdrawal-session.id}", containerFactory = "withdrawalSessionContainerFactory")
     public void handle(List<ConsumerRecord<String, SinkEvent>> messages, Acknowledgment ack) {
         log.info("Got machineEvent batch with size: {}", messages.size());
-        withdrawalService.handleEvents(messages.stream()
+        withdrawalSessionService.handleEvents(messages.stream()
                 .map(m -> m.value().getEvent())
                 .collect(Collectors.toList()));
         ack.acknowledge();
