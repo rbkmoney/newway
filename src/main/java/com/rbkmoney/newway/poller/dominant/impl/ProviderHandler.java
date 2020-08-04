@@ -53,7 +53,9 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
         if (data.isSetTerminal()) {
             provider.setTerminalJson(JsonUtil.tBaseToJsonString(data.getTerminal()));
         }
-        provider.setAbsAccount(data.getAbsAccount());
+        if (data.isSetAbsAccount()) {
+            provider.setAbsAccount(data.getAbsAccount());
+        }
 
         if (data.isSetTerms() && data.getTerms().isSetPayments()) {
             provider.setPaymentTermsJson(JsonUtil.tBaseToJsonString(data.getTerms().getPayments()));

@@ -55,7 +55,9 @@ public class PaymentInstitutionHandler extends AbstractDominantHandler<PaymentIn
         if (data.isSetDefaultWalletContractTemplate()) {
             paymentInstitution.setDefaultWalletContractTemplateJson(JsonUtil.tBaseToJsonString(data.getDefaultWalletContractTemplate()));
         }
-        paymentInstitution.setProvidersJson(JsonUtil.tBaseToJsonString(data.getProviders()));
+        if (data.isSetProviders()) {
+            paymentInstitution.setProvidersJson(JsonUtil.tBaseToJsonString(data.getProviders()));
+        }
         paymentInstitution.setInspectorJson(JsonUtil.tBaseToJsonString(data.getInspector()));
         paymentInstitution.setRealm(data.getRealm().name());
         paymentInstitution.setResidencesJson(JsonUtil.objectToJsonString(data.getResidences().stream().map(Enum::name).collect(Collectors.toSet())));
