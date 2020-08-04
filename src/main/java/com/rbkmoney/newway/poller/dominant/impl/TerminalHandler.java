@@ -55,7 +55,9 @@ public class TerminalHandler extends AbstractDominantHandler<TerminalObject, Ter
         terminal.setExternalTerminalId(data.getExternalTerminalId());
         terminal.setExternalMerchantId(data.getExternalMerchantId());
         terminal.setMcc(data.getMcc());
-        terminal.setTerminalProviderRefId(data.getProviderRef().getId());
+        if (data.isSetProviderRef()) {
+            terminal.setTerminalProviderRefId(data.getProviderRef().getId());
+        }
         terminal.setCurrent(current);
         return terminal;
     }
