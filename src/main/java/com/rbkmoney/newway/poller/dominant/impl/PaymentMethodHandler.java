@@ -39,7 +39,7 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
             paymentMethodRefId = paymentMethodObjectRefId.getPaymentTerminal().name();
         } else if (paymentMethodObjectRefId.isSetDigitalWallet()) {
             paymentMethodRefId = paymentMethodObjectRefId.getDigitalWallet().name();
-        } else if (paymentMethodObjectRefId.isSetBankCardDeprecated()) {
+        } else if (paymentMethodObjectRefId.isSetTokenizedBankCardDeprecated()) {
             TokenizedBankCard tokenizedBankCard = paymentMethodObjectRefId.getTokenizedBankCardDeprecated();
             paymentMethodRefId = tokenizedBankCard.getPaymentSystem().name() + "_" + tokenizedBankCard.getTokenProvider().name();
         } else if (paymentMethodObjectRefId.isSetEmptyCvvBankCardDeprecated()) {
