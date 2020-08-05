@@ -48,6 +48,8 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
             paymentMethodRefId = paymentMethodObjectRefId.getCryptoCurrency().name();
         } else if (paymentMethodObjectRefId.isSetMobile()) {
             paymentMethodRefId = paymentMethodObjectRefId.getMobile().name();
+        } else if (paymentMethodObjectRefId.isSetBankCardDeprecated()) {
+            paymentMethodRefId = paymentMethodObjectRefId.getBankCardDeprecated().name();
         } else {
             throw new IllegalArgumentException("Unknown payment method: " + paymentMethodObjectRefId);
         }
