@@ -69,8 +69,14 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
         com.rbkmoney.damsel.domain.PaymentMethodDefinition data = paymentMethodObject.getData();
         paymentMethod.setName(data.getName());
         paymentMethod.setDescription(data.getDescription());
-        paymentMethod.setType(TBaseUtil.unionFieldToEnum(paymentMethodObject.getRef().getId(), PaymentMethodType.class));
+        paymentMethod.setType(
+                Enum.valueOf(
+                        PaymentMethodType.class,
+                        paymentMethodObject.getRef().getId().getSetField().getFieldName().replaceAll("_deprecated", "")
+                )
+        );
         paymentMethod.setCurrent(current);
         return paymentMethod;
     }
+
 }
