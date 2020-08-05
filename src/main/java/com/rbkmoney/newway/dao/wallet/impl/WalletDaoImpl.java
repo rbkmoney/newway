@@ -40,7 +40,7 @@ public class WalletDaoImpl extends AbstractGenericDao implements WalletDao {
                 .returning(WALLET.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
+        execute(query, keyHolder);
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 

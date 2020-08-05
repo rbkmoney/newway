@@ -7,14 +7,12 @@ import com.rbkmoney.newway.domain.tables.pojos.Payout;
 import com.rbkmoney.newway.domain.tables.records.PayoutRecord;
 import com.rbkmoney.newway.exception.DaoException;
 import org.jooq.Query;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-
 import java.util.Optional;
 
 import static com.rbkmoney.newway.domain.Tables.PAYOUT;
@@ -33,9 +31,14 @@ public class PayoutDaoImpl extends AbstractGenericDao implements PayoutDao {
     @Override
     public Optional<Long> save(Payout payout) throws DaoException {
         PayoutRecord payoutRecord = getDslContext().newRecord(PAYOUT, payout);
-        Query query = getDslContext().insertInto(PAYOUT).set(payoutRecord).returning(PAYOUT.ID);
+        Query query = getDslContext()
+                .insertInto(PAYOUT)
+                .set(payoutRecord)
+                .onConflict(PAYOUT.EVENT_ID, PAYOUT.PAYOUT_ID, PAYOUT.CHANGE_ID)
+                .doNothing()
+                .returning(PAYOUT.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
+        execute(query, keyHolder);
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 

@@ -37,12 +37,12 @@ public class IdentityDaoImpl extends AbstractGenericDao implements IdentityDao {
         Query query = getDslContext()
                 .insertInto(IDENTITY)
                 .set(record)
-                .onConflict(IDENTITY.IDENTITY_ID, DEPOSIT.SEQUENCE_ID)
+                .onConflict(IDENTITY.IDENTITY_ID, IDENTITY.SEQUENCE_ID)
                 .doNothing()
                 .returning(IDENTITY.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
+        execute(query, keyHolder);
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 

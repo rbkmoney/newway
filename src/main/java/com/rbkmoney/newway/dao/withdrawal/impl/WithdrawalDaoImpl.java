@@ -40,7 +40,7 @@ public class WithdrawalDaoImpl extends AbstractGenericDao implements WithdrawalD
                 .returning(WITHDRAWAL.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
+        execute(query, keyHolder);
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 

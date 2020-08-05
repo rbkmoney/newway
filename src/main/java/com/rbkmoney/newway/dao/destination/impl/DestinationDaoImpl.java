@@ -35,12 +35,12 @@ public class DestinationDaoImpl extends AbstractGenericDao implements Destinatio
         Query query = getDslContext()
                 .insertInto(DESTINATION)
                 .set(record)
-                .onConflict(DESTINATION.DESTINATION_ID, DEPOSIT.SEQUENCE_ID)
+                .onConflict(DESTINATION.DESTINATION_ID, DESTINATION.SEQUENCE_ID)
                 .doNothing()
                 .returning(DESTINATION.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
+        execute(query, keyHolder);
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 

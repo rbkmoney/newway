@@ -39,7 +39,7 @@ public class DepositDaoImpl extends AbstractGenericDao implements DepositDao {
                 .returning(DEPOSIT.ID);
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
+        execute(query, keyHolder);
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
