@@ -53,7 +53,9 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
         if (data.isSetTerminal()) {
             provider.setTerminalJson(JsonUtil.tBaseToJsonString(data.getTerminal()));
         }
-        provider.setAbsAccount(data.getAbsAccount());
+        if (data.isSetAbsAccount()) {
+            provider.setAbsAccount(data.getAbsAccount());
+        }
 
         if (data.isSetTerms() && data.getTerms().isSetPayments()) {
             provider.setPaymentTermsJson(JsonUtil.tBaseToJsonString(data.getTerms().getPayments()));
@@ -65,6 +67,20 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
             provider.setRecurrentPaytoolTermsJson(JsonUtil.tBaseToJsonString(data.getTerms().getRecurrentPaytools()));
         } else if (data.isSetRecurrentPaytoolTerms()) {
             provider.setRecurrentPaytoolTermsJson(JsonUtil.tBaseToJsonString(data.getRecurrentPaytoolTerms()));
+        }
+
+        if (data.isSetIdentity()) {
+            provider.setIdentity(data.getIdentity());
+        }
+        if (data.isSetTerms() && data.getTerms().isSetWallet()) {
+            provider.setWalletTermsJson(JsonUtil.tBaseToJsonString(data.getTerms().getWallet()));
+        }
+        if (data.isSetParamsSchema()) {
+            provider.setParamsSchemaJson(
+                    JsonUtil.objectToJsonString(
+                            data.getParamsSchema().stream().map(JsonUtil::tBaseToJsonNode).collect(Collectors.toList())
+                    )
+            );
         }
 
         if (data.isSetAccounts()) {

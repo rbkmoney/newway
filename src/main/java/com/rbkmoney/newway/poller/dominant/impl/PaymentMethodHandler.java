@@ -34,16 +34,16 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
         com.rbkmoney.damsel.domain.PaymentMethod paymentMethodObjectRefId = getObject().getRef().getId();
         String paymentMethodRefId;
         if (paymentMethodObjectRefId.isSetBankCard()) {
-            paymentMethodRefId = paymentMethodObjectRefId.getBankCard().name();
+            paymentMethodRefId = paymentMethodObjectRefId.getBankCard().getPaymentSystem().name();
         } else if (paymentMethodObjectRefId.isSetPaymentTerminal()) {
             paymentMethodRefId = paymentMethodObjectRefId.getPaymentTerminal().name();
         } else if (paymentMethodObjectRefId.isSetDigitalWallet()) {
             paymentMethodRefId = paymentMethodObjectRefId.getDigitalWallet().name();
-        } else if (paymentMethodObjectRefId.isSetTokenizedBankCard()) {
-            TokenizedBankCard tokenizedBankCard = paymentMethodObjectRefId.getTokenizedBankCard();
+        } else if (paymentMethodObjectRefId.isSetTokenizedBankCardDeprecated()) {
+            TokenizedBankCard tokenizedBankCard = paymentMethodObjectRefId.getTokenizedBankCardDeprecated();
             paymentMethodRefId = tokenizedBankCard.getPaymentSystem().name() + "_" + tokenizedBankCard.getTokenProvider().name();
-        } else if (paymentMethodObjectRefId.isSetEmptyCvvBankCard()) {
-            paymentMethodRefId = "empty_cvv_" + paymentMethodObjectRefId.getEmptyCvvBankCard().name();
+        } else if (paymentMethodObjectRefId.isSetEmptyCvvBankCardDeprecated()) {
+            paymentMethodRefId = "empty_cvv_" + paymentMethodObjectRefId.getEmptyCvvBankCardDeprecated().name();
         } else if (paymentMethodObjectRefId.isSetCryptoCurrency()) {
             paymentMethodRefId = paymentMethodObjectRefId.getCryptoCurrency().name();
         } else if (paymentMethodObjectRefId.isSetMobile()) {

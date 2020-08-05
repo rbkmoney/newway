@@ -52,6 +52,12 @@ public class TerminalHandler extends AbstractDominantHandler<TerminalObject, Ter
         if (data.isSetTerms()) {
             terminal.setTermsJson(JsonUtil.tBaseToJsonString(data.getTerms()));
         }
+        terminal.setExternalTerminalId(data.getExternalTerminalId());
+        terminal.setExternalMerchantId(data.getExternalMerchantId());
+        terminal.setMcc(data.getMcc());
+        if (data.isSetProviderRef()) {
+            terminal.setTerminalProviderRefId(data.getProviderRef().getId());
+        }
         terminal.setCurrent(current);
         return terminal;
     }

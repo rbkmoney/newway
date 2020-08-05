@@ -33,7 +33,7 @@
         <local.pg.url>jdbc:postgresql://localhost:5432/newway</local.pg.url>
         <local.pg.port>5432</local.pg.port>
         <fistful-proto.version>1.84-a0c7afe</fistful-proto.version>
-        <damsel.version>1.433-29f9498</damsel.version>
+        <damsel.version>1.446-38bdfd5</damsel.version>
         <sonar.jacoco.reportPaths>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPaths>
         <sink-common-lib.version>0.0.4</sink-common-lib.version>
     </properties>
@@ -394,7 +394,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.4</version>
+                <version>0.8.5</version>
                 <configuration>
                     <destFile>${sonar.jacoco.reportPaths}</destFile>
                     <append>true</append>
