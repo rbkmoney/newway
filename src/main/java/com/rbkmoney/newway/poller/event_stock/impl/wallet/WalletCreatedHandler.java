@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.wallet;
 
 import com.rbkmoney.fistful.wallet.Change;
+import com.rbkmoney.fistful.wallet.TimestampedChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -24,12 +25,13 @@ public class WalletCreatedHandler extends AbstractWalletHandler {
     private final Filter filter = new PathConditionFilter(new PathConditionRule("created", new IsNullCondition().not()));
 
     @Override
-    public void handle(Change change, MachineEvent event, Integer changeId) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event, Integer changeId) {
+        Change change = timestampedChange.getChange();
         long sequenceId = event.getEventId();
         String walletId = event.getSourceId();
         log.info("Start wallet created handling, sequenceId={}, walletId={}, changeId={}", sequenceId, walletId, changeId);
         Wallet wallet = new Wallet();
-        initDefaultFields(event, sequenceId, walletId, wallet);
+        initDefaultFields(event, sequenceId, walletId, wallet, timestampedChange.getOccuredAt());
 
         wallet.setWalletName(change.getCreated().getName());
         wallet.setExternalId(change.getCreated().getExternalId());

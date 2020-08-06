@@ -2,6 +2,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.deposit;
 
 import com.rbkmoney.fistful.base.Cash;
 import com.rbkmoney.fistful.deposit.Change;
+import com.rbkmoney.fistful.deposit.TimestampedChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -27,13 +28,14 @@ public class DepositCreatedHandler extends AbstractDepositHandler {
             new PathConditionRule("created.deposit", new IsNullCondition().not()));
 
     @Override
-    public void handle(Change change, MachineEvent event, Integer changeId) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         var depositDamsel = change.getCreated().getDeposit();
         long sequenceId = event.getEventId();
         String depositId = event.getSourceId();
-        log.info("Start deposit created handling, sequenceId={}, depositId={}, changeId={}", sequenceId, depositId, changeId);
+        log.info("Start deposit created handling, sequenceId={}, depositId={}", sequenceId, depositId);
         Deposit deposit = new Deposit();
-        initDefaultFieldsDeposit(event, changeId, sequenceId, depositId, deposit);
+        initDefaultFieldsDeposit(event, sequenceId, depositId, deposit, timestampedChange.getOccuredAt());
         deposit.setSourceId(depositDamsel.getSourceId());
         deposit.setWalletId(depositDamsel.getWalletId());
 
@@ -44,10 +46,10 @@ public class DepositCreatedHandler extends AbstractDepositHandler {
         deposit.setExternalId(depositDamsel.getExternalId());
 
         depositDao.save(deposit).ifPresentOrElse(
-                dbContractId -> log.info("Deposit created has been saved, sequenceId={}, depositId={}, changeId={}",
-                        sequenceId, depositId, changeId),
-                () -> log.info("Deposit created bound duplicated, sequenceId={}, depositId={}, changeId={}",
-                        sequenceId, depositId, changeId));
+                dbContractId -> log.info("Deposit created has been saved, sequenceId={}, depositId={}",
+                        sequenceId, depositId),
+                () -> log.info("Deposit created bound duplicated, sequenceId={}, depositId={}",
+                        sequenceId, depositId));
     }
 
 }

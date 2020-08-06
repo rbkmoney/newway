@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.identity;
 
 import com.rbkmoney.fistful.identity.Change;
-import com.rbkmoney.geck.common.util.TypeUtil;
+import com.rbkmoney.fistful.identity.TimestampedChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -29,19 +29,15 @@ public class IdentityLevelChangedHandler extends AbstractIdentityHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(Change change, MachineEvent event) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         long sequenceId = event.getEventId();
         String identityId = event.getSourceId();
         log.info("Start identity level changed handling, sequenceId={}, identityId={}", sequenceId, identityId);
         Identity identity = identityDao.get(identityId);
         Long oldId = identity.getId();
 
-        identity.setId(null);
-        identity.setWtime(null);
-        identity.setIdentityId(identityId);
-        identity.setSequenceId((int) sequenceId);
-        identity.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        identity.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+        initDefaultFieldsIdentity(change, event, sequenceId, identityId, identity, timestampedChange.getOccuredAt());
         identity.setIdentityLevelId(change.getLevelChanged());
 
         identityDao.save(identity).ifPresentOrElse(

@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.service;
 
-import com.rbkmoney.fistful.source.Change;
-import com.rbkmoney.fistful.source.Event;
+import com.rbkmoney.fistful.source.TimestampedChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.poller.event_stock.impl.source.AbstractSourceHandler;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
@@ -19,7 +18,7 @@ import java.util.List;
 public class SourceService {
 
     private final List<AbstractSourceHandler> sourceHandlers;
-    private final MachineEventParser<Event> parser;
+    private final MachineEventParser<TimestampedChange> parser;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(List<MachineEvent> machineEvents) {
@@ -27,11 +26,11 @@ public class SourceService {
     }
 
     private void handleIfAccept(MachineEvent machineEvent) {
-        Event eventPayload = parser.parse(machineEvent);
+        TimestampedChange eventPayload = parser.parse(machineEvent);
         if (eventPayload.isSetChange()) {
             sourceHandlers.stream()
-                    .filter(handler -> handler.accept(eventPayload.getChange()))
-                    .forEach(handler -> handler.handle(eventPayload.getChange(), machineEvent));
+                    .filter(handler -> handler.accept(eventPayload))
+                    .forEach(handler -> handler.handle(eventPayload, machineEvent));
         }
     }
 

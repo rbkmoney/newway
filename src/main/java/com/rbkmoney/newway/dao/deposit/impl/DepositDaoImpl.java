@@ -34,7 +34,7 @@ public class DepositDaoImpl extends AbstractGenericDao implements DepositDao {
         Query query = getDslContext()
                 .insertInto(DEPOSIT)
                 .set(record)
-                .onConflict(DEPOSIT.DEPOSIT_ID, DEPOSIT.SEQUENCE_ID, DEPOSIT.CHANGE_ID)
+                .onConflict(DEPOSIT.DEPOSIT_ID, DEPOSIT.SEQUENCE_ID)
                 .doNothing()
                 .returning(DEPOSIT.ID);
 

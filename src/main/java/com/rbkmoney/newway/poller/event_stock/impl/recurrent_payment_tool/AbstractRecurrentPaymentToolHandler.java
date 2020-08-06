@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.recurrent_payment_tool;
 
 import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolChange;
-import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolEvent;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.recurrent_payment_tool.iface.RecurrentPaymentToolDao;

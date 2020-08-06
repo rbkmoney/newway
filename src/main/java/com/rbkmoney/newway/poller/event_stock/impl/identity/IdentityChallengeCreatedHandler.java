@@ -3,6 +3,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.identity;
 import com.rbkmoney.fistful.identity.ChallengeChange;
 import com.rbkmoney.fistful.identity.ChallengeChangePayload;
 import com.rbkmoney.fistful.identity.Change;
+import com.rbkmoney.fistful.identity.TimestampedChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -31,7 +32,8 @@ public class IdentityChallengeCreatedHandler extends AbstractIdentityHandler {
             new PathConditionRule("identity_challenge.payload.created", new IsNullCondition().not()));
 
     @Override
-    public void handle(Change change, MachineEvent event) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         ChallengeChange challengeChange = change.getIdentityChallenge();
         long sequenceId = event.getEventId();
         String identityId = event.getSourceId();
@@ -40,7 +42,7 @@ public class IdentityChallengeCreatedHandler extends AbstractIdentityHandler {
                 sequenceId, identityId, challengeId);
 
         Challenge challenge = new Challenge();
-        initDefaultChallengeFields(event, challengeChange, (int) sequenceId, identityId, challenge);
+        initDefaultChallengeFields(event, challengeChange, (int) sequenceId, identityId, challenge, timestampedChange.getOccuredAt());
 
         ChallengeChangePayload challengePayload = challengeChange.getPayload();
         com.rbkmoney.fistful.identity.Challenge challengePayloadCreated = challengePayload.getCreated();

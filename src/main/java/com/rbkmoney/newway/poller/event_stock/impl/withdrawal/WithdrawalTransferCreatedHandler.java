@@ -2,6 +2,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.withdrawal;
 
 import com.rbkmoney.fistful.cashflow.FinalCashFlowPosting;
 import com.rbkmoney.fistful.withdrawal.Change;
+import com.rbkmoney.fistful.withdrawal.TimestampedChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -37,7 +38,8 @@ public class WithdrawalTransferCreatedHandler extends AbstractWithdrawalHandler 
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(Change change, MachineEvent event) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         List<FinalCashFlowPosting> postings = change.getTransfer().getPayload().getCreated().getTransfer().getCashflow().getPostings();
         long sequenceId = event.getEventId();
         String withdrawalId = event.getSourceId();
@@ -47,7 +49,7 @@ public class WithdrawalTransferCreatedHandler extends AbstractWithdrawalHandler 
         Withdrawal withdrawal = withdrawalDao.get(withdrawalId);
         Long oldId = withdrawal.getId();
 
-        initDefaultFields(event, sequenceId, withdrawalId, withdrawal);
+        initDefaultFields(event, sequenceId, withdrawalId, withdrawal, timestampedChange.getOccuredAt());
         withdrawal.setWithdrawalTransferStatus(WithdrawalTransferStatus.created);
 
         withdrawal.setFee(CashFlowUtil.getFistfulFee(postings));

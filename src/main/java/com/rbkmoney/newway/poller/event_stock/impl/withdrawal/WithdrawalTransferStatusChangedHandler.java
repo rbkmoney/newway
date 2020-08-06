@@ -2,6 +2,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.withdrawal;
 
 import com.rbkmoney.fistful.transfer.Status;
 import com.rbkmoney.fistful.withdrawal.Change;
+import com.rbkmoney.fistful.withdrawal.TimestampedChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -37,7 +38,8 @@ public class WithdrawalTransferStatusChangedHandler extends AbstractWithdrawalHa
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(Change change, MachineEvent event) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         Status status = change.getTransfer().getPayload().getStatusChanged().getStatus();
         long sequenceId = event.getEventId();
         String withdrawalId = event.getSourceId();
@@ -46,7 +48,7 @@ public class WithdrawalTransferStatusChangedHandler extends AbstractWithdrawalHa
 
         Withdrawal withdrawal = withdrawalDao.get(withdrawalId);
         Long oldId = withdrawal.getId();
-        initDefaultFields(event, sequenceId, withdrawalId, withdrawal);
+        initDefaultFields(event, sequenceId, withdrawalId, withdrawal, timestampedChange.getOccuredAt());
         withdrawal.setWithdrawalTransferStatus(TBaseUtil.unionFieldToEnum(status, WithdrawalTransferStatus.class));
 
         withdrawalDao.save(withdrawal).ifPresentOrElse(

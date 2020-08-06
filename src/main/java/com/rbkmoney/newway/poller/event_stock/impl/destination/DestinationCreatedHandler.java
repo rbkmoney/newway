@@ -3,6 +3,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.destination;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rbkmoney.fistful.base.*;
 import com.rbkmoney.fistful.destination.Change;
+import com.rbkmoney.fistful.destination.TimestampedChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
@@ -35,12 +36,13 @@ public class DestinationCreatedHandler extends AbstractDestinationHandler {
             new PathConditionRule("created", new IsNullCondition().not()));
 
     @Override
-    public void handle(Change change, MachineEvent event) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
         long sequenceId = event.getEventId();
+        Change change = timestampedChange.getChange();
         String destinationId = event.getSourceId();
         log.info("Start destination created handling, sequenceId={}, destinationId={}", sequenceId, destinationId);
         Destination destination = new Destination();
-        initDefaultFields(event, sequenceId, destinationId, destination);
+        initDefaultFields(event, sequenceId, destinationId, destination, timestampedChange.getOccuredAt());
 
         destination.setDestinationName(change.getCreated().getName());
         destination.setDestinationStatus(DestinationStatus.unauthorized);

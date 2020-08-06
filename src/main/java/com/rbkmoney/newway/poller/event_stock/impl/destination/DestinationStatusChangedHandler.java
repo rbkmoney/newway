@@ -2,6 +2,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.destination;
 
 import com.rbkmoney.fistful.destination.Change;
 import com.rbkmoney.fistful.destination.Status;
+import com.rbkmoney.fistful.destination.TimestampedChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -28,7 +29,8 @@ public class DestinationStatusChangedHandler extends AbstractDestinationHandler 
             new PathConditionRule("status.changed", new IsNullCondition().not()));
 
     @Override
-    public void handle(Change change, MachineEvent event) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         Status status = change.getStatus().getChanged();
         long sequenceId = event.getEventId();
         String destinationId = event.getSourceId();
@@ -37,7 +39,7 @@ public class DestinationStatusChangedHandler extends AbstractDestinationHandler 
         Destination destination = destinationDao.get(destinationId);
         Long oldId = destination.getId();
 
-        initDefaultFields(event, sequenceId, destinationId, destination);
+        initDefaultFields(event, sequenceId, destinationId, destination, timestampedChange.getOccuredAt());
         destination.setDestinationStatus(TBaseUtil.unionFieldToEnum(status, DestinationStatus.class));
 
         destinationDao.save(destination).ifPresentOrElse(

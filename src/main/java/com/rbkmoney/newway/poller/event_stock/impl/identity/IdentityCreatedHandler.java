@@ -2,6 +2,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.identity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rbkmoney.fistful.identity.Change;
+import com.rbkmoney.fistful.identity.TimestampedChange;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -30,7 +31,8 @@ public class IdentityCreatedHandler extends AbstractIdentityHandler {
     private Filter filter = new PathConditionFilter(new PathConditionRule("created", new IsNullCondition().not()));
 
     @Override
-    public void handle(Change change, MachineEvent event) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         long sequenceId = event.getEventId();
         String identityId = event.getSourceId();
         log.info("Start identity created handling, sequenceId={}, identityId={}", sequenceId, identityId);
@@ -38,7 +40,7 @@ public class IdentityCreatedHandler extends AbstractIdentityHandler {
         identity.setIdentityId(identityId);
         identity.setSequenceId((int) sequenceId);
         identity.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        identity.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+        identity.setEventOccuredAt(TypeUtil.stringToLocalDateTime(timestampedChange.getOccuredAt()));
         com.rbkmoney.fistful.identity.Identity changeCreated = change.getCreated();
         identity.setPartyId(changeCreated.getParty());
         identity.setPartyContractId(changeCreated.getContract());

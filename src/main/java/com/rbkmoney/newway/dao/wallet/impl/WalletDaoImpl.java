@@ -35,7 +35,7 @@ public class WalletDaoImpl extends AbstractGenericDao implements WalletDao {
         Query query = getDslContext()
                 .insertInto(WALLET)
                 .set(record)
-                .onConflict(WALLET.WALLET_ID, WALLET.SEQUENCE_ID, WALLET.CHANGE_ID)
+                .onConflict(WALLET.WALLET_ID, WALLET.SEQUENCE_ID)
                 .doNothing()
                 .returning(WALLET.ID);
 

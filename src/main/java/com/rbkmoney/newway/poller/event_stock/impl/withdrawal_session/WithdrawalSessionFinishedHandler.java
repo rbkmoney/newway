@@ -2,6 +2,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.withdrawal_session;
 
 import com.rbkmoney.fistful.base.TransactionInfo;
 import com.rbkmoney.fistful.withdrawal_session.Change;
+import com.rbkmoney.fistful.withdrawal_session.TimestampedChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
@@ -32,14 +33,15 @@ public class WithdrawalSessionFinishedHandler extends AbstractWithdrawalSessionH
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(Change change, MachineEvent event, Integer changeId) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         long sequenceId = event.getEventId();
         String withdrawalSessionId = event.getSourceId();
-        log.info("Start withdrawal session next state handling, sequenceId={}, changeId={}, withdrawalSessionId={}",
-                sequenceId, changeId, withdrawalSessionId);
+        log.info("Start withdrawal session next state handling, sequenceId={}, withdrawalSessionId={}",
+                sequenceId, withdrawalSessionId);
         WithdrawalSession withdrawalSession = withdrawalSessionDao.get(withdrawalSessionId);
         Long oldId = withdrawalSession.getId();
-        initDefaultFields(event, sequenceId, withdrawalSession, withdrawalSessionId);
+        initDefaultFields(event, sequenceId, withdrawalSession, withdrawalSessionId, timestampedChange.getOccuredAt());
 
         withdrawalSession.setWithdrawalSessionStatus(TBaseUtil.unionFieldToEnum(change.getFinished(), WithdrawalSessionStatus.class));
         if (change.getFinished().isSetFailed()) {
@@ -60,11 +62,11 @@ public class WithdrawalSessionFinishedHandler extends AbstractWithdrawalSessionH
         withdrawalSessionDao.save(withdrawalSession).ifPresentOrElse(
                 id -> {
                     withdrawalSessionDao.updateNotCurrent(oldId);
-                    log.info("Withdrawal session state have been changed, sequenceId={}, changeId={}, withdrawalSessionId={}, WithdrawalSessionStatus={}",
-                            sequenceId, changeId, withdrawalSessionId, withdrawalSession.getWithdrawalSessionStatus());
+                    log.info("Withdrawal session state have been changed, sequenceId={}, withdrawalSessionId={}, WithdrawalSessionStatus={}",
+                            sequenceId, withdrawalSessionId, withdrawalSession.getWithdrawalSessionStatus());
                 },
-                () -> log.info("Withdrawal session state have been changed, sequenceId={}, changeId={}, withdrawalSessionId={}, WithdrawalSessionStatus={}",
-                        sequenceId, changeId, withdrawalSessionId, withdrawalSession.getWithdrawalSessionStatus()));
+                () -> log.info("Withdrawal session state have been changed, sequenceId={}, withdrawalSessionId={}, WithdrawalSessionStatus={}",
+                        sequenceId, withdrawalSessionId, withdrawalSession.getWithdrawalSessionStatus()));
 
     }
 

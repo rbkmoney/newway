@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.deposit;
 
 import com.rbkmoney.fistful.deposit.Change;
+import com.rbkmoney.fistful.deposit.TimestampedChange;
 import com.rbkmoney.fistful.deposit.status.Status;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.filter.Filter;
@@ -37,14 +38,15 @@ public class DepositStatusChangedHandler extends AbstractDepositHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(Change change, MachineEvent event, Integer changeId) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         Status status = change.getStatusChanged().getStatus();
         long sequenceId = event.getEventId();
         String depositId = event.getSourceId();
-        log.info("Start deposit status changed handling, sequenceId={}, depositId={}, changeId={}", sequenceId, depositId, changeId);
+        log.info("Start deposit status changed handling, sequenceId={}, depositId={}", sequenceId, depositId);
         Deposit deposit = depositDao.get(depositId);
         Long oldDepositId = deposit.getId();
-        initDefaultFieldsDeposit(event, changeId, sequenceId, depositId, deposit);
+        initDefaultFieldsDeposit(event, sequenceId, depositId, deposit, timestampedChange.getOccuredAt());
         deposit.setDepositStatus(TBaseUtil.unionFieldToEnum(status, DepositStatus.class));
 
         depositDao.save(deposit).ifPresentOrElse(
@@ -57,8 +59,8 @@ public class DepositStatusChangedHandler extends AbstractDepositHandler {
                     });
                     fistfulCashFlowDao.save(cashFlows);
                 },
-                () -> log.info("Deposit status have been changed, sequenceId={}, depositId={}, changeId={}",
-                        sequenceId, depositId, changeId)
+                () -> log.info("Deposit status have been changed, sequenceId={}, depositId={}",
+                        sequenceId, depositId)
         );
     }
 

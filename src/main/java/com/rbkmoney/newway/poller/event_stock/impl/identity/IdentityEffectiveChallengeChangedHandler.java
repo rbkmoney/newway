@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.identity;
 
 import com.rbkmoney.fistful.identity.Change;
+import com.rbkmoney.fistful.identity.TimestampedChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -28,7 +29,8 @@ public class IdentityEffectiveChallengeChangedHandler extends AbstractIdentityHa
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(Change change, MachineEvent event) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         long sequenceId = event.getEventId();
         String identityId = event.getSourceId();
         log.info("Start effective identity challenge changed handling, sequenceId={}, identityId={}", sequenceId, identityId);
@@ -36,7 +38,7 @@ public class IdentityEffectiveChallengeChangedHandler extends AbstractIdentityHa
 
         Long oldId = identity.getId();
 
-        initDefaultFieldsIdentity(change, event, sequenceId, identityId, identity);
+        initDefaultFieldsIdentity(change, event, sequenceId, identityId, identity, timestampedChange.getOccuredAt());
 
         identityDao.save(identity).ifPresentOrElse(
                 id -> {

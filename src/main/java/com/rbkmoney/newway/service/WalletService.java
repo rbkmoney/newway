@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.service;
 
-import com.rbkmoney.fistful.wallet.Change;
-import com.rbkmoney.fistful.wallet.Event;
+import com.rbkmoney.fistful.wallet.TimestampedChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.poller.event_stock.impl.wallet.AbstractWalletHandler;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
@@ -16,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WalletService {
 
-    private final MachineEventParser<Event> parser;
+    private final MachineEventParser<TimestampedChange> parser;
     private final List<AbstractWalletHandler> withdrawalHandlers;
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -25,16 +24,10 @@ public class WalletService {
     }
 
     private void handleIfAccept(MachineEvent machineEvent) {
-        Event eventPayload = parser.parse(machineEvent);
-        if (eventPayload.isSetChanges()) {
-            for (int i = 0; i < eventPayload.getChanges().size(); i++) {
-                Change change = eventPayload.getChanges().get(i);
-                Integer changeId = i;
-                withdrawalHandlers.stream()
-                        .filter(handler -> handler.accept(change))
-                        .forEach(handler -> handler.handle(change, machineEvent, changeId));
-            }
-        }
+        TimestampedChange eventPayload = parser.parse(machineEvent);
+        withdrawalHandlers.stream()
+                .filter(handler -> handler.accept(eventPayload))
+                .forEach(handler -> handler.handle(eventPayload, machineEvent));
     }
 
 }

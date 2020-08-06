@@ -2,6 +2,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.withdrawal;
 
 import com.rbkmoney.fistful.withdrawal.Change;
 import com.rbkmoney.fistful.withdrawal.Route;
+import com.rbkmoney.fistful.withdrawal.TimestampedChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -34,7 +35,8 @@ public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(Change change, MachineEvent event) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         Route route = change.getRoute().getRoute();
         int providerId = route.getProviderId();
         String providerIdLegacy = route.getProviderIdLegacy();
@@ -45,7 +47,7 @@ public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
         Withdrawal withdrawal = withdrawalDao.get(withdrawalId);
         Long oldId = withdrawal.getId();
 
-        initDefaultFields(event, sequenceId, withdrawalId, withdrawal);
+        initDefaultFields(event, sequenceId, withdrawalId, withdrawal, timestampedChange.getOccuredAt());
 
         withdrawal.setProviderId(providerId);
         withdrawal.setProviderIdLegacy(providerIdLegacy);

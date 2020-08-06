@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.kafka;
 
 import com.rbkmoney.newway.poller.listener.WalletKafkaListener;
+import com.rbkmoney.newway.serde.WalletChangeMachineEventParser;
 import com.rbkmoney.newway.service.WalletService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -12,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import static org.mockito.ArgumentMatchers.anyList;
 
 @Slf4j
-@ContextConfiguration(classes = {KafkaAutoConfiguration.class, WalletKafkaListener.class})
+@ContextConfiguration(classes = {KafkaAutoConfiguration.class, WalletKafkaListener.class, WalletChangeMachineEventParser.class})
 public class WalletKafkaListenerTest extends AbstractKafkaTest {
 
     @org.springframework.beans.factory.annotation.Value("${kafka.topics.wallet.id}")

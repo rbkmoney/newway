@@ -2,6 +2,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.source;
 
 import com.rbkmoney.fistful.source.Change;
 import com.rbkmoney.fistful.source.Status;
+import com.rbkmoney.fistful.source.TimestampedChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -28,7 +29,8 @@ public class SourceStatusChangedHandler extends AbstractSourceHandler {
             new PathConditionRule("status.status", new IsNullCondition().not()));
 
     @Override
-    public void handle(Change change, MachineEvent event) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         Status status = change.getStatus().getStatus();
         long sequenceId = event.getEventId();
         String sourceId = event.getSourceId();
@@ -37,7 +39,7 @@ public class SourceStatusChangedHandler extends AbstractSourceHandler {
         Source source = sourceDao.get(sourceId);
         Long oldId = source.getId();
 
-        initDefaultFields(event, (int) sequenceId, sourceId, source);
+        initDefaultFields(event, (int) sequenceId, sourceId, source, timestampedChange.getOccuredAt());
 
         source.setSourceStatus(TBaseUtil.unionFieldToEnum(status, SourceStatus.class));
 

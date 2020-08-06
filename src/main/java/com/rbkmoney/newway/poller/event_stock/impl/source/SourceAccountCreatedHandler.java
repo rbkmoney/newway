@@ -2,7 +2,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.source;
 
 import com.rbkmoney.fistful.account.Account;
 import com.rbkmoney.fistful.source.Change;
-import com.rbkmoney.geck.common.util.TypeUtil;
+import com.rbkmoney.fistful.source.TimestampedChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -30,7 +30,8 @@ public class SourceAccountCreatedHandler extends AbstractSourceHandler {
     private final Filter filter = new PathConditionFilter(new PathConditionRule("account.created", new IsNullCondition().not()));
 
     @Override
-    public void handle(Change change, MachineEvent event) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         Account account = change.getAccount().getCreated();
         long sequenceId = event.getEventId();
         String sourceId = event.getSourceId();
@@ -45,7 +46,7 @@ public class SourceAccountCreatedHandler extends AbstractSourceHandler {
             throw new NotFoundException(String.format("Identity not found, walletId='%s'", sourceId));
         }
 
-        initDefaultFields(event, (int) sequenceId, sourceId, source);
+        initDefaultFields(event, (int) sequenceId, sourceId, source, timestampedChange.getOccuredAt());
 
         source.setAccountId(account.getId());
         source.setIdentityId(account.getIdentity());

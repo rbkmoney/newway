@@ -1,9 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.identity;
 
-import com.rbkmoney.fistful.identity.ChallengeChange;
-import com.rbkmoney.fistful.identity.ChallengeCompleted;
-import com.rbkmoney.fistful.identity.ChallengeStatus;
-import com.rbkmoney.fistful.identity.Change;
+import com.rbkmoney.fistful.identity.*;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
@@ -34,7 +31,8 @@ public class IdentityChallengeStatusChangedHandler extends AbstractIdentityHandl
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(Change change, MachineEvent event) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         ChallengeChange challengeChange = change.getIdentityChallenge();
         ChallengeStatus status = challengeChange.getPayload().getStatusChanged();
         long sequenceId = event.getEventId();
@@ -46,7 +44,7 @@ public class IdentityChallengeStatusChangedHandler extends AbstractIdentityHandl
         Challenge challenge = challengeDao.get(identityId, challengeChange.getId());
         Long oldId = challenge.getId();
 
-        initDefaultChallengeFields(event, challengeChange, (int) sequenceId, identityId, challenge);
+        initDefaultChallengeFields(event, challengeChange, (int) sequenceId, identityId, challenge, timestampedChange.getOccuredAt());
 
         challenge.setChallengeStatus(TBaseUtil.unionFieldToEnum(status, com.rbkmoney.newway.domain.enums.ChallengeStatus.class));
         if (status.isSetCompleted()) {

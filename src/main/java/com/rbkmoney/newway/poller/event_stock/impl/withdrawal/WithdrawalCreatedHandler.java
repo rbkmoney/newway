@@ -2,7 +2,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.withdrawal;
 
 import com.rbkmoney.fistful.base.Cash;
 import com.rbkmoney.fistful.withdrawal.Change;
-import com.rbkmoney.geck.common.util.TypeUtil;
+import com.rbkmoney.fistful.withdrawal.TimestampedChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -28,17 +28,16 @@ public class WithdrawalCreatedHandler extends AbstractWithdrawalHandler {
             new PathConditionRule("created.withdrawal", new IsNullCondition().not()));
 
     @Override
-    public void handle(Change change, MachineEvent event) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         var withdrawalDamsel = change.getCreated().getWithdrawal();
         long sequenceId = event.getEventId();
         String withdrawalId = event.getSourceId();
         log.info("Start withdrawal created handling, sequenceId={}, withdrawalId={}", sequenceId, withdrawalId);
 
         Withdrawal withdrawal = new Withdrawal();
-        withdrawal.setSequenceId((int) sequenceId);
-        withdrawal.setWithdrawalId(withdrawalId);
-        withdrawal.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        withdrawal.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+        initDefaultFields(event, sequenceId, withdrawalId, withdrawal, timestampedChange.getOccuredAt());
+
         withdrawal.setWalletId(withdrawalDamsel.getWalletId());
         withdrawal.setDestinationId(withdrawalDamsel.getDestinationId());
         withdrawal.setExternalId(withdrawalDamsel.getExternalId());

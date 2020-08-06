@@ -2,6 +2,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.destination;
 
 import com.rbkmoney.fistful.account.Account;
 import com.rbkmoney.fistful.destination.Change;
+import com.rbkmoney.fistful.destination.TimestampedChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -30,7 +31,8 @@ public class DestinationAccountCreatedHandler extends AbstractDestinationHandler
             new PathConditionRule("account.created", new IsNullCondition().not()));
 
     @Override
-    public void handle(Change change, MachineEvent event) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
         Account account = change.getAccount().getCreated();
         long sequenceId = event.getEventId();
         String destinationId = event.getSourceId();
@@ -46,7 +48,7 @@ public class DestinationAccountCreatedHandler extends AbstractDestinationHandler
             throw new NotFoundException(String.format("Identity not found, destinationId='%s'", destinationId));
         }
 
-        initDefaultFields(event, sequenceId, destinationId, destination);
+        initDefaultFields(event, sequenceId, destinationId, destination, timestampedChange.getOccuredAt());
         destination.setAccountId(account.getId());
         destination.setIdentityId(account.getIdentity());
         destination.setPartyId(identity.getPartyId());
