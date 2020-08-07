@@ -34,7 +34,7 @@ public class DepositTransferCreatedHandler extends AbstractDepositHandler {
 
     @Getter
     private final Filter filter = new PathConditionFilter(
-            new PathConditionRule("transfer.payload.created.transfer.cashflow", new IsNullCondition().not()));
+            new PathConditionRule("change.transfer.payload.created.transfer.cashflow", new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

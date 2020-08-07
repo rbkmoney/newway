@@ -25,7 +25,7 @@ public class IdentityLevelChangedHandler extends AbstractIdentityHandler {
 
     @Getter
     private Filter filter = new PathConditionFilter(
-            new PathConditionRule("level_changed", new IsNullCondition().not()));
+            new PathConditionRule("change.level_changed", new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

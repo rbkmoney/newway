@@ -28,7 +28,7 @@ public class IdentityCreatedHandler extends AbstractIdentityHandler {
     private final IdentityDao identityDao;
 
     @Getter
-    private Filter filter = new PathConditionFilter(new PathConditionRule("created", new IsNullCondition().not()));
+    private Filter filter = new PathConditionFilter(new PathConditionRule("change.created", new IsNullCondition().not()));
 
     @Override
     public void handle(TimestampedChange timestampedChange, MachineEvent event) {

@@ -27,7 +27,7 @@ public class IdentityChallengeStatusChangedHandler extends AbstractIdentityHandl
 
     @Getter
     private Filter filter = new PathConditionFilter(
-            new PathConditionRule("identity_challenge.payload.status_changed", new IsNullCondition().not()));
+            new PathConditionRule("change.identity_challenge.payload.status_changed", new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

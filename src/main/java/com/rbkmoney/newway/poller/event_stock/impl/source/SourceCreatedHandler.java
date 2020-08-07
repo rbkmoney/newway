@@ -26,7 +26,7 @@ public class SourceCreatedHandler extends AbstractSourceHandler {
 
     @Getter
     private final Filter filter = new PathConditionFilter(
-            new PathConditionRule("created", new IsNullCondition().not()));
+            new PathConditionRule("change.created", new IsNullCondition().not()));
 
     @Override
     public void handle(TimestampedChange timestampedChange, MachineEvent event) {

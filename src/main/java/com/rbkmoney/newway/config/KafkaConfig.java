@@ -45,14 +45,14 @@ public class KafkaConfig {
 
     @Bean
     public Map<String, Object> consumerConfigs(KafkaSslProperties kafkaSslProperties) {
-        return createConsumerConfig(kafkaSslProperties, SinkEventDeserializer.class);
+        return createConsumerConfig(kafkaSslProperties);
     }
 
-    private <T> Map<String, Object> createConsumerConfig(KafkaSslProperties kafkaSslProperties, Class<T> clazz) {
+    private Map<String, Object> createConsumerConfig(KafkaSslProperties kafkaSslProperties) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, clazz);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SinkEventDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConsumerProperties.getGroupId());
         props.put(ConsumerConfig.CLIENT_ID_CONFIG, clientId);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, kafkaConsumerProperties.isEnableAutoCommit());

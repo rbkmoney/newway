@@ -30,7 +30,7 @@ public class WalletAccountCreatedHandler extends AbstractWalletHandler {
 
     @Getter
     private final Filter filter = new PathConditionFilter(
-            new PathConditionRule("account.created", new IsNullCondition().not()));
+            new PathConditionRule("change.account.created", new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

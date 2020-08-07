@@ -25,7 +25,7 @@ public class DepositCreatedHandler extends AbstractDepositHandler {
 
     @Getter
     private final Filter filter = new PathConditionFilter(
-            new PathConditionRule("created.deposit", new IsNullCondition().not()));
+            new PathConditionRule("change.created.deposit", new IsNullCondition().not()));
 
     @Override
     public void handle(TimestampedChange timestampedChange, MachineEvent event) {

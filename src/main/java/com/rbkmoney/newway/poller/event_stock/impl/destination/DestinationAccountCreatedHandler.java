@@ -28,7 +28,7 @@ public class DestinationAccountCreatedHandler extends AbstractDestinationHandler
 
     @Getter
     private final Filter filter = new PathConditionFilter(
-            new PathConditionRule("account.created", new IsNullCondition().not()));
+            new PathConditionRule("change.account.created", new IsNullCondition().not()));
 
     @Override
     public void handle(TimestampedChange timestampedChange, MachineEvent event) {

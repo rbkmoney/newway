@@ -25,7 +25,7 @@ public class WithdrawalCreatedHandler extends AbstractWithdrawalHandler {
 
     @Getter
     private final Filter filter = new PathConditionFilter(
-            new PathConditionRule("created.withdrawal", new IsNullCondition().not()));
+            new PathConditionRule("change.created.withdrawal", new IsNullCondition().not()));
 
     @Override
     public void handle(TimestampedChange timestampedChange, MachineEvent event) {

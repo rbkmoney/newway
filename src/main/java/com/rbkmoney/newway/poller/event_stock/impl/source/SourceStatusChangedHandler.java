@@ -26,7 +26,7 @@ public class SourceStatusChangedHandler extends AbstractSourceHandler {
 
     @Getter
     private final Filter filter = new PathConditionFilter(
-            new PathConditionRule("status.status", new IsNullCondition().not()));
+            new PathConditionRule("change.status.status", new IsNullCondition().not()));
 
     @Override
     public void handle(TimestampedChange timestampedChange, MachineEvent event) {

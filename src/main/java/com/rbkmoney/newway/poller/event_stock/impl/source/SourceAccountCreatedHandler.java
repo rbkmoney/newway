@@ -27,7 +27,7 @@ public class SourceAccountCreatedHandler extends AbstractSourceHandler {
     private final IdentityDao identityDao;
 
     @Getter
-    private final Filter filter = new PathConditionFilter(new PathConditionRule("account.created", new IsNullCondition().not()));
+    private final Filter filter = new PathConditionFilter(new PathConditionRule("change.account.created", new IsNullCondition().not()));
 
     @Override
     public void handle(TimestampedChange timestampedChange, MachineEvent event) {

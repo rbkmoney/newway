@@ -31,7 +31,7 @@ public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
     private final FistfulCashFlowDao fistfulCashFlowDao;
 
     @Getter
-    private final Filter filter = new PathConditionFilter(new PathConditionRule("route.route", new IsNullCondition().not()));
+    private final Filter filter = new PathConditionFilter(new PathConditionRule("change.route.route", new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

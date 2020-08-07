@@ -26,7 +26,7 @@ public class DestinationStatusChangedHandler extends AbstractDestinationHandler 
 
     @Getter
     private final Filter filter = new PathConditionFilter(
-            new PathConditionRule("status.changed", new IsNullCondition().not()));
+            new PathConditionRule("change.status.changed", new IsNullCondition().not()));
 
     @Override
     public void handle(TimestampedChange timestampedChange, MachineEvent event) {

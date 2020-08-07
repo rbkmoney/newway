@@ -12,7 +12,8 @@ import org.springframework.test.context.ContextConfiguration;
 import static org.mockito.ArgumentMatchers.anyList;
 
 @Slf4j
-public class WithdrawalSessionKafkaListenerTest extends AbstractKafkaTest {
+public class
+WithdrawalSessionKafkaListenerTest extends AbstractKafkaTest {
 
     @org.springframework.beans.factory.annotation.Value("${kafka.topics.withdrawal-session.id}")
     public String topic;

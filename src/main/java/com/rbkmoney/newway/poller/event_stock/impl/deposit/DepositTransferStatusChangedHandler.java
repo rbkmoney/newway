@@ -34,7 +34,7 @@ public class DepositTransferStatusChangedHandler extends AbstractDepositHandler 
 
     @Getter
     private final Filter filter = new PathConditionFilter(
-            new PathConditionRule("transfer.payload.status_changed.status", new IsNullCondition().not()));
+            new PathConditionRule("change.transfer.payload.status_changed.status", new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

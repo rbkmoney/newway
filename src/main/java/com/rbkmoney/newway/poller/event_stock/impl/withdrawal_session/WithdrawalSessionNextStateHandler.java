@@ -25,7 +25,7 @@ public class WithdrawalSessionNextStateHandler extends AbstractWithdrawalSession
     private final WithdrawalSessionDao withdrawalSessionDao;
 
     @Getter
-    private final Filter filter = new PathConditionFilter(new PathConditionRule("next_state", new IsNullCondition().not()));
+    private final Filter filter = new PathConditionFilter(new PathConditionRule("change.next_state", new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

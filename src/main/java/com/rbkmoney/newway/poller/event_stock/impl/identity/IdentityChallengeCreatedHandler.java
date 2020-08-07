@@ -29,7 +29,7 @@ public class IdentityChallengeCreatedHandler extends AbstractIdentityHandler {
 
     @Getter
     private Filter filter = new PathConditionFilter(
-            new PathConditionRule("identity_challenge.payload.created", new IsNullCondition().not()));
+            new PathConditionRule("change.identity_challenge.payload.created", new IsNullCondition().not()));
 
     @Override
     public void handle(TimestampedChange timestampedChange, MachineEvent event) {

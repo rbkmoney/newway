@@ -29,7 +29,7 @@ public class WithdrawalSessionFinishedHandler extends AbstractWithdrawalSessionH
     private final WithdrawalSessionDao withdrawalSessionDao;
 
     @Getter
-    private final Filter filter = new PathConditionFilter(new PathConditionRule("finished", new IsNullCondition().not()));
+    private final Filter filter = new PathConditionFilter(new PathConditionRule("change.finished", new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

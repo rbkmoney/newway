@@ -30,7 +30,7 @@ public class WithdrawalSessionCreatedHandler extends AbstractWithdrawalSessionHa
     private final WithdrawalSessionDao withdrawalSessionDao;
 
     @Getter
-    private final Filter filter = new PathConditionFilter(new PathConditionRule("created", new IsNullCondition().not()));
+    private final Filter filter = new PathConditionFilter(new PathConditionRule("change.created", new IsNullCondition().not()));
 
     @Override
     public void handle(TimestampedChange timestampedChange, MachineEvent event) {

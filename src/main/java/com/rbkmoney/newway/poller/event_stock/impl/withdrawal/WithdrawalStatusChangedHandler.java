@@ -35,7 +35,7 @@ public class WithdrawalStatusChangedHandler extends AbstractWithdrawalHandler {
 
     @Getter
     private final Filter filter = new PathConditionFilter(
-            new PathConditionRule("status_changed.status", new IsNullCondition().not()));
+            new PathConditionRule("change.status_changed.status", new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

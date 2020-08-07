@@ -72,21 +72,21 @@ kafka:
     rate:
       id: mg-events-rates
     identity:
-      id: mg-events-identities
+      id: mg-events-ff-identity
     wallet:
-      id: mg-events-wallets
+      id: mg-events-ff-wallet
     deposit:
-      id: mg-events-deposits
+      id: mg-events-ff-deposit
     withdrawal:
-      id: mg-events-withdrawals
+      id: mg-events-ff-withdrawal
     withdrawal-session:
-      id: mg-events-withdrawals-session
+      id: mg-events-ff-withdrawal-session
     source:
-      id: mg-events-source
+      id: mg-events-ff-source
     destination:
-      id: mg-events-destination
+      id: mg-events-ff-destination
     payout:
-      id: mg-events-payout
+      id: payout
 
 bm:
   polling:
