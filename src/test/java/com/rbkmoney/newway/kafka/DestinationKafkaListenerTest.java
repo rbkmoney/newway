@@ -13,7 +13,6 @@ import org.springframework.test.context.ContextConfiguration;
 import static org.mockito.ArgumentMatchers.anyList;
 
 @Slf4j
-@ContextConfiguration(classes = {KafkaAutoConfiguration.class, DestinationKafkaListener.class})
 public class DestinationKafkaListenerTest extends AbstractKafkaTest {
 
     @org.springframework.beans.factory.annotation.Value("${kafka.topics.destination.id}")

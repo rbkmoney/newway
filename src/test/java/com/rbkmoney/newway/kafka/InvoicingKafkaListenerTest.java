@@ -18,7 +18,6 @@ import java.time.format.DateTimeFormatter;
 import static org.mockito.ArgumentMatchers.anyList;
 
 @Slf4j
-@ContextConfiguration(classes = {KafkaAutoConfiguration.class, InvoicingKafkaListener.class})
 public class InvoicingKafkaListenerTest extends AbstractKafkaTest {
 
     @org.springframework.beans.factory.annotation.Value("${kafka.topics.invoice.id}")

@@ -12,7 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import static org.mockito.ArgumentMatchers.anyList;
 
 @Slf4j
-@ContextConfiguration(classes = {KafkaAutoConfiguration.class, PayoutKafkaListener.class})
 public class PayoutKafkaListenerTest extends AbstractKafkaTest {
 
     @org.springframework.beans.factory.annotation.Value("${kafka.topics.payout.id}")

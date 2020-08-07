@@ -23,7 +23,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @Slf4j
-@ContextConfiguration(classes = {KafkaAutoConfiguration.class, KafkaConsumerBeanEnableConfig.class})
 public class PartyManagementKafkaListenerTest extends AbstractKafkaTest {
 
     @org.springframework.beans.factory.annotation.Value("${kafka.topics.party-management.id}")

@@ -20,7 +20,6 @@ import java.time.format.DateTimeFormatter;
 import static org.mockito.ArgumentMatchers.anyList;
 
 @Slf4j
-@ContextConfiguration(classes = {KafkaAutoConfiguration.class, SourceKafkaListener.class})
 public class SourceKafkaListenerTest extends AbstractKafkaTest {
 
     @org.springframework.beans.factory.annotation.Value("${kafka.topics.source.id}")
