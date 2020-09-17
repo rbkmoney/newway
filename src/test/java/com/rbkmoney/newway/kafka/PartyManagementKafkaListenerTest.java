@@ -23,7 +23,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @Slf4j
-@ContextConfiguration(classes = {KafkaAutoConfiguration.class, KafkaConsumerBeanEnableConfig.class})
 public class PartyManagementKafkaListenerTest extends AbstractKafkaTest {
 
     @org.springframework.beans.factory.annotation.Value("${kafka.topics.party-management.id}")
@@ -34,26 +33,8 @@ public class PartyManagementKafkaListenerTest extends AbstractKafkaTest {
 
     @Test
     public void listenEmptyChanges() throws InterruptedException {
-        SinkEvent sinkEvent = new SinkEvent();
-        sinkEvent.setEvent(createMessage());
-
-        writeToTopic(topic, sinkEvent);
-
-        waitForTopicSync();
-
+        sendMessage(topic);
         verify(partyManagementService, times(1)).handleEvents(anyList());
-    }
-
-    private MachineEvent createMessage() {
-        MachineEvent message = new MachineEvent();
-        Value data = new Value();
-        data.setBin(new byte[0]);
-        message.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-        message.setEventId(1L);
-        message.setSourceNs("sad");
-        message.setSourceId("sda");
-        message.setData(data);
-        return message;
     }
 
 }

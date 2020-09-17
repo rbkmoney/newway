@@ -60,7 +60,6 @@ public abstract class AbstractAppDaoTests extends AbstractTestUtils {
 
     private static Consumer<EnvironmentProperties> getEnvironmentPropertiesConsumer() {
         return environmentProperties -> {
-            environmentProperties.put("info.single-instance-mode", "true");
             environmentProperties.put("bm.polling.enabled", "false");
             environmentProperties.put("dmt.polling.enabled", "false");
             environmentProperties.put("recurrentPaymentTool.polling.enabled", "false");

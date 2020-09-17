@@ -1,50 +1,33 @@
 package com.rbkmoney.newway.service;
 
-import com.rbkmoney.fistful.withdrawal_session.Event;
-import com.rbkmoney.fistful.withdrawal_session.SinkEvent;
-import com.rbkmoney.newway.dao.withdrawal_session.iface.WithdrawalSessionDao;
-import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.fistful.withdrawal_session.TimestampedChange;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.poller.event_stock.impl.withdrawal_session.AbstractWithdrawalSessionHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class WithdrawalSessionService implements EventService<SinkEvent, Event> {
+@RequiredArgsConstructor
+public class WithdrawalSessionService {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final MachineEventParser<TimestampedChange> parser;
+    private final List<AbstractWithdrawalSessionHandler> withdrawalHandlers;
 
-    private final WithdrawalSessionDao withdrawalSessionDao;
-
-    private final List<AbstractWithdrawalSessionHandler> withdrawalSessionHandlers;
-
-    public WithdrawalSessionService(WithdrawalSessionDao withdrawalSessionDao,
-                                    List<AbstractWithdrawalSessionHandler> withdrawalSessionHandlers) {
-        this.withdrawalSessionDao = withdrawalSessionDao;
-        this.withdrawalSessionHandlers = withdrawalSessionHandlers;
-    }
-
-    @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handleEvents(SinkEvent sinkEvent, Event payload) {
-        payload.getChanges().forEach(
-                cc -> withdrawalSessionHandlers.forEach(ph -> {
-                    if (ph.accept(cc)) {
-                        ph.handle(cc, sinkEvent);
-                    }
-                }));
+    public void handleEvents(List<MachineEvent> machineEvents) {
+        machineEvents.forEach(this::handleIfAccept);
     }
 
-    @Override
-    public Optional<Long> getLastEventId() throws DaoException {
-        Optional<Long> lastEventId = Optional.ofNullable(withdrawalSessionDao.getLastEventId());
-        log.info("Last withdrawal session eventId={}", lastEventId);
-        return lastEventId;
+    private void handleIfAccept(MachineEvent machineEvent) {
+        TimestampedChange change = parser.parse(machineEvent);
+        withdrawalHandlers.stream()
+                .filter(handler -> handler.accept(change))
+                .forEach(handler -> handler.handle(change, machineEvent));
     }
 
 }
