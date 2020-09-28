@@ -60,7 +60,9 @@ public class WithdrawalSessionCreatedHandler extends AbstractWithdrawalSessionHa
             withdrawalSession.setDestinationCardToken(bankCard.getToken());
             withdrawalSession.setDestinationCardBin(bankCard.getBin());
             withdrawalSession.setDestinationCardMaskedPan(bankCard.getMaskedPan());
-            withdrawalSession.setDestinationCardPaymentSystem(BankCardPaymentSystem.valueOf(bankCard.getPaymentSystem().name()));
+            if (bankCard.isSetPaymentSystem()) {
+                withdrawalSession.setDestinationCardPaymentSystem(BankCardPaymentSystem.valueOf(bankCard.getPaymentSystem().name()));
+            }
             withdrawalSession.setResourceBankCardBankName(bankCard.getBankName());
             if (bankCard.isSetIssuerCountry()) {
                 withdrawalSession.setResourceBankCardIssuerCountry(bankCard.getIssuerCountry().toString());
