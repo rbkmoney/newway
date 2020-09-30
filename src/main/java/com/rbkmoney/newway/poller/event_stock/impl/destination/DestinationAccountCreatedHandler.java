@@ -45,7 +45,7 @@ public class DestinationAccountCreatedHandler extends AbstractDestinationHandler
         Identity identity = identityDao.get(account.getIdentity());
 
         if (identity == null) {
-            throw new NotFoundException(String.format("Identity not found, destinationId='%s'", destinationId));
+            throw new NotFoundException(String.format("Identity not found, identityId='%s'", account.getIdentity()));
         }
 
         initDefaultFields(event, sequenceId, destinationId, destination, timestampedChange.getOccuredAt());

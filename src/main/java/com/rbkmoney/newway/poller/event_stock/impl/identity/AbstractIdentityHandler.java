@@ -23,7 +23,6 @@ public abstract class AbstractIdentityHandler implements Handler<TimestampedChan
         identity.setSequenceId((int) sequenceId);
         identity.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         identity.setEventOccuredAt(TypeUtil.stringToLocalDateTime(occuredAt));
-        identity.setIdentityEffectiveChalengeId(change.getEffectiveChallengeChanged());
     }
 
     protected void initDefaultChallengeFields(MachineEvent event,
