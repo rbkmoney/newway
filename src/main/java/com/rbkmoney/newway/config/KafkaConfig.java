@@ -1,9 +1,11 @@
 package com.rbkmoney.newway.config;
 
+import com.rbkmoney.damsel.payout_processing.Event;
 import com.rbkmoney.kafka.common.exception.handler.SeekToCurrentWithSleepBatchErrorHandler;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.config.properties.KafkaConsumerProperties;
 import com.rbkmoney.newway.config.properties.KafkaSslProperties;
+import com.rbkmoney.newway.serde.PayoutEventDeserializer;
 import com.rbkmoney.newway.serde.SinkEventDeserializer;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.CommonClientConfigs;
@@ -125,9 +127,12 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> payoutContainerFactory(
-            ConsumerFactory<String, MachineEvent> consumerFactory) {
-        return createConcurrentFactory(consumerFactory, kafkaConsumerProperties.getPayoutConcurrency());
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Event>> payoutContainerFactory(KafkaSslProperties kafkaSslProperties) {
+        DefaultKafkaConsumerFactory<String, Event> kafkaConsumerFactory = new DefaultKafkaConsumerFactory<>(createConsumerConfig(kafkaSslProperties));
+        kafkaConsumerFactory.setValueDeserializer(new PayoutEventDeserializer());
+        ConcurrentKafkaListenerContainerFactory<String, Event> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        initFactory(kafkaConsumerFactory, kafkaConsumerProperties.getPayoutConcurrency(), factory);
+        return factory;
     }
 
     @Bean
@@ -151,7 +156,7 @@ public class KafkaConfig {
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> partyManagementContainerFactory(
             KafkaSslProperties kafkaSslProperties) {
-        Map<String, Object> configs = consumerConfigs(kafkaSslProperties);
+        Map<String, Object> configs = createConsumerConfig(kafkaSslProperties);
         configs.put(ConsumerConfig.GROUP_ID_CONFIG, partyConsumerGroup);
         ConsumerFactory<String, MachineEvent> consumerFactory = new DefaultKafkaConsumerFactory<>(configs);
         return createConcurrentFactory(consumerFactory, kafkaConsumerProperties.getPartyManagementConcurrency());

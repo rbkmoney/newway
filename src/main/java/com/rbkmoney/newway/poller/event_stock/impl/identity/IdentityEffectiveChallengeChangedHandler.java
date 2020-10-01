@@ -39,6 +39,7 @@ public class IdentityEffectiveChallengeChangedHandler extends AbstractIdentityHa
         Long oldId = identity.getId();
 
         initDefaultFieldsIdentity(change, event, sequenceId, identityId, identity, timestampedChange.getOccuredAt());
+        identity.setIdentityEffectiveChalengeId(change.getEffectiveChallengeChanged());
 
         identityDao.save(identity).ifPresentOrElse(
                 id -> {
