@@ -38,12 +38,12 @@ public class SourceAccountCreatedHandler extends AbstractSourceHandler {
         log.info("Start source account created handling, sequenceId={}, sourceId={}", sequenceId, sourceId);
         Source source = sourceDao.get(sourceId);
         if (source == null) {
-            throw new NotFoundException(String.format("Source not found, walletId='%s'", sourceId));
+            throw new NotFoundException(String.format("Source not found, sourceId='%s'", sourceId));
         }
         Long oldId = source.getId();
         Identity identity = identityDao.get(account.getIdentity());
         if (identity == null) {
-            throw new NotFoundException(String.format("Identity not found, walletId='%s'", sourceId));
+            throw new NotFoundException(String.format("Identity not found, sourceId='%s'", account.getIdentity()));
         }
 
         initDefaultFields(event, (int) sequenceId, sourceId, source, timestampedChange.getOccuredAt());
