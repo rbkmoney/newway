@@ -62,11 +62,9 @@ public class WalletAccountCreatedHandler extends AbstractWalletHandler {
         walletDao.save(wallet).ifPresentOrElse(
                 id -> {
                     walletDao.updateNotCurrent(oldId);
-                    log.info("Wallet account have been changed, sequenceId={}, walletId={}",
-                            sequenceId, walletId);
+                    log.info("Wallet account have been changed, sequenceId={}, walletId={}", sequenceId, walletId);
                 },
-                () -> log.info("Wallet account have been saved, sequenceId={}, walletId={}",
-                        sequenceId, walletId));
+                () -> log.info("Wallet account have been saved, sequenceId={}, walletId={}", sequenceId, walletId));
     }
 
 }

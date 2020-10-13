@@ -25,11 +25,11 @@ public class WalletCreatedHandler extends AbstractWalletHandler {
     private final Filter filter = new PathConditionFilter(new PathConditionRule("change.created", new IsNullCondition().not()));
 
     @Override
-    public void handle(TimestampedChange timestampedChange, MachineEvent event, Integer changeId) {
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
         Change change = timestampedChange.getChange();
         long sequenceId = event.getEventId();
         String walletId = event.getSourceId();
-        log.info("Start wallet created handling, sequenceId={}, walletId={}, changeId={}", sequenceId, walletId, changeId);
+        log.info("Start wallet created handling, sequenceId={}, walletId={}", sequenceId, walletId);
         Wallet wallet = new Wallet();
         initDefaultFields(event, sequenceId, walletId, wallet, timestampedChange.getOccuredAt());
 
@@ -37,10 +37,8 @@ public class WalletCreatedHandler extends AbstractWalletHandler {
         wallet.setExternalId(change.getCreated().getExternalId());
 
         walletDao.save(wallet).ifPresentOrElse(
-                dbContractId -> log.info("Wallet created has been saved, sequenceId={}, walletId={}, changeId={}",
-                        sequenceId, walletId, changeId),
-                () -> log.info("Wallet created bound duplicated, sequenceId={}, walletId={}, changeId={}",
-                        sequenceId, walletId, changeId));
+                dbContractId -> log.info("Wallet created has been saved, sequenceId={}, walletId={}", sequenceId, walletId),
+                () -> log.info("Wallet created bound duplicated, sequenceId={}, walletId={}", sequenceId, walletId));
     }
 
 }

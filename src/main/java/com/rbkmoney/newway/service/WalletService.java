@@ -25,9 +25,11 @@ public class WalletService {
 
     private void handleIfAccept(MachineEvent machineEvent) {
         TimestampedChange eventPayload = parser.parse(machineEvent);
-        handlers.stream()
-                .filter(handler -> handler.accept(eventPayload))
-                .forEach(handler -> handler.handle(eventPayload, machineEvent));
+        if (eventPayload.isSetChange()) {
+            handlers.stream()
+                    .filter(handler -> handler.accept(eventPayload))
+                    .forEach(handler -> handler.handle(eventPayload, machineEvent));
+        }
     }
 
 }

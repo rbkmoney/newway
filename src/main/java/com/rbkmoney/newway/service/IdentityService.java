@@ -16,7 +16,7 @@ import java.util.List;
 public class IdentityService {
 
     private final MachineEventParser<TimestampedChange> parser;
-    private final List<AbstractIdentityHandler> withdrawalHandlers;
+    private final List<AbstractIdentityHandler> identityHandlers;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(List<MachineEvent> machineEvents) {
@@ -26,7 +26,7 @@ public class IdentityService {
     private void handleIfAccept(MachineEvent machineEvent) {
         TimestampedChange eventPayload = parser.parse(machineEvent);
         if (eventPayload.isSetChange()) {
-            withdrawalHandlers.stream()
+            identityHandlers.stream()
                     .filter(handler -> handler.accept(eventPayload))
                     .forEach(handler -> handler.handle(eventPayload, machineEvent));
         }

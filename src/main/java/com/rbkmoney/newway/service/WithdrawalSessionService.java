@@ -16,7 +16,7 @@ import java.util.List;
 public class WithdrawalSessionService {
 
     private final MachineEventParser<TimestampedChange> parser;
-    private final List<AbstractWithdrawalSessionHandler> withdrawalHandlers;
+    private final List<AbstractWithdrawalSessionHandler> withdrawalSessionHandlers;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(List<MachineEvent> machineEvents) {
@@ -25,9 +25,11 @@ public class WithdrawalSessionService {
 
     private void handleIfAccept(MachineEvent machineEvent) {
         TimestampedChange change = parser.parse(machineEvent);
-        withdrawalHandlers.stream()
-                .filter(handler -> handler.accept(change))
-                .forEach(handler -> handler.handle(change, machineEvent));
+        if (change.isSetChange()) {
+            withdrawalSessionHandlers.stream()
+                    .filter(handler -> handler.accept(change))
+                    .forEach(handler -> handler.handle(change, machineEvent));
+        }
     }
 
 }
