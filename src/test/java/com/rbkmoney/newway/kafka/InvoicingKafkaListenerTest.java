@@ -18,7 +18,6 @@ import java.time.format.DateTimeFormatter;
 import static org.mockito.ArgumentMatchers.anyList;
 
 @Slf4j
-@ContextConfiguration(classes = {KafkaAutoConfiguration.class, InvoicingKafkaListener.class})
 public class InvoicingKafkaListenerTest extends AbstractKafkaTest {
 
     @org.springframework.beans.factory.annotation.Value("${kafka.topics.invoice.id}")
@@ -29,26 +28,8 @@ public class InvoicingKafkaListenerTest extends AbstractKafkaTest {
 
     @Test
     public void listenEmptyChanges() throws InterruptedException {
-        SinkEvent sinkEvent = new SinkEvent();
-        sinkEvent.setEvent(createMessage());
-
-        writeToTopic(topic, sinkEvent);
-
-        waitForTopicSync();
-
+        sendMessage(topic);
         Mockito.verify(invoicingService, Mockito.times(1)).handleEvents(anyList());
-    }
-
-    private MachineEvent createMessage() {
-        MachineEvent message = new MachineEvent();
-        Value data = new Value();
-        data.setBin(new byte[0]);
-        message.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-        message.setEventId(1L);
-        message.setSourceNs("sad");
-        message.setSourceId("sda");
-        message.setData(data);
-        return message;
     }
 
 }

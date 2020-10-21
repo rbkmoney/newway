@@ -7,13 +7,13 @@ import com.rbkmoney.newway.domain.tables.pojos.Payout;
 import com.rbkmoney.newway.domain.tables.records.PayoutRecord;
 import com.rbkmoney.newway.exception.DaoException;
 import org.jooq.Query;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 import static com.rbkmoney.newway.domain.Tables.PAYOUT;
 
@@ -29,34 +29,31 @@ public class PayoutDaoImpl extends AbstractGenericDao implements PayoutDao {
     }
 
     @Override
-    public Long getLastEventId() throws DaoException {
-        Query query = getDslContext().select(DSL.max(DSL.field("event_id"))).from(
-                getDslContext().select(PAYOUT.EVENT_ID.max().as("event_id")).from(PAYOUT)
-        );
-        return fetchOne(query, Long.class);
-    }
-
-    @Override
-    public Long save(Payout payout) throws DaoException {
+    public Optional<Long> save(Payout payout) throws DaoException {
         PayoutRecord payoutRecord = getDslContext().newRecord(PAYOUT, payout);
-        Query query = getDslContext().insertInto(PAYOUT).set(payoutRecord).returning(PAYOUT.ID);
+        Query query = getDslContext()
+                .insertInto(PAYOUT)
+                .set(payoutRecord)
+                .onConflict(PAYOUT.EVENT_ID, PAYOUT.PAYOUT_ID, PAYOUT.CHANGE_ID)
+                .doNothing()
+                .returning(PAYOUT.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        execute(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override
     public Payout get(String payoutId) throws DaoException {
         Query query = getDslContext().selectFrom(PAYOUT)
                 .where(PAYOUT.PAYOUT_ID.eq(payoutId).and(PAYOUT.CURRENT));
-
         return fetchOne(query, payoutRowMapper);
     }
 
     @Override
-    public void updateNotCurrent(String payoutId) throws DaoException {
+    public void updateNotCurrent(Long payoutId) throws DaoException {
         Query query = getDslContext().update(PAYOUT).set(PAYOUT.CURRENT, false)
-                .where(PAYOUT.PAYOUT_ID.eq(payoutId).and(PAYOUT.CURRENT));
+                .where(PAYOUT.ID.eq(payoutId)
+                        .and(PAYOUT.CURRENT));
         executeOne(query);
     }
 }

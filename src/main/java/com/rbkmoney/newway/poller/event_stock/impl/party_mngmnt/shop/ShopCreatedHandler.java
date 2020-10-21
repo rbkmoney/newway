@@ -60,7 +60,7 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
                 () -> log.info("Shop create duplicated, sequenceId={}, partyId={}, shopId={}, changeId={}", sequenceId, partyId, shopId, changeId));
     }
 
-    private com.rbkmoney.newway.domain.tables.pojos.Shop createShop(MachineEvent event, Integer changeId, long sequenceId,
+        private com.rbkmoney.newway.domain.tables.pojos.Shop createShop(MachineEvent event, Integer changeId, long sequenceId,
                                                                     Shop shopCreated, String shopId, String partyId, Integer claimEffectId) {
         com.rbkmoney.newway.domain.tables.pojos.Shop shop = new com.rbkmoney.newway.domain.tables.pojos.Shop();
         shop.setSequenceId((int) sequenceId);

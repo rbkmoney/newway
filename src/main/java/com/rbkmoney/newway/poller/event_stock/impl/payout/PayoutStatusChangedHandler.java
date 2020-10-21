@@ -12,6 +12,8 @@ import com.rbkmoney.newway.dao.payout.iface.PayoutSummaryDao;
 import com.rbkmoney.newway.domain.tables.pojos.Payout;
 import com.rbkmoney.newway.domain.tables.pojos.PayoutSummary;
 import com.rbkmoney.newway.exception.NotFoundException;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -21,24 +23,20 @@ import java.util.List;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
 
     private final PayoutDao payoutDao;
     private final PayoutSummaryDao payoutSummaryDao;
 
-    private final Filter filter;
-
-    public PayoutStatusChangedHandler(PayoutDao payoutDao, PayoutSummaryDao payoutSummaryDao) {
-        this.payoutDao = payoutDao;
-        this.payoutSummaryDao = payoutSummaryDao;
-        this.filter = new PathConditionFilter(new PathConditionRule(
-                "payout_status_changed",
-                new IsNullCondition().not()));
-    }
+    @Getter
+    private final Filter filter = new PathConditionFilter(new PathConditionRule(
+            "payout_status_changed",
+            new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PayoutChange change, Event event) {
+    public void handle(PayoutChange change, Event event, Integer changeId) {
         long eventId = event.getId();
         PayoutStatusChanged payoutStatusChanged = change.getPayoutStatusChanged();
         PayoutStatus payoutStatus = payoutStatusChanged.getStatus();
@@ -52,6 +50,7 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
         payoutSource.setId(null);
         payoutSource.setWtime(null);
         payoutSource.setEventId(eventId);
+        payoutSource.setChangeId(changeId);
         payoutSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         payoutSource.setStatus(TBaseUtil.unionFieldToEnum(payoutStatus, com.rbkmoney.newway.domain.enums.PayoutStatus.class));
         if (payoutStatus.isSetPaid()) {
@@ -66,7 +65,7 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
             PayoutCancelled cancelled = payoutStatus.getCancelled();
             payoutSource.setStatusCancelledDetails(cancelled.getDetails());
             payoutSource.setStatusConfirmedUserInfoType(null);
-        } if (payoutStatus.isSetConfirmed()) {
+        } else if (payoutStatus.isSetConfirmed()) {
             payoutSource.setStatusPaidDetails(null);
             payoutSource.setStatusPaidDetailsCardProviderName(null);
             payoutSource.setStatusPaidDetailsCardProviderTransactionId(null);
@@ -74,21 +73,20 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
             payoutSource.setStatusCancelledUserInfoType(null);
             payoutSource.setStatusCancelledDetails(null);
         }
-        payoutDao.updateNotCurrent(payoutSource.getPayoutId());
-        long pytId = payoutDao.save(payoutSource);
 
-        List<PayoutSummary> payoutSummaries = payoutSummaryDao.getByPytId(payoutSourceId);
-        payoutSummaries.forEach(pt -> {
-            pt.setId(null);
-            pt.setPytId(pytId);
-        });
-        payoutSummaryDao.save(payoutSummaries);
-
-        log.info("Payout status has been saved, eventId={}, payoutId={}", eventId, payoutId);
+        payoutDao.save(payoutSource).ifPresentOrElse(
+                id -> {
+                    List<PayoutSummary> payoutSummaries = payoutSummaryDao.getByPytId(payoutSourceId);
+                    payoutSummaries.forEach(pt -> {
+                        pt.setId(null);
+                        pt.setPytId(id);
+                    });
+                    payoutSummaryDao.save(payoutSummaries);
+                    log.info("Payout status  has been saved, eventId={}, changeId={}, payoutId={}", eventId, changeId, payoutId);
+                },
+                () -> log.info("Payout status  bound duplicated, eventId={}, changeId={}, payoutId={}",
+                        eventId, changeId, payoutId)
+        );
     }
 
-    @Override
-    public Filter<PayoutChange> getFilter() {
-        return filter;
-    }
 }

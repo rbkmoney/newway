@@ -5,7 +5,7 @@
     <description>SQL-views of business objects</description>
 
     <artifactId>newway</artifactId>
-    <version>1.0.75-SNAPSHOT</version>
+    <version>1.0.76-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
@@ -170,7 +170,12 @@
         <dependency>
             <groupId>com.rbkmoney.geck</groupId>
             <artifactId>serializer</artifactId>
-            <version>0.6.9</version>
+            <version>0.6.11</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>custom-actuator-endpoints</artifactId>
+            <version>0.0.3</version>
         </dependency>
 
         <!-- Test -->
