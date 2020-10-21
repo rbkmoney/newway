@@ -52,15 +52,17 @@ public class WithdrawalSessionFinishedHandler extends AbstractWithdrawalSessionH
         if (change.getFinished().isSetFailed()) {
             withdrawalSession.setFailureJson(JsonUtil.tBaseToJsonString(change.getFinished().getFailed()));
         } else if (change.getFinished().isSetSuccess()) {
-            TransactionInfo trxInfo = change.getFinished().getSuccess().getTrxInfo();
-            withdrawalSession.setTranInfoId(trxInfo.getId());
-            if (trxInfo.isSetTimestamp()) {
-                withdrawalSession.setTranInfoTimestamp(TypeUtil.stringToLocalDateTime(trxInfo.getTimestamp()));
-            }
-            withdrawalSession.setTranInfoJson(JsonUtil.objectToJsonString(trxInfo.getExtra()));
-            if (trxInfo.isSetAdditionalInfo()) {
-                withdrawalSession.setTranAdditionalInfoRrn(trxInfo.getAdditionalInfo().getRrn());
-                withdrawalSession.setTranAdditionalInfoJson(JsonUtil.tBaseToJsonString(trxInfo.getAdditionalInfo()));
+            if (change.getFinished().getSuccess().isSetTrxInfo()) {
+                TransactionInfo trxInfo = change.getFinished().getSuccess().getTrxInfo();
+                withdrawalSession.setTranInfoId(trxInfo.getId());
+                if (trxInfo.isSetTimestamp()) {
+                    withdrawalSession.setTranInfoTimestamp(TypeUtil.stringToLocalDateTime(trxInfo.getTimestamp()));
+                }
+                withdrawalSession.setTranInfoJson(JsonUtil.objectToJsonString(trxInfo.getExtra()));
+                if (trxInfo.isSetAdditionalInfo()) {
+                    withdrawalSession.setTranAdditionalInfoRrn(trxInfo.getAdditionalInfo().getRrn());
+                    withdrawalSession.setTranAdditionalInfoJson(JsonUtil.tBaseToJsonString(trxInfo.getAdditionalInfo()));
+                }
             }
         }
 
