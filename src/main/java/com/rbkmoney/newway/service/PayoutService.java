@@ -2,45 +2,39 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.damsel.payout_processing.Event;
 import com.rbkmoney.damsel.payout_processing.EventPayload;
-import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
+import com.rbkmoney.damsel.payout_processing.PayoutChange;
 import com.rbkmoney.newway.poller.event_stock.impl.payout.AbstractPayoutHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
+@Slf4j
 @Service
-public class PayoutService implements EventService<Event,EventPayload> {
+@RequiredArgsConstructor
+public class PayoutService {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final List<AbstractPayoutHandler> withdrawalHandlers;
 
-    private final PayoutDao payoutDao;
-
-    private final List<AbstractPayoutHandler> payoutHandlers;
-
-    public PayoutService(PayoutDao payoutDao, List<AbstractPayoutHandler> payoutHandlers) {
-        this.payoutDao = payoutDao;
-        this.payoutHandlers = payoutHandlers;
-    }
-
-    @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handleEvents(Event payoutEvent, EventPayload payload) {
-        payload.getPayoutChanges().forEach(c -> payoutHandlers.forEach(ph -> {
-            if (ph.accept(c)) {
-                ph.handle(c, payoutEvent);
-            }
-        }));
+    public void handleEvents(List<Event> machineEvents) {
+        machineEvents.forEach(this::handleIfAccept);
     }
 
-    @Override
-    public Optional<Long> getLastEventId() {
-        Optional<Long> lastEventId = Optional.ofNullable(payoutDao.getLastEventId());
-        log.info("Last payout eventId={}", lastEventId);
-        return lastEventId;
+    private void handleIfAccept(Event event) {
+        if (event.isSetPayload()) {
+            EventPayload eventPayload = event.getPayload();
+            for (int i = 0; i < eventPayload.getPayoutChanges().size(); i++) {
+                PayoutChange change = eventPayload.getPayoutChanges().get(i);
+                Integer changeId = i;
+                withdrawalHandlers.stream()
+                        .filter(handler -> handler.accept(change))
+                        .forEach(handler -> handler.handle(change, event, changeId));
+            }
+        }
     }
+
 }

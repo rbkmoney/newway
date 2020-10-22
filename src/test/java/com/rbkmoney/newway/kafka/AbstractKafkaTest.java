@@ -2,6 +2,7 @@ package com.rbkmoney.newway.kafka;
 
 import com.rbkmoney.easyway.*;
 import com.rbkmoney.kafka.common.serialization.ThriftSerializer;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import com.rbkmoney.newway.NewwayApplication;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -45,6 +49,7 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
 
     @BeforeClass
     public static void beforeClass() {
+        testContainers.getKafkaTestContainer().ifPresent(kafkaContainer -> kafkaContainer.withStartupTimeout(Duration.ofMinutes(10)));
         testContainers.startTestContainers();
     }
 
@@ -81,7 +86,7 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
     }
 
     protected void waitForTopicSync() throws InterruptedException {
-        Thread.sleep(5000L);
+        Thread.sleep(25000L);
     }
 
     protected void writeToTopic(String topic, SinkEvent sinkEvent) {
@@ -102,6 +107,27 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, new ThriftSerializer<SinkEvent>().getClass());
         return new KafkaProducer<>(props);
+    }
+
+    protected MachineEvent createMessage() {
+        MachineEvent message = new MachineEvent();
+        com.rbkmoney.machinegun.msgpack.Value data = new com.rbkmoney.machinegun.msgpack.Value();
+        data.setBin(new byte[0]);
+        message.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+        message.setEventId(1L);
+        message.setSourceNs("sad");
+        message.setSourceId("sda");
+        message.setData(data);
+        return message;
+    }
+
+    protected void sendMessage(String topic) throws InterruptedException {
+        SinkEvent sinkEvent = new SinkEvent();
+        sinkEvent.setEvent(createMessage());
+
+        writeToTopic(topic, sinkEvent);
+
+        waitForTopicSync();
     }
 
 }

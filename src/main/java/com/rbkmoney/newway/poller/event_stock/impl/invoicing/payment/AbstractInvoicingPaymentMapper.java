@@ -14,13 +14,11 @@ public abstract class AbstractInvoicingPaymentMapper extends AbstractInvoicingMa
         payment.setSequenceId(sequenceId);
         payment.setEventCreatedAt(TypeUtil.stringToLocalDateTime(eventCreatedAt));
         payment.setSessionPayloadTransactionBoundTrxExtraJson(null);
-        payment.setTrxAdditionalInfoApprovalCode(null);
         payment.setTrxAdditionalInfoAcsUrl(null);
         payment.setTrxAdditionalInfoPareq(null);
         payment.setTrxAdditionalInfoMd(null);
         payment.setTrxAdditionalInfoTermUrl(null);
         payment.setTrxAdditionalInfoPares(null);
-        payment.setTrxAdditionalInfoEci(null);
         payment.setTrxAdditionalInfoCavv(null);
         payment.setTrxAdditionalInfoXid(null);
         payment.setTrxAdditionalInfoCavvAlgorithm(null);

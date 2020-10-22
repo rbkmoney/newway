@@ -47,12 +47,18 @@ kafka:
     max-poll-records: 20
     max-poll-interval-ms: 30000
     session-timeout-ms: 30000
-    invoicing:
-      concurrency: 7
-    party-management:
-      concurrency: 7
-    recurrent-payment-tool:
-      concurrency: 7
+    invoicing-concurrency: 7
+    party-management-concurrency: 7
+    recurrent-payment-tool-concurrency: 7
+    rate-concurrency: 7
+    deposit-concurrency: 7
+    identity-concurrency: 7
+    wallet-concurrency: 7
+    withdrawal-concurrency: 7
+    payout-concurrency: 7
+    source-concurrency: 7
+    destination-concurrency: 7
+    withdrawal-session-concurrency: 7
   topics:
     invoice:
       id: mg-invoice-100-2
@@ -63,23 +69,34 @@ kafka:
       id: mg-events-party
       enabled: false
       consumer.group-id: "NewwayListenerPartyManagement"
+    rate:
+      id: mg-events-rates
+    identity:
+      id: mg-events-ff-identity
+    wallet:
+      id: mg-events-ff-wallet
+    deposit:
+      id: mg-events-ff-deposit
+    withdrawal:
+      id: mg-events-ff-withdrawal
+    withdrawal-session:
+      id: mg-events-ff-withdrawal-session
+    source:
+      id: mg-events-ff-source
+    destination:
+      id: mg-events-ff-destination
+    payout:
+      id: payout
 
 bm:
-  partyManagement:
-    url: http://bustermaze:8022/repo
-    polling:
-      delay: 10000
-      retryDelay: 1000
-      maxPoolSize: 1
-      maxQuerySize: 300
-  payout:
-    url: http://bustermaze:8022/repo/payout
-    polling:
-      delay: 10000
-      retryDelay: 1000
-      maxPoolSize: 1
   polling:
     enabled: true
+payouter:
+  polling:
+    url: http://payouter:8022/repo
+    delay: 10000
+    retryDelay: 1000
+    maxPoolSize: 1
 identity:
   polling:
     url: http://wapi:8022/v1/eventsink/identity
@@ -113,12 +130,6 @@ deposit:
 withdrawal:
   polling:
     url: http://wapi:8022/v1/eventsink/withdrawal
-    delay: 10000
-    retryDelay: 1000
-    maxPoolSize: 1
-rate:
-  polling:
-    url: http://xrates:8022/v1/event_sink
     delay: 10000
     retryDelay: 1000
     maxPoolSize: 1

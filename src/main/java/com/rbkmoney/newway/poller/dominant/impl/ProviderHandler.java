@@ -50,14 +50,39 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
         provider.setDescription(data.getDescription());
         provider.setProxyRefId(data.getProxy().getRef().getId());
         provider.setProxyAdditionalJson(JsonUtil.objectToJsonString(data.getProxy().getAdditional()));
-        provider.setTerminalJson(JsonUtil.tBaseToJsonString(data.getTerminal()));
-        provider.setAbsAccount(data.getAbsAccount());
-        if (data.isSetPaymentTerms()) {
+        if (data.isSetTerminal()) {
+            provider.setTerminalJson(JsonUtil.tBaseToJsonString(data.getTerminal()));
+        }
+        if (data.isSetAbsAccount()) {
+            provider.setAbsAccount(data.getAbsAccount());
+        }
+
+        if (data.isSetTerms() && data.getTerms().isSetPayments()) {
+            provider.setPaymentTermsJson(JsonUtil.tBaseToJsonString(data.getTerms().getPayments()));
+        } else if (data.isSetPaymentTerms()) {
             provider.setPaymentTermsJson(JsonUtil.tBaseToJsonString(data.getPaymentTerms()));
         }
-        if (data.isSetRecurrentPaytoolTerms()) {
+
+        if (data.isSetTerms() && data.getTerms().isSetRecurrentPaytools()) {
+            provider.setRecurrentPaytoolTermsJson(JsonUtil.tBaseToJsonString(data.getTerms().getRecurrentPaytools()));
+        } else if (data.isSetRecurrentPaytoolTerms()) {
             provider.setRecurrentPaytoolTermsJson(JsonUtil.tBaseToJsonString(data.getRecurrentPaytoolTerms()));
         }
+
+        if (data.isSetIdentity()) {
+            provider.setIdentity(data.getIdentity());
+        }
+        if (data.isSetTerms() && data.getTerms().isSetWallet()) {
+            provider.setWalletTermsJson(JsonUtil.tBaseToJsonString(data.getTerms().getWallet()));
+        }
+        if (data.isSetParamsSchema()) {
+            provider.setParamsSchemaJson(
+                    JsonUtil.objectToJsonString(
+                            data.getParamsSchema().stream().map(JsonUtil::tBaseToJsonNode).collect(Collectors.toList())
+                    )
+            );
+        }
+
         if (data.isSetAccounts()) {
             Map<String, Long> accountsMap = data.getAccounts().entrySet()
                     .stream()

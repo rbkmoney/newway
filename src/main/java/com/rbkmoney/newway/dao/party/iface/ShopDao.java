@@ -4,7 +4,6 @@ import com.rbkmoney.dao.GenericDao;
 import com.rbkmoney.newway.domain.tables.pojos.Shop;
 import com.rbkmoney.newway.exception.DaoException;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ShopDao extends GenericDao {

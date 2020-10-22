@@ -2,6 +2,7 @@ package com.rbkmoney.newway.util;
 
 import com.rbkmoney.damsel.domain.FinalCashFlowAccount;
 import com.rbkmoney.damsel.domain.FinalCashFlowPosting;
+import com.rbkmoney.damsel.domain.MerchantCashFlowAccount;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
@@ -18,6 +19,26 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class CashFlowUtil {
+
+    public static Long computeMerchantAmount(List<FinalCashFlowPosting> finalCashFlow) {
+        long amountSource = computeAmount(finalCashFlow, FinalCashFlowPosting::getSource);
+        long amountDest = computeAmount(finalCashFlow, FinalCashFlowPosting::getDestination);
+        return amountDest - amountSource;
+    }
+
+    private static long computeAmount(List<FinalCashFlowPosting> finalCashFlow,
+                                      Function<FinalCashFlowPosting, FinalCashFlowAccount> func) {
+        return finalCashFlow.stream()
+                .filter(f -> isMerchantSettlement(func.apply(f).getAccountType()))
+                .mapToLong(cashFlow -> cashFlow.getVolume().getAmount())
+                .sum();
+    }
+
+    private static boolean isMerchantSettlement(com.rbkmoney.damsel.domain.CashFlowAccount cashFlowAccount) {
+        return cashFlowAccount.isSetMerchant() &&
+                cashFlowAccount.getMerchant() == MerchantCashFlowAccount.settlement;
+    }
+
     public static CashFlowAccount getCashFlowAccountType(FinalCashFlowAccount cfa) {
         CashFlowAccount sourceAccountType = TypeUtil.toEnumField(cfa.getAccountType().getSetField().getFieldName(), CashFlowAccount.class);
         if (sourceAccountType == null) {

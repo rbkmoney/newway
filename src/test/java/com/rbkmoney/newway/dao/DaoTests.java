@@ -1,22 +1,12 @@
 package com.rbkmoney.newway.dao;
 
-import com.rbkmoney.newway.dao.deposit.iface.DepositDao;
-import com.rbkmoney.newway.dao.destination.iface.DestinationDao;
 import com.rbkmoney.newway.dao.dominant.iface.DominantDao;
 import com.rbkmoney.newway.dao.dominant.impl.*;
-import com.rbkmoney.newway.dao.identity.iface.ChallengeDao;
-import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.dao.invoicing.iface.*;
 import com.rbkmoney.newway.dao.invoicing.impl.PaymentIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.dao.party.iface.*;
-import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
-import com.rbkmoney.newway.dao.payout.iface.PayoutSummaryDao;
 import com.rbkmoney.newway.dao.rate.iface.RateDao;
 import com.rbkmoney.newway.dao.recurrent_payment_tool.iface.RecurrentPaymentToolDao;
-import com.rbkmoney.newway.dao.source.iface.SourceDao;
-import com.rbkmoney.newway.dao.wallet.iface.WalletDao;
-import com.rbkmoney.newway.dao.withdrawal.iface.WithdrawalDao;
-import com.rbkmoney.newway.dao.withdrawal_session.iface.WithdrawalSessionDao;
 import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
 import com.rbkmoney.newway.domain.enums.CashFlowAccount;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
@@ -48,10 +38,6 @@ public class DaoTests extends AbstractAppDaoTests {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
-    private DepositDao depositDao;
-    @Autowired
-    private DestinationDao destinationDao;
-    @Autowired
     private CalendarDaoImpl calendarDao;
     @Autowired
     private CategoryDaoImpl categoryDao;
@@ -80,10 +66,6 @@ public class DaoTests extends AbstractAppDaoTests {
     @Autowired
     private CashFlowDao cashFlowDao;
     @Autowired
-    private ChallengeDao challengeDao;
-    @Autowired
-    private IdentityDao identityDao;
-    @Autowired
     private AdjustmentDao adjustmentDao;
     @Autowired
     private PaymentDao paymentDao;
@@ -106,47 +88,12 @@ public class DaoTests extends AbstractAppDaoTests {
     @Autowired
     private ShopDao shopDao;
     @Autowired
-    private PayoutDao payoutDao;
-    @Autowired
-    private PayoutSummaryDao payoutSummaryDao;
-    @Autowired
     private RateDao rateDao;
-    @Autowired
-    private SourceDao sourceDao;
-    @Autowired
-    private WalletDao walletDao;
-    @Autowired
-    private WithdrawalDao withdrawalDao;
-    @Autowired
-    private WithdrawalSessionDao withdrawalSessionDao;
     @Autowired
     private PaymentIdsGeneratorDaoImpl idsGeneratorDao;
     @Autowired
     private RecurrentPaymentToolDao recurrentPaymentToolDao;
 
-    @Test
-    public void depositDaoTest() {
-        jdbcTemplate.execute("truncate table nw.deposit cascade");
-        Deposit deposit = random(Deposit.class);
-        deposit.setCurrent(true);
-        Long id = depositDao.save(deposit);
-        deposit.setId(id);
-        assertEquals(deposit, depositDao.get(deposit.getDepositId()));
-        depositDao.updateNotCurrent(deposit.getDepositId());
-        assertNull(depositDao.get(deposit.getDepositId()));
-    }
-
-    @Test
-    public void destinationDaoTest() {
-        jdbcTemplate.execute("truncate table nw.destination cascade");
-        Destination destination = random(Destination.class);
-        destination.setCurrent(true);
-        Long id = destinationDao.save(destination);
-        destination.setId(id);
-        assertEquals(destination, destinationDao.get(destination.getDestinationId()));
-        destinationDao.updateNotCurrent(destination.getDestinationId());
-        Assert.assertNull(destinationDao.get(destination.getDestinationId()));
-    }
 
     @Test
     public void dominantDaoTest() {
@@ -234,6 +181,7 @@ public class DaoTests extends AbstractAppDaoTests {
                 paymentMethod.getVersionId(),
                 payoutMethod.getVersionId(),
                 provider.getVersionId(),
+                withdrawalProvider.getVersionId(),
                 proxy.getVersionId(),
                 terminal.getVersionId(),
                 termSetHierarchy.getVersionId()).max();
@@ -277,18 +225,6 @@ public class DaoTests extends AbstractAppDaoTests {
         CashFlow cashFlowAdjustmentAmount = createCashFlow(1L, 1000L, "RUB", 1L, CashFlowAccount.provider, "settlement", 2L, CashFlowAccount.merchant, "settlement", PaymentChangeType.adjustment);
         cashFlowAdjustmentAmount.setAdjFlowType(AdjustmentCashFlowType.new_cash_flow);
         cashFlows.add(cashFlowAdjustmentAmount);
-        CashFlow cashFlowAdjustmentFee = createCashFlow(1L, 10L, "RUB", 2L, CashFlowAccount.merchant, "settlement", 2L, CashFlowAccount.system, "settlement", PaymentChangeType.adjustment);
-        cashFlowAdjustmentFee.setAdjFlowType(AdjustmentCashFlowType.new_cash_flow);
-        cashFlows.add(cashFlowAdjustmentFee);
-        CashFlow cashFlowAdjustmentExternalIncomeFee = createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 3L, CashFlowAccount.external, "income", PaymentChangeType.adjustment);
-        cashFlowAdjustmentExternalIncomeFee.setAdjFlowType(AdjustmentCashFlowType.new_cash_flow);
-        cashFlows.add(cashFlowAdjustmentExternalIncomeFee);
-        CashFlow cashFlowAdjustmentExternalOutcomeFee = createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 4L, CashFlowAccount.external, "outcome", PaymentChangeType.adjustment);
-        cashFlowAdjustmentExternalOutcomeFee.setAdjFlowType(AdjustmentCashFlowType.new_cash_flow);
-        cashFlows.add(cashFlowAdjustmentExternalOutcomeFee);
-        CashFlow cashFlowAdjustmentProviderFee = createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 5L, CashFlowAccount.provider, "settlement", PaymentChangeType.adjustment);
-        cashFlowAdjustmentProviderFee.setAdjFlowType(AdjustmentCashFlowType.new_cash_flow);
-        cashFlows.add(cashFlowAdjustmentProviderFee);
 
         cashFlowDao.save(cashFlows);
 
@@ -306,11 +242,6 @@ public class DaoTests extends AbstractAppDaoTests {
         assertEquals(cashFlowPayoutAmount.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payout_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
         assertEquals(cashFlowPayoutFixedFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payout_fixed_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
         assertEquals(cashFlowPayoutFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payout_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-
-        assertEquals(cashFlowAdjustmentAmount.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_adjustment_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowAdjustmentFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_adjustment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowAdjustmentExternalIncomeFee.getAmount() + cashFlowAdjustmentExternalOutcomeFee.getAmount(), (long) jdbcTemplate.queryForObject("SELECT nw.get_adjustment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowAdjustmentProviderFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_adjustment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
     }
 
     @Test
@@ -364,29 +295,6 @@ public class DaoTests extends AbstractAppDaoTests {
         assertEquals(new HashSet(byObjId), new HashSet(cashFlowList));
     }
 
-    @Test
-    public void challengeDaoTest() {
-        jdbcTemplate.execute("truncate table nw.challenge cascade");
-        Challenge challenge = random(Challenge.class);
-        challenge.setCurrent(true);
-        Long id = challengeDao.save(challenge);
-        challenge.setId(id);
-        assertEquals(challenge, challengeDao.get(challenge.getIdentityId(), challenge.getChallengeId()));
-        challengeDao.updateNotCurrent(challenge.getIdentityId(), challenge.getChallengeId());
-        assertNull(challengeDao.get(challenge.getIdentityId(), challenge.getChallengeId()));
-    }
-
-    @Test
-    public void identityDaoTest() {
-        jdbcTemplate.execute("truncate table nw.identity cascade");
-        Identity identity = random(Identity.class);
-        identity.setCurrent(true);
-        Long id = identityDao.save(identity);
-        identity.setId(id);
-        assertEquals(identity, identityDao.get(identity.getIdentityId()));
-        identityDao.updateNotCurrent(identity.getIdentityId());
-        assertNull(identityDao.get(identity.getIdentityId()));
-    }
 
     @Test
     public void adjustmentDaoTest() {
@@ -537,32 +445,6 @@ public class DaoTests extends AbstractAppDaoTests {
     }
 
     @Test
-    public void payoutDaoTest() {
-        jdbcTemplate.execute("truncate table nw.payout cascade");
-        Payout payout = random(Payout.class);
-        payout.setCurrent(true);
-        payoutDao.save(payout);
-        Payout payoutGet = payoutDao.get(payout.getPayoutId());
-        assertEquals(payout, payoutGet);
-        payoutDao.updateNotCurrent(payout.getPayoutId());
-        Assert.assertNull(payoutDao.get(payout.getPayoutId()));
-        assertEquals(payoutDao.getLastEventId(), payout.getEventId());
-    }
-
-    @Test
-    public void payoutSummaryDaoTest() {
-        jdbcTemplate.execute("truncate table nw.payout_summary cascade");
-        Payout payout = random(Payout.class);
-        payout.setCurrent(true);
-        Long pytId = payoutDao.save(payout);
-        List<PayoutSummary> payoutSummaries = randomListOf(10, PayoutSummary.class);
-        payoutSummaries.forEach(pt -> pt.setPytId(pytId));
-        payoutSummaryDao.save(payoutSummaries);
-        List<PayoutSummary> byPytId = payoutSummaryDao.getByPytId(pytId);
-        assertEquals(new HashSet(payoutSummaries), new HashSet(byPytId));
-    }
-
-    @Test
     public void rateDaoTest() {
         jdbcTemplate.execute("truncate table nw.rate cascade");
         Rate rate = random(Rate.class);
@@ -596,54 +478,6 @@ public class DaoTests extends AbstractAppDaoTests {
         } catch (Exception e) {
             assertTrue(e instanceof EmptyResultDataAccessException);
         }
-    }
-
-    @Test
-    public void sourceDaoTest() {
-        jdbcTemplate.execute("truncate table nw.source cascade");
-        Source source = random(Source.class);
-        source.setCurrent(true);
-        Long id = sourceDao.save(source);
-        source.setId(id);
-        assertEquals(source, sourceDao.get(source.getSourceId()));
-        sourceDao.updateNotCurrent(source.getSourceId());
-        Assert.assertNull(sourceDao.get(source.getSourceId()));
-    }
-
-    @Test
-    public void walletDaoTest() {
-        jdbcTemplate.execute("truncate table nw.wallet cascade");
-        Wallet wallet = random(Wallet.class);
-        wallet.setCurrent(true);
-        Long id = walletDao.save(wallet);
-        wallet.setId(id);
-        assertEquals(wallet, walletDao.get(wallet.getWalletId()));
-        walletDao.updateNotCurrent(wallet.getWalletId());
-        Assert.assertNull(walletDao.get(wallet.getWalletId()));
-    }
-
-    @Test
-    public void withdrawalDaoTest() {
-        jdbcTemplate.execute("truncate table nw.withdrawal cascade");
-        Withdrawal withdrawal = random(Withdrawal.class);
-        withdrawal.setCurrent(true);
-        Long id = withdrawalDao.save(withdrawal);
-        withdrawal.setId(id);
-        assertEquals(withdrawal, withdrawalDao.get(withdrawal.getWithdrawalId()));
-        withdrawalDao.updateNotCurrent(withdrawal.getWithdrawalId());
-        assertNull(withdrawalDao.get(withdrawal.getWithdrawalId()));
-    }
-
-    @Test
-    public void withdrawalSessionDao() {
-        jdbcTemplate.execute("truncate table nw.withdrawal_session cascade");
-        WithdrawalSession withdrawalSession = random(WithdrawalSession.class);
-        withdrawalSession.setCurrent(true);
-        Long id = withdrawalSessionDao.save(withdrawalSession);
-        withdrawalSession.setId(id);
-        assertEquals(withdrawalSession, withdrawalSessionDao.get(withdrawalSession.getWithdrawalSessionId()));
-        withdrawalSessionDao.updateNotCurrent(withdrawalSession.getWithdrawalSessionId());
-        assertNull(withdrawalSessionDao.get(withdrawalSession.getWithdrawalSessionId()));
     }
 
     @Test

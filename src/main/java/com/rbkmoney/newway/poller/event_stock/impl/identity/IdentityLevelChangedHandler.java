@@ -1,57 +1,51 @@
 package com.rbkmoney.newway.poller.event_stock.impl.identity;
 
 import com.rbkmoney.fistful.identity.Change;
-import com.rbkmoney.fistful.identity.SinkEvent;
-import com.rbkmoney.geck.common.util.TypeUtil;
+import com.rbkmoney.fistful.identity.TimestampedChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.domain.tables.pojos.Identity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class IdentityLevelChangedHandler extends AbstractIdentityHandler {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final IdentityDao identityDao;
 
-    private Filter filter;
-
-    public IdentityLevelChangedHandler(IdentityDao identityDao) {
-        this.identityDao = identityDao;
-        this.filter = new PathConditionFilter(new PathConditionRule("level_changed", new IsNullCondition().not()));
-    }
+    @Getter
+    private Filter filter = new PathConditionFilter(
+            new PathConditionRule("change.level_changed", new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(Change change, SinkEvent event) {
-        log.info("Start identity level changed handling, eventId={}, identityId={}, level={}", event.getId(), event.getSource(), change.getLevelChanged());
-        Identity identity = identityDao.get(event.getSource());
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
+        long sequenceId = event.getEventId();
+        String identityId = event.getSourceId();
+        log.info("Start identity level changed handling, sequenceId={}, identityId={}", sequenceId, identityId);
+        Identity identity = identityDao.get(identityId);
+        Long oldId = identity.getId();
 
-        identity.setId(null);
-        identity.setWtime(null);
-        identity.setEventId(event.getId());
-        identity.setSequenceId(event.getPayload().getSequence());
-        identity.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        identity.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
-        identity.setIdentityId(event.getSource());
+        initDefaultFieldsIdentity(change, event, sequenceId, identityId, identity, timestampedChange.getOccuredAt());
         identity.setIdentityLevelId(change.getLevelChanged());
 
-        identityDao.updateNotCurrent(event.getSource());
-        identityDao.save(identity);
-        log.info("Identity level have been changed, eventId={}, identityId={}, level={}", event.getId(), event.getSource(), change.getLevelChanged());
-    }
-
-    @Override
-    public Filter<Change> getFilter() {
-        return filter;
+        identityDao.save(identity).ifPresentOrElse(
+                id -> {
+                    identityDao.updateNotCurrent(oldId);
+                    log.info("Identity level have been changed, sequenceId={}, identityId={}", sequenceId, identityId);
+                },
+                () -> log.info("Identity have been saved, sequenceId={}, identityId={}", sequenceId, identityId));
     }
 
 }
