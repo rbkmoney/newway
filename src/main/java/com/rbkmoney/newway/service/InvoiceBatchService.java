@@ -4,7 +4,6 @@ import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
 import com.rbkmoney.newway.dao.invoicing.impl.InvoiceIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.model.InvoiceWrapper;
 import com.rbkmoney.newway.model.InvoicingKey;
-import com.rbkmoney.newway.model.InvoicingType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ public class InvoiceBatchService {
     public void process(List<InvoiceWrapper> invoiceWrappers){
         log.info("Start processing of invoice batch, size={}", invoiceWrappers.size());
         List<Long> ids = invoiceIdsGeneratorDao.get(invoiceWrappers.size());
-        List<InvoiceWrapper> squashedInvoiceWrappers = invoiceSquashService.squashPayments(invoiceWrappers, ids);
+        List<InvoiceWrapper> squashedInvoiceWrappers = invoiceSquashService.squash(invoiceWrappers, ids);
         invoiceWrapperService.save(squashedInvoiceWrappers);
         Collection<InvoicingKey> invoicingSwitchIds = squashedInvoiceWrappers
                 .stream()

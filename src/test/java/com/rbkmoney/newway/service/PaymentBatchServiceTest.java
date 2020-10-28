@@ -8,6 +8,7 @@ import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.model.InvoiceWrapper;
+import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.PaymentWrapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +40,6 @@ public class PaymentBatchServiceTest extends AbstractAppDaoTests {
                 .mapToObj(x -> new PaymentWrapper(random(Payment.class, "id"), randomListOf(3, CashFlow.class, "id", "objId")))
                 .collect(Collectors.toList());
 
-        paymentWrappers.forEach(iw -> {
-            iw.getPayment().setCurrent(false);
-            iw.getCashFlows().forEach(c -> c.setObjType(PaymentChangeType.payment));
-        });
         String invoiceIdFirst = "invoiceIdFirst";
         String invoiceIdSecond = "invoiceIdSecond";
         paymentWrappers.get(0).getPayment().setInvoiceId(invoiceIdFirst);
@@ -53,6 +50,12 @@ public class PaymentBatchServiceTest extends AbstractAppDaoTests {
         paymentWrappers.get(2).getPayment().setPaymentId("2");
         paymentWrappers.get(3).getPayment().setInvoiceId(invoiceIdSecond);
         paymentWrappers.get(3).getPayment().setPaymentId("1");
+        paymentWrappers.forEach(iw -> {
+            iw.setKey(InvoicingKey.buildKey(iw));
+            iw.setShouldInsert(true);
+            iw.getPayment().setCurrent(false);
+            iw.getCashFlows().forEach(c -> c.setObjType(PaymentChangeType.payment));
+        });
         paymentBatchService.process(paymentWrappers);
 
         Payment paymentFirstGet = paymentDao.get(invoiceIdFirst, "1");

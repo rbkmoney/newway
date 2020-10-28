@@ -24,9 +24,10 @@ public class PaymentBatchService {
     public void process(List<PaymentWrapper> paymentWrappers) {
         log.info("Start processing of payment batch, size={}", paymentWrappers.size());
         List<Long> ids = paymentIdsGeneratorDao.get(paymentWrappers.size());
-        List<PaymentWrapper> squashedPaymentWrappers = paymentSquashService.squashPayments(paymentWrappers, ids);
+        List<PaymentWrapper> squashedPaymentWrappers = paymentSquashService.squash(paymentWrappers, ids);
         paymentWrapperService.save(squashedPaymentWrappers);
-        Collection<InvoicingKey> invoicingSwitchIds = squashedPaymentWrappers.stream()
+        Collection<InvoicingKey> invoicingSwitchIds = squashedPaymentWrappers
+                .stream()
                 .filter(PaymentWrapper::isShouldInsert)
                 .collect(Collectors.groupingBy(PaymentWrapper::getKey)).keySet();
         log.info("Switch to current ids: {}", invoicingSwitchIds);

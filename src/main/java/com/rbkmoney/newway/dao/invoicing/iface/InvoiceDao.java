@@ -12,6 +12,8 @@ public interface InvoiceDao extends GenericDao {
 
     void saveBatch(List<Invoice> invoices) throws DaoException;
 
+    void updateBatch(List<Invoice> invoices) throws DaoException;
+
     Invoice get(String invoiceId) throws DaoException;
 
     void switchCurrent(Collection<InvoicingKey> invoicesSwitchIds) throws DaoException;

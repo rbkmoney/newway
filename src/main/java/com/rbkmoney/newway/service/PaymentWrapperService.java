@@ -8,6 +8,7 @@ import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.exception.NotFoundException;
+import com.rbkmoney.newway.model.Wrapper;
 import com.rbkmoney.newway.poller.event_stock.LocalStorage;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.PaymentWrapper;
@@ -57,14 +58,23 @@ public class PaymentWrapperService {
 
     public void save(List<PaymentWrapper> paymentWrappers) {
         paymentWrappers.forEach(pw -> paymentDataCache.put(pw.getKey(), pw));
-        List<Payment> payments = paymentWrappers.stream().map(PaymentWrapper::getPayment).collect(Collectors.toList());
+        List<Payment> paymentsForInsert = paymentWrappers.stream()
+                .filter(Wrapper::isShouldInsert)
+                .map(PaymentWrapper::getPayment)
+                .collect(Collectors.toList());
+        List<Payment> paymentsForUpdate = paymentWrappers.stream()
+                .filter(pw -> !pw.isShouldInsert())
+                .map(PaymentWrapper::getPayment)
+                .collect(Collectors.toList());
         List<CashFlow> cashFlows = paymentWrappers
                 .stream()
+                .filter(Wrapper::isShouldInsert)
                 .filter(p -> p.getCashFlows() != null)
                 .map(PaymentWrapper::getCashFlows)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
-        paymentDao.saveBatch(payments);
+        paymentDao.updateBatch(paymentsForUpdate);
+        paymentDao.saveBatch(paymentsForInsert);
         cashFlowDao.save(cashFlows);
     }
 }

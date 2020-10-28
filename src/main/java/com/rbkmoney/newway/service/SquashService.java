@@ -2,34 +2,29 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.newway.model.Wrapper;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class SquashService<W extends Wrapper> {
 
-    public List<W> squashPayments(List<W> paymentWrappers, List<Long> ids) {
-        var groupedMap = paymentWrappers.stream().collect(Collectors.groupingBy(Wrapper::getKey));
+    public List<W> squash(List<W> wrappers, List<Long> ids) {
+        var groupedMap = wrappers.stream().collect(Collectors.groupingBy(Wrapper::getKey, LinkedHashMap::new, Collectors.toList()));
         List<W> result = new ArrayList<>();
         Iterator<Long> iterator = ids.iterator();
         groupedMap.forEach((key, pwList) -> {
-            if (pwList.size() > 1) {
-                setIds(iterator, pwList);
-                squashById(result, pwList);
-                long count = result.stream().filter(w -> !w.isShouldInsert()).count();
-                if (count > 1) {
-                    throw new IllegalStateException("Must be less than 2 update statements");
-                }
+            setIds(iterator, pwList);
+            squashById(result, pwList);
+            long count = result.stream().filter(w -> !w.isShouldInsert()).count();
+            if (count > 1) {
+                throw new IllegalStateException("Must be less or equal than one update statements");
             }
-
         });
         return result;
     }
 
     private void squashById(List<W> result, List<W> pwList) {
-        var sortedById = pwList.stream().collect(Collectors.groupingBy(this::getId));
-        sortedById.forEach((id, ws) -> {
+        var groupedById = pwList.stream().collect(Collectors.groupingBy(this::getId, LinkedHashMap::new, Collectors.toList()));
+        groupedById.forEach((id, ws) -> {
             boolean shouldInsert = ws.get(0).isShouldInsert();
             W pwLast = ws.get(ws.size() - 1);
             pwLast.setShouldInsert(shouldInsert);

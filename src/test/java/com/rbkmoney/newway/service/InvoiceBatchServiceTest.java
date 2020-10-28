@@ -5,6 +5,7 @@ import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.model.InvoiceWrapper;
+import com.rbkmoney.newway.model.InvoicingKey;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -34,13 +35,17 @@ public class InvoiceBatchServiceTest extends AbstractAppDaoTests {
                 .mapToObj(x -> new InvoiceWrapper(random(Invoice.class, "id"), randomListOf(3, InvoiceCart.class, "id", "invId")))
                 .collect(Collectors.toList());
 
-        invoiceWrappers.forEach(iw -> iw.getInvoice().setCurrent(false));
         String invoiceIdFirst = "invoiceIdFirst";
         String invoiceIdSecond = "invoiceIdSecond";
         invoiceWrappers.get(0).getInvoice().setInvoiceId(invoiceIdFirst);
         invoiceWrappers.get(1).getInvoice().setInvoiceId(invoiceIdFirst);
         invoiceWrappers.get(2).getInvoice().setInvoiceId(invoiceIdSecond);
         invoiceWrappers.get(3).getInvoice().setInvoiceId(invoiceIdSecond);
+        invoiceWrappers.forEach(iw -> {
+            iw.setKey(InvoicingKey.buildKey(iw));
+            iw.setShouldInsert(true);
+            iw.getInvoice().setCurrent(false);
+        });
         invoiceBatchService.process(invoiceWrappers);
 
         Invoice invoiceFirstGet = invoiceDao.get(invoiceIdFirst);

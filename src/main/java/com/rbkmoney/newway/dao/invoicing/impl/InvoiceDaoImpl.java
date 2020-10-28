@@ -44,6 +44,17 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
     }
 
     @Override
+    public void updateBatch(List<Invoice> invoices) throws DaoException{
+        List<Query> queries = invoices.stream()
+                .map(invoice -> getDslContext().newRecord(INVOICE, invoice))
+                .map(invoiceRecord -> getDslContext().update(INVOICE)
+                        .set(invoiceRecord)
+                        .where(INVOICE.ID.eq(invoiceRecord.getId())))
+                .collect(Collectors.toList());
+        batchExecute(queries);
+    }
+
+    @Override
     public Invoice get(String invoiceId) throws DaoException {
         Query query = getDslContext().selectFrom(INVOICE)
                 .where(INVOICE.INVOICE_ID.eq(invoiceId).and(INVOICE.CURRENT));

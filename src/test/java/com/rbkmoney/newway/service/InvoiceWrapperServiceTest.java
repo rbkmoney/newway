@@ -33,7 +33,10 @@ public class InvoiceWrapperServiceTest extends AbstractAppDaoTests {
         });
         service.save(invoiceWrappers);
 
-        InvoiceWrapper invoiceWrapper = service.get(invoiceWrappers.get(0).getInvoice().getInvoiceId(), new LocalStorage());
+        InvoiceWrapper invoiceWrapper = service.get(invoiceWrappers.get(0).getInvoice().getInvoiceId(),
+                invoiceWrappers.get(0).getInvoice().getSequenceId(),
+                invoiceWrappers.get(0).getInvoice().getChangeId(),
+                new LocalStorage());
         assertEquals(invoiceWrappers.get(0).getInvoice().getShopId(), invoiceWrapper.getInvoice().getShopId());
     }
 }

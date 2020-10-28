@@ -7,6 +7,7 @@ import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.exception.NotFoundException;
+import com.rbkmoney.newway.model.Wrapper;
 import com.rbkmoney.newway.poller.event_stock.LocalStorage;
 import com.rbkmoney.newway.model.InvoiceWrapper;
 import com.rbkmoney.newway.model.InvoicingKey;
@@ -56,14 +57,23 @@ public class InvoiceWrapperService {
 
     public void save(List<InvoiceWrapper> invoiceWrappers) {
         invoiceWrappers.forEach(iw -> invoiceDataCache.put(iw.getKey(), iw));
-        List<Invoice> invoices = invoiceWrappers.stream().map(InvoiceWrapper::getInvoice).collect(Collectors.toList());
-        invoiceDao.saveBatch(invoices);
+        List<Invoice> invoicesForInsert = invoiceWrappers.stream()
+                .filter(Wrapper::isShouldInsert)
+                .map(InvoiceWrapper::getInvoice)
+                .collect(Collectors.toList());
+        List<Invoice> invoicesForUpdate = invoiceWrappers.stream()
+                .filter(iw -> !iw.isShouldInsert())
+                .map(InvoiceWrapper::getInvoice)
+                .collect(Collectors.toList());
         List<InvoiceCart> carts = invoiceWrappers
                 .stream()
+                .filter(Wrapper::isShouldInsert)
                 .filter(i -> i.getCarts() != null)
                 .map(InvoiceWrapper::getCarts)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+        invoiceDao.updateBatch(invoicesForUpdate);
+        invoiceDao.saveBatch(invoicesForInsert);
         invoiceCartDao.save(carts);
     }
 }
