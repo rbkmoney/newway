@@ -4,6 +4,7 @@ import com.rbkmoney.newway.dao.AbstractAppDaoTests;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.model.InvoiceWrapper;
+import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.poller.event_stock.LocalStorage;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class InvoiceWrapperServiceTest extends AbstractAppDaoTests {
     private InvoiceWrapperService service;
 
     @Test
-    public void getTest() {
+    public void testGet() {
         List<InvoiceWrapper> invoiceWrappers = IntStream.range(1, 5)
                 .mapToObj(x -> new InvoiceWrapper(random(Invoice.class), randomListOf(3, InvoiceCart.class)))
                 .collect(Collectors.toList());
@@ -30,12 +31,14 @@ public class InvoiceWrapperServiceTest extends AbstractAppDaoTests {
         invoiceWrappers.forEach(iw -> {
             iw.getInvoice().setCurrent(false);
             iw.getCarts().forEach(c -> c.setInvId(iw.getInvoice().getId()));
+            iw.setKey(InvoicingKey.buildKey(iw));
+            iw.setShouldInsert(true);
         });
         service.save(invoiceWrappers);
 
         InvoiceWrapper invoiceWrapper = service.get(invoiceWrappers.get(0).getInvoice().getInvoiceId(),
-                invoiceWrappers.get(0).getInvoice().getSequenceId(),
-                invoiceWrappers.get(0).getInvoice().getChangeId(),
+                Long.MAX_VALUE,
+                0,
                 new LocalStorage());
         assertEquals(invoiceWrappers.get(0).getInvoice().getShopId(), invoiceWrapper.getInvoice().getShopId());
     }
