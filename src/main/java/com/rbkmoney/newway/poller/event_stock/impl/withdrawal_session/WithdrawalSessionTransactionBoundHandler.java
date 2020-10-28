@@ -40,7 +40,7 @@ public class WithdrawalSessionTransactionBoundHandler extends AbstractWithdrawal
         Change change = timestampedChange.getChange();
         long sequenceId = event.getEventId();
         String withdrawalSessionId = event.getSourceId();
-        log.info("Start withdrawal session next state handling, sequenceId={}, withdrawalSessionId={}",
+        log.info("Start withdrawal transaction bound handling, sequenceId={}, withdrawalSessionId={}",
                 sequenceId, withdrawalSessionId);
         WithdrawalSession withdrawalSession = withdrawalSessionDao.get(withdrawalSessionId);
         Long oldId = withdrawalSession.getId();
@@ -63,11 +63,11 @@ public class WithdrawalSessionTransactionBoundHandler extends AbstractWithdrawal
         withdrawalSessionDao.save(withdrawalSession).ifPresentOrElse(
                 id -> {
                     withdrawalSessionDao.updateNotCurrent(oldId);
-                    log.info("Withdrawal session state have been changed, sequenceId={}, " +
+                    log.info("Withdrawal session transaction bound have been changed, sequenceId={}, " +
                                     "withdrawalSessionId={}, WithdrawalSessionStatus={}", sequenceId,
                             withdrawalSessionId, withdrawalSession.getWithdrawalSessionStatus());
                 },
-                () -> log.info("Withdrawal session state have been changed, sequenceId={}, " +
+                () -> log.info("Withdrawal session transaction bound have been changed, sequenceId={}, " +
                                 "withdrawalSessionId={}, WithdrawalSessionStatus={}", sequenceId,
                         withdrawalSessionId, withdrawalSession.getWithdrawalSessionStatus()));
 
