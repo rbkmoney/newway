@@ -13,8 +13,8 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.invoicing.iface.AdjustmentDao;
+import com.rbkmoney.newway.dao.invoicing.iface.BatchDao;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
-import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
 import com.rbkmoney.newway.domain.enums.AdjustmentStatus;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
@@ -23,6 +23,7 @@ import com.rbkmoney.newway.domain.tables.pojos.Adjustment;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.NotFoundException;
+import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
 import com.rbkmoney.newway.util.CashFlowUtil;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ import java.util.List;
 public class InvoicePaymentAdjustmentCreatedHandler extends AbstractInvoicingHandler {
 
     private final AdjustmentDao adjustmentDao;
-    private final PaymentDao paymentDao;
+    private final BatchDao<Payment> paymentDao;
     private final CashFlowDao cashFlowDao;
 
     private Filter filter = new PathConditionFilter(new PathConditionRule(
@@ -70,7 +71,7 @@ public class InvoicePaymentAdjustmentCreatedHandler extends AbstractInvoicingHan
         adjustment.setAdjustmentId(adjustmentId);
         adjustment.setPaymentId(paymentId);
         adjustment.setInvoiceId(invoiceId);
-        Payment payment = paymentDao.get(invoiceId, paymentId);
+        Payment payment = paymentDao.get(InvoicingKey.buildKey(invoiceId, paymentId));
         if (payment == null) {
             throw new NotFoundException(String.format("Payment on adjustment not found, invoiceId='%s', paymentId='%s', adjustmentId='%s'",
                     invoiceId, paymentId, adjustmentId));

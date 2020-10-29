@@ -1,8 +1,8 @@
 package com.rbkmoney.newway.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
+import com.rbkmoney.newway.dao.invoicing.iface.BatchDao;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
-import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PaymentWrapperService {
 
-    private final PaymentDao paymentDao;
+    private final BatchDao<Payment> paymentDao;
     private final CashFlowDao cashFlowDao;
     private final Cache<InvoicingKey, PaymentWrapper> paymentDataCache;
 
@@ -39,7 +39,7 @@ public class PaymentWrapperService {
             if (paymentWrapper != null) {
                 paymentWrapper = paymentWrapper.copy();
             } else {
-                Payment payment = paymentDao.get(invoiceId, paymentId);
+                Payment payment = paymentDao.get(key);
                 if (payment == null) {
                     throw new NotFoundException(String.format("Payment not found, invoiceId='%s', payment='%s'", invoiceId, paymentId));
                 }
@@ -76,5 +76,9 @@ public class PaymentWrapperService {
         paymentDao.updateBatch(paymentsForUpdate);
         paymentDao.saveBatch(paymentsForInsert);
         cashFlowDao.save(cashFlows);
+    }
+
+    public void switchCurrent(Collection<InvoicingKey> switchIds) {
+        paymentDao.switchCurrent(switchIds);
     }
 }

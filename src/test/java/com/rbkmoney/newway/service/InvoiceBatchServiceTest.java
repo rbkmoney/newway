@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.service;
 
 import com.rbkmoney.newway.dao.AbstractAppDaoTests;
-import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
+import com.rbkmoney.newway.dao.invoicing.iface.BatchDao;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.model.InvoiceWrapper;
@@ -24,7 +24,7 @@ public class InvoiceBatchServiceTest extends AbstractAppDaoTests {
     private InvoiceBatchService invoiceBatchService;
 
     @Autowired
-    private InvoiceDao invoiceDao;
+    private BatchDao<Invoice> invoiceDao;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -48,11 +48,11 @@ public class InvoiceBatchServiceTest extends AbstractAppDaoTests {
         });
         invoiceBatchService.process(invoiceWrappers);
 
-        Invoice invoiceFirstGet = invoiceDao.get(invoiceIdFirst);
+        Invoice invoiceFirstGet = invoiceDao.get(InvoicingKey.buildKey(invoiceIdFirst));
         assertNotEquals(invoiceWrappers.get(0).getInvoice().getPartyId(), invoiceFirstGet.getPartyId());
         assertEquals(invoiceWrappers.get(1).getInvoice().getPartyId(), invoiceFirstGet.getPartyId());
 
-        Invoice invoiceSecondGet = invoiceDao.get(invoiceIdSecond);
+        Invoice invoiceSecondGet = invoiceDao.get(InvoicingKey.buildKey(invoiceIdSecond));
         assertNotEquals(invoiceWrappers.get(2).getInvoice().getShopId(), invoiceSecondGet.getShopId());
         assertEquals(invoiceWrappers.get(3).getInvoice().getShopId(), invoiceSecondGet.getShopId());
 

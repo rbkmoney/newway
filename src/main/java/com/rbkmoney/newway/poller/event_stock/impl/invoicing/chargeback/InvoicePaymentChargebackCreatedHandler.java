@@ -12,14 +12,15 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
+import com.rbkmoney.newway.dao.invoicing.iface.BatchDao;
 import com.rbkmoney.newway.dao.invoicing.iface.ChargebackDao;
-import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.domain.enums.ChargebackCategory;
 import com.rbkmoney.newway.domain.enums.ChargebackStage;
 import com.rbkmoney.newway.domain.enums.ChargebackStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Chargeback;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.NotFoundException;
+import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +37,7 @@ public class InvoicePaymentChargebackCreatedHandler extends AbstractInvoicingHan
 
     private final ChargebackDao chargebackDao;
 
-    private final PaymentDao paymentDao;
+    private final BatchDao<Payment> paymentDao;
 
     @Override
     public void handle(InvoiceChange change, MachineEvent event, Integer changeId) {
@@ -65,7 +66,7 @@ public class InvoicePaymentChargebackCreatedHandler extends AbstractInvoicingHan
         chargeback.setInvoiceId(invoiceId);
         chargeback.setExternalId(invoicePaymentChargeback.getExternalId());
 
-        Payment payment = paymentDao.get(invoiceId, paymentId);
+        Payment payment = paymentDao.get(InvoicingKey.buildKey(invoiceId, paymentId));
         if (payment == null) {
             String errMsg = String.format(
                     "Payment on chargeback not found, invoiceId='%s', paymentId='%s', chargebackId='%s'",

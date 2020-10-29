@@ -2,7 +2,7 @@ package com.rbkmoney.newway.dao.invoicing.impl;
 
 import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.mapper.RecordRowMapper;
-import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
+import com.rbkmoney.newway.dao.invoicing.iface.BatchDao;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.model.InvoicingKey;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import static com.rbkmoney.newway.domain.tables.Invoice.INVOICE;
 
 @Component
-public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
+public class InvoiceDaoImpl extends AbstractGenericDao implements BatchDao<Invoice> {
 
     private final RowMapper<Invoice> invoiceRowMapper;
 
@@ -55,9 +55,9 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
     }
 
     @Override
-    public Invoice get(String invoiceId) throws DaoException {
+    public Invoice get(InvoicingKey key) throws DaoException {
         Query query = getDslContext().selectFrom(INVOICE)
-                .where(INVOICE.INVOICE_ID.eq(invoiceId).and(INVOICE.CURRENT));
+                .where(INVOICE.INVOICE_ID.eq(key.getInvoiceId()).and(INVOICE.CURRENT));
         return fetchOne(query, invoiceRowMapper);
     }
 

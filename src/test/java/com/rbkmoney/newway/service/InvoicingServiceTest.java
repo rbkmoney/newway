@@ -7,7 +7,7 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.TestData;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
 import com.rbkmoney.newway.dao.invoicing.iface.ChargebackDao;
-import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
+import com.rbkmoney.newway.dao.invoicing.impl.PaymentDaoImpl;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.Chargeback;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
@@ -42,7 +42,7 @@ public class InvoicingServiceTest {
     @MockBean
     private PaymentBatchService paymentBatchService;
     @Mock
-    private PaymentDao paymentDao;
+    private PaymentDaoImpl paymentDao;
     @Mock
     private CashFlowService cashFlowService;
     @Mock
@@ -59,7 +59,7 @@ public class InvoicingServiceTest {
         when(right.accept(any())).thenReturn(true);
         rightHandlers.add(right);
 
-        when(paymentDao.get(anyString(), anyString())).thenReturn(EnhancedRandom.random(Payment.class));
+        when(paymentDao.get(any())).thenReturn(EnhancedRandom.random(Payment.class));
     }
 
     @Test
@@ -232,7 +232,7 @@ public class InvoicingServiceTest {
         return chargebackDao;
     }
 
-    private List<AbstractInvoicingHandler> chargebackHandlers(ChargebackDao chargebackDao, CashFlowDao cashFlowDao, PaymentDao paymentDao) {
+    private List<AbstractInvoicingHandler> chargebackHandlers(ChargebackDao chargebackDao, CashFlowDao cashFlowDao, PaymentDaoImpl paymentDao) {
         return Arrays.asList(
                 new InvoicePaymentChargebackStageChangedHandler(chargebackDao, cashFlowService),
                 new InvoicePaymentChargebackBodyChangedHandler(chargebackDao, cashFlowService),

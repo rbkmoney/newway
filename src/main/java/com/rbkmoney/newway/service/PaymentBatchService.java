@@ -1,6 +1,5 @@
 package com.rbkmoney.newway.service;
 
-import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.dao.invoicing.impl.PaymentIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.PaymentWrapper;
@@ -16,7 +15,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PaymentBatchService {
 
-    private final PaymentDao paymentDao;
     private final PaymentWrapperService paymentWrapperService;
     private final PaymentIdsGeneratorDaoImpl paymentIdsGeneratorDao;
     private final PaymentSquashService paymentSquashService;
@@ -31,7 +29,7 @@ public class PaymentBatchService {
                 .filter(PaymentWrapper::isShouldInsert)
                 .collect(Collectors.groupingBy(PaymentWrapper::getKey)).keySet();
         log.info("Switch to current ids: {}", invoicingSwitchIds);
-        paymentDao.switchCurrent(invoicingSwitchIds);
+        paymentWrapperService.switchCurrent(invoicingSwitchIds);
         log.info("End processing of payment batch");
     }
 }

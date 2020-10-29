@@ -1,13 +1,10 @@
 package com.rbkmoney.newway.service;
 
 import com.rbkmoney.newway.dao.AbstractAppDaoTests;
-import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
+import com.rbkmoney.newway.dao.invoicing.impl.PaymentDaoImpl;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
-import com.rbkmoney.newway.domain.tables.pojos.Invoice;
-import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
-import com.rbkmoney.newway.model.InvoiceWrapper;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.PaymentWrapper;
 import org.junit.Test;
@@ -29,7 +26,7 @@ public class PaymentBatchServiceTest extends AbstractAppDaoTests {
     private PaymentBatchService paymentBatchService;
 
     @Autowired
-    private PaymentDao paymentDao;
+    private PaymentDaoImpl paymentDao;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -58,16 +55,16 @@ public class PaymentBatchServiceTest extends AbstractAppDaoTests {
         });
         paymentBatchService.process(paymentWrappers);
 
-        Payment paymentFirstGet = paymentDao.get(invoiceIdFirst, "1");
+        Payment paymentFirstGet = paymentDao.get(InvoicingKey.buildKey(invoiceIdFirst, "1"));
         assertNotEquals(paymentWrappers.get(0).getPayment().getPartyId(), paymentFirstGet.getPartyId());
         assertEquals(paymentWrappers.get(1).getPayment().getPartyId(), paymentFirstGet.getPartyId());
 
-        Payment paymentSecondGet = paymentDao.get(invoiceIdFirst, "2");
+        Payment paymentSecondGet = paymentDao.get(InvoicingKey.buildKey(invoiceIdFirst, "2"));
         assertEquals(paymentWrappers.get(2).getPayment().getShopId(), paymentSecondGet.getShopId());
 
         //Duplication check
         paymentBatchService.process(paymentWrappers);
-        Payment paymentFirstGet2 = paymentDao.get(invoiceIdFirst, "1");
+        Payment paymentFirstGet2 = paymentDao.get(InvoicingKey.buildKey(invoiceIdFirst, "1"));
         assertEquals(paymentWrappers.get(1).getPayment().getPartyId(), paymentFirstGet2.getPartyId());
         assertEquals(2, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.payment WHERE invoice_id = ? and payment_id = ? ", new Object[]{invoiceIdFirst, "1"}, Integer.class).intValue());
         assertEquals(1, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.payment WHERE invoice_id = ? and payment_id = ? ", new Object[]{invoiceIdFirst, "2"}, Integer.class).intValue());
