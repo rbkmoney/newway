@@ -2,15 +2,20 @@ package com.rbkmoney.newway.poller.event_stock.impl.withdrawal_session;
 
 import com.rbkmoney.fistful.base.TransactionInfo;
 import com.rbkmoney.fistful.withdrawal_session.Change;
-import com.rbkmoney.fistful.withdrawal_session.SinkEvent;
+import com.rbkmoney.fistful.withdrawal_session.TimestampedChange;
+import com.rbkmoney.fistful.withdrawal_session.TransactionBoundChange;
+import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.withdrawal_session.iface.WithdrawalSessionDao;
+import com.rbkmoney.newway.domain.enums.WithdrawalSessionStatus;
 import com.rbkmoney.newway.domain.tables.pojos.WithdrawalSession;
 import com.rbkmoney.newway.util.JsonUtil;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -24,25 +29,28 @@ public class WithdrawalSessionTransactionBoundHandler extends AbstractWithdrawal
 
     private final WithdrawalSessionDao withdrawalSessionDao;
 
+    @Getter
     private final Filter filter = new PathConditionFilter(
-            new PathConditionRule("transaction_bound", new IsNullCondition().not())
+            new PathConditionRule("change.transaction_bound", new IsNullCondition().not())
     );
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(Change change, SinkEvent event) {
-        log.info("Start withdrawal session transaction bound handling (eventId={}, sessionId={})",
-                event.getId(), event.getSource());
-        WithdrawalSession withdrawalSession = withdrawalSessionDao.get(event.getSource());
-        withdrawalSession.setId(null);
-        withdrawalSession.setWtime(null);
-        withdrawalSession.setEventId(event.getId());
-        withdrawalSession.setSequenceId(event.getPayload().getSequence());
-        withdrawalSession.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        withdrawalSession.setEventOccuredAt(TypeUtil.stringToLocalDateTime(event.getPayload().getOccuredAt()));
-        withdrawalSession.setWithdrawalSessionId(event.getSource());
-
-        TransactionInfo trxInfo = change.getTransactionBound().getTrxInfo();
+    public void handle(TimestampedChange timestampedChange, MachineEvent event) {
+        Change change = timestampedChange.getChange();
+        long sequenceId = event.getEventId();
+        String withdrawalSessionId = event.getSourceId();
+        log.info("Start withdrawal transaction bound handling, sequenceId={}, withdrawalSessionId={}",
+                sequenceId, withdrawalSessionId);
+        WithdrawalSession withdrawalSession = withdrawalSessionDao.get(withdrawalSessionId);
+        Long oldId = withdrawalSession.getId();
+        initDefaultFields(
+                event, sequenceId, withdrawalSession, withdrawalSessionId, timestampedChange.getOccuredAt()
+        );
+        withdrawalSession.setWithdrawalSessionStatus(
+                TBaseUtil.unionFieldToEnum(change.getFinished(), WithdrawalSessionStatus.class));
+        TransactionBoundChange transactionBound = change.getTransactionBound();
+        TransactionInfo trxInfo = transactionBound.getTrxInfo();
         withdrawalSession.setTranInfoId(trxInfo.getId());
         if (trxInfo.isSetTimestamp()) {
             withdrawalSession.setTranInfoTimestamp(TypeUtil.stringToLocalDateTime(trxInfo.getTimestamp()));
@@ -52,16 +60,16 @@ public class WithdrawalSessionTransactionBoundHandler extends AbstractWithdrawal
             withdrawalSession.setTranAdditionalInfoRrn(trxInfo.getAdditionalInfo().getRrn());
             withdrawalSession.setTranAdditionalInfoJson(JsonUtil.tBaseToJsonString(trxInfo.getAdditionalInfo()));
         }
-        withdrawalSessionDao.updateNotCurrent(event.getSource());
-        long id = withdrawalSessionDao.save(withdrawalSession);
+        withdrawalSessionDao.save(withdrawalSession).ifPresentOrElse(
+                id -> {
+                    withdrawalSessionDao.updateNotCurrent(oldId);
+                    log.info("Withdrawal session transaction bound have been changed, sequenceId={}, " +
+                                    "withdrawalSessionId={}, WithdrawalSessionStatus={}", sequenceId,
+                            withdrawalSessionId, withdrawalSession.getWithdrawalSessionStatus());
+                },
+                () -> log.info("Withdrawal session transaction bound have been changed, sequenceId={}, " +
+                                "withdrawalSessionId={}, WithdrawalSessionStatus={}", sequenceId,
+                        withdrawalSessionId, withdrawalSession.getWithdrawalSessionStatus()));
 
-        log.info("Withdrawal session transaction bound have been changed (Id={}, eventId={}, " +
-                        "sourceId={}, status={})", id, event.getId(), event.getSource(),
-                withdrawalSession.getWithdrawalSessionStatus());
-    }
-
-    @Override
-    public Filter<Change> getFilter() {
-        return filter;
     }
 }
