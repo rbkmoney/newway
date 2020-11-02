@@ -1,10 +1,8 @@
 package com.rbkmoney.newway.poller.event_stock.impl.withdrawal_session;
 
-import com.rbkmoney.fistful.base.TransactionInfo;
 import com.rbkmoney.fistful.withdrawal_session.Change;
 import com.rbkmoney.fistful.withdrawal_session.TimestampedChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
-import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -29,7 +27,9 @@ public class WithdrawalSessionFinishedHandler extends AbstractWithdrawalSessionH
     private final WithdrawalSessionDao withdrawalSessionDao;
 
     @Getter
-    private final Filter filter = new PathConditionFilter(new PathConditionRule("change.finished", new IsNullCondition().not()));
+    private final Filter filter = new PathConditionFilter(
+            new PathConditionRule("change.finished", new IsNullCondition().not())
+    );
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -46,19 +46,7 @@ public class WithdrawalSessionFinishedHandler extends AbstractWithdrawalSessionH
         withdrawalSession.setWithdrawalSessionStatus(TBaseUtil.unionFieldToEnum(change.getFinished(), WithdrawalSessionStatus.class));
         if (change.getFinished().isSetFailed()) {
             withdrawalSession.setFailureJson(JsonUtil.tBaseToJsonString(change.getFinished().getFailed()));
-        } else if (change.getFinished().isSetSuccess()) {
-            TransactionInfo trxInfo = change.getFinished().getSuccess().getTrxInfo();
-            withdrawalSession.setTranInfoId(trxInfo.getId());
-            if (trxInfo.isSetTimestamp()) {
-                withdrawalSession.setTranInfoTimestamp(TypeUtil.stringToLocalDateTime(trxInfo.getTimestamp()));
-            }
-            withdrawalSession.setTranInfoJson(JsonUtil.objectToJsonString(trxInfo.getExtra()));
-            if (trxInfo.isSetAdditionalInfo()) {
-                withdrawalSession.setTranAdditionalInfoRrn(trxInfo.getAdditionalInfo().getRrn());
-                withdrawalSession.setTranAdditionalInfoJson(JsonUtil.tBaseToJsonString(trxInfo.getAdditionalInfo()));
-            }
         }
-
         withdrawalSessionDao.save(withdrawalSession).ifPresentOrElse(
                 id -> {
                     withdrawalSessionDao.updateNotCurrent(oldId);
