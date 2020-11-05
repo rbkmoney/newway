@@ -31,14 +31,10 @@ public class InvoiceWrapperServiceTest extends AbstractAppDaoTests {
         invoiceWrappers.forEach(iw -> {
             iw.getInvoice().setCurrent(false);
             iw.getCarts().forEach(c -> c.setInvId(iw.getInvoice().getId()));
-            iw.setKey(InvoicingKey.buildKey(iw));
-            iw.setShouldInsert(true);
         });
         service.save(invoiceWrappers);
 
         InvoiceWrapper invoiceWrapper = service.get(invoiceWrappers.get(0).getInvoice().getInvoiceId(),
-                Long.MAX_VALUE,
-                0,
                 new LocalStorage());
         assertEquals(invoiceWrappers.get(0).getInvoice().getShopId(), invoiceWrapper.getInvoice().getShopId());
     }

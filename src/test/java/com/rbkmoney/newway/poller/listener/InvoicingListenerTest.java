@@ -14,6 +14,7 @@ import com.rbkmoney.newway.poller.event_stock.impl.invoicing.invoice.InvoiceCrea
 import com.rbkmoney.newway.service.InvoiceBatchService;
 import com.rbkmoney.newway.service.InvoicingService;
 import com.rbkmoney.newway.service.PaymentBatchService;
+import com.rbkmoney.newway.utils.MockUtils;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.Before;
@@ -91,14 +92,7 @@ public class InvoicingListenerTest {
         ArrayList<InvoiceChange> invoiceChanges = new ArrayList<>();
         InvoiceChange invoiceChange = new InvoiceChange();
         invoiceChange.setInvoiceCreated(
-                new InvoiceCreated(
-                        new Invoice()
-                                .setCreatedAt(TypeUtil.temporalToString(LocalDateTime.now()))
-                                .setStatus(InvoiceStatus.unpaid(new InvoiceUnpaid()))
-                                .setDetails(new InvoiceDetails())
-                                .setDue(TypeUtil.temporalToString(LocalDateTime.now()))
-                                .setCost(new Cash().setAmount(1).setCurrency(new CurrencyRef()))
-                                .setContext(new Content())));
+                new InvoiceCreated(MockUtils.buildInvoice("inv_id")));
         invoiceChanges.add(invoiceChange);
         payload.setInvoiceChanges(invoiceChanges);
         event.setPayload(payload);

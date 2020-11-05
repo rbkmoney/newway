@@ -1,14 +1,13 @@
 package com.rbkmoney.newway.service;
 
 import com.github.benmanes.caffeine.cache.Cache;
-import com.rbkmoney.newway.dao.invoicing.iface.BatchDao;
+import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.exception.NotFoundException;
-import com.rbkmoney.newway.model.Wrapper;
 import com.rbkmoney.newway.poller.event_stock.LocalStorage;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.PaymentWrapper;
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PaymentWrapperService {
 
-    private final BatchDao<Payment> paymentDao;
+    private final PaymentDao paymentDao;
     private final CashFlowDao cashFlowDao;
     private final Cache<InvoicingKey, PaymentWrapper> paymentDataCache;
 
@@ -39,12 +38,14 @@ public class PaymentWrapperService {
             if (paymentWrapper != null) {
                 paymentWrapper = paymentWrapper.copy();
             } else {
-                Payment payment = paymentDao.get(key);
+                Payment payment = paymentDao.get(invoiceId, paymentId);
                 if (payment == null) {
                     throw new NotFoundException(String.format("Payment not found, invoiceId='%s', payment='%s'", invoiceId, paymentId));
                 }
                 List<CashFlow> cashFlows = cashFlowDao.getByObjId(payment.getId(), PaymentChangeType.payment);
-                paymentWrapper = new PaymentWrapper(payment, cashFlows);
+                paymentWrapper = new PaymentWrapper();
+                paymentWrapper.setPayment(payment);
+                paymentWrapper.setCashFlows(cashFlows);
                 paymentWrapper.setKey(key);
             }
         }
@@ -59,7 +60,7 @@ public class PaymentWrapperService {
     public void save(List<PaymentWrapper> paymentWrappers) {
         paymentWrappers.forEach(pw -> paymentDataCache.put(pw.getKey(), pw));
         List<Payment> paymentsForInsert = paymentWrappers.stream()
-                .filter(Wrapper::isShouldInsert)
+                .filter(PaymentWrapper::isShouldInsert)
                 .map(PaymentWrapper::getPayment)
                 .collect(Collectors.toList());
         List<Payment> paymentsForUpdate = paymentWrappers.stream()
@@ -68,7 +69,7 @@ public class PaymentWrapperService {
                 .collect(Collectors.toList());
         List<CashFlow> cashFlows = paymentWrappers
                 .stream()
-                .filter(Wrapper::isShouldInsert)
+                .filter(PaymentWrapper::isShouldInsert)
                 .filter(p -> p.getCashFlows() != null)
                 .map(PaymentWrapper::getCashFlows)
                 .flatMap(Collection::stream)

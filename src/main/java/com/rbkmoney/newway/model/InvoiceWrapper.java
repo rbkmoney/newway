@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InvoiceWrapper extends Wrapper {
+public class InvoiceWrapper {
     private Invoice invoice;
     private List<InvoiceCart> carts;
 
@@ -21,7 +21,6 @@ public class InvoiceWrapper extends Wrapper {
         Invoice invoiceTarget = new Invoice();
         BeanUtils.copyProperties(invoice, invoiceTarget);
         InvoiceWrapper invoiceWrapperTarget = new InvoiceWrapper();
-        invoiceWrapperTarget.setKey(InvoicingKey.buildKey(this));
         invoiceWrapperTarget.setInvoice(invoiceTarget);
         if (carts != null) {
             List<InvoiceCart> cartsTarget = new ArrayList<>();

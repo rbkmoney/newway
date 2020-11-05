@@ -2,7 +2,7 @@ package com.rbkmoney.newway.dao.invoicing.impl;
 
 import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.mapper.RecordRowMapper;
-import com.rbkmoney.newway.dao.invoicing.iface.BatchDao;
+import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.model.InvoicingKey;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import static com.rbkmoney.newway.domain.Tables.PAYMENT;
 
 @Component
-public class PaymentDaoImpl extends AbstractGenericDao implements BatchDao<Payment> {
+public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
 
     private final RowMapper<Payment> paymentRowMapper;
 
@@ -56,10 +56,10 @@ public class PaymentDaoImpl extends AbstractGenericDao implements BatchDao<Payme
     }
 
     @Override
-    public Payment get(InvoicingKey key) throws DaoException {
+    public Payment get(String invoiceId, String paymentId) throws DaoException {
         Query query = getDslContext().selectFrom(PAYMENT)
-                .where(PAYMENT.INVOICE_ID.eq(key.getInvoiceId())
-                        .and(PAYMENT.PAYMENT_ID.eq(key.getPaymentId()))
+                .where(PAYMENT.INVOICE_ID.eq(invoiceId)
+                        .and(PAYMENT.PAYMENT_ID.eq(paymentId))
                         .and(PAYMENT.CURRENT));
 
         return fetchOne(query, paymentRowMapper);

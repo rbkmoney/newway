@@ -325,10 +325,6 @@ public class DaoTests extends AbstractAppDaoTests {
         List<InvoiceCart> byInvId = invoiceCartDao.getByInvId(invId);
         assertEquals(new HashSet(invoiceCarts), new HashSet(byInvId));
 
-        invoice.setAmount(111L);
-        invoiceDao.updateBatch(Collections.singletonList(invoice));
-        Invoice invoice1 = invoiceDao.get(InvoicingKey.buildKey(invoice.getInvoiceId()));
-        assertEquals(invoice,invoice1);
     }
 
     @Test
@@ -344,12 +340,12 @@ public class DaoTests extends AbstractAppDaoTests {
         paymentTwo.setPaymentId(payment.getPaymentId());
         paymentDao.saveBatch(Arrays.asList(payment, paymentTwo));
         paymentDao.switchCurrent(Collections.singletonList(new InvoicingKey(payment.getInvoiceId(), payment.getPaymentId(), InvoicingType.PAYMENT)));
-        Payment paymentGet = paymentDao.get(InvoicingKey.buildKey(payment.getInvoiceId(), payment.getPaymentId()));
+        Payment paymentGet = paymentDao.get(payment.getInvoiceId(), payment.getPaymentId());
         paymentTwo.setCurrent(true);
         assertEquals(paymentTwo, paymentGet);
         paymentTwo.setPartyRevision(1111L);
         paymentDao.updateBatch(Collections.singletonList(paymentTwo));
-        Payment paymentGet2 = paymentDao.get(InvoicingKey.buildKey(payment.getInvoiceId(), payment.getPaymentId()));
+        Payment paymentGet2 = paymentDao.get(payment.getInvoiceId(), payment.getPaymentId());
         assertEquals(paymentTwo, paymentGet2);
     }
 

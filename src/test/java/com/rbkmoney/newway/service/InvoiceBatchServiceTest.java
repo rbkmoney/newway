@@ -1,11 +1,10 @@
 package com.rbkmoney.newway.service;
 
 import com.rbkmoney.newway.dao.AbstractAppDaoTests;
-import com.rbkmoney.newway.dao.invoicing.iface.BatchDao;
+import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.model.InvoiceWrapper;
-import com.rbkmoney.newway.model.InvoicingKey;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -24,7 +23,7 @@ public class InvoiceBatchServiceTest extends AbstractAppDaoTests {
     private InvoiceBatchService invoiceBatchService;
 
     @Autowired
-    private BatchDao<Invoice> invoiceDao;
+    private InvoiceDao invoiceDao;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -42,17 +41,15 @@ public class InvoiceBatchServiceTest extends AbstractAppDaoTests {
         invoiceWrappers.get(2).getInvoice().setInvoiceId(invoiceIdSecond);
         invoiceWrappers.get(3).getInvoice().setInvoiceId(invoiceIdSecond);
         invoiceWrappers.forEach(iw -> {
-            iw.setKey(InvoicingKey.buildKey(iw));
-            iw.setShouldInsert(true);
             iw.getInvoice().setCurrent(false);
         });
         invoiceBatchService.process(invoiceWrappers);
 
-        Invoice invoiceFirstGet = invoiceDao.get(InvoicingKey.buildKey(invoiceIdFirst));
+        Invoice invoiceFirstGet = invoiceDao.get(invoiceIdFirst);
         assertNotEquals(invoiceWrappers.get(0).getInvoice().getPartyId(), invoiceFirstGet.getPartyId());
         assertEquals(invoiceWrappers.get(1).getInvoice().getPartyId(), invoiceFirstGet.getPartyId());
 
-        Invoice invoiceSecondGet = invoiceDao.get(InvoicingKey.buildKey(invoiceIdSecond));
+        Invoice invoiceSecondGet = invoiceDao.get(invoiceIdSecond);
         assertNotEquals(invoiceWrappers.get(2).getInvoice().getShopId(), invoiceSecondGet.getShopId());
         assertEquals(invoiceWrappers.get(3).getInvoice().getShopId(), invoiceSecondGet.getShopId());
 

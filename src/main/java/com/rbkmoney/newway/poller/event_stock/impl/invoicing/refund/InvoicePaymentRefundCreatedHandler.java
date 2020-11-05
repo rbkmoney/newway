@@ -12,8 +12,8 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.dao.invoicing.iface.BatchDao;
 import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
+import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.dao.invoicing.iface.RefundDao;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.enums.RefundStatus;
@@ -39,7 +39,7 @@ import java.util.List;
 public class InvoicePaymentRefundCreatedHandler extends AbstractInvoicingHandler {
 
     private final RefundDao refundDao;
-    private final BatchDao<Payment> paymentDao;
+    private final PaymentDao paymentDao;
     private final CashFlowDao cashFlowDao;
 
     private Filter filter = new PathConditionFilter(new PathConditionRule(
@@ -75,7 +75,7 @@ public class InvoicePaymentRefundCreatedHandler extends AbstractInvoicingHandler
         refund.setInvoiceId(invoiceId);
         refund.setExternalId(invoicePaymentRefund.getExternalId());
 
-        Payment payment = paymentDao.get(InvoicingKey.buildKey(invoiceId, paymentId));
+        Payment payment = paymentDao.get(invoiceId, paymentId);
         if (payment == null) {
             throw new NotFoundException(String.format("Payment on refund not found, invoiceId='%s', paymentId='%s', refundId='%s'",
                     invoiceId, paymentId, refundId));

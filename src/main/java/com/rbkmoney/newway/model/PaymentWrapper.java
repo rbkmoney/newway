@@ -13,9 +13,11 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentWrapper extends Wrapper {
+public class PaymentWrapper {
     private Payment payment;
     private List<CashFlow> cashFlows;
+    private boolean shouldInsert;
+    private InvoicingKey key;
 
     public PaymentWrapper copy(){
         Payment paymentTarget = new Payment();

@@ -12,7 +12,7 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.dao.invoicing.iface.BatchDao;
+import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.dao.invoicing.iface.ChargebackDao;
 import com.rbkmoney.newway.domain.enums.ChargebackCategory;
 import com.rbkmoney.newway.domain.enums.ChargebackStage;
@@ -37,7 +37,7 @@ public class InvoicePaymentChargebackCreatedHandler extends AbstractInvoicingHan
 
     private final ChargebackDao chargebackDao;
 
-    private final BatchDao<Payment> paymentDao;
+    private final PaymentDao paymentDao;
 
     @Override
     public void handle(InvoiceChange change, MachineEvent event, Integer changeId) {
@@ -66,7 +66,7 @@ public class InvoicePaymentChargebackCreatedHandler extends AbstractInvoicingHan
         chargeback.setInvoiceId(invoiceId);
         chargeback.setExternalId(invoicePaymentChargeback.getExternalId());
 
-        Payment payment = paymentDao.get(InvoicingKey.buildKey(invoiceId, paymentId));
+        Payment payment = paymentDao.get(invoiceId, paymentId);
         if (payment == null) {
             String errMsg = String.format(
                     "Payment on chargeback not found, invoiceId='%s', paymentId='%s', chargebackId='%s'",

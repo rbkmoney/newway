@@ -15,6 +15,7 @@ import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.model.InvoiceWrapper;
+import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.PaymentWrapper;
 import com.rbkmoney.newway.poller.event_stock.LocalStorage;
 import com.rbkmoney.newway.service.InvoiceWrapperService;
@@ -57,13 +58,14 @@ public class InvoicePaymentCreatedMapper extends AbstractInvoicingPaymentMapper 
 
         String paymentId = invoicePayment.getId();
         log.info("Start payment created mapping, sequenceId={}, invoiceId={}, paymentId={}", sequenceId, invoiceId, paymentId);
+        paymentWrapper.setKey(InvoicingKey.buildKey(invoiceId, paymentId));
         setDefaultProperties(payment, sequenceId, changeId, event.getCreatedAt());
         payment.setPaymentId(paymentId);
         payment.setCreatedAt(TypeUtil.stringToLocalDateTime(invoicePayment.getCreatedAt()));
         payment.setInvoiceId(invoiceId);
         payment.setExternalId(invoicePayment.getExternalId());
 
-        InvoiceWrapper invoiceWrapper = invoiceWrapperService.get(invoiceId, sequenceId, changeId, storage);
+        InvoiceWrapper invoiceWrapper = invoiceWrapperService.get(invoiceId, storage);
         if (invoiceWrapper == null) {
             return null;
         }

@@ -159,7 +159,9 @@ public class PaymentSquashServiceTest {
         payment.setInvoiceId(invoiceId);
         payment.setPaymentId(paymentId);
         payment.setPartyRevision(partyRevision);
-        PaymentWrapper paymentWrapper = new PaymentWrapper(payment, List.of(new CashFlow()));
+        PaymentWrapper paymentWrapper = new PaymentWrapper();
+        paymentWrapper.setPayment(payment);
+        paymentWrapper.setCashFlows(List.of(new CashFlow()));
         paymentWrapper.setKey(InvoicingKey.buildKey(invoiceId, paymentId));
         paymentWrapper.setShouldInsert(isShouldInsert);
         return paymentWrapper;
