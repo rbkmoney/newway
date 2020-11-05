@@ -86,7 +86,7 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
     }
 
     protected void waitForTopicSync() throws InterruptedException {
-        Thread.sleep(1000L);
+        Thread.sleep(25000L);
     }
 
     protected void writeToTopic(String topic, SinkEvent sinkEvent) {
