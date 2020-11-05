@@ -45,7 +45,7 @@ public class InvoicePaymentStatusChangedMapper extends AbstractInvoicingPaymentM
         }
         paymentWrapper.setShouldInsert(true);
         Payment paymentSource = paymentWrapper.getPayment();
-        setDefaultProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
+        setInsertProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
         paymentSource.setStatus(TBaseUtil.unionFieldToEnum(invoicePaymentStatus, PaymentStatus.class));
         if (invoicePaymentStatus.isSetCancelled()) {
             paymentSource.setStatusCancelledReason(invoicePaymentStatus.getCancelled().getReason());

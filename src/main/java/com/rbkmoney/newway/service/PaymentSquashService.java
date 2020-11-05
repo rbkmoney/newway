@@ -17,8 +17,8 @@ public class PaymentSquashService {
         List<PaymentWrapper> result = new ArrayList<>();
         Iterator<Long> iterator = ids.iterator();
         groupedMap.forEach((key, pwList) -> {
-            setIds(iterator, pwList);
-            squashById(result, pwList);
+            setIds(pwList, iterator);
+            squashById(pwList, result);
             long count = result.stream().filter(w -> !w.isShouldInsert()).count();
             if (count > 1) {
                 throw new IllegalStateException("Must be less or equal than one update statements");
@@ -27,7 +27,7 @@ public class PaymentSquashService {
         return result;
     }
 
-    private void squashById(List<PaymentWrapper> result, List<PaymentWrapper> pwList) {
+    private void squashById(List<PaymentWrapper> pwList, List<PaymentWrapper> result) {
         var groupedById = pwList.stream().collect(Collectors.groupingBy(this::getId, LinkedHashMap::new, Collectors.toList()));
         groupedById.forEach((id, ws) -> {
             boolean shouldInsert = ws.get(0).isShouldInsert();
@@ -37,27 +37,15 @@ public class PaymentSquashService {
         });
     }
 
-    private void setIds(Iterator<Long> iterator, List<PaymentWrapper> pwList) {
-        PaymentWrapper wInsert = null;
-        PaymentWrapper wUpdate = null;
-        for (int i = 0; i < pwList.size(); ++i) {
-            PaymentWrapper w = pwList.get(i);
+    private void setIds(List<PaymentWrapper> pwList, Iterator<Long> iterator) {
+        PaymentWrapper wInsert = pwList.get(0);
+        for (PaymentWrapper w : pwList) {
             Long id;
             if (w.isShouldInsert()) {
                 wInsert = w;
-                wUpdate = null;
                 id = iterator.next();
             } else {
-                if (wInsert != null) {
-                    id = getId(wInsert);
-                } else {
-                    if (wUpdate != null) {
-                        id = getId(wUpdate);
-                    } else {
-                        wUpdate = w;
-                        id = iterator.next();
-                    }
-                }
+                id = getId(wInsert);
             }
             setId(w, id);
         }

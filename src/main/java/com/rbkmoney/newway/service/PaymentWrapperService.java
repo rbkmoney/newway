@@ -12,12 +12,15 @@ import com.rbkmoney.newway.poller.event_stock.LocalStorage;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.PaymentWrapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PaymentWrapperService {
@@ -74,9 +77,17 @@ public class PaymentWrapperService {
                 .map(PaymentWrapper::getCashFlows)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
-        paymentDao.updateBatch(paymentsForUpdate);
-        paymentDao.saveBatch(paymentsForInsert);
-        cashFlowDao.save(cashFlows);
+        if (!CollectionUtils.isEmpty(paymentsForUpdate)) {
+            log.info("Payments for update: {}", paymentsForUpdate.size());
+            paymentDao.updateBatch(paymentsForUpdate);
+        }
+        if (!CollectionUtils.isEmpty(paymentsForInsert)) {
+            log.info("Payments for insert: {}", paymentsForInsert.size());
+            paymentDao.saveBatch(paymentsForInsert);
+        }
+        if (!CollectionUtils.isEmpty(cashFlows)) {
+            cashFlowDao.save(cashFlows);
+        }
     }
 
     public void switchCurrent(Collection<InvoicingKey> switchIds) {

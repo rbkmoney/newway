@@ -30,4 +30,20 @@ public class MockUtils {
                 .setCost(new Cash().setAmount(1).setCurrency(new CurrencyRef("RUB")))
                 .setContext(new Content("type", ByteBuffer.wrap(new byte[]{})));
     }
+
+    public static InvoicePayment buildPayment(String paymentId) {
+        return new InvoicePayment()
+                .setId(paymentId)
+                .setCreatedAt(TypeUtil.temporalToString(LocalDateTime.now()))
+                .setStatus(InvoicePaymentStatus.pending(new InvoicePaymentPending()))
+                .setCost(new Cash(11, new CurrencyRef("RUB")))
+                .setDomainRevision(1)
+                .setFlow(InvoicePaymentFlow.instant(new InvoicePaymentFlowInstant()))
+                .setPayer(Payer.recurrent(
+                        new RecurrentPayer()
+                                .setPaymentTool(PaymentTool.payment_terminal(
+                                        new PaymentTerminal(TerminalPaymentProvider.alipay)))
+                                .setRecurrentParent(new RecurrentParentPayment("1", "2"))
+                                .setContactInfo(new ContactInfo())));
+    }
 }

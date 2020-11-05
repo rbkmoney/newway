@@ -59,7 +59,7 @@ public class InvoicePaymentCreatedMapper extends AbstractInvoicingPaymentMapper 
         String paymentId = invoicePayment.getId();
         log.info("Start payment created mapping, sequenceId={}, invoiceId={}, paymentId={}", sequenceId, invoiceId, paymentId);
         paymentWrapper.setKey(InvoicingKey.buildKey(invoiceId, paymentId));
-        setDefaultProperties(payment, sequenceId, changeId, event.getCreatedAt());
+        setInsertProperties(payment, sequenceId, changeId, event.getCreatedAt());
         payment.setPaymentId(paymentId);
         payment.setCreatedAt(TypeUtil.stringToLocalDateTime(invoicePayment.getCreatedAt()));
         payment.setInvoiceId(invoiceId);

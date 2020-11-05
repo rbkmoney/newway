@@ -41,7 +41,7 @@ public class InvoicePaymentRiskScoreChangedMapper extends AbstractInvoicingPayme
             return null;
         }
         Payment paymentSource = paymentWrapper.getPayment();
-        setDefaultProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
+        setUpdateProperties(paymentSource, event.getCreatedAt());
         com.rbkmoney.newway.domain.enums.RiskScore score = TypeUtil.toEnumField(riskScore.name(), com.rbkmoney.newway.domain.enums.RiskScore.class);
         if (score == null) {
             throw new IllegalArgumentException("Illegal risk score: " + riskScore);

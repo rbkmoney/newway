@@ -47,7 +47,7 @@ public class InvoicePaymentCashFlowChangedMapper extends AbstractInvoicingPaymen
         }
         paymentWrapper.setShouldInsert(true);
         Payment paymentSource = paymentWrapper.getPayment();
-        setDefaultProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
+        setInsertProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
         List<FinalCashFlowPosting> finalCashFlow = invoicePaymentChange.getPayload().getInvoicePaymentCashFlowChanged().getCashFlow();
         List<CashFlow> cashFlows = CashFlowUtil.convertCashFlows(finalCashFlow, null, PaymentChangeType.payment);
         paymentWrapper.setCashFlows(cashFlows);

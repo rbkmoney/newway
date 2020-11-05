@@ -48,7 +48,7 @@ public class InvoicePaymentCaptureStartedMapper extends AbstractInvoicingPayment
             return null;
         }
         Payment paymentSource = paymentWrapper.getPayment();
-        setDefaultProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
+        setUpdateProperties(paymentSource, event.getCreatedAt());
         if (captureParams.isSetCash()) {
             paymentSource.setAmount(captureParams.getCash().getAmount());
             paymentSource.setCurrencyCode(captureParams.getCash().getCurrency().getSymbolicCode());
