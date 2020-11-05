@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
         if (payoutSource == null) {
             throw new NotFoundException(String.format("Payout not found, payoutId='%s'", payoutId));
         }
-        Long payoutSourceId = payoutSource.getId();
+        Long oldPayoutId = payoutSource.getId();
         payoutSource.setId(null);
         payoutSource.setWtime(null);
         payoutSource.setEventId(eventId);
@@ -76,12 +77,15 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
 
         payoutDao.save(payoutSource).ifPresentOrElse(
                 id -> {
-                    List<PayoutSummary> payoutSummaries = payoutSummaryDao.getByPytId(payoutSourceId);
-                    payoutSummaries.forEach(pt -> {
-                        pt.setId(null);
-                        pt.setPytId(id);
-                    });
-                    payoutSummaryDao.save(payoutSummaries);
+                    payoutDao.updateNotCurrent(oldPayoutId);
+                    List<PayoutSummary> payoutSummaries = payoutSummaryDao.getByPytId(oldPayoutId);
+                    if (!CollectionUtils.isEmpty(payoutSummaries)) {
+                        payoutSummaries.forEach(pt -> {
+                            pt.setId(null);
+                            pt.setPytId(id);
+                        });
+                        payoutSummaryDao.save(payoutSummaries);
+                    }
                     log.info("Payout status  has been saved, eventId={}, changeId={}, payoutId={}", eventId, changeId, payoutId);
                 },
                 () -> log.info("Payout status  bound duplicated, eventId={}, changeId={}, payoutId={}",
