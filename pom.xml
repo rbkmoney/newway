@@ -18,7 +18,7 @@
 
     <properties>
         <project.maintainer>Inal Arsanukaev &lt;i.arsanukaev@rbkmoney.com&gt;</project.maintainer>
-        <shared.resources.version>0.3.6</shared.resources.version>
+        <shared.resources.version>0.3.8</shared.resources.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dockerfile.base.service.tag>57e26d8ee999d7b0b50248c22afc63e6f926d276</dockerfile.base.service.tag>
         <dockerfile.registry>${env.REGISTRY}</dockerfile.registry>
@@ -33,8 +33,7 @@
         <local.pg.url>jdbc:postgresql://localhost:5432/newway</local.pg.url>
         <local.pg.port>5432</local.pg.port>
         <fistful-proto.version>1.106-ebe76ef</fistful-proto.version>
-        <damsel.version>1.446-38bdfd5</damsel.version>
-        <sonar.jacoco.reportPaths>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPaths>
+        <damsel.version>1.461-e369307</damsel.version>
         <sink-common-lib.version>0.0.4</sink-common-lib.version>
     </properties>
 
@@ -390,23 +389,6 @@
                         <nonFilteredFileExtension>p12</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.5</version>
-                <configuration>
-                    <destFile>${sonar.jacoco.reportPaths}</destFile>
-                    <append>true</append>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
