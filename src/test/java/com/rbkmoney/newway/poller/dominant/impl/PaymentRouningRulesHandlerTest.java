@@ -36,7 +36,7 @@ public class PaymentRouningRulesHandlerTest {
         assertEquals(paymentRoutingRule.getRuleId().intValue(), paymentRoutingRulesObject.getRef().getId());
         assertEquals(paymentRoutingRule.getName(), paymentRoutingRulesObject.getData().getName());
         assertEquals(paymentRoutingRule.getDescription(), paymentRoutingRulesObject.getData().getDescription());
-        assertFalse(paymentRoutingRule.getRoutingDecisionsJsonb() == null);
+        assertFalse(paymentRoutingRule.getRoutingDecisionsJson() == null);
     }
 
     private RoutingRulesObject buildPaymentRoutingRulesObject() {
