@@ -8,7 +8,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +24,8 @@ public class PaymentRouningRulesHandlerTest {
     }
 
     @Test
-    public void convertToDatabaseObjectTest() throws IOException {
-        PaymentRoutingRulesObject paymentRoutingRulesObject = buildPaymentRoutingRulesObject();
+    public void convertToDatabaseObjectTest() {
+        RoutingRulesObject paymentRoutingRulesObject = buildPaymentRoutingRulesObject();
         PaymentRoutingRulesHandler handler = new PaymentRoutingRulesHandler(paymentRoutingRulesDao);
         handler.setDomainObject(DomainObject.payment_routing_rules(paymentRoutingRulesObject));
 
@@ -40,22 +39,22 @@ public class PaymentRouningRulesHandlerTest {
         assertFalse(paymentRoutingRule.getRoutingDecisionsJsonb() == null);
     }
 
-    private PaymentRoutingRulesObject buildPaymentRoutingRulesObject() throws IOException {
-        List<PaymentRoutingCandidate> candidates = new ArrayList<>();
+    private RoutingRulesObject buildPaymentRoutingRulesObject() {
+        List<RoutingCandidate> candidates = new ArrayList<>();
         Predicate predicate = new Predicate();
         predicate.setConstant(true);
-        PaymentRoutingCandidate candidate = new PaymentRoutingCandidate()
+        RoutingCandidate candidate = new RoutingCandidate()
                 .setDescription("CN-1")
                 .setAllowed(predicate)
                 .setTerminal(new TerminalRef().setId(1234))
                 .setWeight(12)
                 .setPriority(432);
         candidates.add(candidate);
-        PaymentRoutingDecisions paymentRoutingDecisions = new PaymentRoutingDecisions();
+        RoutingDecisions paymentRoutingDecisions = new RoutingDecisions();
         paymentRoutingDecisions.setCandidates(candidates);
-        return new PaymentRoutingRulesObject()
-                .setRef(new PaymentRoutingRulesetRef().setId(123))
-                .setData(new PaymentRoutingRuleset()
+        return new RoutingRulesObject()
+                .setRef(new RoutingRulesetRef().setId(123))
+                .setData(new RoutingRuleset()
                         .setName("test")
                         .setDescription("some desc")
                         .setDecisions(paymentRoutingDecisions)

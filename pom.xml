@@ -33,7 +33,7 @@
         <local.pg.url>jdbc:postgresql://localhost:5432/newway</local.pg.url>
         <local.pg.port>5432</local.pg.port>
         <fistful-proto.version>1.106-ebe76ef</fistful-proto.version>
-        <damsel.version>1.461-e369307</damsel.version>
+        <damsel.version>1.462-db5938d</damsel.version>
         <sonar.jacoco.reportPaths>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPaths>
         <sink-common-lib.version>0.0.4</sink-common-lib.version>
     </properties>
