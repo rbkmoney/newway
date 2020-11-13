@@ -38,6 +38,6 @@ public class PaymentRoutingRulesDaoImpl extends AbstractGenericDao
                 .update(PAYMENT_ROUTING_RULE)
                 .set(PAYMENT_ROUTING_RULE.CURRENT, false)
                 .where(PAYMENT_ROUTING_RULE.RULE_ID.eq(ruleId).and(PAYMENT_ROUTING_RULE.CURRENT));
-        executeOne(query);
+        execute(query);
     }
 }
