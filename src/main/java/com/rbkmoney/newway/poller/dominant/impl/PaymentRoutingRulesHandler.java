@@ -32,9 +32,7 @@ public class PaymentRoutingRulesHandler
         RoutingRuleset ruleset = rulesObject.getData();
         paymentRoutingRule.setName(ruleset.getName());
         paymentRoutingRule.setDescription(ruleset.getDescription());
-        paymentRoutingRule.setRoutingDecisionsJsonb(JSONB.valueOf(
-                JsonUtil.tBaseToJsonString(ruleset.getDecisions()))
-        );
+        paymentRoutingRule.setRoutingDecisionsJson(JsonUtil.tBaseToJsonString(ruleset.getDecisions()));
         paymentRoutingRule.setCurrent(current);
         return paymentRoutingRule;
     }
