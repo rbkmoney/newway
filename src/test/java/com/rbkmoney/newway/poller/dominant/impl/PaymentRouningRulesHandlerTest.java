@@ -33,7 +33,7 @@ public class PaymentRouningRulesHandlerTest {
                 handler.convertToDatabaseObject(paymentRoutingRulesObject, 1L, true);
 
         assertNotNull(paymentRoutingRule);
-        assertEquals(paymentRoutingRule.getRuleId().intValue(), paymentRoutingRulesObject.getRef().getId());
+        assertEquals(paymentRoutingRule.getRuleRefId().intValue(), paymentRoutingRulesObject.getRef().getId());
         assertEquals(paymentRoutingRule.getName(), paymentRoutingRulesObject.getData().getName());
         assertEquals(paymentRoutingRule.getDescription(), paymentRoutingRulesObject.getData().getDescription());
         assertFalse(paymentRoutingRule.getRoutingDecisionsJson() == null);

@@ -37,7 +37,7 @@ public class PaymentRoutingRulesDaoImpl extends AbstractGenericDao
         Query query = getDslContext()
                 .update(PAYMENT_ROUTING_RULE)
                 .set(PAYMENT_ROUTING_RULE.CURRENT, false)
-                .where(PAYMENT_ROUTING_RULE.RULE_ID.eq(ruleId).and(PAYMENT_ROUTING_RULE.CURRENT));
+                .where(PAYMENT_ROUTING_RULE.RULE_REF_ID.eq(ruleId).and(PAYMENT_ROUTING_RULE.CURRENT));
         execute(query);
     }
 }
