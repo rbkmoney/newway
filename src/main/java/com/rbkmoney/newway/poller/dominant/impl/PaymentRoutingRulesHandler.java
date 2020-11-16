@@ -27,7 +27,8 @@ public class PaymentRoutingRulesHandler
                                                       Long versionId,
                                                       boolean current) {
         PaymentRoutingRule paymentRoutingRule = new PaymentRoutingRule();
-        paymentRoutingRule.setRuleId(rulesObject.getRef().getId());
+        paymentRoutingRule.setRuleRefId(rulesObject.getRef().getId());
+        paymentRoutingRule.setVersionId(versionId);
 
         RoutingRuleset ruleset = rulesObject.getData();
         paymentRoutingRule.setName(ruleset.getName());
