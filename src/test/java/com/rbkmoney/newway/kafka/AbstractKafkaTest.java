@@ -106,6 +106,7 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "client_id");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, new ThriftSerializer<SinkEvent>().getClass());
+        props.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, 60000);
         return new KafkaProducer<>(props);
     }
 
