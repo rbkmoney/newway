@@ -1,5 +1,5 @@
 info:
-  single-instance-mode: true
+  single-instance-mode: false
 server:
   port: @server.port@
 spring:
@@ -90,7 +90,7 @@ kafka:
 
 bm:
   polling:
-    enabled: false
+    enabled: true
 payouter:
   polling:
     url: http://payouter:8022/repo
@@ -152,7 +152,7 @@ recurrentPaymentTool:
   polling:
     delay: 10000
     limit: 500
-    enabled: false
+    enabled: true
 
 cache:
   invoice:
