@@ -18,6 +18,8 @@ import com.rbkmoney.newway.domain.enums.PayoutType;
 import com.rbkmoney.newway.domain.tables.pojos.Payout;
 import com.rbkmoney.newway.domain.tables.pojos.PayoutSummary;
 import com.rbkmoney.newway.util.PayoutUtil;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,24 +30,20 @@ import java.util.Optional;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class PayoutCreatedHandler extends AbstractPayoutHandler {
 
     private final PayoutDao payoutDao;
     private final PayoutSummaryDao payoutSummaryDao;
 
-    private final Filter filter;
-
-    public PayoutCreatedHandler(PayoutDao payoutDao, PayoutSummaryDao payoutSummaryDao) {
-        this.payoutDao = payoutDao;
-        this.payoutSummaryDao = payoutSummaryDao;
-        this.filter = new PathConditionFilter(new PathConditionRule(
-                "payout_created",
-                new IsNullCondition().not()));
-    }
+    @Getter
+    private final Filter filter = new PathConditionFilter(new PathConditionRule(
+            "payout_created",
+            new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(PayoutChange change, Event event) {
+    public void handle(PayoutChange change, Event event, Integer changeId) {
         long eventId = event.getId();
         com.rbkmoney.damsel.payout_processing.Payout payoutCreated = change.getPayoutCreated().getPayout();
         String payoutId = payoutCreated.getId();
@@ -53,6 +51,7 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
         log.info("Start payout created handling, eventId={}, partyId={}, payoutId={}", eventId, partyId, payoutId);
         Payout payout = new Payout();
         payout.setEventId(eventId);
+        payout.setChangeId(changeId);
         payout.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         payout.setPayoutId(payoutCreated.getId());
         payout.setPartyId(partyId);
@@ -104,7 +103,7 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
                     payout.setTypeAccountInternationalBankAbaRtn(bankDetails.getAbaRtn());
                     payout.setTypeAccountInternationalBankCountryCode(
                             Optional.ofNullable(bankDetails.getCountry())
-                                    .map(country -> country.toString())
+                                    .map(Enum::toString)
                                     .orElse(null)
                     );
                 }
@@ -123,7 +122,7 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
                         payout.setTypeAccountInternationalCorrespondentBankAbaRtn(correspondentBankDetails.getAbaRtn());
                         payout.setTypeAccountInternationalCorrespondentBankCountryCode(
                                 Optional.ofNullable(correspondentBankDetails.getCountry())
-                                        .map(country -> country.toString())
+                                        .map(Enum::toString)
                                         .orElse(null)
                         );
                     }
@@ -142,16 +141,17 @@ public class PayoutCreatedHandler extends AbstractPayoutHandler {
                 }
             }
         }
-        long pytId = payoutDao.save(payout);
-        if (payoutCreated.isSetSummary()) {
-            List<PayoutSummary> payoutSummaries = PayoutUtil.convertPayoutSummaries(payoutCreated, pytId);
-            payoutSummaryDao.save(payoutSummaries);
-        }
-        log.info("Payout has been saved, eventId={}, partyId={}, payoutId={}", eventId, partyId, payoutId);
+
+        payoutDao.save(payout).ifPresentOrElse(
+                id -> {
+                    if (payoutCreated.isSetSummary()) {
+                        List<PayoutSummary> payoutSummaries = PayoutUtil.convertPayoutSummaries(payoutCreated, id);
+                        payoutSummaryDao.save(payoutSummaries);
+                    }
+                    log.info("Payout has been saved, eventId={}, changeId={}, payoutId={}", eventId, changeId, payoutId);
+                },
+                () -> log.info("Payout has been bound duplicated, eventId={}, changeId={}, payoutId={}",
+                        eventId, changeId, payoutId));
     }
 
-    @Override
-    public Filter<PayoutChange> getFilter() {
-        return filter;
-    }
 }

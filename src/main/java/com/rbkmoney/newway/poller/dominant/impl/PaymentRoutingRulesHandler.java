@@ -1,19 +1,18 @@
 package com.rbkmoney.newway.poller.dominant.impl;
 
-import com.rbkmoney.damsel.domain.RoutingRulesObject;
-import com.rbkmoney.damsel.domain.RoutingRuleset;
+import com.rbkmoney.damsel.domain.PaymentRoutingRulesObject;
+import com.rbkmoney.damsel.domain.PaymentRoutingRuleset;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.domain.tables.pojos.PaymentRoutingRule;
 import com.rbkmoney.newway.poller.dominant.AbstractDominantHandler;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
-import org.jooq.JSONB;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class PaymentRoutingRulesHandler
-        extends AbstractDominantHandler<RoutingRulesObject, PaymentRoutingRule, Integer> {
+        extends AbstractDominantHandler<PaymentRoutingRulesObject, PaymentRoutingRule, Integer> {
 
     private final DomainObjectDao<PaymentRoutingRule, Integer> paymentRoutingRulesDao;
 
@@ -23,14 +22,14 @@ public class PaymentRoutingRulesHandler
     }
 
     @Override
-    public PaymentRoutingRule convertToDatabaseObject(RoutingRulesObject rulesObject,
+    public PaymentRoutingRule convertToDatabaseObject(PaymentRoutingRulesObject rulesObject,
                                                       Long versionId,
                                                       boolean current) {
         PaymentRoutingRule paymentRoutingRule = new PaymentRoutingRule();
         paymentRoutingRule.setRuleRefId(rulesObject.getRef().getId());
         paymentRoutingRule.setVersionId(versionId);
 
-        RoutingRuleset ruleset = rulesObject.getData();
+        PaymentRoutingRuleset ruleset = rulesObject.getData();
         paymentRoutingRule.setName(ruleset.getName());
         paymentRoutingRule.setDescription(ruleset.getDescription());
         paymentRoutingRule.setRoutingDecisionsJson(JsonUtil.tBaseToJsonString(ruleset.getDecisions()));
@@ -44,7 +43,7 @@ public class PaymentRoutingRulesHandler
     }
 
     @Override
-    protected RoutingRulesObject getObject() {
+    protected PaymentRoutingRulesObject getObject() {
         return getDomainObject().getPaymentRoutingRules();
     }
 

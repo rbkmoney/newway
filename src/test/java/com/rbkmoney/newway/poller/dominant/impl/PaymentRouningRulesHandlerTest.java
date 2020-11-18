@@ -25,7 +25,7 @@ public class PaymentRouningRulesHandlerTest {
 
     @Test
     public void convertToDatabaseObjectTest() {
-        RoutingRulesObject paymentRoutingRulesObject = buildPaymentRoutingRulesObject();
+        PaymentRoutingRulesObject paymentRoutingRulesObject = buildPaymentRoutingRulesObject();
         PaymentRoutingRulesHandler handler = new PaymentRoutingRulesHandler(paymentRoutingRulesDao);
         handler.setDomainObject(DomainObject.payment_routing_rules(paymentRoutingRulesObject));
 
@@ -39,22 +39,22 @@ public class PaymentRouningRulesHandlerTest {
         assertFalse(paymentRoutingRule.getRoutingDecisionsJson() == null);
     }
 
-    private RoutingRulesObject buildPaymentRoutingRulesObject() {
-        List<RoutingCandidate> candidates = new ArrayList<>();
+    private PaymentRoutingRulesObject buildPaymentRoutingRulesObject() {
+        List<PaymentRoutingCandidate> candidates = new ArrayList<>();
         Predicate predicate = new Predicate();
         predicate.setConstant(true);
-        RoutingCandidate candidate = new RoutingCandidate()
+        PaymentRoutingCandidate candidate = new PaymentRoutingCandidate()
                 .setDescription("CN-1")
                 .setAllowed(predicate)
                 .setTerminal(new TerminalRef().setId(1234))
                 .setWeight(12)
                 .setPriority(432);
         candidates.add(candidate);
-        RoutingDecisions paymentRoutingDecisions = new RoutingDecisions();
+        PaymentRoutingDecisions paymentRoutingDecisions = new PaymentRoutingDecisions();
         paymentRoutingDecisions.setCandidates(candidates);
-        return new RoutingRulesObject()
-                .setRef(new RoutingRulesetRef().setId(123))
-                .setData(new RoutingRuleset()
+        return new PaymentRoutingRulesObject()
+                .setRef(new PaymentRoutingRulesetRef().setId(123))
+                .setData(new PaymentRoutingRuleset()
                         .setName("test")
                         .setDescription("some desc")
                         .setDecisions(paymentRoutingDecisions)

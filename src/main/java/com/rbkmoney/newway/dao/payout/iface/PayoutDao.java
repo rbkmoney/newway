@@ -4,13 +4,13 @@ import com.rbkmoney.dao.GenericDao;
 import com.rbkmoney.newway.domain.tables.pojos.Payout;
 import com.rbkmoney.newway.exception.DaoException;
 
+import java.util.Optional;
+
 public interface PayoutDao extends GenericDao {
 
-    Long getLastEventId() throws DaoException;
-
-    Long save(Payout payout) throws DaoException;
+    Optional<Long> save(Payout payout) throws DaoException;
 
     Payout get(String payoutId) throws DaoException;
 
-    void updateNotCurrent(String payoutId) throws DaoException;
+    void updateNotCurrent(Long id) throws DaoException;
 }

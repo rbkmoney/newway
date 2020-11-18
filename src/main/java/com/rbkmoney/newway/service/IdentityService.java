@@ -1,47 +1,35 @@
 package com.rbkmoney.newway.service;
 
-import com.rbkmoney.fistful.identity.EventSinkPayload;
-import com.rbkmoney.fistful.identity.SinkEvent;
-import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
-import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.fistful.identity.TimestampedChange;
+import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.poller.event_stock.impl.identity.AbstractIdentityHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class IdentityService implements EventService<SinkEvent, EventSinkPayload> {
+@RequiredArgsConstructor
+public class IdentityService {
 
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
-    private final IdentityDao identityDao;
-
+    private final MachineEventParser<TimestampedChange> parser;
     private final List<AbstractIdentityHandler> identityHandlers;
 
-    public IdentityService(IdentityDao identityDao, List<AbstractIdentityHandler> identityHandlers) {
-        this.identityDao = identityDao;
-        this.identityHandlers = identityHandlers;
-    }
-
-    @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handleEvents(SinkEvent sinkEvent, EventSinkPayload payload) {
-        payload.getChanges().forEach(cc -> identityHandlers.forEach(ph -> {
-            if (ph.accept(cc)) {
-                ph.handle(cc, sinkEvent);
-            }
-        }));
+    public void handleEvents(List<MachineEvent> machineEvents) {
+        machineEvents.forEach(this::handleIfAccept);
     }
 
-    @Override
-    public Optional<Long> getLastEventId() throws DaoException {
-        Optional<Long> lastEventId = Optional.ofNullable(identityDao.getLastEventId());
-        log.info("Last identity eventId={}", lastEventId);
-        return lastEventId;
+    private void handleIfAccept(MachineEvent machineEvent) {
+        TimestampedChange eventPayload = parser.parse(machineEvent);
+        if (eventPayload.isSetChange()) {
+            identityHandlers.stream()
+                    .filter(handler -> handler.accept(eventPayload))
+                    .forEach(handler -> handler.handle(eventPayload, machineEvent));
+        }
     }
+
 }
