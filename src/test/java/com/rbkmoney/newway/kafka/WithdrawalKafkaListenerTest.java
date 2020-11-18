@@ -23,7 +23,7 @@ public class WithdrawalKafkaListenerTest extends AbstractKafkaTest {
     @Test
     public void listenEmptyChanges() throws InterruptedException {
         sendMessage(topic);
-        Mockito.verify(service, Mockito.times(1)).handleEvents(anyList());
+        Mockito.verify(service, Mockito.timeout(60000).times(1)).handleEvents(anyList());
     }
 
 }

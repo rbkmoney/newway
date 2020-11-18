@@ -24,7 +24,7 @@ public class WalletKafkaListenerTest extends AbstractKafkaTest {
     @Test
     public void listenEmptyChanges() throws InterruptedException {
         sendMessage(topic);
-        Mockito.verify(walletService, Mockito.times(1)).handleEvents(anyList());
+        Mockito.verify(walletService, Mockito.timeout(60000).times(1)).handleEvents(anyList());
     }
 
 }

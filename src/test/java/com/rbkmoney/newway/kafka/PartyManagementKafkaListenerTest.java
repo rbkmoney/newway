@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @Slf4j
 public class PartyManagementKafkaListenerTest extends AbstractKafkaTest {
@@ -22,7 +21,7 @@ public class PartyManagementKafkaListenerTest extends AbstractKafkaTest {
     @Test
     public void listenEmptyChanges() throws InterruptedException {
         sendMessage(topic);
-        verify(partyManagementService, times(1)).handleEvents(anyList());
+        verify(partyManagementService, timeout(60000).times(1)).handleEvents(anyList());
     }
 
 }
