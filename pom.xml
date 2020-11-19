@@ -5,7 +5,7 @@
     <description>SQL-views of business objects</description>
 
     <artifactId>newway</artifactId>
-    <version>1.0.76-SNAPSHOT</version>
+    <version>1.0.77-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
@@ -33,7 +33,7 @@
         <local.pg.url>jdbc:postgresql://localhost:5432/newway</local.pg.url>
         <local.pg.port>5432</local.pg.port>
         <fistful-proto.version>1.106-ebe76ef</fistful-proto.version>
-        <damsel.version>1.446-38bdfd5</damsel.version>
+        <damsel.version>1.461-e369307</damsel.version>
         <sonar.jacoco.reportPaths>${project.basedir}/target/jacoco.exec</sonar.jacoco.reportPaths>
         <sink-common-lib.version>0.0.4</sink-common-lib.version>
     </properties>
