@@ -33,6 +33,7 @@ public class DominantDaoImpl extends AbstractGenericDao implements DominantDao {
                         .unionAll(getDslContext().select(TERMINAL.VERSION_ID.max().as("version_id")).from(TERMINAL))
                         .unionAll(getDslContext().select(TERM_SET_HIERARCHY.VERSION_ID.max().as("version_id")).from(TERM_SET_HIERARCHY))
                         .unionAll(getDslContext().select(WITHDRAWAL_PROVIDER.VERSION_ID.max().as("version_id")).from(WITHDRAWAL_PROVIDER))
+                        .unionAll(getDslContext().select(PAYMENT_ROUTING_RULE.VERSION_ID.max().as("version_id")).from(PAYMENT_ROUTING_RULE))
         );
         return fetchOne(query, Long.class);
     }

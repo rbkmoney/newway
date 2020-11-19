@@ -85,10 +85,6 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
         };
     }
 
-    protected void waitForTopicSync() throws InterruptedException {
-        Thread.sleep(25000L);
-    }
-
     protected void writeToTopic(String topic, SinkEvent sinkEvent) {
         Producer<String, SinkEvent> producer = createProducer();
         ProducerRecord<String, SinkEvent> producerRecord = new ProducerRecord<>(topic, null, sinkEvent);
@@ -106,6 +102,7 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
         props.put(ProducerConfig.CLIENT_ID_CONFIG, "client_id");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, new ThriftSerializer<SinkEvent>().getClass());
+        props.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, 60000);
         return new KafkaProducer<>(props);
     }
 
@@ -121,13 +118,11 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
         return message;
     }
 
-    protected void sendMessage(String topic) throws InterruptedException {
+    protected void sendMessage(String topic) {
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(createMessage());
 
         writeToTopic(topic, sinkEvent);
-
-        waitForTopicSync();
     }
 
 }
