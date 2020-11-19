@@ -10,6 +10,8 @@ import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 
+import java.util.concurrent.TimeUnit;
+
 import static org.mockito.ArgumentMatchers.anyList;
 
 @Slf4j
@@ -22,9 +24,10 @@ public class DestinationKafkaListenerTest extends AbstractKafkaTest {
     DestinationService destinationService;
 
     @Test
-    public void listenEmptyChanges() throws InterruptedException {
+    public void listenEmptyChanges() {
         sendMessage(topic);
-        Mockito.verify(destinationService, Mockito.times(1)).handleEvents(anyList());
+        Mockito.verify(destinationService, Mockito.timeout(TimeUnit.MINUTES.toMillis(1)).times(1))
+                .handleEvents(anyList());
     }
 
 }

@@ -5,8 +5,8 @@ import com.rbkmoney.damsel.domain_config.Operation;
 import com.rbkmoney.newway.dao.dominant.iface.DominantDao;
 import com.rbkmoney.newway.poller.dominant.DominantHandler;
 import com.rbkmoney.newway.util.JsonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,30 +15,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class DominantService {
-
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final DominantDao dominantDao;
 
     private final List<DominantHandler> handlers;
 
-    public DominantService(DominantDao dominantDao, List<DominantHandler> handlers) {
-        this.dominantDao = dominantDao;
-        this.handlers = handlers;
-    }
-
     @Transactional(propagation = Propagation.REQUIRED)
-    public void processCommit(long versionId, Map.Entry<Long, Commit> e) {
-        List<Operation> operations = e.getValue().getOps();
-        operations.forEach(op -> handlers.forEach(h -> {
-            if (h.acceptAndSet(op)) {
-                log.info("Start to process commit with versionId={} operation={} ", versionId, JsonUtil.tBaseToJsonString(op));
-                h.handle(op, versionId);
-                log.info("End to process commit with versionId={}", versionId);
+    public void processCommit(long versionId, Map.Entry<Long, Commit> entry) {
+        List<Operation> operations = entry.getValue().getOps();
+        operations.forEach(operation -> handlers.forEach(handler -> {
+            if (handler.acceptAndSet(operation)) {
+                processOperation(handler, operation, versionId);
             }
         }));
+    }
+
+    private void processOperation(DominantHandler handler, Operation operation, Long versionId) {
+        try {
+            log.info("Start to process commit with versionId={} operation={} ",
+                    versionId, JsonUtil.tBaseToJsonString(operation));
+            handler.handle(operation, versionId);
+            log.info("End to process commit with versionId={}", versionId);
+        } catch (Exception ex) {
+            log.error("The error was received when the service processed operation", ex);
+            throw ex;
+        }
     }
 
     public Optional<Long> getLastVersionId() {
