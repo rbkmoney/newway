@@ -16,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.anyList;
 
@@ -29,9 +30,10 @@ public class SourceKafkaListenerTest extends AbstractKafkaTest {
     SourceService sourceService;
 
     @Test
-    public void listenEmptyChanges() throws InterruptedException {
+    public void listenEmptyChanges() {
         sendMessage(topic);
-        Mockito.verify(sourceService, Mockito.times(1)).handleEvents(anyList());
+        Mockito.verify(sourceService, Mockito.timeout(TimeUnit.MINUTES.toMillis(1)).times(1))
+                .handleEvents(anyList());
     }
 
 }

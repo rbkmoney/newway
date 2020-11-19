@@ -7,6 +7,8 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.concurrent.TimeUnit;
+
 import static org.mockito.ArgumentMatchers.anyList;
 
 @Slf4j
@@ -19,9 +21,10 @@ public class WithdrawalKafkaListenerTest extends AbstractKafkaTest {
     WithdrawalService service;
 
     @Test
-    public void listenEmptyChanges() throws InterruptedException {
+    public void listenEmptyChanges() {
         sendMessage(topic);
-        Mockito.verify(service, Mockito.timeout(60000).times(1)).handleEvents(anyList());
+        Mockito.verify(service, Mockito.timeout(TimeUnit.MINUTES.toMillis(1)).times(1))
+                .handleEvents(anyList());
     }
 
 }

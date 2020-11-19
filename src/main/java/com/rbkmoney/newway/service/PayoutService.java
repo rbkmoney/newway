@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PayoutService {
 
-    private final List<AbstractPayoutHandler> withdrawalHandlers;
+    private final List<AbstractPayoutHandler> payoutHandlers;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(List<Event> machineEvents) {
@@ -30,7 +30,7 @@ public class PayoutService {
             for (int i = 0; i < eventPayload.getPayoutChanges().size(); i++) {
                 PayoutChange change = eventPayload.getPayoutChanges().get(i);
                 Integer changeId = i;
-                withdrawalHandlers.stream()
+                payoutHandlers.stream()
                         .filter(handler -> handler.accept(change))
                         .forEach(handler -> handler.handle(change, event, changeId));
             }

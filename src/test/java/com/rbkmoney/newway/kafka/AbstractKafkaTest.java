@@ -85,10 +85,6 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
         };
     }
 
-    protected void waitForTopicSync() throws InterruptedException {
-        Thread.sleep(25000L);
-    }
-
     protected void writeToTopic(String topic, SinkEvent sinkEvent) {
         Producer<String, SinkEvent> producer = createProducer();
         ProducerRecord<String, SinkEvent> producerRecord = new ProducerRecord<>(topic, null, sinkEvent);
@@ -122,13 +118,11 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
         return message;
     }
 
-    protected void sendMessage(String topic) throws InterruptedException {
+    protected void sendMessage(String topic) {
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(createMessage());
 
         writeToTopic(topic, sinkEvent);
-
-        waitForTopicSync();
     }
 
 }

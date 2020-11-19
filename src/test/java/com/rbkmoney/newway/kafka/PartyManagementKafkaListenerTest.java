@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.concurrent.TimeUnit;
+
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
@@ -19,9 +21,10 @@ public class PartyManagementKafkaListenerTest extends AbstractKafkaTest {
     PartyManagementService partyManagementService;
 
     @Test
-    public void listenEmptyChanges() throws InterruptedException {
+    public void listenEmptyChanges() {
         sendMessage(topic);
-        verify(partyManagementService, timeout(60000).times(1)).handleEvents(anyList());
+        verify(partyManagementService, timeout(TimeUnit.MINUTES.toMillis(1)).times(1))
+                .handleEvents(anyList());
     }
 
 }
