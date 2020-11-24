@@ -5,7 +5,7 @@
     <description>SQL-views of business objects</description>
 
     <artifactId>newway</artifactId>
-    <version>1.0.76-SNAPSHOT</version>
+    <version>1.0.77-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
@@ -186,7 +186,7 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.10.2</version>
+            <version>1.15.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -210,13 +210,13 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>kafka</artifactId>
-            <version>1.10.2</version>
+            <version>1.15.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>easyway</artifactId>
-            <version>0.1.0</version>
+            <version>0.5.0</version>
             <scope>test</scope>
         </dependency>
 
