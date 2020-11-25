@@ -47,18 +47,22 @@ public class WithdrawalSessionTransactionBoundHandler extends AbstractWithdrawal
         initDefaultFields(
                 event, sequenceId, withdrawalSession, withdrawalSessionId, timestampedChange.getOccuredAt()
         );
-        withdrawalSession.setWithdrawalSessionStatus(
-                TBaseUtil.unionFieldToEnum(change.getFinished(), WithdrawalSessionStatus.class));
-        TransactionBoundChange transactionBound = change.getTransactionBound();
-        TransactionInfo trxInfo = transactionBound.getTrxInfo();
-        withdrawalSession.setTranInfoId(trxInfo.getId());
-        if (trxInfo.isSetTimestamp()) {
-            withdrawalSession.setTranInfoTimestamp(TypeUtil.stringToLocalDateTime(trxInfo.getTimestamp()));
+        if (change.isSetFinished()) {
+            withdrawalSession.setWithdrawalSessionStatus(
+                    TBaseUtil.unionFieldToEnum(change.getFinished(), WithdrawalSessionStatus.class));
         }
-        withdrawalSession.setTranInfoJson(JsonUtil.objectToJsonString(trxInfo.getExtra()));
-        if (trxInfo.isSetAdditionalInfo()) {
-            withdrawalSession.setTranAdditionalInfoRrn(trxInfo.getAdditionalInfo().getRrn());
-            withdrawalSession.setTranAdditionalInfoJson(JsonUtil.tBaseToJsonString(trxInfo.getAdditionalInfo()));
+        if (change.isSetTransactionBound()) {
+            TransactionBoundChange transactionBound = change.getTransactionBound();
+            TransactionInfo trxInfo = transactionBound.getTrxInfo();
+            withdrawalSession.setTranInfoId(trxInfo.getId());
+            if (trxInfo.isSetTimestamp()) {
+                withdrawalSession.setTranInfoTimestamp(TypeUtil.stringToLocalDateTime(trxInfo.getTimestamp()));
+            }
+            withdrawalSession.setTranInfoJson(JsonUtil.objectToJsonString(trxInfo.getExtra()));
+            if (trxInfo.isSetAdditionalInfo()) {
+                withdrawalSession.setTranAdditionalInfoRrn(trxInfo.getAdditionalInfo().getRrn());
+                withdrawalSession.setTranAdditionalInfoJson(JsonUtil.tBaseToJsonString(trxInfo.getAdditionalInfo()));
+            }
         }
         withdrawalSessionDao.save(withdrawalSession).ifPresentOrElse(
                 id -> {
