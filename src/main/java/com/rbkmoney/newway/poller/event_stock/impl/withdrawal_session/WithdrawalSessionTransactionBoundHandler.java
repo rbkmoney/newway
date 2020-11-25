@@ -47,8 +47,6 @@ public class WithdrawalSessionTransactionBoundHandler extends AbstractWithdrawal
         initDefaultFields(
                 event, sequenceId, withdrawalSession, withdrawalSessionId, timestampedChange.getOccuredAt()
         );
-        withdrawalSession.setWithdrawalSessionStatus(
-                TBaseUtil.unionFieldToEnum(change.getFinished(), WithdrawalSessionStatus.class));
         TransactionBoundChange transactionBound = change.getTransactionBound();
         TransactionInfo trxInfo = transactionBound.getTrxInfo();
         withdrawalSession.setTranInfoId(trxInfo.getId());
