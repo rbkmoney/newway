@@ -4,7 +4,9 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import com.rbkmoney.machinegun.msgpack.Value;
 import com.rbkmoney.newway.poller.listener.InvoicingKafkaListener;
+import com.rbkmoney.newway.poller.listener.SourceKafkaListener;
 import com.rbkmoney.newway.service.InvoicingService;
+import com.rbkmoney.newway.service.SourceService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -19,18 +21,18 @@ import java.util.concurrent.TimeUnit;
 import static org.mockito.ArgumentMatchers.anyList;
 
 @Slf4j
-public class InvoicingKafkaListenerTest extends AbstractKafkaTest {
+public class SourceKafkaListenerTest extends AbstractKafkaTest {
 
-    @org.springframework.beans.factory.annotation.Value("${kafka.topics.invoice.id}")
+    @org.springframework.beans.factory.annotation.Value("${kafka.topics.source.id}")
     public String topic;
 
     @MockBean
-    InvoicingService invoicingService;
+    SourceService sourceService;
 
     @Test
     public void listenEmptyChanges() {
         sendMessage(topic);
-        Mockito.verify(invoicingService, Mockito.timeout(TimeUnit.MINUTES.toMillis(1)).times(1))
+        Mockito.verify(sourceService, Mockito.timeout(TimeUnit.MINUTES.toMillis(1)).times(1))
                 .handleEvents(anyList());
     }
 
