@@ -4,7 +4,6 @@ import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.PaymentWrapper;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.util.List;
