@@ -4,6 +4,7 @@ import com.rbkmoney.newway.dao.AbstractAppDaoTests;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.model.InvoiceWrapper;
+import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.poller.event_stock.LocalStorage;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class InvoiceWrapperServiceTest extends AbstractAppDaoTests {
     private InvoiceWrapperService service;
 
     @Test
-    public void getTest() {
+    public void testGet() {
         List<InvoiceWrapper> invoiceWrappers = IntStream.range(1, 5)
                 .mapToObj(x -> new InvoiceWrapper(random(Invoice.class), randomListOf(3, InvoiceCart.class)))
                 .collect(Collectors.toList());
@@ -33,7 +34,8 @@ public class InvoiceWrapperServiceTest extends AbstractAppDaoTests {
         });
         service.save(invoiceWrappers);
 
-        InvoiceWrapper invoiceWrapper = service.get(invoiceWrappers.get(0).getInvoice().getInvoiceId(), new LocalStorage());
+        InvoiceWrapper invoiceWrapper = service.get(invoiceWrappers.get(0).getInvoice().getInvoiceId(),
+                new LocalStorage());
         assertEquals(invoiceWrappers.get(0).getInvoice().getShopId(), invoiceWrapper.getInvoice().getShopId());
     }
 }

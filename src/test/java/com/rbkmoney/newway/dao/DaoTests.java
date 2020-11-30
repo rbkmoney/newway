@@ -3,6 +3,8 @@ package com.rbkmoney.newway.dao;
 import com.rbkmoney.newway.dao.dominant.iface.DominantDao;
 import com.rbkmoney.newway.dao.dominant.impl.*;
 import com.rbkmoney.newway.dao.invoicing.iface.*;
+import com.rbkmoney.newway.dao.invoicing.impl.InvoiceDaoImpl;
+import com.rbkmoney.newway.dao.invoicing.impl.PaymentDaoImpl;
 import com.rbkmoney.newway.dao.invoicing.impl.PaymentIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.dao.rate.iface.RateDao;
@@ -68,11 +70,11 @@ public class DaoTests extends AbstractAppDaoTests {
     @Autowired
     private AdjustmentDao adjustmentDao;
     @Autowired
-    private PaymentDao paymentDao;
+    private PaymentDaoImpl paymentDao;
     @Autowired
     private InvoiceCartDao invoiceCartDao;
     @Autowired
-    private InvoiceDao invoiceDao;
+    private InvoiceDaoImpl invoiceDao;
     @Autowired
     private RefundDao refundDao;
     @Autowired
@@ -322,23 +324,29 @@ public class DaoTests extends AbstractAppDaoTests {
         invoiceCartDao.save(invoiceCarts);
         List<InvoiceCart> byInvId = invoiceCartDao.getByInvId(invId);
         assertEquals(new HashSet(invoiceCarts), new HashSet(byInvId));
+
     }
 
     @Test
     public void paymentDaoTest() {
         jdbcTemplate.execute("truncate table nw.payment cascade");
-        Payment payment = random(Payment.class, "id");
+        Payment payment = random(Payment.class);
+        payment.setId(1L);
         payment.setCurrent(false);
-        Payment paymentTwo = random(Payment.class, "id");
+        Payment paymentTwo = random(Payment.class);
+        paymentTwo.setId(2L);
         paymentTwo.setCurrent(false);
         paymentTwo.setInvoiceId(payment.getInvoiceId());
         paymentTwo.setPaymentId(payment.getPaymentId());
         paymentDao.saveBatch(Arrays.asList(payment, paymentTwo));
         paymentDao.switchCurrent(Collections.singletonList(new InvoicingKey(payment.getInvoiceId(), payment.getPaymentId(), InvoicingType.PAYMENT)));
         Payment paymentGet = paymentDao.get(payment.getInvoiceId(), payment.getPaymentId());
-        paymentGet.setId(null);
         paymentTwo.setCurrent(true);
         assertEquals(paymentTwo, paymentGet);
+        paymentTwo.setPartyRevision(1111L);
+        paymentDao.updateBatch(Collections.singletonList(paymentTwo));
+        Payment paymentGet2 = paymentDao.get(payment.getInvoiceId(), payment.getPaymentId());
+        assertEquals(paymentTwo, paymentGet2);
     }
 
     @Test

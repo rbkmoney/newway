@@ -1,13 +1,11 @@
 package com.rbkmoney.newway.service;
 
 import com.rbkmoney.newway.dao.AbstractAppDaoTests;
-import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
+import com.rbkmoney.newway.dao.invoicing.impl.PaymentDaoImpl;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
-import com.rbkmoney.newway.domain.tables.pojos.Invoice;
-import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
-import com.rbkmoney.newway.model.InvoiceWrapper;
+import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.PaymentWrapper;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +26,7 @@ public class PaymentBatchServiceTest extends AbstractAppDaoTests {
     private PaymentBatchService paymentBatchService;
 
     @Autowired
-    private PaymentDao paymentDao;
+    private PaymentDaoImpl paymentDao;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -36,13 +34,13 @@ public class PaymentBatchServiceTest extends AbstractAppDaoTests {
     @Test
     public void processTest() {
         List<PaymentWrapper> paymentWrappers = IntStream.range(1, 5)
-                .mapToObj(x -> new PaymentWrapper(random(Payment.class, "id"), randomListOf(3, CashFlow.class, "id", "objId")))
+                .mapToObj(x -> new PaymentWrapper(
+                        random(Payment.class, "id"),
+                        randomListOf(3, CashFlow.class, "id", "objId"),
+                        true,
+                        null))
                 .collect(Collectors.toList());
 
-        paymentWrappers.forEach(iw -> {
-            iw.getPayment().setCurrent(false);
-            iw.getCashFlows().forEach(c -> c.setObjType(PaymentChangeType.payment));
-        });
         String invoiceIdFirst = "invoiceIdFirst";
         String invoiceIdSecond = "invoiceIdSecond";
         paymentWrappers.get(0).getPayment().setInvoiceId(invoiceIdFirst);
@@ -53,6 +51,11 @@ public class PaymentBatchServiceTest extends AbstractAppDaoTests {
         paymentWrappers.get(2).getPayment().setPaymentId("2");
         paymentWrappers.get(3).getPayment().setInvoiceId(invoiceIdSecond);
         paymentWrappers.get(3).getPayment().setPaymentId("1");
+        paymentWrappers.forEach(iw -> {
+            iw.setKey(InvoicingKey.buildKey(iw));
+            iw.getPayment().setCurrent(false);
+            iw.getCashFlows().forEach(c -> c.setObjType(PaymentChangeType.payment));
+        });
         paymentBatchService.process(paymentWrappers);
 
         Payment paymentFirstGet = paymentDao.get(invoiceIdFirst, "1");

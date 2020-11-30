@@ -16,11 +16,14 @@ import java.util.List;
 public class PaymentWrapper {
     private Payment payment;
     private List<CashFlow> cashFlows;
+    private boolean shouldInsert;
+    private InvoicingKey key;
 
     public PaymentWrapper copy(){
         Payment paymentTarget = new Payment();
         BeanUtils.copyProperties(payment, paymentTarget);
         PaymentWrapper paymentWrapperTarget = new PaymentWrapper();
+        paymentWrapperTarget.setKey(InvoicingKey.buildKey(this));
         paymentWrapperTarget.setPayment(paymentTarget);
         if (cashFlows != null) {
             List<CashFlow> cashFlowsTarget = new ArrayList<>();

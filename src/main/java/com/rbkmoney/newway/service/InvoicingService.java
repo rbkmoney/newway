@@ -48,18 +48,11 @@ public class InvoicingService {
                         PaymentWrapper paymentWrapper = mapPayment(change, me, i, storage);
                         if (invoiceWrapper != null) {
                             invoices.add(invoiceWrapper);
-                            storage.put(InvoicingKey.builder()
-                                    .invoiceId(invoiceWrapper.getInvoice().getInvoiceId())
-                                    .type(InvoicingType.INVOICE)
-                                    .build(), invoiceWrapper);
+                            storage.put(InvoicingKey.buildKey(invoiceWrapper), invoiceWrapper);
                         }
                         if (paymentWrapper != null) {
                             payments.add(paymentWrapper);
-                            storage.put(InvoicingKey.builder()
-                                    .invoiceId(paymentWrapper.getPayment().getInvoiceId())
-                                    .paymentId(paymentWrapper.getPayment().getPaymentId())
-                                    .type(InvoicingType.PAYMENT)
-                                    .build(), paymentWrapper);
+                            storage.put(InvoicingKey.buildKey(paymentWrapper), paymentWrapper);
                         }
                         handleOtherEvent(change, me, i);
                     }

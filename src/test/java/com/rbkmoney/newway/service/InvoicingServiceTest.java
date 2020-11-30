@@ -59,7 +59,7 @@ public class InvoicingServiceTest {
         when(right.accept(any())).thenReturn(true);
         rightHandlers.add(right);
 
-        when(paymentDao.get(anyString(), anyString())).thenReturn(EnhancedRandom.random(Payment.class));
+        when(paymentDao.get(any(), any())).thenReturn(EnhancedRandom.random(Payment.class));
     }
 
     @Test

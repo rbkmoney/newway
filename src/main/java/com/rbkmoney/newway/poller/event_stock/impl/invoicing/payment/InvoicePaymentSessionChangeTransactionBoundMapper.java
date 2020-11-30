@@ -42,9 +42,12 @@ public class InvoicePaymentSessionChangeTransactionBoundMapper extends AbstractI
         long sequenceId = event.getEventId();
         log.info("Start mapping session change transaction info, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
 
-        PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, storage);
+        PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, sequenceId, changeId, storage);
+        if (paymentWrapper == null) {
+            return null;
+        }
         Payment paymentSource = paymentWrapper.getPayment();
-        setDefaultProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
+        setUpdateProperties(paymentSource, event.getCreatedAt());
         SessionChangePayload payload = sessionChange.getPayload();
         TransactionInfo transactionInfo = payload.getSessionTransactionBound().getTrx();
         paymentSource.setSessionPayloadTransactionBoundTrxId(transactionInfo.getId());

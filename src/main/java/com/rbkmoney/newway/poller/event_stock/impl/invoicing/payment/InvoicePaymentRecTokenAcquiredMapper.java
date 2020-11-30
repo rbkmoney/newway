@@ -34,9 +34,12 @@ public class InvoicePaymentRecTokenAcquiredMapper extends AbstractInvoicingPayme
         String token = invoicePaymentChange.getPayload().getInvoicePaymentRecTokenAcquired().getToken();
         long sequenceId = event.getEventId();
         log.info("Start handling payment recurrent token acquired, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
-        PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, storage);
+        PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, sequenceId, changeId, storage);
+        if (paymentWrapper == null) {
+            return null;
+        }
         Payment paymentSource = paymentWrapper.getPayment();
-        setDefaultProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
+        setUpdateProperties(paymentSource, event.getCreatedAt());
         paymentSource.setRecurrentIntentionToken(token);
         log.info("Payment recurrent token have been saved, sequenceId='{}', invoiceId='{}', paymentId='{}'", sequenceId, invoiceId, paymentId);
         return paymentWrapper;

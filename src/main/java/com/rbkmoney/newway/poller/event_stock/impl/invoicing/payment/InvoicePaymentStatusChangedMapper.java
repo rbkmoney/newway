@@ -39,9 +39,13 @@ public class InvoicePaymentStatusChangedMapper extends AbstractInvoicingPaymentM
         log.info("Start payment status changed mapping, sequenceId={}, invoiceId={}, paymentId={}, status={}",
                 sequenceId, invoiceId, paymentId, invoicePaymentStatus.getSetField().getFieldName());
 
-        PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, storage);
+        PaymentWrapper paymentWrapper = paymentWrapperService.get(invoiceId, paymentId, sequenceId, changeId, storage);
+        if (paymentWrapper == null) {
+            return null;
+        }
+        paymentWrapper.setShouldInsert(true);
         Payment paymentSource = paymentWrapper.getPayment();
-        setDefaultProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
+        setInsertProperties(paymentSource, sequenceId, changeId, event.getCreatedAt());
         paymentSource.setStatus(TBaseUtil.unionFieldToEnum(invoicePaymentStatus, PaymentStatus.class));
         if (invoicePaymentStatus.isSetCancelled()) {
             paymentSource.setStatusCancelledReason(invoicePaymentStatus.getCancelled().getReason());

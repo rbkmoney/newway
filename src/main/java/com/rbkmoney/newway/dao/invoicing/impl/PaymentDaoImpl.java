@@ -4,10 +4,8 @@ import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
-import com.rbkmoney.newway.domain.tables.records.PaymentRecord;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.model.InvoicingKey;
-import org.jooq.InsertOnDuplicateSetStep;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -47,9 +45,22 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
     }
 
     @Override
+    public void updateBatch(List<Payment> payments) throws DaoException{
+        List<Query> queries = payments.stream()
+                .map(payment -> getDslContext().newRecord(PAYMENT, payment))
+                .map(paymentRecord -> getDslContext().update(PAYMENT)
+                        .set(paymentRecord)
+                        .where(PAYMENT.ID.eq(paymentRecord.getId())))
+                .collect(Collectors.toList());
+        batchExecute(queries);
+    }
+
+    @Override
     public Payment get(String invoiceId, String paymentId) throws DaoException {
         Query query = getDslContext().selectFrom(PAYMENT)
-                .where(PAYMENT.INVOICE_ID.eq(invoiceId).and(PAYMENT.PAYMENT_ID.eq(paymentId)).and(PAYMENT.CURRENT));
+                .where(PAYMENT.INVOICE_ID.eq(invoiceId)
+                        .and(PAYMENT.PAYMENT_ID.eq(paymentId))
+                        .and(PAYMENT.CURRENT));
 
         return fetchOne(query, paymentRowMapper);
     }
