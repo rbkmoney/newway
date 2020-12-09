@@ -77,4 +77,10 @@ public class KafkaConsumerBeanEnableConfig {
         return new PayoutKafkaListener(payoutService);
     }
 
+    @Bean
+    @ConditionalOnProperty(value = "info.single-instance-mode", havingValue = "false")
+    public RateListener rateKafkaListener(RateService rateService) {
+        return new RateListener(rateService);
+    }
+
 }
