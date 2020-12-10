@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.poller.dominant.impl;
 
-import com.rbkmoney.damsel.domain.PaymentRoutingRulesObject;
-import com.rbkmoney.damsel.domain.PaymentRoutingRuleset;
+import com.rbkmoney.damsel.domain.RoutingRulesObject;
+import com.rbkmoney.damsel.domain.RoutingRuleset;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.domain.tables.pojos.PaymentRoutingRule;
 import com.rbkmoney.newway.poller.dominant.AbstractDominantHandler;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class PaymentRoutingRulesHandler
-        extends AbstractDominantHandler<PaymentRoutingRulesObject, PaymentRoutingRule, Integer> {
+        extends AbstractDominantHandler<RoutingRulesObject, PaymentRoutingRule, Integer> {
 
     private final DomainObjectDao<PaymentRoutingRule, Integer> paymentRoutingRulesDao;
 
@@ -22,14 +22,15 @@ public class PaymentRoutingRulesHandler
     }
 
     @Override
-    public PaymentRoutingRule convertToDatabaseObject(PaymentRoutingRulesObject rulesObject,
+    public PaymentRoutingRule convertToDatabaseObject(RoutingRulesObject rulesObject,
                                                       Long versionId,
                                                       boolean current) {
+
         PaymentRoutingRule paymentRoutingRule = new PaymentRoutingRule();
         paymentRoutingRule.setRuleRefId(rulesObject.getRef().getId());
         paymentRoutingRule.setVersionId(versionId);
 
-        PaymentRoutingRuleset ruleset = rulesObject.getData();
+        RoutingRuleset ruleset = rulesObject.getData();
         paymentRoutingRule.setName(ruleset.getName());
         paymentRoutingRule.setDescription(ruleset.getDescription());
         paymentRoutingRule.setRoutingDecisionsJson(JsonUtil.tBaseToJsonString(ruleset.getDecisions()));
@@ -43,7 +44,7 @@ public class PaymentRoutingRulesHandler
     }
 
     @Override
-    protected PaymentRoutingRulesObject getObject() {
+    protected RoutingRulesObject getObject() {
         return getDomainObject().getPaymentRoutingRules();
     }
 
