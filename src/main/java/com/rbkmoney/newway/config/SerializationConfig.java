@@ -49,16 +49,6 @@ public class SerializationConfig {
     }
 
     @Bean
-    public BinaryDeserializer<Change> rateEventDataBinaryDeserializer() {
-        return new AbstractThriftBinaryDeserializer<>() {
-            @Override
-            public Change deserialize(byte[] bytes) {
-                return Geck.msgPackToTBase(bytes, Change.class);
-            }
-        };
-    }
-
-    @Bean
     public MachineEventParser<RecurrentPaymentToolEventData> recurrentPaymentToolEventDataMachineEventParser(
             BinaryDeserializer<RecurrentPaymentToolEventData> recurrentPaymentToolEventDataBinaryDeserializer
     ) {
