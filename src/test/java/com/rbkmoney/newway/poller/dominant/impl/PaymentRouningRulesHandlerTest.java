@@ -27,7 +27,7 @@ public class PaymentRouningRulesHandlerTest {
     public void convertToDatabaseObjectTest() {
         RoutingRulesObject paymentRoutingRulesObject = buildPaymentRoutingRulesObject();
         PaymentRoutingRulesHandler handler = new PaymentRoutingRulesHandler(paymentRoutingRulesDao);
-        handler.setDomainObject(DomainObject.payment_routing_rules(paymentRoutingRulesObject));
+        handler.setDomainObject(DomainObject.routing_rules(paymentRoutingRulesObject));
 
         PaymentRoutingRule paymentRoutingRule =
                 handler.convertToDatabaseObject(paymentRoutingRulesObject, 1L, true);
