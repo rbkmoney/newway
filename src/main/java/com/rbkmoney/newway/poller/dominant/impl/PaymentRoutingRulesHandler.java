@@ -18,7 +18,7 @@ public class PaymentRoutingRulesHandler
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetPaymentRoutingRules();
+        return getDomainObject().isSetRoutingRules();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class PaymentRoutingRulesHandler
 
     @Override
     protected RoutingRulesObject getObject() {
-        return getDomainObject().getPaymentRoutingRules();
+        return getDomainObject().getRoutingRules();
     }
 
     @Override
