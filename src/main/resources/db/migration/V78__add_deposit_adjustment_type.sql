@@ -1,0 +1,1 @@
+ALTER TYPE nw.fistful_cash_flow_change_type ADD VALUE 'deposit_adjustment';

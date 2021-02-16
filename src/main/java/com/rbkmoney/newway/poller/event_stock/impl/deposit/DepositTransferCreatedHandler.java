@@ -14,7 +14,7 @@ import com.rbkmoney.newway.domain.enums.DepositTransferStatus;
 import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.Deposit;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
-import com.rbkmoney.newway.util.CashFlowUtil;
+import com.rbkmoney.newway.util.FistfulCashFlowUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,12 +48,12 @@ public class DepositTransferCreatedHandler extends AbstractDepositHandler {
         Long oldId = deposit.getId();
         initDefaultFieldsDeposit(event, sequenceId, depositId, deposit, timestampedChange.getOccuredAt());
         deposit.setDepositTransferStatus(DepositTransferStatus.created);
-        deposit.setFee(CashFlowUtil.getFistfulFee(postings));
-        deposit.setProviderFee(CashFlowUtil.getFistfulProviderFee(postings));
+        deposit.setFee(FistfulCashFlowUtil.getFistfulFee(postings));
+        deposit.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(postings));
         depositDao.save(deposit).ifPresentOrElse(
                 id -> {
                     depositDao.updateNotCurrent(oldId);
-                    List<FistfulCashFlow> fistfulCashFlows = CashFlowUtil.convertFistfulCashFlows(postings, id, FistfulCashFlowChangeType.deposit);
+                    List<FistfulCashFlow> fistfulCashFlows = FistfulCashFlowUtil.convertFistfulCashFlows(postings, id, FistfulCashFlowChangeType.deposit);
                     fistfulCashFlowDao.save(fistfulCashFlows);
                 },
                 () -> log.info("Deposit transfer have been saved, sequenceId={}, depositId={}", sequenceId, depositId)
