@@ -56,7 +56,7 @@ public class DepositAdjustmentCreatedHandler extends AbstractDepositHandler {
             depositAdjustment.setCurrencyCode(currCode);
             depositAdjustment.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(cashFlow.getNewCashFlow().getPostings()));
             depositAdjustment.setFee(FistfulCashFlowUtil.getFistfulFee(cashFlow.getNewCashFlow().getPostings()));
-        } else if (adjustment.getChangesPlan().isSetNewCashFlow()) {
+        } else if (adjustment.getChangesPlan().isSetNewStatus()) {
             depositAdjustment.setDepositStatus(TBaseUtil.unionFieldToEnum(adjustment.getChangesPlan().getNewStatus().getNewStatus(), DepositStatus.class));
         }
 
