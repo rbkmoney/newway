@@ -37,11 +37,7 @@ public class DepositRevertCreatedHandler extends AbstractDepositHandler {
         String depositId = event.getSourceId();
         log.info("Start deposit revert created handling, sequenceId={}, depositId={}", sequenceId, depositId);
         DepositRevert depositRevert = new DepositRevert();
-        depositRevert.setId(null);
-        depositRevert.setWtime(null);
-        depositRevert.setSequenceId((int) sequenceId);
-        depositRevert.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        depositRevert.setEventOccuredAt(TypeUtil.stringToLocalDateTime(timestampedChange.getOccuredAt()));
+        initDefaultFieldsRevert(event.getCreatedAt(), timestampedChange.getOccuredAt(), sequenceId, depositRevert);
         depositRevert.setDepositId(depositId);
         depositRevert.setRevertId(revert.getId());
         depositRevert.setSourceId(revert.getSourceId());

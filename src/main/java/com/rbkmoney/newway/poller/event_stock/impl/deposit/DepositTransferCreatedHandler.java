@@ -46,7 +46,7 @@ public class DepositTransferCreatedHandler extends AbstractDepositHandler {
         log.info("Start deposit transfer created handling, sequenceId={}, depositId={}", sequenceId, depositId);
         Deposit deposit = depositDao.get(depositId);
         Long oldId = deposit.getId();
-        initDefaultFieldsDeposit(event, sequenceId, depositId, deposit, timestampedChange.getOccuredAt());
+        initDefaultFieldsDeposit(event, sequenceId, deposit, timestampedChange.getOccuredAt());
         deposit.setDepositTransferStatus(DepositTransferStatus.created);
         deposit.setFee(FistfulCashFlowUtil.getFistfulFee(postings));
         deposit.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(postings));

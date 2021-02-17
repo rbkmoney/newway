@@ -40,11 +40,7 @@ public class DepositAdjustmentCreatedHandler extends AbstractDepositHandler {
         String depositId = event.getSourceId();
         log.info("Start deposit adjustment created handling, sequenceId={}, depositId={}", sequenceId, depositId);
         DepositAdjustment depositAdjustment = new DepositAdjustment();
-        depositAdjustment.setId(null);
-        depositAdjustment.setWtime(null);
-        depositAdjustment.setSequenceId((int) sequenceId);
-        depositAdjustment.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        depositAdjustment.setEventOccuredAt(TypeUtil.stringToLocalDateTime(timestampedChange.getOccuredAt()));
+        initDefaultFieldsAdjustment(event.getCreatedAt(), timestampedChange.getOccuredAt(), sequenceId, depositAdjustment);
         depositAdjustment.setDepositId(depositId);
         depositAdjustment.setAdjustmentId(adjustment.getId());
 

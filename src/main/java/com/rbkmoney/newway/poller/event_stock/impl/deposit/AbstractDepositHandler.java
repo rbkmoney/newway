@@ -12,7 +12,6 @@ public abstract class AbstractDepositHandler implements Handler<TimestampedChang
 
     protected void initDefaultFieldsDeposit(MachineEvent event,
                                             long sequenceId,
-                                            String depositId,
                                             Deposit deposit,
                                             String occuredAt) {
         deposit.setId(null);
@@ -20,7 +19,6 @@ public abstract class AbstractDepositHandler implements Handler<TimestampedChang
         deposit.setSequenceId((int) sequenceId);
         deposit.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         deposit.setEventOccuredAt(TypeUtil.stringToLocalDateTime(occuredAt));
-        deposit.setDepositId(depositId);
     }
 
     protected void initDefaultFieldsRevert(String createdAt,
