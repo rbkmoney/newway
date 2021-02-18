@@ -35,7 +35,8 @@ public class DepositCreatedHandler extends AbstractDepositHandler {
         String depositId = event.getSourceId();
         log.info("Start deposit created handling, sequenceId={}, depositId={}", sequenceId, depositId);
         Deposit deposit = new Deposit();
-        initDefaultFieldsDeposit(event, sequenceId, depositId, deposit, timestampedChange.getOccuredAt());
+        initDefaultFieldsDeposit(event, sequenceId, deposit, timestampedChange.getOccuredAt());
+        deposit.setDepositId(depositId);
         deposit.setSourceId(depositDamsel.getSourceId());
         deposit.setWalletId(depositDamsel.getWalletId());
 

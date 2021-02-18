@@ -1,20 +1,22 @@
-package com.rbkmoney.newway.poller.event_stock.impl.deposit;
+package com.rbkmoney.newway.poller.event_stock.impl.deposit.revert;
 
 import com.rbkmoney.fistful.deposit.Change;
 import com.rbkmoney.fistful.deposit.TimestampedChange;
-import com.rbkmoney.fistful.transfer.Status;
+import com.rbkmoney.fistful.deposit.revert.status.Status;
 import com.rbkmoney.geck.common.util.TBaseUtil;
+import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.dao.deposit.iface.DepositDao;
+import com.rbkmoney.newway.dao.deposit_revert.iface.DepositRevertDao;
 import com.rbkmoney.newway.dao.withdrawal.iface.FistfulCashFlowDao;
-import com.rbkmoney.newway.domain.enums.DepositTransferStatus;
+import com.rbkmoney.newway.domain.enums.DepositRevertStatus;
 import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
-import com.rbkmoney.newway.domain.tables.pojos.Deposit;
+import com.rbkmoney.newway.domain.tables.pojos.DepositRevert;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
+import com.rbkmoney.newway.poller.event_stock.impl.deposit.AbstractDepositHandler;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,39 +29,40 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DepositTransferStatusChangedHandler extends AbstractDepositHandler {
+public class DepositRevertStatusChangedHandler extends AbstractDepositHandler {
 
-    private final DepositDao depositDao;
+    private final DepositRevertDao depositRevertDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
-            new PathConditionRule("change.transfer.payload.status_changed.status", new IsNullCondition().not()));
+            new PathConditionRule("change.revert.payload.status_changed.status", new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(TimestampedChange timestampedChange, MachineEvent event) {
         Change change = timestampedChange.getChange();
-        Status status = change.getTransfer().getPayload().getStatusChanged().getStatus();
+        Status status = change.getRevert().getPayload().getStatusChanged().getStatus();
         long sequenceId = event.getEventId();
         String depositId = event.getSourceId();
-        log.info("Start deposit transfer status changed handling, sequenceId={}, depositId={}", sequenceId, depositId);
-        Deposit deposit = depositDao.get(depositId);
-        Long oldId = deposit.getId();
-        initDefaultFieldsDeposit(event, sequenceId, deposit, timestampedChange.getOccuredAt());
-        deposit.setDepositTransferStatus(TBaseUtil.unionFieldToEnum(status, DepositTransferStatus.class));
+        String revertId = change.getRevert().getId();
+        log.info("Start deposit revert status changed handling, sequenceId={}, depositId={}", sequenceId, depositId);
+        DepositRevert depositRevert = depositRevertDao.get(depositId, revertId);
+        Long oldDepositRevertId = depositRevert.getId();
+        initDefaultFieldsRevert(event.getCreatedAt(), timestampedChange.getOccuredAt(), sequenceId, depositRevert);
+        depositRevert.setStatus(TBaseUtil.unionFieldToEnum(status, DepositRevertStatus.class));
 
-        depositDao.save(deposit).ifPresentOrElse(
+        depositRevertDao.save(depositRevert).ifPresentOrElse(
                 id -> {
-                    depositDao.updateNotCurrent(oldId);
-                    List<FistfulCashFlow> cashFlows = fistfulCashFlowDao.getByObjId(deposit.getId(), FistfulCashFlowChangeType.deposit);
+                    depositRevertDao.updateNotCurrent(oldDepositRevertId);
+                    List<FistfulCashFlow> cashFlows = fistfulCashFlowDao.getByObjId(depositRevert.getId(), FistfulCashFlowChangeType.deposit_revert);
                     cashFlows.forEach(pcf -> {
                         pcf.setId(null);
                         pcf.setObjId(id);
                     });
                     fistfulCashFlowDao.save(cashFlows);
                 },
-                () -> log.info("Withdrawal deposit status have been changed, sequenceId={}, depositId={}",
+                () -> log.info("Deposit revert status have been changed, sequenceId={}, depositId={}",
                         sequenceId, depositId)
         );
     }

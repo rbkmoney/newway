@@ -14,7 +14,7 @@ import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.enums.WithdrawalTransferStatus;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Withdrawal;
-import com.rbkmoney.newway.util.CashFlowUtil;
+import com.rbkmoney.newway.util.FistfulCashFlowUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,13 +52,13 @@ public class WithdrawalTransferCreatedHandler extends AbstractWithdrawalHandler 
         initDefaultFields(event, sequenceId, withdrawalId, withdrawal, timestampedChange.getOccuredAt());
         withdrawal.setWithdrawalTransferStatus(WithdrawalTransferStatus.created);
 
-        withdrawal.setFee(CashFlowUtil.getFistfulFee(postings));
-        withdrawal.setProviderFee(CashFlowUtil.getFistfulProviderFee(postings));
+        withdrawal.setFee(FistfulCashFlowUtil.getFistfulFee(postings));
+        withdrawal.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(postings));
 
         withdrawalDao.save(withdrawal).ifPresentOrElse(
                 id -> {
                     withdrawalDao.updateNotCurrent(oldId);
-                    List<FistfulCashFlow> fistfulCashFlows = CashFlowUtil.convertFistfulCashFlows(postings, id, FistfulCashFlowChangeType.withdrawal);
+                    List<FistfulCashFlow> fistfulCashFlows = FistfulCashFlowUtil.convertFistfulCashFlows(postings, id, FistfulCashFlowChangeType.withdrawal);
                     fistfulCashFlowDao.save(fistfulCashFlows);
                     log.info("Withdrawal transfer have been changed, sequenceId={}, withdrawalId={}", sequenceId, withdrawalId);
                 },

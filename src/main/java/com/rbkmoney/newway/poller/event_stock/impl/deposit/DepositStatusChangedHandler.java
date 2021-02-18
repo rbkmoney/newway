@@ -46,7 +46,7 @@ public class DepositStatusChangedHandler extends AbstractDepositHandler {
         log.info("Start deposit status changed handling, sequenceId={}, depositId={}", sequenceId, depositId);
         Deposit deposit = depositDao.get(depositId);
         Long oldDepositId = deposit.getId();
-        initDefaultFieldsDeposit(event, sequenceId, depositId, deposit, timestampedChange.getOccuredAt());
+        initDefaultFieldsDeposit(event, sequenceId, deposit, timestampedChange.getOccuredAt());
         deposit.setDepositStatus(TBaseUtil.unionFieldToEnum(status, DepositStatus.class));
 
         depositDao.save(deposit).ifPresentOrElse(
