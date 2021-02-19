@@ -25,13 +25,13 @@ public class TermSetHierarchyHandler extends AbstractDominantHandler<TermSetHier
     }
 
     @Override
-    protected TermSetHierarchyObject getObject() {
+    protected TermSetHierarchyObject getTargetObject() {
         return getDomainObject().getTermSetHierarchy();
     }
 
     @Override
-    protected Integer getObjectRefId() {
-        return getObject().getRef().getId();
+    protected Integer getTargetObjectRefId() {
+        return getTargetObject().getRef().getId();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class TermSetHierarchyHandler extends AbstractDominantHandler<TermSetHier
     public TermSetHierarchy convertToDatabaseObject(TermSetHierarchyObject termSetHierarchyObject, Long versionId, boolean current) {
         TermSetHierarchy termSetHierarchy = new TermSetHierarchy();
         termSetHierarchy.setVersionId(versionId);
-        termSetHierarchy.setTermSetHierarchyRefId(getObjectRefId());
+        termSetHierarchy.setTermSetHierarchyRefId(getTargetObjectRefId());
         com.rbkmoney.damsel.domain.TermSetHierarchy data = termSetHierarchyObject.getData();
         termSetHierarchy.setName(data.getName());
         termSetHierarchy.setDescription(data.getDescription());

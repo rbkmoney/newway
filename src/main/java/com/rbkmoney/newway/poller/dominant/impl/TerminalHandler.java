@@ -23,13 +23,13 @@ public class TerminalHandler extends AbstractDominantHandler<TerminalObject, Ter
     }
 
     @Override
-    protected TerminalObject getObject() {
+    protected TerminalObject getTargetObject() {
         return getDomainObject().getTerminal();
     }
 
     @Override
-    protected Integer getObjectRefId() {
-        return getObject().getRef().getId();
+    protected Integer getTargetObjectRefId() {
+        return getTargetObject().getRef().getId();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class TerminalHandler extends AbstractDominantHandler<TerminalObject, Ter
     public Terminal convertToDatabaseObject(TerminalObject terminalObject, Long versionId, boolean current) {
         Terminal terminal = new Terminal();
         terminal.setVersionId(versionId);
-        terminal.setTerminalRefId(getObjectRefId());
+        terminal.setTerminalRefId(getTargetObjectRefId());
         com.rbkmoney.damsel.domain.Terminal data = terminalObject.getData();
         terminal.setName(data.getName());
         terminal.setDescription(data.getDescription());

@@ -28,13 +28,13 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
     }
 
     @Override
-    protected PaymentMethodObject getObject() {
+    protected PaymentMethodObject getTargetObject() {
         return getDomainObject().getPaymentMethod();
     }
 
     @Override
-    protected String getObjectRefId() {
-        var paymentMethodObjectRefId = getObject().getRef().getId();
+    protected String getTargetObjectRefId() {
+        var paymentMethodObjectRefId = getTargetObject().getRef().getId();
         String paymentMethodRefId;
         if (paymentMethodObjectRefId.isSetBankCard()) {
             paymentMethodRefId = paymentMethodObjectRefId.getBankCard().getPaymentSystem().name();
@@ -56,7 +56,7 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
             throw new IllegalArgumentException("Unknown payment method: " + paymentMethodObjectRefId);
         }
 
-        return getPaymentType(getObject()) + SEPARATOR + paymentMethodRefId;
+        return getPaymentType(getTargetObject()) + SEPARATOR + paymentMethodRefId;
     }
 
     private String getTokenizedBankCardId(TokenizedBankCard card) {
@@ -76,7 +76,7 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
     public PaymentMethod convertToDatabaseObject(PaymentMethodObject paymentMethodObject, Long versionId, boolean current) {
         PaymentMethod paymentMethod = new PaymentMethod();
         paymentMethod.setVersionId(versionId);
-        paymentMethod.setPaymentMethodRefId(getObjectRefId());
+        paymentMethod.setPaymentMethodRefId(getTargetObjectRefId());
         var data = paymentMethodObject.getData();
         paymentMethod.setName(data.getName());
         paymentMethod.setDescription(data.getDescription());

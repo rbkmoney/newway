@@ -29,15 +29,15 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
     }
 
     protected abstract DomainObjectDao<C, I> getDomainObjectDao();
-    protected abstract T getObject();
-    protected abstract I getObjectRefId();
+    protected abstract T getTargetObject();
+    protected abstract I getTargetObjectRefId();
     protected abstract boolean acceptDomainObject();
     public abstract C convertToDatabaseObject(T object, Long versionId, boolean current);
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(Operation operation, Long versionId) {
-        T object = getObject();
+        T object = getTargetObject();
         if (operation.isSetInsert()) {
             insertDomainObject(object, versionId);
         } else if (operation.isSetUpdate()) {
@@ -65,22 +65,22 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void insertDomainObject(T object, Long versionId) {
-        log.info("Start to insert '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getObjectRefId(), versionId);
+        log.info("Start to insert '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getTargetObjectRefId(), versionId);
         getDomainObjectDao().save(convertToDatabaseObject(object, versionId, true));
-        log.info("End to insert '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getObjectRefId(), versionId);
+        log.info("End to insert '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getTargetObjectRefId(), versionId);
     }
     @Transactional(propagation = Propagation.REQUIRED)
     public void updateDomainObject(T object, Long versionId) {
-        log.info("Start to update '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getObjectRefId(), versionId);
-        getDomainObjectDao().updateNotCurrent(getObjectRefId());
+        log.info("Start to update '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getTargetObjectRefId(), versionId);
+        getDomainObjectDao().updateNotCurrent(getTargetObjectRefId());
         getDomainObjectDao().save(convertToDatabaseObject(object, versionId, true));
-        log.info("End to update '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getObjectRefId(), versionId);
+        log.info("End to update '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getTargetObjectRefId(), versionId);
     }
     @Transactional(propagation = Propagation.REQUIRED)
     public void removeDomainObject(T object, Long versionId) {
-        log.info("Start to remove '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getObjectRefId(), versionId);
-        getDomainObjectDao().updateNotCurrent(getObjectRefId());
+        log.info("Start to remove '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getTargetObjectRefId(), versionId);
+        getDomainObjectDao().updateNotCurrent(getTargetObjectRefId());
         getDomainObjectDao().save(convertToDatabaseObject(object, versionId, false));
-        log.info("End to remove '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getObjectRefId(), versionId);
+        log.info("End to remove '{}' with id={}, versionId={}", object.getClass().getSimpleName(), getTargetObjectRefId(), versionId);
     }
 }

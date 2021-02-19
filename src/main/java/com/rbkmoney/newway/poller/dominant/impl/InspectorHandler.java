@@ -23,13 +23,13 @@ public class InspectorHandler extends AbstractDominantHandler<InspectorObject, I
     }
 
     @Override
-    protected InspectorObject getObject() {
+    protected InspectorObject getTargetObject() {
         return getDomainObject().getInspector();
     }
 
     @Override
-    protected Integer getObjectRefId() {
-        return getObject().getRef().getId();
+    protected Integer getTargetObjectRefId() {
+        return getTargetObject().getRef().getId();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class InspectorHandler extends AbstractDominantHandler<InspectorObject, I
     public Inspector convertToDatabaseObject(InspectorObject inspectorObject, Long versionId, boolean current) {
         Inspector inspector = new Inspector();
         inspector.setVersionId(versionId);
-        inspector.setInspectorRefId(getObjectRefId());
+        inspector.setInspectorRefId(getTargetObjectRefId());
         com.rbkmoney.damsel.domain.Inspector data = inspectorObject.getData();
         inspector.setName(data.getName());
         inspector.setDescription(data.getDescription());

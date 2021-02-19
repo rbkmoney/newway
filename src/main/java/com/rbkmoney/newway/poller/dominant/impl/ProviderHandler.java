@@ -26,13 +26,13 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
     }
 
     @Override
-    protected ProviderObject getObject() {
+    protected ProviderObject getTargetObject() {
         return getDomainObject().getProvider();
     }
 
     @Override
-    protected Integer getObjectRefId() {
-        return getObject().getRef().getId();
+    protected Integer getTargetObjectRefId() {
+        return getTargetObject().getRef().getId();
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
     public Provider convertToDatabaseObject(ProviderObject providerObject, Long versionId, boolean current) {
         Provider provider = new Provider();
         provider.setVersionId(versionId);
-        provider.setProviderRefId(getObjectRefId());
+        provider.setProviderRefId(getTargetObjectRefId());
         com.rbkmoney.damsel.domain.Provider data = providerObject.getData();
         provider.setName(data.getName());
         provider.setDescription(data.getDescription());

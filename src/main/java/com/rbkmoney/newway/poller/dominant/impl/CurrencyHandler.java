@@ -22,13 +22,13 @@ public class CurrencyHandler extends AbstractDominantHandler<CurrencyObject, Cur
     }
 
     @Override
-    protected CurrencyObject getObject() {
+    protected CurrencyObject getTargetObject() {
         return getDomainObject().getCurrency();
     }
 
     @Override
-    protected String getObjectRefId() {
-        return getObject().getRef().getSymbolicCode();
+    protected String getTargetObjectRefId() {
+        return getTargetObject().getRef().getSymbolicCode();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class CurrencyHandler extends AbstractDominantHandler<CurrencyObject, Cur
     public Currency convertToDatabaseObject(CurrencyObject currencyObject, Long versionId, boolean current) {
         Currency currency = new Currency();
         currency.setVersionId(versionId);
-        currency.setCurrencyRefId(getObjectRefId());
+        currency.setCurrencyRefId(getTargetObjectRefId());
         com.rbkmoney.damsel.domain.Currency data = currencyObject.getData();
         currency.setName(data.getName());
         currency.setSymbolicCode(data.getSymbolicCode());

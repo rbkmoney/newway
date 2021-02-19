@@ -44,13 +44,13 @@ public class PaymentRoutingRulesHandler
     }
 
     @Override
-    protected RoutingRulesObject getObject() {
+    protected RoutingRulesObject getTargetObject() {
         return getDomainObject().getRoutingRules();
     }
 
     @Override
-    protected Integer getObjectRefId() {
-        return getObject().getRef().getId();
+    protected Integer getTargetObjectRefId() {
+        return getTargetObject().getRef().getId();
     }
 
 }

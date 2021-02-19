@@ -26,13 +26,13 @@ public class WithdrawalProviderHandler extends AbstractDominantHandler<Withdrawa
     }
 
     @Override
-    protected WithdrawalProviderObject getObject() {
+    protected WithdrawalProviderObject getTargetObject() {
         return getDomainObject().getWithdrawalProvider();
     }
 
     @Override
-    protected Integer getObjectRefId() {
-        return getObject().getRef().getId();
+    protected Integer getTargetObjectRefId() {
+        return getTargetObject().getRef().getId();
     }
 
     @Override
@@ -44,7 +44,7 @@ public class WithdrawalProviderHandler extends AbstractDominantHandler<Withdrawa
     public WithdrawalProvider convertToDatabaseObject(WithdrawalProviderObject withdrawalProviderObject, Long versionId, boolean current) {
         WithdrawalProvider withdrawalProvider = new WithdrawalProvider();
         withdrawalProvider.setVersionId(versionId);
-        withdrawalProvider.setWithdrawalProviderRefId(getObjectRefId());
+        withdrawalProvider.setWithdrawalProviderRefId(getTargetObjectRefId());
         var data = withdrawalProviderObject.getData();
         withdrawalProvider.setName(data.getName());
         withdrawalProvider.setDescription(data.getDescription());
