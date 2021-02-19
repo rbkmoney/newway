@@ -28,13 +28,13 @@ public class CalendarHandler extends AbstractDominantHandler<CalendarObject, Cal
     }
 
     @Override
-    protected CalendarObject getObject() {
+    protected CalendarObject getTargetObject() {
         return getDomainObject().getCalendar();
     }
 
     @Override
-    protected Integer getObjectRefId() {
-        return getObject().getRef().getId();
+    protected Integer getTargetObjectRefId() {
+        return getTargetObject().getRef().getId();
     }
 
     @Override
@@ -46,7 +46,7 @@ public class CalendarHandler extends AbstractDominantHandler<CalendarObject, Cal
     public Calendar convertToDatabaseObject(CalendarObject calendarObject, Long versionId, boolean current) {
         Calendar calendar = new Calendar();
         calendar.setVersionId(versionId);
-        calendar.setCalendarRefId(getObjectRefId());
+        calendar.setCalendarRefId(getTargetObjectRefId());
         com.rbkmoney.damsel.domain.Calendar data = calendarObject.getData();
         calendar.setName(data.getName());
         calendar.setDescription(data.getDescription());

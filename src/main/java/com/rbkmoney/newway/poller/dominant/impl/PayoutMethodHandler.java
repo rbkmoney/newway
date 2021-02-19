@@ -23,13 +23,13 @@ public class PayoutMethodHandler extends AbstractDominantHandler<PayoutMethodObj
     }
 
     @Override
-    protected PayoutMethodObject getObject() {
+    protected PayoutMethodObject getTargetObject() {
         return getDomainObject().getPayoutMethod();
     }
 
     @Override
-    protected String getObjectRefId() {
-        return getObject().getRef().getId().name();
+    protected String getTargetObjectRefId() {
+        return getTargetObject().getRef().getId().name();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class PayoutMethodHandler extends AbstractDominantHandler<PayoutMethodObj
     public PayoutMethod convertToDatabaseObject(PayoutMethodObject payoutMethodObject, Long versionId, boolean current) {
         PayoutMethod payoutMethod = new PayoutMethod();
         payoutMethod.setVersionId(versionId);
-        payoutMethod.setPayoutMethodRefId(getObjectRefId());
+        payoutMethod.setPayoutMethodRefId(getTargetObjectRefId());
         PayoutMethodDefinition data = payoutMethodObject.getData();
         payoutMethod.setName(data.getName());
         payoutMethod.setDescription(data.getDescription());

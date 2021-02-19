@@ -25,13 +25,13 @@ public class PaymentInstitutionHandler extends AbstractDominantHandler<PaymentIn
     }
 
     @Override
-    protected PaymentInstitutionObject getObject() {
+    protected PaymentInstitutionObject getTargetObject() {
         return getDomainObject().getPaymentInstitution();
     }
 
     @Override
-    protected Integer getObjectRefId() {
-        return getObject().getRef().getId();
+    protected Integer getTargetObjectRefId() {
+        return getTargetObject().getRef().getId();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class PaymentInstitutionHandler extends AbstractDominantHandler<PaymentIn
     public PaymentInstitution convertToDatabaseObject(PaymentInstitutionObject paymentInstitutionObject, Long versionId, boolean current) {
         PaymentInstitution paymentInstitution = new PaymentInstitution();
         paymentInstitution.setVersionId(versionId);
-        paymentInstitution.setPaymentInstitutionRefId(getObjectRefId());
+        paymentInstitution.setPaymentInstitutionRefId(getTargetObjectRefId());
         com.rbkmoney.damsel.domain.PaymentInstitution data = paymentInstitutionObject.getData();
         paymentInstitution.setName(data.getName());
         paymentInstitution.setDescription(data.getDescription());

@@ -24,13 +24,13 @@ public class ProxyHandler extends AbstractDominantHandler<ProxyObject, Proxy, In
     }
 
     @Override
-    protected ProxyObject getObject() {
+    protected ProxyObject getTargetObject() {
         return getDomainObject().getProxy();
     }
 
     @Override
-    protected Integer getObjectRefId() {
-        return getObject().getRef().getId();
+    protected Integer getTargetObjectRefId() {
+        return getTargetObject().getRef().getId();
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ProxyHandler extends AbstractDominantHandler<ProxyObject, Proxy, In
     public Proxy convertToDatabaseObject(ProxyObject proxyObject, Long versionId, boolean current) {
         Proxy proxy = new Proxy();
         proxy.setVersionId(versionId);
-        proxy.setProxyRefId(getObjectRefId());
+        proxy.setProxyRefId(getTargetObjectRefId());
         ProxyDefinition data = proxyObject.getData();
         proxy.setName(data.getName());
         proxy.setDescription(data.getDescription());

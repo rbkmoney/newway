@@ -2,7 +2,6 @@ package com.rbkmoney.newway.poller.dominant.impl;
 
 import com.rbkmoney.damsel.domain.PaymentMethodObject;
 import com.rbkmoney.damsel.domain.TokenizedBankCard;
-import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.dao.dominant.impl.PaymentMethodDaoImpl;
 import com.rbkmoney.newway.domain.enums.PaymentMethodType;
@@ -13,6 +12,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodObject, PaymentMethod, String> {
 
+    private static final String TOKENIZED_BANK_CARD_SEPARATOR = "_";
+    private static final String SEPARATOR = ".";
+    private static final String EMPTY_CVV = "empty_cvv_";
+    private static final String DEPRECATED = "_deprecated";
     private final PaymentMethodDaoImpl paymentMethodDao;
 
     public PaymentMethodHandler(PaymentMethodDaoImpl paymentMethodDao) {
@@ -25,13 +28,13 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
     }
 
     @Override
-    protected PaymentMethodObject getObject() {
+    protected PaymentMethodObject getTargetObject() {
         return getDomainObject().getPaymentMethod();
     }
 
     @Override
-    protected String getObjectRefId() {
-        com.rbkmoney.damsel.domain.PaymentMethod paymentMethodObjectRefId = getObject().getRef().getId();
+    protected String getTargetObjectRefId() {
+        var paymentMethodObjectRefId = getTargetObject().getRef().getId();
         String paymentMethodRefId;
         if (paymentMethodObjectRefId.isSetBankCard()) {
             paymentMethodRefId = paymentMethodObjectRefId.getBankCard().getPaymentSystem().name();
@@ -40,10 +43,9 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
         } else if (paymentMethodObjectRefId.isSetDigitalWallet()) {
             paymentMethodRefId = paymentMethodObjectRefId.getDigitalWallet().name();
         } else if (paymentMethodObjectRefId.isSetTokenizedBankCardDeprecated()) {
-            TokenizedBankCard tokenizedBankCard = paymentMethodObjectRefId.getTokenizedBankCardDeprecated();
-            paymentMethodRefId = tokenizedBankCard.getPaymentSystem().name() + "_" + tokenizedBankCard.getTokenProvider().name();
+            paymentMethodRefId = getTokenizedBankCardId(paymentMethodObjectRefId.getTokenizedBankCardDeprecated());
         } else if (paymentMethodObjectRefId.isSetEmptyCvvBankCardDeprecated()) {
-            paymentMethodRefId = "empty_cvv_" + paymentMethodObjectRefId.getEmptyCvvBankCardDeprecated().name();
+            paymentMethodRefId = EMPTY_CVV + paymentMethodObjectRefId.getEmptyCvvBankCardDeprecated().name();
         } else if (paymentMethodObjectRefId.isSetCryptoCurrency()) {
             paymentMethodRefId = paymentMethodObjectRefId.getCryptoCurrency().name();
         } else if (paymentMethodObjectRefId.isSetMobile()) {
@@ -53,7 +55,16 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
         } else {
             throw new IllegalArgumentException("Unknown payment method: " + paymentMethodObjectRefId);
         }
-        return paymentMethodRefId;
+
+        return getPaymentType(getTargetObject()) + SEPARATOR + paymentMethodRefId;
+    }
+
+    private String getTokenizedBankCardId(TokenizedBankCard card) {
+        return card.getPaymentSystem().name() + TOKENIZED_BANK_CARD_SEPARATOR + card.getTokenProvider().name();
+    }
+
+    private String getPaymentType(PaymentMethodObject pmObj) {
+        return pmObj.getRef().getId().getSetField().getFieldName().replaceAll(DEPRECATED, "");
     }
 
     @Override
@@ -65,18 +76,17 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
     public PaymentMethod convertToDatabaseObject(PaymentMethodObject paymentMethodObject, Long versionId, boolean current) {
         PaymentMethod paymentMethod = new PaymentMethod();
         paymentMethod.setVersionId(versionId);
-        paymentMethod.setPaymentMethodRefId(getObjectRefId());
-        com.rbkmoney.damsel.domain.PaymentMethodDefinition data = paymentMethodObject.getData();
+        paymentMethod.setPaymentMethodRefId(getTargetObjectRefId());
+        var data = paymentMethodObject.getData();
         paymentMethod.setName(data.getName());
         paymentMethod.setDescription(data.getDescription());
         paymentMethod.setType(
                 Enum.valueOf(
                         PaymentMethodType.class,
-                        paymentMethodObject.getRef().getId().getSetField().getFieldName().replaceAll("_deprecated", "")
+                        getPaymentType(paymentMethodObject)
                 )
         );
         paymentMethod.setCurrent(current);
         return paymentMethod;
     }
-
 }
