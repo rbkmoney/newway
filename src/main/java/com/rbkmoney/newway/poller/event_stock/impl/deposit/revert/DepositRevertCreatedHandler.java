@@ -48,6 +48,8 @@ public class DepositRevertCreatedHandler extends AbstractDepositHandler {
         depositRevert.setStatus(DepositRevertStatus.pending);
         depositRevert.setExternalId(revert.getExternalId());
         depositRevert.setReason(revert.getReason());
+        depositRevert.setPartyRevision(revert.getPartyRevision());
+        depositRevert.setDomainRevision(revert.getDomainRevision());
 
         depositRevertDao.save(depositRevert).ifPresentOrElse(
                 dbContractId -> log.info("Deposit revert created has been saved, sequenceId={}, depositId={}",

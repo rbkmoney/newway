@@ -66,6 +66,8 @@ public class DepositAdjustmentCreatedHandler extends AbstractDepositHandler {
 
         depositAdjustment.setStatus(DepositAdjustmentStatus.pending);
         depositAdjustment.setExternalId(adjustment.getExternalId());
+        depositAdjustment.setPartyRevision(adjustment.getPartyRevision());
+        depositAdjustment.setDomainRevision(adjustment.getDomainRevision());
 
         depositAdjustmentDao.save(depositAdjustment).ifPresentOrElse(
                 dbContractId -> log.info("Deposit revert created has been saved, sequenceId={}, depositId={}",
