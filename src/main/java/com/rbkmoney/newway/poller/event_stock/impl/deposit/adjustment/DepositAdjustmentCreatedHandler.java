@@ -3,16 +3,18 @@ package com.rbkmoney.newway.poller.event_stock.impl.deposit.adjustment;
 import com.rbkmoney.fistful.deposit.Change;
 import com.rbkmoney.fistful.deposit.TimestampedChange;
 import com.rbkmoney.fistful.deposit.adjustment.CashFlowChangePlan;
+import com.rbkmoney.fistful.deposit.status.Status;
 import com.rbkmoney.geck.common.util.TBaseUtil;
-import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
+import com.rbkmoney.newway.dao.deposit.iface.DepositDao;
 import com.rbkmoney.newway.dao.deposit_adjustment.iface.DepositAdjustmentDao;
 import com.rbkmoney.newway.domain.enums.DepositAdjustmentStatus;
 import com.rbkmoney.newway.domain.enums.DepositStatus;
+import com.rbkmoney.newway.domain.tables.pojos.Deposit;
 import com.rbkmoney.newway.domain.tables.pojos.DepositAdjustment;
 import com.rbkmoney.newway.poller.event_stock.impl.deposit.AbstractDepositHandler;
 import com.rbkmoney.newway.util.FistfulCashFlowUtil;
@@ -26,7 +28,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DepositAdjustmentCreatedHandler extends AbstractDepositHandler {
 
-    private final DepositAdjustmentDao DepositAdjustmentDao;
+    private final DepositAdjustmentDao depositAdjustmentDao;
+    private final DepositDao depositDao;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -38,9 +41,12 @@ public class DepositAdjustmentCreatedHandler extends AbstractDepositHandler {
         var adjustment = change.getAdjustment().getPayload().getCreated().getAdjustment();
         long sequenceId = event.getEventId();
         String depositId = event.getSourceId();
+        Deposit deposit = depositDao.get(depositId);
         log.info("Start deposit adjustment created handling, sequenceId={}, depositId={}", sequenceId, depositId);
         DepositAdjustment depositAdjustment = new DepositAdjustment();
         initDefaultFieldsAdjustment(event.getCreatedAt(), timestampedChange.getOccuredAt(), sequenceId, depositAdjustment);
+        depositAdjustment.setWalletId(deposit.getWalletId());
+        depositAdjustment.setSourceId(deposit.getSourceId());
         depositAdjustment.setDepositId(depositId);
         depositAdjustment.setAdjustmentId(adjustment.getId());
 
@@ -52,14 +58,18 @@ public class DepositAdjustmentCreatedHandler extends AbstractDepositHandler {
             depositAdjustment.setCurrencyCode(currCode);
             depositAdjustment.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(cashFlow.getNewCashFlow().getPostings()));
             depositAdjustment.setFee(FistfulCashFlowUtil.getFistfulFee(cashFlow.getNewCashFlow().getPostings()));
-        } else if (adjustment.getChangesPlan().isSetNewStatus()) {
-            depositAdjustment.setDepositStatus(TBaseUtil.unionFieldToEnum(adjustment.getChangesPlan().getNewStatus().getNewStatus(), DepositStatus.class));
+        }
+        if (adjustment.getChangesPlan().isSetNewStatus()) {
+            Status status = adjustment.getChangesPlan().getNewStatus().getNewStatus();
+            depositAdjustment.setDepositStatus(TBaseUtil.unionFieldToEnum(status, DepositStatus.class));
         }
 
         depositAdjustment.setStatus(DepositAdjustmentStatus.pending);
         depositAdjustment.setExternalId(adjustment.getExternalId());
+        depositAdjustment.setPartyRevision(adjustment.getPartyRevision());
+        depositAdjustment.setDomainRevision(adjustment.getDomainRevision());
 
-        DepositAdjustmentDao.save(depositAdjustment).ifPresentOrElse(
+        depositAdjustmentDao.save(depositAdjustment).ifPresentOrElse(
                 dbContractId -> log.info("Deposit revert created has been saved, sequenceId={}, depositId={}",
                         sequenceId, depositId),
                 () -> log.info("Deposit revert created bound duplicated, sequenceId={}, depositId={}",

@@ -3,7 +3,6 @@ package com.rbkmoney.newway.poller.event_stock.impl.deposit.revert;
 import com.rbkmoney.fistful.base.Cash;
 import com.rbkmoney.fistful.deposit.Change;
 import com.rbkmoney.fistful.deposit.TimestampedChange;
-import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -48,6 +47,9 @@ public class DepositRevertCreatedHandler extends AbstractDepositHandler {
         depositRevert.setCurrencyCode(cash.getCurrency().getSymbolicCode());
         depositRevert.setStatus(DepositRevertStatus.pending);
         depositRevert.setExternalId(revert.getExternalId());
+        depositRevert.setReason(revert.getReason());
+        depositRevert.setPartyRevision(revert.getPartyRevision());
+        depositRevert.setDomainRevision(revert.getDomainRevision());
 
         depositRevertDao.save(depositRevert).ifPresentOrElse(
                 dbContractId -> log.info("Deposit revert created has been saved, sequenceId={}, depositId={}",
