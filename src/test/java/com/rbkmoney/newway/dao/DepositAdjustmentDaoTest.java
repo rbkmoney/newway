@@ -23,6 +23,8 @@ public class DepositAdjustmentDaoTest extends AbstractAppDaoTests {
     @Test
     public void depositAdjustmentTest() {
         DepositAdjustment deposit = random(DepositAdjustment.class);
+        deposit.setAmount(null);
+        deposit.setCurrencyCode(null);
         deposit.setCurrent(true);
         Long id = depositAdjustmentDao.save(deposit).get();
         deposit.setId(id);
