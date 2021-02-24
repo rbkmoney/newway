@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DepositAdjustmentCreatedHandler extends AbstractDepositHandler {
 
-    private final DepositAdjustmentDao DepositAdjustmentDao;
+    private final DepositAdjustmentDao depositAdjustmentDao;
     private final DepositDao depositDao;
 
     @Getter
@@ -67,7 +67,7 @@ public class DepositAdjustmentCreatedHandler extends AbstractDepositHandler {
         depositAdjustment.setStatus(DepositAdjustmentStatus.pending);
         depositAdjustment.setExternalId(adjustment.getExternalId());
 
-        DepositAdjustmentDao.save(depositAdjustment).ifPresentOrElse(
+        depositAdjustmentDao.save(depositAdjustment).ifPresentOrElse(
                 dbContractId -> log.info("Deposit revert created has been saved, sequenceId={}, depositId={}",
                         sequenceId, depositId),
                 () -> log.info("Deposit revert created bound duplicated, sequenceId={}, depositId={}",
