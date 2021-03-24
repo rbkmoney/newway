@@ -1,16 +1,12 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.contract;
 
-import com.rbkmoney.damsel.payment_processing.ClaimEffect;
-import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
-import com.rbkmoney.damsel.payment_processing.PartyChange;
+import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.domain.enums.ContractStatus;
-import com.rbkmoney.newway.domain.tables.pojos.Contract;
-import com.rbkmoney.newway.domain.tables.pojos.ContractAdjustment;
-import com.rbkmoney.newway.domain.tables.pojos.Contractor;
+import com.rbkmoney.newway.domain.tables.pojos.*;
 import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.AbstractClaimChangedHandler;
 import com.rbkmoney.newway.util.ContractUtil;
 import com.rbkmoney.newway.util.ContractorUtil;

@@ -1,9 +1,6 @@
 package com.rbkmoney.newway.dao;
 
-import com.rbkmoney.damsel.domain.ExternalCashFlowAccount;
-import com.rbkmoney.damsel.domain.MerchantCashFlowAccount;
-import com.rbkmoney.damsel.domain.ProviderCashFlowAccount;
-import com.rbkmoney.damsel.domain.SystemCashFlowAccount;
+import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.newway.domain.enums.CashFlowAccount;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;

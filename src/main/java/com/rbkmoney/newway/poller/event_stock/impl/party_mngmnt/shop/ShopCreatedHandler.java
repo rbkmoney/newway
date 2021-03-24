@@ -1,9 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.shop;
 
 import com.rbkmoney.damsel.domain.Shop;
-import com.rbkmoney.damsel.payment_processing.ClaimEffect;
-import com.rbkmoney.damsel.payment_processing.PartyChange;
-import com.rbkmoney.damsel.payment_processing.ShopEffectUnit;
+import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
@@ -60,7 +58,7 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
                 () -> log.info("Shop create duplicated, sequenceId={}, partyId={}, shopId={}, changeId={}", sequenceId, partyId, shopId, changeId));
     }
 
-        private com.rbkmoney.newway.domain.tables.pojos.Shop createShop(MachineEvent event, Integer changeId, long sequenceId,
+    private com.rbkmoney.newway.domain.tables.pojos.Shop createShop(MachineEvent event, Integer changeId, long sequenceId,
                                                                     Shop shopCreated, String shopId, String partyId, Integer claimEffectId) {
         com.rbkmoney.newway.domain.tables.pojos.Shop shop = new com.rbkmoney.newway.domain.tables.pojos.Shop();
         shop.setSequenceId((int) sequenceId);

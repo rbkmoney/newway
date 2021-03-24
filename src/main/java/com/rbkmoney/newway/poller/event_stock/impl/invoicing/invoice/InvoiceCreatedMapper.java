@@ -14,7 +14,6 @@ import com.rbkmoney.newway.domain.enums.InvoiceStatus;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.model.InvoiceWrapper;
-import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.poller.event_stock.LocalStorage;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.RequiredArgsConstructor;

@@ -1,12 +1,12 @@
 package com.rbkmoney.newway.poller.listener;
 
+import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import com.rbkmoney.newway.service.RateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
-import com.rbkmoney.machinegun.eventsink.SinkEvent;
 
 import java.util.List;
 import java.util.stream.Collectors;

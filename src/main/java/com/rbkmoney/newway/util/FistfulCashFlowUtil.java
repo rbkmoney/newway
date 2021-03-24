@@ -1,8 +1,6 @@
 package com.rbkmoney.newway.util;
 
-import com.rbkmoney.fistful.cashflow.FinalCashFlowAccount;
-import com.rbkmoney.fistful.cashflow.FinalCashFlowPosting;
-import com.rbkmoney.fistful.cashflow.MerchantCashFlowAccount;
+import com.rbkmoney.fistful.cashflow.*;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.newway.domain.enums.CashFlowAccount;
 import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;

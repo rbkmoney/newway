@@ -3,9 +3,7 @@ package com.rbkmoney.newway.poller.event_stock.impl.deposit;
 import com.rbkmoney.fistful.deposit.TimestampedChange;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.domain.tables.pojos.Deposit;
-import com.rbkmoney.newway.domain.tables.pojos.DepositAdjustment;
-import com.rbkmoney.newway.domain.tables.pojos.DepositRevert;
+import com.rbkmoney.newway.domain.tables.pojos.*;
 import com.rbkmoney.newway.poller.event_stock.Handler;
 
 public abstract class AbstractDepositHandler implements Handler<TimestampedChange, MachineEvent> {
@@ -24,7 +22,7 @@ public abstract class AbstractDepositHandler implements Handler<TimestampedChang
     protected void initDefaultFieldsRevert(String createdAt,
                                            String occuredAt,
                                            long sequenceId,
-                                           DepositRevert depositRevert){
+                                           DepositRevert depositRevert) {
         depositRevert.setId(null);
         depositRevert.setWtime(null);
         depositRevert.setSequenceId((int) sequenceId);
@@ -33,9 +31,9 @@ public abstract class AbstractDepositHandler implements Handler<TimestampedChang
     }
 
     protected void initDefaultFieldsAdjustment(String createdAt,
-                                           String occuredAt,
-                                           long sequenceId,
-                                           DepositAdjustment depositAdjustment){
+                                               String occuredAt,
+                                               long sequenceId,
+                                               DepositAdjustment depositAdjustment) {
         depositAdjustment.setId(null);
         depositAdjustment.setWtime(null);
         depositAdjustment.setSequenceId((int) sequenceId);

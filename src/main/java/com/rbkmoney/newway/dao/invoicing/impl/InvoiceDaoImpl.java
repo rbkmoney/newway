@@ -14,7 +14,8 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.tables.Invoice.INVOICE;

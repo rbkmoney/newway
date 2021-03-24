@@ -1,8 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.source;
 
-import com.rbkmoney.fistful.source.Change;
-import com.rbkmoney.fistful.source.Status;
-import com.rbkmoney.fistful.source.TimestampedChange;
+import com.rbkmoney.fistful.source.*;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;

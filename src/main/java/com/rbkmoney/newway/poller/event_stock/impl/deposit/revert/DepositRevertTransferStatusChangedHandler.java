@@ -4,7 +4,6 @@ import com.rbkmoney.fistful.deposit.Change;
 import com.rbkmoney.fistful.deposit.TimestampedChange;
 import com.rbkmoney.fistful.transfer.Status;
 import com.rbkmoney.geck.common.util.TBaseUtil;
-import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;

@@ -1,8 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.identity;
 
-import com.rbkmoney.fistful.identity.ChallengeChange;
-import com.rbkmoney.fistful.identity.Change;
-import com.rbkmoney.fistful.identity.TimestampedChange;
+import com.rbkmoney.fistful.identity.*;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.domain.tables.pojos.Challenge;

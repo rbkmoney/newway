@@ -1,16 +1,14 @@
 package com.rbkmoney.newway;
 
-import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.domain.InvoicePaymentChargeback;
+import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
-import com.rbkmoney.fistful.cashflow.FinalCashFlow;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import io.github.benas.randombeans.api.EnhancedRandom;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

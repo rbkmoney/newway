@@ -1,10 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.recurrent_payment_tool;
 
-import com.rbkmoney.damsel.domain.BankCard;
-import com.rbkmoney.damsel.domain.DisposablePaymentResource;
-import com.rbkmoney.damsel.domain.PaymentTool;
+import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolChange;
-import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolEvent;
 import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolHasCreated;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
@@ -14,14 +11,11 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.recurrent_payment_tool.iface.RecurrentPaymentToolDao;
-import com.rbkmoney.newway.domain.enums.MobileOperatorType;
-import com.rbkmoney.newway.domain.enums.PaymentToolType;
-import com.rbkmoney.newway.domain.enums.RecurrentPaymentToolStatus;
+import com.rbkmoney.newway.domain.enums.*;
 import com.rbkmoney.newway.domain.tables.pojos.RecurrentPaymentTool;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.stream.Collectors;

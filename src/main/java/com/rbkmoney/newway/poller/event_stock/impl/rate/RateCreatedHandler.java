@@ -10,10 +10,7 @@ import com.rbkmoney.newway.dao.rate.iface.RateDao;
 import com.rbkmoney.newway.domain.tables.pojos.Rate;
 import com.rbkmoney.xrates.base.Rational;
 import com.rbkmoney.xrates.base.TimestampInterval;
-import com.rbkmoney.xrates.rate.Change;
-import com.rbkmoney.xrates.rate.Currency;
-import com.rbkmoney.xrates.rate.ExchangeRateCreated;
-import com.rbkmoney.xrates.rate.ExchangeRateData;
+import com.rbkmoney.xrates.rate.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

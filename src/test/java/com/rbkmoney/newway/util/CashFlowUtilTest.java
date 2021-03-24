@@ -3,7 +3,7 @@ package com.rbkmoney.newway.util;
 import com.rbkmoney.damsel.domain.*;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class CashFlowUtilTest {
 

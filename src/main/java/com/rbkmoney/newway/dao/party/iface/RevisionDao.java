@@ -1,10 +1,7 @@
 package com.rbkmoney.newway.dao.party.iface;
 
 import com.rbkmoney.dao.GenericDao;
-import com.rbkmoney.newway.domain.tables.pojos.Contract;
 import com.rbkmoney.newway.exception.DaoException;
-
-import java.util.Optional;
 
 public interface RevisionDao extends GenericDao {
 

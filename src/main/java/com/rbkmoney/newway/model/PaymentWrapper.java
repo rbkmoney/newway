@@ -2,9 +2,7 @@ package com.rbkmoney.newway.model;
 
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
@@ -19,7 +17,7 @@ public class PaymentWrapper {
     private boolean shouldInsert;
     private InvoicingKey key;
 
-    public PaymentWrapper copy(){
+    public PaymentWrapper copy() {
         Payment paymentTarget = new Payment();
         BeanUtils.copyProperties(payment, paymentTarget);
         PaymentWrapper paymentWrapperTarget = new PaymentWrapper();

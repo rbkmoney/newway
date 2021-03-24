@@ -1,10 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.invoicing.chargeback;
 
-import com.rbkmoney.damsel.payment_processing.InvoiceChange;
-import com.rbkmoney.damsel.payment_processing.InvoicePaymentChange;
-import com.rbkmoney.damsel.payment_processing.InvoicePaymentChargebackChange;
-import com.rbkmoney.damsel.payment_processing.InvoicePaymentChargebackLevyChanged;
-import com.rbkmoney.geck.common.util.TypeUtil;
+import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -43,7 +39,7 @@ public class InvoicePaymentChargebackLevyChangedHandler extends AbstractInvoicin
                 invoicePaymentChange.getPayload().getInvoicePaymentChargebackChange();
         InvoicePaymentChargebackLevyChanged invoicePaymentChargebackLevyChanged =
                 invoicePaymentChargebackChange.getPayload().getInvoicePaymentChargebackLevyChanged();
-        String chargebackId= invoicePaymentChargebackChange.getId();
+        String chargebackId = invoicePaymentChargebackChange.getId();
 
         log.info("Start chargeback levy change handling, sequenceId={}, invoiceId={}, paymentId={}, chargebackId={}",
                 sequenceId, invoiceId, paymentId, chargebackId);

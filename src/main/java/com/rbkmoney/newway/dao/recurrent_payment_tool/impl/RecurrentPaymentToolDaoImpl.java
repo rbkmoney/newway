@@ -11,10 +11,11 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
-import static com.rbkmoney.newway.domain.tables.RecurrentPaymentTool.RECURRENT_PAYMENT_TOOL;
-
 import javax.sql.DataSource;
+
 import java.util.Optional;
+
+import static com.rbkmoney.newway.domain.tables.RecurrentPaymentTool.RECURRENT_PAYMENT_TOOL;
 
 @Component
 public class RecurrentPaymentToolDaoImpl extends AbstractGenericDao implements RecurrentPaymentToolDao {

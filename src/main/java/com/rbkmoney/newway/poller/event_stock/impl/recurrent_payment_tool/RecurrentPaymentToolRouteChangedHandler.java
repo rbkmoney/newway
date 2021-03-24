@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.recurrent_payment_tool;
 
 import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolChange;
-import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolEvent;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -11,7 +10,6 @@ import com.rbkmoney.newway.dao.recurrent_payment_tool.iface.RecurrentPaymentTool
 import com.rbkmoney.newway.domain.tables.pojos.RecurrentPaymentTool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component

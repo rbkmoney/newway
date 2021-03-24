@@ -36,7 +36,7 @@ public class PaymentSquashServiceTest {
     public void squashSimple1Test() {
         PaymentSquashService service = new PaymentSquashService();
         PaymentWrapper pw1 = buildPaymentWrapper("inv_id", "1", 666L, true);
-        PaymentWrapper pw2 = buildPaymentWrapper("inv_id", "1", 667L,2L, false);
+        PaymentWrapper pw2 = buildPaymentWrapper("inv_id", "1", 667L, 2L, false);
         List<PaymentWrapper> squashedWrappers = service.squash(List.of(pw1, pw2), List.of(1L, 2L));
         assertEquals(1, squashedWrappers.size());
         assertTrue(squashedWrappers.get(0).isShouldInsert());
@@ -168,6 +168,6 @@ public class PaymentSquashServiceTest {
     }
 
     private PaymentWrapper buildPaymentWrapper(String invoiceId, String paymentId, Long id, boolean isShouldInsert) {
-        return buildPaymentWrapper(invoiceId, paymentId, id,0L, isShouldInsert);
+        return buildPaymentWrapper(invoiceId, paymentId, id, 0L, isShouldInsert);
     }
 }

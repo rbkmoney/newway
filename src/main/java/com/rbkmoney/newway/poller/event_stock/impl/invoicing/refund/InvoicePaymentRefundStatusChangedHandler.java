@@ -1,9 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.invoicing.refund;
 
 import com.rbkmoney.damsel.domain.InvoicePaymentRefundStatus;
-import com.rbkmoney.damsel.payment_processing.InvoiceChange;
-import com.rbkmoney.damsel.payment_processing.InvoicePaymentChange;
-import com.rbkmoney.damsel.payment_processing.InvoicePaymentRefundChange;
+import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
@@ -25,8 +23,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -37,7 +33,8 @@ public class InvoicePaymentRefundStatusChangedHandler extends AbstractInvoicingH
 
     private Filter filter = new PathConditionFilter(new PathConditionRule(
             "invoice_payment_change.payload.invoice_payment_refund_change.payload.invoice_payment_refund_status_changed",
-            new IsNullCondition().not()));;
+            new IsNullCondition().not()));
+    ;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)

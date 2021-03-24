@@ -1,11 +1,7 @@
 package com.rbkmoney.newway.poller.event_stock.impl.invoicing.chargeback;
 
-import com.rbkmoney.damsel.payment_processing.InvoiceChange;
-import com.rbkmoney.damsel.payment_processing.InvoicePaymentChange;
-import com.rbkmoney.damsel.payment_processing.InvoicePaymentChargebackChange;
-import com.rbkmoney.damsel.payment_processing.InvoicePaymentChargebackStageChanged;
+import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.geck.common.util.TBaseUtil;
-import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -45,7 +41,7 @@ public class InvoicePaymentChargebackStageChangedHandler extends AbstractInvoici
                 invoicePaymentChange.getPayload().getInvoicePaymentChargebackChange();
         InvoicePaymentChargebackStageChanged invoicePaymentChargebackStageChanged =
                 invoicePaymentChargebackChange.getPayload().getInvoicePaymentChargebackStageChanged();
-        String chargebackId= invoicePaymentChargebackChange.getId();
+        String chargebackId = invoicePaymentChargebackChange.getId();
 
         log.info("Start chargeback stage changed handling, sequenceId={}, invoiceId={}, paymentId={}, chargebackId={}, stage={}",
                 sequenceId, invoiceId, paymentId, chargebackId, invoicePaymentChargebackStageChanged.getStage().getSetField().getFieldName());

@@ -10,8 +10,8 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
-import com.rbkmoney.newway.poller.event_stock.*;
 import com.rbkmoney.newway.model.PaymentWrapper;
+import com.rbkmoney.newway.poller.event_stock.LocalStorage;
 import com.rbkmoney.newway.service.PaymentWrapperService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,8 @@ public class InvoicePaymentRiskScoreChangedMapper extends AbstractInvoicingPayme
 
     private Filter filter = new PathConditionFilter(new PathConditionRule(
             "invoice_payment_change.payload.invoice_payment_risk_score_changed",
-            new IsNullCondition().not()));;
+            new IsNullCondition().not()));
+    ;
 
     @Override
     public PaymentWrapper map(InvoiceChange change, MachineEvent event, Integer changeId, LocalStorage storage) {

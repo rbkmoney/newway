@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.kafka;
 
 import com.rbkmoney.newway.service.PartyManagementService;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -9,9 +8,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 
-@Slf4j
 public class PartyManagementKafkaListenerTest extends AbstractKafkaTest {
 
     @Value("${kafka.topics.party-management.id}")

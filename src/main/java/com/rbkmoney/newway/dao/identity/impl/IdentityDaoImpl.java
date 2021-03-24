@@ -7,17 +7,15 @@ import com.rbkmoney.newway.domain.tables.pojos.Identity;
 import com.rbkmoney.newway.domain.tables.records.IdentityRecord;
 import com.rbkmoney.newway.exception.DaoException;
 import org.jooq.Query;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+
 import java.util.Optional;
 
-import static com.rbkmoney.newway.domain.tables.Challenge.CHALLENGE;
-import static com.rbkmoney.newway.domain.tables.Deposit.DEPOSIT;
 import static com.rbkmoney.newway.domain.tables.Identity.IDENTITY;
 
 @Component

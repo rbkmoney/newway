@@ -3,7 +3,6 @@ package com.rbkmoney.newway.poller.event_stock.impl.deposit.revert;
 import com.rbkmoney.fistful.cashflow.FinalCashFlowPosting;
 import com.rbkmoney.fistful.deposit.Change;
 import com.rbkmoney.fistful.deposit.TimestampedChange;
-import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;

@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface PayoutToolDao extends GenericDao {
     void save(List<PayoutTool> payoutToolList) throws DaoException;
+
     List<PayoutTool> getByCntrctId(Long cntrctId) throws DaoException;
 }

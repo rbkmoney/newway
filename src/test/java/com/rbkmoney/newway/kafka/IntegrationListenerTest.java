@@ -4,7 +4,6 @@ import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.AbstractAppDaoTests;
 import com.rbkmoney.newway.domain.tables.*;
 import com.rbkmoney.newway.domain.tables.pojos.Destination;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import static com.rbkmoney.newway.domain.tables.Source.SOURCE;
 import static com.rbkmoney.newway.domain.tables.Wallet.WALLET;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@Slf4j
 @Ignore
 @SpringBootTest(webEnvironment = RANDOM_PORT, properties = {
         "spring.main.allow-bean-definition-overriding=true",

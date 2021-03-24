@@ -1,8 +1,6 @@
 package com.rbkmoney.newway.poller.event_stock.impl.withdrawal;
 
-import com.rbkmoney.fistful.withdrawal.Change;
-import com.rbkmoney.fistful.withdrawal.Route;
-import com.rbkmoney.fistful.withdrawal.TimestampedChange;
+import com.rbkmoney.fistful.withdrawal.*;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;

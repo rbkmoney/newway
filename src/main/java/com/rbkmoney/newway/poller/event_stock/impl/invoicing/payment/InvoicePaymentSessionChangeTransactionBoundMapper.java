@@ -2,18 +2,15 @@ package com.rbkmoney.newway.poller.event_stock.impl.invoicing.payment;
 
 import com.rbkmoney.damsel.domain.AdditionalTransactionInfo;
 import com.rbkmoney.damsel.domain.TransactionInfo;
-import com.rbkmoney.damsel.payment_processing.InvoiceChange;
-import com.rbkmoney.damsel.payment_processing.InvoicePaymentChange;
-import com.rbkmoney.damsel.payment_processing.InvoicePaymentSessionChange;
-import com.rbkmoney.damsel.payment_processing.SessionChangePayload;
+import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
-import com.rbkmoney.newway.poller.event_stock.*;
 import com.rbkmoney.newway.model.PaymentWrapper;
+import com.rbkmoney.newway.poller.event_stock.LocalStorage;
 import com.rbkmoney.newway.service.PaymentWrapperService;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +50,7 @@ public class InvoicePaymentSessionChangeTransactionBoundMapper extends AbstractI
         paymentSource.setSessionPayloadTransactionBoundTrxId(transactionInfo.getId());
         Map<String, String> extra = transactionInfo.getExtra();
         if (extra.get("PaRes") != null) {
-            extra.put("PaRes", null); 
+            extra.put("PaRes", null);
         }
         paymentSource.setSessionPayloadTransactionBoundTrxExtraJson(JsonUtil.objectToJsonString(extra));
 

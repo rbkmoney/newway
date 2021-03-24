@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.kafka;
 
 import com.rbkmoney.newway.service.WithdrawalService;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.anyList;
 
-@Slf4j
 public class WithdrawalKafkaListenerTest extends AbstractKafkaTest {
 
     @Value("${kafka.topics.withdrawal.id}")

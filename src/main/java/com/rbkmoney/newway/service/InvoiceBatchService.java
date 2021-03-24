@@ -2,14 +2,13 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
 import com.rbkmoney.newway.dao.invoicing.impl.InvoiceIdsGeneratorDaoImpl;
-import com.rbkmoney.newway.model.InvoiceWrapper;
-import com.rbkmoney.newway.model.InvoicingKey;
-import com.rbkmoney.newway.model.InvoicingType;
+import com.rbkmoney.newway.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,7 +20,7 @@ public class InvoiceBatchService {
     private final InvoiceWrapperService invoiceWrapperService;
     private final InvoiceIdsGeneratorDaoImpl invoiceIdsGeneratorDao;
 
-    public void process(List<InvoiceWrapper> invoiceWrappers){
+    public void process(List<InvoiceWrapper> invoiceWrappers) {
         log.info("Start processing of invoice batch, size={}", invoiceWrappers.size());
         List<Long> ids = invoiceIdsGeneratorDao.get(invoiceWrappers.size());
         setIds(invoiceWrappers, ids);

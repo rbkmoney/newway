@@ -1,9 +1,7 @@
 package com.rbkmoney.newway.service;
 
 import com.rbkmoney.damsel.domain.PartyContactInfo;
-import com.rbkmoney.damsel.payment_processing.PartyChange;
-import com.rbkmoney.damsel.payment_processing.PartyCreated;
-import com.rbkmoney.damsel.payment_processing.PartyEventData;
+import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.msgpack.Value;
 import com.rbkmoney.newway.config.SerializationConfig;
@@ -20,9 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;

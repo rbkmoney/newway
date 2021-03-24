@@ -8,11 +8,11 @@
     </root>
 
     <logger name="com.rbkmoney.newway">
-        <level value="debug" />
+        <level value="debug"/>
     </logger>
 
     <logger name="org.springframework.jdbc.core.JdbcTemplate">
-        <level value="info" />
+        <level value="info"/>
     </logger>
 
 </configuration>

@@ -16,7 +16,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class IntegrationTest extends AbstractAppDaoTests {
     private PaymentDao paymentDao;
 
     @Test
-    public void test(){
+    public void test() {
         PaymentEventPayloadSerializer serializer = new PaymentEventPayloadSerializer();
         String invoiceId = "inv_id";
         String paymentId = "1";
@@ -102,7 +101,7 @@ public class IntegrationTest extends AbstractAppDaoTests {
                                                         .setPayload(InvoicePaymentChangePayload.invoice_payment_rec_token_acquired(
                                                                 new InvoicePaymentRecTokenAcquired("keks")
                                                         )))
-                                                        )))))
+                                        )))))
         );
 
         invoicingService.handleEvents(machineEventsSecond);

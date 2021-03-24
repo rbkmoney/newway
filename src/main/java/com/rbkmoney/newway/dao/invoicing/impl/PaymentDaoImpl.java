@@ -45,7 +45,7 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
     }
 
     @Override
-    public void updateBatch(List<Payment> payments) throws DaoException{
+    public void updateBatch(List<Payment> payments) throws DaoException {
         List<Query> queries = payments.stream()
                 .map(payment -> getDslContext().newRecord(PAYMENT, payment))
                 .map(paymentRecord -> getDslContext().update(PAYMENT)
