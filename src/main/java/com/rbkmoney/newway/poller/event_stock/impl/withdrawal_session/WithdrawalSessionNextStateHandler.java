@@ -33,7 +33,7 @@ public class WithdrawalSessionNextStateHandler extends AbstractWithdrawalSession
         Change change = timestampedChange.getChange();
         long sequenceId = event.getEventId();
         String withdrawalSessionId = event.getSourceId();
-        log.info("Start adapter state for withdrawal session handling, sequenceId={}, withdrawalId={}",
+        log.info("Start adapter state for withdrawal session handling, sequenceId={}, withdrawalSessionId={}",
                 sequenceId, withdrawalSessionId);
         WithdrawalSession withdrawalSession = withdrawalSessionDao.get(withdrawalSessionId);
         Long oldId = withdrawalSession.getId();

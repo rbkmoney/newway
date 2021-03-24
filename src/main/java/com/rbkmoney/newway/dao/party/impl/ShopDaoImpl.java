@@ -68,7 +68,7 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
                     log.info("Shop {} has been saved, sequenceId={}, partyId={}, shopId={}, changeId={}",
                             eventName, shopSource.getSequenceId(), shopSource.getPartyId(), shopSource.getShopId(), shopSource.getChangeId());
                 },
-                () -> log.info("Shop {}} duplicated, sequenceId={}, partyId={}, shopId={}, changeId={}",
+                () -> log.info("Shop {} duplicated, sequenceId={}, partyId={}, shopId={}, changeId={}",
                         eventName, shopSource.getSequenceId(), shopSource.getPartyId(), shopSource.getShopId(), shopSource.getChangeId())
         );
     }

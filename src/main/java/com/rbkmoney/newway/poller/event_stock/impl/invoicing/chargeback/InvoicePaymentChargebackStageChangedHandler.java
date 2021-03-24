@@ -64,7 +64,7 @@ public class InvoicePaymentChargebackStageChangedHandler extends AbstractInvoici
             chargebackDao.updateNotCurrent(chargebackSourceId);
             cashFlowService.save(chargebackSourceId, savedChargebackId, PaymentChangeType.chargeback);
         }
-        log.info("Chargeback status changed have been succeeded, sequenceId={}, invoiceId={}, paymentId={}, refundId={}, stage={}",
+        log.info("Chargeback status changed have been succeeded, sequenceId={}, invoiceId={}, paymentId={}, chargebackId={}, stage={}",
                 sequenceId, invoiceId, paymentId, chargebackId, invoicePaymentChargebackStageChanged.getStage().getSetField().getFieldName());
     }
 
