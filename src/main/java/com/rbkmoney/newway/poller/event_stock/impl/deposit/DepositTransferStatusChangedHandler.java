@@ -59,7 +59,7 @@ public class DepositTransferStatusChangedHandler extends AbstractDepositHandler 
                     });
                     fistfulCashFlowDao.save(cashFlows);
                 },
-                () -> log.info("Withdrawal deposit status have been changed, sequenceId={}, depositId={}",
+                () -> log.info("Deposit transfer status have been changed, sequenceId={}, depositId={}",
                         sequenceId, depositId)
         );
     }

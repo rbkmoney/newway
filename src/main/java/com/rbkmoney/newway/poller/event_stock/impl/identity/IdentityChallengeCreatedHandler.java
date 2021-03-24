@@ -55,7 +55,7 @@ public class IdentityChallengeCreatedHandler extends AbstractIdentityHandler {
         challengeDao.save(challenge).ifPresentOrElse(
                 id -> log.info("Start identity challenge have been changed, sequenceId={}, identityId={}, challengeId={}",
                         sequenceId, identityId, challengeId),
-                () -> log.info("Destination have been saved, sequenceId={}, identityId={}, challengeId={}",
+                () -> log.info("Identity challenge have been saved, sequenceId={}, identityId={}, challengeId={}",
                         sequenceId, identityId, challengeId)
         );
     }

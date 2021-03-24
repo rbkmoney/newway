@@ -60,7 +60,7 @@ public class IdentityChallengeStatusChangedHandler extends AbstractIdentityHandl
                     challengeDao.updateNotCurrent(identityId, oldId);
                     log.info("Identity challenge status have been changed, sequenceId={}, identityId={}", sequenceId, identityId);
                 },
-                () -> log.info("Destination have been saved, sequenceId={}, identityId={}", sequenceId, identityId));
+                () -> log.info("Identity challenge have been saved, sequenceId={}, identityId={}", sequenceId, identityId));
     }
 
 }

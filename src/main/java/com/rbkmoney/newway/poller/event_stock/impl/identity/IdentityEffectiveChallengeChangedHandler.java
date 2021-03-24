@@ -46,7 +46,7 @@ public class IdentityEffectiveChallengeChangedHandler extends AbstractIdentityHa
                     identityDao.updateNotCurrent(oldId);
                     log.info("Effective identity challenge have been changed, sequenceId={}, identityId={}", sequenceId, identityId);
                 },
-                () -> log.info("Destination have been saved, sequenceId={}, identityId={}", sequenceId, identityId));
+                () -> log.info("Effective identity challenge have been saved, sequenceId={}, identityId={}", sequenceId, identityId));
     }
 
 }

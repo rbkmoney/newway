@@ -50,7 +50,7 @@ public class SourceCreatedHandler extends AbstractSourceHandler {
 
         sourceDao.save(source).ifPresentOrElse(
                 dbContractId -> log.info("Source created has been saved, sequenceId={}, sourceId={}", sequenceId, sourceId),
-                () -> log.info("Source created bound duplicated,, sequenceId={}, sourceId={}", sequenceId, sourceId));
+                () -> log.info("Source created bound duplicated, sequenceId={}, sourceId={}", sequenceId, sourceId));
     }
 
 }

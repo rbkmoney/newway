@@ -62,7 +62,7 @@ public class InvoicePaymentChargebackBodyChangedHandler extends AbstractInvoicin
             chargebackDao.updateNotCurrent(savedChargebackId);
             cashFlowService.save(chargebackSourceId, savedChargebackId, PaymentChangeType.chargeback);
         }
-        log.info("Chargeback levy changed have been succeeded, sequenceId={}, invoiceId={}, paymentId={}, chargebackId={}",
+        log.info("Chargeback body changed have been succeeded, sequenceId={}, invoiceId={}, paymentId={}, chargebackId={}",
                 sequenceId, invoiceId, paymentId, chargebackId);
     }
 

@@ -70,9 +70,9 @@ public class DepositAdjustmentCreatedHandler extends AbstractDepositHandler {
         depositAdjustment.setDomainRevision(adjustment.getDomainRevision());
 
         depositAdjustmentDao.save(depositAdjustment).ifPresentOrElse(
-                dbContractId -> log.info("Deposit revert created has been saved, sequenceId={}, depositId={}",
+                dbContractId -> log.info("Deposit adjustment created has been saved, sequenceId={}, depositId={}",
                         sequenceId, depositId),
-                () -> log.info("Deposit revert created bound duplicated, sequenceId={}, depositId={}",
+                () -> log.info("Deposit adjustment created bound duplicated, sequenceId={}, depositId={}",
                         sequenceId, depositId));
     }
 
