@@ -29,6 +29,7 @@ import static io.github.benas.randombeans.api.EnhancedRandom.randomListOf;
 import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.*;
 
+@SuppressWarnings("VariableDeclarationUsageDistance")
 public class DaoTests extends AbstractAppDaoTests {
 
     @Autowired
