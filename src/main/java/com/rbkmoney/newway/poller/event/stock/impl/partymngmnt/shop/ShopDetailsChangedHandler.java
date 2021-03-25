@@ -18,6 +18,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@SuppressWarnings("VariableDeclarationUsageDistance")
 public class ShopDetailsChangedHandler extends AbstractClaimChangedHandler {
 
     private final ShopDao shopDao;
@@ -45,12 +46,12 @@ public class ShopDetailsChangedHandler extends AbstractClaimChangedHandler {
                 sequenceId, partyId, shopId, changeId);
 
         Shop shopSource = shopDao.get(partyId, shopId);
+        Long oldEventId = shopSource.getId();
         ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource, claimEffectId);
 
         shopSource.setDetailsName(detailsChanged.getName());
         shopSource.setDetailsDescription(detailsChanged.getDescription());
 
-        Long oldEventId = shopSource.getId();
         shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "detailsChanged");
     }
 }

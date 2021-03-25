@@ -21,6 +21,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@SuppressWarnings("VariableDeclarationUsageDistance")
 public class ContractStatusChangedHandler extends AbstractClaimChangedHandler {
 
     private final ContractDao contractDao;
@@ -49,6 +50,7 @@ public class ContractStatusChangedHandler extends AbstractClaimChangedHandler {
                 sequenceId, partyId, contractId, changeId);
 
         Contract contractSource = contractDao.get(partyId, contractId);
+        Long contractSourceId = contractSource.getId();
         ContractUtil.resetBaseFields(event, changeId, sequenceId, contractSource, claimEffectId);
 
         contractSource.setStatus(
@@ -57,8 +59,6 @@ public class ContractStatusChangedHandler extends AbstractClaimChangedHandler {
             contractSource.setStatusTerminatedAt(
                     TypeUtil.stringToLocalDateTime(statusChanged.getTerminated().getTerminatedAt()));
         }
-
-        Long contractSourceId = contractSource.getId();
 
         contractDao.save(contractSource).ifPresentOrElse(
                 dbContractId -> {

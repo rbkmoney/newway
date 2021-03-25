@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@SuppressWarnings("VariableDeclarationUsageDistance")
 public class PartyMetaSetHandler extends AbstractPartyManagementHandler {
 
     private final PartyDao partyDao;
@@ -38,11 +39,11 @@ public class PartyMetaSetHandler extends AbstractPartyManagementHandler {
         log.info("Start party metaset handling, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId);
 
         Party partySource = partyDao.get(partyId);
+        Long oldId = partySource.getId();
         PartyUtil.resetBaseFields(event, changeId, sequenceId, partySource);
         partySource.setPartyMetaSetNs(partyMetaSet.getNs());
         partySource.setPartyMetaSetDataJson(JsonUtil.thriftBaseToJsonString(partyMetaSet.getData()));
 
-        Long oldId = partySource.getId();
         partyDao.saveWithUpdateCurrent(partySource, oldId, "metaset");
     }
 

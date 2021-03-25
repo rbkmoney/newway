@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
+@SuppressWarnings("VariableDeclarationUsageDistance")
 public class PartySuspensionHandler extends AbstractPartyManagementHandler {
 
     public static final String PARTY_SUSPENSION = "party_suspension";
@@ -45,6 +46,7 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
         log.info("Start {} handling, eventId={}, partyId={}, changeId={}", PARTY_SUSPENSION, sequenceId, partyId,
                 changeId);
         Party partySource = partyDao.get(partyId);
+        Long oldId = partySource.getId();
         PartyUtil.resetBaseFields(event, changeId, sequenceId, partySource);
 
         partySource.setSuspension(
@@ -59,7 +61,6 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
                     TypeUtil.stringToLocalDateTime(partySuspension.getSuspended().getSince()));
         }
 
-        Long oldId = partySource.getId();
         partyDao.saveWithUpdateCurrent(partySource, oldId, PARTY_SUSPENSION);
     }
 

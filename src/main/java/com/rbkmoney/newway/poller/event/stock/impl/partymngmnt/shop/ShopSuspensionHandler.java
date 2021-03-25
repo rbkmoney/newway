@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@SuppressWarnings("VariableDeclarationUsageDistance")
 public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
 
     private final ShopDao shopDao;
@@ -40,6 +41,7 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
                 sequenceId, partyId, shopId, changeId);
 
         Shop shopSource = shopDao.get(partyId, shopId);
+        Long oldEventId = shopSource.getId();
         ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource, -1);
         shopSource.setSuspension(
                 TBaseUtil.unionFieldToEnum(suspension, com.rbkmoney.newway.domain.enums.Suspension.class));
@@ -52,7 +54,6 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
                     .setSuspensionSuspendedSince(TypeUtil.stringToLocalDateTime(suspension.getSuspended().getSince()));
         }
 
-        Long oldEventId = shopSource.getId();
         shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "suspension");
     }
 

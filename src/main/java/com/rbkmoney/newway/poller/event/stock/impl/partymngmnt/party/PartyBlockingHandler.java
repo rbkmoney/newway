@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@SuppressWarnings("VariableDeclarationUsageDistance")
 public class PartyBlockingHandler extends AbstractPartyManagementHandler {
 
     private final PartyDao partyDao;
@@ -38,6 +39,7 @@ public class PartyBlockingHandler extends AbstractPartyManagementHandler {
         log.info("Start party blocking handling, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId,
                 changeId);
         Party partySource = partyDao.get(partyId);
+        Long oldId = partySource.getId();
         PartyUtil.resetBaseFields(event, changeId, sequenceId, partySource);
 
         partySource.setBlocking(
@@ -55,7 +57,6 @@ public class PartyBlockingHandler extends AbstractPartyManagementHandler {
             partySource.setBlockingBlockedSince(TypeUtil.stringToLocalDateTime(partyBlocking.getBlocked().getSince()));
         }
 
-        Long oldId = partySource.getId();
         partyDao.saveWithUpdateCurrent(partySource, oldId, "blocking");
     }
 
