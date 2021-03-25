@@ -4,6 +4,8 @@ import com.rbkmoney.fistful.deposit.TimestampedChange;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.domain.tables.pojos.Deposit;
+import com.rbkmoney.newway.domain.tables.pojos.DepositAdjustment;
+import com.rbkmoney.newway.domain.tables.pojos.DepositRevert;
 import com.rbkmoney.newway.poller.event.stock.Handler;
 
 public abstract class AbstractDepositHandler implements Handler<TimestampedChange, MachineEvent> {
