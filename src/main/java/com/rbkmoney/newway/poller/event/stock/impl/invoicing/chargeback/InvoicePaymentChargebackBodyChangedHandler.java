@@ -39,30 +39,28 @@ public class InvoicePaymentChargebackBodyChangedHandler extends AbstractInvoicin
         InvoicePaymentChargebackChange invoicePaymentChargebackChange =
                 invoicePaymentChange.getPayload().getInvoicePaymentChargebackChange();
         String chargebackId = invoicePaymentChargebackChange.getId();
-
         log.info("Start chargeback body change handling, sequenceId={}, invoiceId={}, paymentId={}, chargebackId={}",
                 sequenceId, invoiceId, paymentId, chargebackId);
 
         Chargeback chargebackSource = chargebackDao.get(invoiceId, paymentId, chargebackId);
         if (chargebackSource == null) {
-            throw new NotFoundException(
-                    String.format("Chargeback not found, invoiceId='%s', paymentId='%s', chargebackId='%s'",
-                            invoiceId, paymentId, chargebackId));
+            throw new NotFoundException(String.format("Chargeback not found, " +
+                            "invoiceId='%s', paymentId='%s', chargebackId='%s'",
+                    invoiceId, paymentId, chargebackId));
         }
 
+        Long chargebackSourceId = chargebackSource.getId();
         CachbackUtil.resetBaseFields(chargebackSource, event, changeId, sequenceId);
         InvoicePaymentChargebackBodyChanged invoicePaymentChargebackBodyChanged =
                 invoicePaymentChargebackChange.getPayload().getInvoicePaymentChargebackBodyChanged();
         chargebackSource.setAmount(invoicePaymentChargebackBodyChanged.getBody().getAmount());
         chargebackSource.setCurrencyCode(invoicePaymentChargebackBodyChanged.getBody().getCurrency().getSymbolicCode());
         Long savedChargebackId = chargebackDao.save(chargebackSource);
-        Long chargebackSourceId = chargebackSource.getId();
         if (savedChargebackId != null) {
             chargebackDao.updateNotCurrent(savedChargebackId);
             cashFlowService.save(chargebackSourceId, savedChargebackId, PaymentChangeType.chargeback);
         }
-        log.info(
-                "Chargeback body changed have been succeeded, " +
+        log.info("Chargeback levy changed have been succeeded, " +
                         "sequenceId={}, invoiceId={}, paymentId={}, chargebackId={}",
                 sequenceId, invoiceId, paymentId, chargebackId);
     }

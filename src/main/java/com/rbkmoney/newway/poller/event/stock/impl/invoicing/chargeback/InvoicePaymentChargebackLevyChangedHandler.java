@@ -45,27 +45,24 @@ public class InvoicePaymentChargebackLevyChangedHandler extends AbstractInvoicin
 
         Chargeback chargebackSource = chargebackDao.get(invoiceId, paymentId, chargebackId);
         if (chargebackSource == null) {
-            throw new NotFoundException(
-                    String.format("Chargeback not found, invoiceId='%s', paymentId='%s', chargebackId='%s'",
-                            invoiceId, paymentId, chargebackId));
+            throw new NotFoundException(String.format("Chargeback not found, " +
+                            "invoiceId='%s', paymentId='%s', chargebackId='%s'",
+                    invoiceId, paymentId, chargebackId));
         }
 
+        Long chargebackSourceId = chargebackSource.getId();
         CachbackUtil.resetBaseFields(chargebackSource, event, changeId, sequenceId);
         InvoicePaymentChargebackLevyChanged invoicePaymentChargebackLevyChanged =
                 invoicePaymentChargebackChange.getPayload().getInvoicePaymentChargebackLevyChanged();
-
         chargebackSource.setLevyAmount(invoicePaymentChargebackLevyChanged.getLevy().getAmount());
-        chargebackSource
-                .setLevyCurrencyCode(invoicePaymentChargebackLevyChanged.getLevy().getCurrency().getSymbolicCode());
+        chargebackSource.setLevyCurrencyCode(
+                invoicePaymentChargebackLevyChanged.getLevy().getCurrency().getSymbolicCode());
         Long savedChargebackId = chargebackDao.save(chargebackSource);
-        Long chargebackSourceId = chargebackSource.getId();
         if (savedChargebackId != null) {
             chargebackDao.updateNotCurrent(savedChargebackId);
             cashFlowService.save(chargebackSourceId, savedChargebackId, PaymentChangeType.chargeback);
         }
-        log.info(
-                "Chargeback levy changed have been succeeded, " +
-                        "sequenceId={}, invoiceId={}, paymentId={}, chargebackId={}",
+        log.info("Chargeback levy changed have been succeeded, sequenceId={}, invoiceId={}, paymentId={}, refundId={}",
                 sequenceId, invoiceId, paymentId, chargebackId);
     }
 
