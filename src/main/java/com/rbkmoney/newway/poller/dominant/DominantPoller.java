@@ -48,7 +48,9 @@ public class DominantPoller {
                         dominantService.processCommit(versionId.get(), e);
                         after = versionId.get();
                     } catch (RuntimeException ex) {
-                        throw new RuntimeException(String.format("Unexpected error when polling dominant, versionId=%d", versionId.get()), ex);
+                        throw new RuntimeException(
+                                String.format("Unexpected error when polling dominant, versionId=%d", versionId.get()),
+                                ex);
                     }
                 });
             } catch (TException e) {

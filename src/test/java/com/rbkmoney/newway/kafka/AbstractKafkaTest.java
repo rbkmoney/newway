@@ -39,14 +39,16 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    private static TestContainers testContainers = TestContainersBuilder.builderWithTestContainers(getTestContainersParametersSupplier())
-            .addKafkaTestContainer()
-            .addPostgresqlTestContainer()
-            .build();
+    private static TestContainers testContainers =
+            TestContainersBuilder.builderWithTestContainers(getTestContainersParametersSupplier())
+                    .addKafkaTestContainer()
+                    .addPostgresqlTestContainer()
+                    .build();
 
     @BeforeClass
     public static void beforeClass() {
-        testContainers.getKafkaTestContainer().ifPresent(kafkaContainer -> kafkaContainer.withStartupTimeout(Duration.ofMinutes(10)));
+        testContainers.getKafkaTestContainer()
+                .ifPresent(kafkaContainer -> kafkaContainer.withStartupTimeout(Duration.ofMinutes(10)));
         testContainers.startTestContainers();
     }
 
@@ -59,8 +61,8 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
 
         @Override
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            TestPropertyValues.of(testContainers.getEnvironmentProperties(getEnvironmentPropertiesConsumer())).
-                    applyTo(configurableApplicationContext);
+            TestPropertyValues.of(testContainers.getEnvironmentProperties(getEnvironmentPropertiesConsumer()))
+                    .applyTo(configurableApplicationContext);
         }
     }
 

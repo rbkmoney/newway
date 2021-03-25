@@ -14,7 +14,8 @@ import javax.sql.DataSource;
 import static com.rbkmoney.newway.domain.Tables.PAYMENT_INSTITUTION;
 
 @Component
-public class PaymentInstitutionDaoImpl extends AbstractGenericDao implements DomainObjectDao<PaymentInstitution, Integer> {
+public class PaymentInstitutionDaoImpl extends AbstractGenericDao
+        implements DomainObjectDao<PaymentInstitution, Integer> {
 
     public PaymentInstitutionDaoImpl(DataSource dataSource) {
         super(dataSource);
@@ -22,8 +23,10 @@ public class PaymentInstitutionDaoImpl extends AbstractGenericDao implements Dom
 
     @Override
     public Long save(PaymentInstitution paymentInstitution) throws DaoException {
-        PaymentInstitutionRecord paymentInstitutionRecord = getDslContext().newRecord(PAYMENT_INSTITUTION, paymentInstitution);
-        Query query = getDslContext().insertInto(PAYMENT_INSTITUTION).set(paymentInstitutionRecord).returning(PAYMENT_INSTITUTION.ID);
+        PaymentInstitutionRecord paymentInstitutionRecord =
+                getDslContext().newRecord(PAYMENT_INSTITUTION, paymentInstitution);
+        Query query = getDslContext().insertInto(PAYMENT_INSTITUTION).set(paymentInstitutionRecord)
+                .returning(PAYMENT_INSTITUTION.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
@@ -32,7 +35,8 @@ public class PaymentInstitutionDaoImpl extends AbstractGenericDao implements Dom
     @Override
     public void updateNotCurrent(Integer paymentInstitutionId) throws DaoException {
         Query query = getDslContext().update(PAYMENT_INSTITUTION).set(PAYMENT_INSTITUTION.CURRENT, false)
-                .where(PAYMENT_INSTITUTION.PAYMENT_INSTITUTION_REF_ID.eq(paymentInstitutionId).and(PAYMENT_INSTITUTION.CURRENT));
+                .where(PAYMENT_INSTITUTION.PAYMENT_INSTITUTION_REF_ID.eq(paymentInstitutionId)
+                        .and(PAYMENT_INSTITUTION.CURRENT));
         executeOne(query);
     }
 }

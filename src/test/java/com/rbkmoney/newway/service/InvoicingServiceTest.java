@@ -10,9 +10,9 @@ import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.Chargeback;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.model.InvoiceWrapper;
-import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
-import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingMapper;
-import com.rbkmoney.newway.poller.event_stock.impl.invoicing.chargeback.*;
+import com.rbkmoney.newway.poller.event.stock.impl.invoicing.AbstractInvoicingHandler;
+import com.rbkmoney.newway.poller.event.stock.impl.invoicing.AbstractInvoicingMapper;
+import com.rbkmoney.newway.poller.event.stock.impl.invoicing.chargeback.*;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import io.github.benas.randombeans.api.EnhancedRandom;
 import org.junit.Before;
@@ -57,7 +57,9 @@ public class InvoicingServiceTest {
 
     @Test
     public void handleEmptyChanges() {
-        InvoicingService invoicingService = new InvoicingService(new ArrayList<>(), rightHandlers, new ArrayList<>(), invoiceBatchService, paymentBatchService, parser);
+        InvoicingService invoicingService =
+                new InvoicingService(new ArrayList<>(), rightHandlers, new ArrayList<>(), invoiceBatchService,
+                        paymentBatchService, parser);
 
         EventPayload eventPayload = new EventPayload();
         when(parser.parse(any())).thenReturn(eventPayload);
@@ -69,7 +71,9 @@ public class InvoicingServiceTest {
 
     @Test
     public void handlerSupportsInvoicing() {
-        InvoicingService invoicingService = new InvoicingService(new ArrayList<>(), rightHandlers, new ArrayList<>(), invoiceBatchService, paymentBatchService, parser);
+        InvoicingService invoicingService =
+                new InvoicingService(new ArrayList<>(), rightHandlers, new ArrayList<>(), invoiceBatchService,
+                        paymentBatchService, parser);
 
         MachineEvent message = new MachineEvent();
 
@@ -85,7 +89,9 @@ public class InvoicingServiceTest {
 
     @Test
     public void handlerNotSupportInvoicing() {
-        InvoicingService invoicingService = new InvoicingService(new ArrayList<>(), wrongHandlers, new ArrayList<>(), invoiceBatchService, paymentBatchService, parser);
+        InvoicingService invoicingService =
+                new InvoicingService(new ArrayList<>(), wrongHandlers, new ArrayList<>(), invoiceBatchService,
+                        paymentBatchService, parser);
 
         EventPayload eventPayload = new EventPayload();
         eventPayload.setInvoiceChanges(Collections.singletonList(new InvoiceChange()));
@@ -108,7 +114,9 @@ public class InvoicingServiceTest {
         when(parser.parse(any())).thenReturn(eventPayload);
 
         List<AbstractInvoicingHandler> handlers = chargebackHandlers(chargebackDao, cashFlowDao, paymentDao);
-        InvoicingService invoicingService = new InvoicingService(handlers, wrongHandlers, new ArrayList<>(), invoiceBatchService, paymentBatchService, parser);
+        InvoicingService invoicingService =
+                new InvoicingService(handlers, wrongHandlers, new ArrayList<>(), invoiceBatchService,
+                        paymentBatchService, parser);
         MachineEvent machineEvent = buildMachineEvent();
         invoicingService.handleEvents(Collections.singletonList(machineEvent));
 
@@ -126,7 +134,9 @@ public class InvoicingServiceTest {
         when(parser.parse(any())).thenReturn(eventPayload);
 
         List<AbstractInvoicingHandler> handlers = chargebackHandlers(chargebackDao, cashFlowDao, paymentDao);
-        InvoicingService invoicingService = new InvoicingService(handlers, wrongHandlers, new ArrayList<>(), invoiceBatchService, paymentBatchService, parser);
+        InvoicingService invoicingService =
+                new InvoicingService(handlers, wrongHandlers, new ArrayList<>(), invoiceBatchService,
+                        paymentBatchService, parser);
 
         MachineEvent machineEvent = buildMachineEvent();
         invoicingService.handleEvents(Collections.singletonList(machineEvent));
@@ -147,7 +157,9 @@ public class InvoicingServiceTest {
         when(parser.parse(any())).thenReturn(eventPayload);
 
         List<AbstractInvoicingHandler> handlers = chargebackHandlers(chargebackDao, cashFlowDao, paymentDao);
-        InvoicingService invoicingService = new InvoicingService(handlers, wrongHandlers, new ArrayList<>(), invoiceBatchService, paymentBatchService, parser);
+        InvoicingService invoicingService =
+                new InvoicingService(handlers, wrongHandlers, new ArrayList<>(), invoiceBatchService,
+                        paymentBatchService, parser);
 
         MachineEvent machineEvent = buildMachineEvent();
         invoicingService.handleEvents(Collections.singletonList(machineEvent));
@@ -167,7 +179,9 @@ public class InvoicingServiceTest {
         eventPayload.setInvoiceChanges(Collections.singletonList(invoiceChange));
         when(parser.parse(any())).thenReturn(eventPayload);
         List<AbstractInvoicingHandler> handlers = chargebackHandlers(chargebackDao, cashFlowDao, paymentDao);
-        InvoicingService invoicingService = new InvoicingService(handlers, wrongHandlers, new ArrayList<>(), invoiceBatchService, paymentBatchService, parser);
+        InvoicingService invoicingService =
+                new InvoicingService(handlers, wrongHandlers, new ArrayList<>(), invoiceBatchService,
+                        paymentBatchService, parser);
 
         MachineEvent machineEvent = buildMachineEvent();
         invoicingService.handleEvents(Collections.singletonList(machineEvent));
@@ -187,7 +201,9 @@ public class InvoicingServiceTest {
         eventPayload.setInvoiceChanges(Collections.singletonList(invoiceChange));
         when(parser.parse(any())).thenReturn(eventPayload);
         List<AbstractInvoicingHandler> handlers = chargebackHandlers(chargebackDao, cashFlowDao, paymentDao);
-        InvoicingService invoicingService = new InvoicingService(handlers, wrongHandlers, new ArrayList<>(), invoiceBatchService, paymentBatchService, parser);
+        InvoicingService invoicingService =
+                new InvoicingService(handlers, wrongHandlers, new ArrayList<>(), invoiceBatchService,
+                        paymentBatchService, parser);
 
         MachineEvent machineEvent = buildMachineEvent();
         invoicingService.handleEvents(Collections.singletonList(machineEvent));
@@ -208,7 +224,9 @@ public class InvoicingServiceTest {
         eventPayload.setInvoiceChanges(Collections.singletonList(invoiceChange));
         when(parser.parse(any())).thenReturn(eventPayload);
         List<AbstractInvoicingHandler> handlers = chargebackHandlers(chargebackDao, cashFlowDao, paymentDao);
-        InvoicingService invoicingService = new InvoicingService(handlers, wrongHandlers, new ArrayList<>(), invoiceBatchService, paymentBatchService, parser);
+        InvoicingService invoicingService =
+                new InvoicingService(handlers, wrongHandlers, new ArrayList<>(), invoiceBatchService,
+                        paymentBatchService, parser);
 
         MachineEvent machineEvent = buildMachineEvent();
         invoicingService.handleEvents(Collections.singletonList(machineEvent));
@@ -220,12 +238,14 @@ public class InvoicingServiceTest {
 
     private ChargebackDao mockChargebackDao() {
         ChargebackDao chargebackDao = mock(ChargebackDao.class);
-        when(chargebackDao.get(anyString(), anyString(), anyString())).thenReturn(EnhancedRandom.random(Chargeback.class));
+        when(chargebackDao.get(anyString(), anyString(), anyString()))
+                .thenReturn(EnhancedRandom.random(Chargeback.class));
         when(chargebackDao.save(any(Chargeback.class))).thenReturn(1L);
         return chargebackDao;
     }
 
-    private List<AbstractInvoicingHandler> chargebackHandlers(ChargebackDao chargebackDao, CashFlowDao cashFlowDao, PaymentDao paymentDao) {
+    private List<AbstractInvoicingHandler> chargebackHandlers(ChargebackDao chargebackDao, CashFlowDao cashFlowDao,
+                                                              PaymentDao paymentDao) {
         return Arrays.asList(
                 new InvoicePaymentChargebackStageChangedHandler(chargebackDao, cashFlowService),
                 new InvoicePaymentChargebackBodyChangedHandler(chargebackDao, cashFlowService),

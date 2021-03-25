@@ -51,8 +51,10 @@ public class CashFlowUtilTest {
                 CashFlowType.UNKNOWN,
                 CashFlowType.getCashFlowType(
                         new FinalCashFlowPosting(
-                                new FinalCashFlowAccount(CashFlowAccount.provider(ProviderCashFlowAccount.settlement), 1),
-                                new FinalCashFlowAccount(CashFlowAccount.merchant(MerchantCashFlowAccount.guarantee), 2),
+                                new FinalCashFlowAccount(CashFlowAccount.provider(ProviderCashFlowAccount.settlement),
+                                        1),
+                                new FinalCashFlowAccount(CashFlowAccount.merchant(MerchantCashFlowAccount.guarantee),
+                                        2),
                                 new Cash(5, new CurrencyRef("UGA"))
                         )
                 ));

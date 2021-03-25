@@ -23,7 +23,8 @@ public class TermSetHierarchyDaoImpl extends AbstractGenericDao implements Domai
     @Override
     public Long save(TermSetHierarchy termSetHierarchy) throws DaoException {
         TermSetHierarchyRecord termSetHierarchyRecord = getDslContext().newRecord(TERM_SET_HIERARCHY, termSetHierarchy);
-        Query query = getDslContext().insertInto(TERM_SET_HIERARCHY).set(termSetHierarchyRecord).returning(TERM_SET_HIERARCHY.ID);
+        Query query = getDslContext().insertInto(TERM_SET_HIERARCHY).set(termSetHierarchyRecord)
+                .returning(TERM_SET_HIERARCHY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
@@ -32,7 +33,8 @@ public class TermSetHierarchyDaoImpl extends AbstractGenericDao implements Domai
     @Override
     public void updateNotCurrent(Integer termSetHierarchyId) throws DaoException {
         Query query = getDslContext().update(TERM_SET_HIERARCHY).set(TERM_SET_HIERARCHY.CURRENT, false)
-                .where(TERM_SET_HIERARCHY.TERM_SET_HIERARCHY_REF_ID.eq(termSetHierarchyId).and(TERM_SET_HIERARCHY.CURRENT));
+                .where(TERM_SET_HIERARCHY.TERM_SET_HIERARCHY_REF_ID.eq(termSetHierarchyId)
+                        .and(TERM_SET_HIERARCHY.CURRENT));
         executeOne(query);
     }
 }

@@ -30,7 +30,7 @@ public class RateServiceTests extends AbstractAppDaoTests {
 
         List<Rate> rates = jdbcTemplate.query(
                 "SELECT * FROM nw.rate AS rate WHERE rate.source_id = ? AND rate.current",
-                new Object[]{sourceId},
+                new Object[] {sourceId},
                 new BeanPropertyRowMapper(Rate.class)
         );
         assertEquals(4, rates.size());
@@ -47,7 +47,7 @@ public class RateServiceTests extends AbstractAppDaoTests {
 
         List<Rate> rates = jdbcTemplate.query(
                 "SELECT * FROM nw.rate AS rate WHERE rate.source_id = ? AND rate.current",
-                new Object[]{sourceId},
+                new Object[] {sourceId},
                 new BeanPropertyRowMapper(Rate.class)
         );
         assertEquals(4, rates.size());
@@ -64,7 +64,7 @@ public class RateServiceTests extends AbstractAppDaoTests {
 
         List<Rate> rates = jdbcTemplate.query(
                 "SELECT * FROM nw.rate AS rate WHERE rate.source_id = ? AND rate.current",
-                new Object[]{sourceId},
+                new Object[] {sourceId},
                 new BeanPropertyRowMapper(Rate.class)
         );
         assertEquals(4, rates.size());

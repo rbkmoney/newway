@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@SuppressWarnings("LineLength")
 public class SerializationConfig {
 
     @Bean
@@ -18,7 +19,8 @@ public class SerializationConfig {
     }
 
     @Bean
-    public MachineEventParser<EventPayload> paymentEventPayloadMachineEventParser(BinaryDeserializer<EventPayload> paymentEventPayloadDeserializer) {
+    public MachineEventParser<EventPayload> paymentEventPayloadMachineEventParser(
+            BinaryDeserializer<EventPayload> paymentEventPayloadDeserializer) {
         return new PaymentEventPayloadMachineEventParser(paymentEventPayloadDeserializer);
     }
 
@@ -28,7 +30,8 @@ public class SerializationConfig {
     }
 
     @Bean
-    public MachineEventParser<PartyEventData> partyEventDataMachineEventParser(BinaryDeserializer<PartyEventData> partyEventDataBinaryDeserializer) {
+    public MachineEventParser<PartyEventData> partyEventDataMachineEventParser(
+            BinaryDeserializer<PartyEventData> partyEventDataBinaryDeserializer) {
         return new PartyEventDataMachineEventParser(partyEventDataBinaryDeserializer);
     }
 

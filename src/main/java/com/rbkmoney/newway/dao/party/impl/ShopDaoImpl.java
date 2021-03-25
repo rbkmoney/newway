@@ -64,13 +64,15 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
     @Override
     public void saveWithUpdateCurrent(Shop shopSource, Long oldEventId, String eventName) {
         save(shopSource).ifPresentOrElse(
-                aLong -> {
+                atLong -> {
                     updateNotCurrent(oldEventId);
                     log.info("Shop {} has been saved, sequenceId={}, partyId={}, shopId={}, changeId={}",
-                            eventName, shopSource.getSequenceId(), shopSource.getPartyId(), shopSource.getShopId(), shopSource.getChangeId());
+                            eventName, shopSource.getSequenceId(), shopSource.getPartyId(), shopSource.getShopId(),
+                            shopSource.getChangeId());
                 },
                 () -> log.info("Shop {} duplicated, sequenceId={}, partyId={}, shopId={}, changeId={}",
-                        eventName, shopSource.getSequenceId(), shopSource.getPartyId(), shopSource.getShopId(), shopSource.getChangeId())
+                        eventName, shopSource.getSequenceId(), shopSource.getPartyId(), shopSource.getShopId(),
+                        shopSource.getChangeId())
         );
     }
 }

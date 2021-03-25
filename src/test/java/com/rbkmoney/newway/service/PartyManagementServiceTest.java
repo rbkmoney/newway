@@ -6,7 +6,7 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.msgpack.Value;
 import com.rbkmoney.newway.config.SerializationConfig;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
-import com.rbkmoney.newway.poller.event_stock.impl.party_mngmnt.party.PartyCreatedHandler;
+import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.party.PartyCreatedHandler;
 import com.rbkmoney.sink.common.serialization.impl.PartyEventDataSerializer;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,10 +51,6 @@ public class PartyManagementServiceTest {
     }
 
     private MachineEvent createMessage() {
-        PartyEventDataSerializer partyEventDataSerializer = new PartyEventDataSerializer();
-
-        MachineEvent message = new MachineEvent();
-        Value data = new Value();
         PartyEventData partyEventData = new PartyEventData();
         ArrayList<PartyChange> changes = new ArrayList<>();
         PartyChange partyChange = new PartyChange();
@@ -65,7 +61,10 @@ public class PartyManagementServiceTest {
                 .setId("test"));
         changes.add(partyChange);
         partyEventData.setChanges(changes);
+        PartyEventDataSerializer partyEventDataSerializer = new PartyEventDataSerializer();
+        Value data = new Value();
         data.setBin(partyEventDataSerializer.serialize(partyEventData));
+        MachineEvent message = new MachineEvent();
         message.setCreatedAt(Instant.now().toString());
         message.setEventId(1L);
         message.setSourceNs("sad");

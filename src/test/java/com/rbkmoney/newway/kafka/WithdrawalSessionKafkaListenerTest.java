@@ -9,8 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.anyList;
 
-public class
-WithdrawalSessionKafkaListenerTest extends AbstractKafkaTest {
+public class WithdrawalSessionKafkaListenerTest extends AbstractKafkaTest {
 
     @org.springframework.beans.factory.annotation.Value("${kafka.topics.withdrawal-session.id}")
     public String topic;

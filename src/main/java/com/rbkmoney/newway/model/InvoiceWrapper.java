@@ -23,9 +23,9 @@ public class InvoiceWrapper {
         if (carts != null) {
             List<InvoiceCart> cartsTarget = new ArrayList<>();
             carts.forEach(c -> {
-                InvoiceCart cTarget = new InvoiceCart();
-                BeanUtils.copyProperties(c, cTarget);
-                cartsTarget.add(cTarget);
+                InvoiceCart cartTarget = new InvoiceCart();
+                BeanUtils.copyProperties(c, cartTarget);
+                cartsTarget.add(cartTarget);
             });
             invoiceWrapperTarget.setCarts(cartsTarget);
         }

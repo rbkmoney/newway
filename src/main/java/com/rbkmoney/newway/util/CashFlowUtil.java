@@ -33,7 +33,8 @@ public class CashFlowUtil {
     }
 
     private static CashFlowAccount getCashFlowAccountType(FinalCashFlowAccount cfa) {
-        CashFlowAccount sourceAccountType = TypeUtil.toEnumField(cfa.getAccountType().getSetField().getFieldName(), CashFlowAccount.class);
+        CashFlowAccount sourceAccountType =
+                TypeUtil.toEnumField(cfa.getAccountType().getSetField().getFieldName(), CashFlowAccount.class);
         if (sourceAccountType == null) {
             throw new IllegalArgumentException("Illegal cash flow account type: " + cfa.getAccountType());
         }
@@ -56,11 +57,14 @@ public class CashFlowUtil {
         }
     }
 
-    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, Long objId, PaymentChangeType paymentChangeType) {
+    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, Long objId,
+                                                  PaymentChangeType paymentChangeType) {
         return convertCashFlows(cashFlowPostings, objId, paymentChangeType, null);
     }
 
-    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, Long objId, PaymentChangeType paymentChangeType, AdjustmentCashFlowType adjustmentCashFlowType) {
+    public static List<CashFlow> convertCashFlows(List<FinalCashFlowPosting> cashFlowPostings, Long objId,
+                                                  PaymentChangeType paymentChangeType,
+                                                  AdjustmentCashFlowType adjustmentCashFlowType) {
         return cashFlowPostings.stream().map(cf -> {
             CashFlow pcf = new CashFlow();
             pcf.setObjId(objId);
@@ -83,7 +87,8 @@ public class CashFlowUtil {
         return parseCashFlow(finalCashFlow, CashFlowType::getCashFlowType);
     }
 
-    private static Map<CashFlowType, Long> parseCashFlow(List<FinalCashFlowPosting> finalCashFlow, Function<FinalCashFlowPosting, CashFlowType> classifier) {
+    private static Map<CashFlowType, Long> parseCashFlow(List<FinalCashFlowPosting> finalCashFlow,
+                                                         Function<FinalCashFlowPosting, CashFlowType> classifier) {
         Map<CashFlowType, Long> collect = finalCashFlow.stream()
                 .collect(
                         Collectors.groupingBy(

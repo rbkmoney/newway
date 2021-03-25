@@ -47,11 +47,13 @@ public class KafkaConfigTest {
     private void configureSsl(Map<String, Object> props, KafkaSslProperties kafkaSslProperties) {
         if (kafkaSslProperties.isEnabled()) {
             props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
-            props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, new File("src/test/resources/truststore.p12").getAbsolutePath());
+            props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG,
+                    new File("src/test/resources/truststore.p12").getAbsolutePath());
             props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, "x");
             props.put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, PKCS_12);
             props.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, PKCS_12);
-            props.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, new File("src/test/resources/kstruzhkin.p12").getAbsolutePath());
+            props.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG,
+                    new File("src/test/resources/kstruzhkin.p12").getAbsolutePath());
             props.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, "x");
             props.put(SslConfigs.SSL_KEY_PASSWORD_CONFIG, "x");
         }

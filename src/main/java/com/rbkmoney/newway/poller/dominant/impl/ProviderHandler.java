@@ -51,34 +51,36 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
         provider.setProxyRefId(data.getProxy().getRef().getId());
         provider.setProxyAdditionalJson(JsonUtil.objectToJsonString(data.getProxy().getAdditional()));
         if (data.isSetTerminal()) {
-            provider.setTerminalJson(JsonUtil.tBaseToJsonString(data.getTerminal()));
+            provider.setTerminalJson(JsonUtil.thriftBaseToJsonString(data.getTerminal()));
         }
         if (data.isSetAbsAccount()) {
             provider.setAbsAccount(data.getAbsAccount());
         }
 
         if (data.isSetTerms() && data.getTerms().isSetPayments()) {
-            provider.setPaymentTermsJson(JsonUtil.tBaseToJsonString(data.getTerms().getPayments()));
+            provider.setPaymentTermsJson(JsonUtil.thriftBaseToJsonString(data.getTerms().getPayments()));
         } else if (data.isSetPaymentTerms()) {
-            provider.setPaymentTermsJson(JsonUtil.tBaseToJsonString(data.getPaymentTerms()));
+            provider.setPaymentTermsJson(JsonUtil.thriftBaseToJsonString(data.getPaymentTerms()));
         }
 
         if (data.isSetTerms() && data.getTerms().isSetRecurrentPaytools()) {
-            provider.setRecurrentPaytoolTermsJson(JsonUtil.tBaseToJsonString(data.getTerms().getRecurrentPaytools()));
+            provider.setRecurrentPaytoolTermsJson(
+                    JsonUtil.thriftBaseToJsonString(data.getTerms().getRecurrentPaytools()));
         } else if (data.isSetRecurrentPaytoolTerms()) {
-            provider.setRecurrentPaytoolTermsJson(JsonUtil.tBaseToJsonString(data.getRecurrentPaytoolTerms()));
+            provider.setRecurrentPaytoolTermsJson(JsonUtil.thriftBaseToJsonString(data.getRecurrentPaytoolTerms()));
         }
 
         if (data.isSetIdentity()) {
             provider.setIdentity(data.getIdentity());
         }
         if (data.isSetTerms() && data.getTerms().isSetWallet()) {
-            provider.setWalletTermsJson(JsonUtil.tBaseToJsonString(data.getTerms().getWallet()));
+            provider.setWalletTermsJson(JsonUtil.thriftBaseToJsonString(data.getTerms().getWallet()));
         }
         if (data.isSetParamsSchema()) {
             provider.setParamsSchemaJson(
                     JsonUtil.objectToJsonString(
-                            data.getParamsSchema().stream().map(JsonUtil::tBaseToJsonNode).collect(Collectors.toList())
+                            data.getParamsSchema().stream().map(
+                                    JsonUtil::thriftBaseToJsonNode).collect(Collectors.toList())
                     )
             );
         }

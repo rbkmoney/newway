@@ -3,7 +3,7 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.fistful.deposit.TimestampedChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.poller.event_stock.impl.deposit.AbstractDepositHandler;
+import com.rbkmoney.newway.poller.event.stock.impl.deposit.AbstractDepositHandler;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -35,22 +35,29 @@ public class ContractorUtil {
                 contractor.setRussianLegalEntityRepresentativePosition(russianLegalEntity.getRepresentativePosition());
                 contractor.setRussianLegalEntityRepresentativeFullName(russianLegalEntity.getRepresentativeFullName());
                 contractor.setRussianLegalEntityRepresentativeDocument(russianLegalEntity.getRepresentativeDocument());
-                contractor.setRussianLegalEntityRussianBankAccount(russianLegalEntity.getRussianBankAccount().getAccount());
-                contractor.setRussianLegalEntityRussianBankName(russianLegalEntity.getRussianBankAccount().getBankName());
-                contractor.setRussianLegalEntityRussianBankPostAccount(russianLegalEntity.getRussianBankAccount().getBankPostAccount());
+                contractor.setRussianLegalEntityRussianBankAccount(
+                        russianLegalEntity.getRussianBankAccount().getAccount());
+                contractor
+                        .setRussianLegalEntityRussianBankName(russianLegalEntity.getRussianBankAccount().getBankName());
+                contractor.setRussianLegalEntityRussianBankPostAccount(
+                        russianLegalEntity.getRussianBankAccount().getBankPostAccount());
                 contractor.setRussianLegalEntityRussianBankBik(russianLegalEntity.getRussianBankAccount().getBankBik());
             } else if (contractorSource.getLegalEntity().isSetInternationalLegalEntity()) {
-                InternationalLegalEntity internationalLegalEntity = contractorSource.getLegalEntity().getInternationalLegalEntity();
+                InternationalLegalEntity internationalLegalEntity =
+                        contractorSource.getLegalEntity().getInternationalLegalEntity();
                 contractor.setInternationalLegalEntityLegalName(internationalLegalEntity.getLegalName());
                 contractor.setInternationalLegalEntityTradingName(internationalLegalEntity.getTradingName());
-                contractor.setInternationalLegalEntityRegisteredAddress(internationalLegalEntity.getRegisteredAddress());
+                contractor
+                        .setInternationalLegalEntityRegisteredAddress(internationalLegalEntity.getRegisteredAddress());
                 contractor.setInternationalLegalEntityActualAddress(internationalLegalEntity.getActualAddress());
                 contractor.setInternationalLegalEntityRegisteredNumber(internationalLegalEntity.getRegisteredNumber());
             }
         } else if (contractorSource.isSetPrivateEntity()) {
-            contractor.setPrivateEntity(TBaseUtil.unionFieldToEnum(contractorSource.getPrivateEntity(), PrivateEntity.class));
+            contractor.setPrivateEntity(
+                    TBaseUtil.unionFieldToEnum(contractorSource.getPrivateEntity(), PrivateEntity.class));
             if (contractorSource.getPrivateEntity().isSetRussianPrivateEntity()) {
-                RussianPrivateEntity russianPrivateEntity = contractorSource.getPrivateEntity().getRussianPrivateEntity();
+                RussianPrivateEntity russianPrivateEntity =
+                        contractorSource.getPrivateEntity().getRussianPrivateEntity();
                 contractor.setRussianPrivateEntityFirstName(russianPrivateEntity.getFirstName());
                 contractor.setRussianPrivateEntitySecondName(russianPrivateEntity.getSecondName());
                 contractor.setRussianPrivateEntityMiddleName(russianPrivateEntity.getMiddleName());
@@ -62,7 +69,8 @@ public class ContractorUtil {
     }
 
 
-    public static void resetBaseFields(MachineEvent event, long sequenceId, Contractor contractorSource, Integer claimEffectId) {
+    public static void resetBaseFields(MachineEvent event, long sequenceId, Contractor contractorSource,
+                                       Integer claimEffectId) {
         contractorSource.setId(null);
         contractorSource.setWtime(null);
         contractorSource.setClaimEffectId(claimEffectId);

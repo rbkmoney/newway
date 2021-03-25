@@ -44,7 +44,8 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     @Override
     public Contractor get(String partyId, String contractorId) throws DaoException {
         Query query = getDslContext().selectFrom(CONTRACTOR)
-                .where(CONTRACTOR.PARTY_ID.eq(partyId).and(CONTRACTOR.CONTRACTOR_ID.eq(contractorId)).and(CONTRACTOR.CURRENT));
+                .where(CONTRACTOR.PARTY_ID.eq(partyId).and(CONTRACTOR.CONTRACTOR_ID.eq(contractorId))
+                        .and(CONTRACTOR.CURRENT));
         Contractor contractor = fetchOne(query, contractorRowMapper);
         if (contractor == null) {
             throw new NotFoundException(String.format("Contractor not found, contractorId='%s'", contractorId));

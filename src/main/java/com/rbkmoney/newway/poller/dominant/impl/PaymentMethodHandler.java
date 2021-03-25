@@ -73,7 +73,8 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
     }
 
     @Override
-    public PaymentMethod convertToDatabaseObject(PaymentMethodObject paymentMethodObject, Long versionId, boolean current) {
+    public PaymentMethod convertToDatabaseObject(PaymentMethodObject paymentMethodObject, Long versionId,
+                                                 boolean current) {
         PaymentMethod paymentMethod = new PaymentMethod();
         paymentMethod.setVersionId(versionId);
         paymentMethod.setPaymentMethodRefId(getTargetObjectRefId());

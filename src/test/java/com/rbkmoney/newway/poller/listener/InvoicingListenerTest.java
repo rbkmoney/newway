@@ -5,7 +5,7 @@ import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import com.rbkmoney.newway.exception.ParseException;
-import com.rbkmoney.newway.poller.event_stock.impl.invoicing.invoice.InvoiceCreatedMapper;
+import com.rbkmoney.newway.poller.event.stock.impl.invoicing.invoice.InvoiceCreatedMapper;
 import com.rbkmoney.newway.service.*;
 import com.rbkmoney.newway.utils.MockUtils;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
@@ -36,7 +36,9 @@ public class InvoicingListenerTest {
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
-        listener = new InvoicingKafkaListener(new InvoicingService(new ArrayList<>(), Collections.singletonList(new InvoiceCreatedMapper()), new ArrayList<>(), invoiceBatchService, paymentBatchService, eventParser));
+        listener = new InvoicingKafkaListener(
+                new InvoicingService(new ArrayList<>(), Collections.singletonList(new InvoiceCreatedMapper()),
+                        new ArrayList<>(), invoiceBatchService, paymentBatchService, eventParser));
     }
 
     @Test
@@ -75,7 +77,6 @@ public class InvoicingListenerTest {
     @Test
     public void listenChanges() {
         MachineEvent message = new MachineEvent();
-        Event event = new Event();
         message.setCreatedAt(TypeUtil.temporalToString(LocalDateTime.now()));
         EventPayload payload = new EventPayload();
         ArrayList<InvoiceChange> invoiceChanges = new ArrayList<>();
@@ -84,6 +85,7 @@ public class InvoicingListenerTest {
                 new InvoiceCreated(MockUtils.buildInvoice("inv_id")));
         invoiceChanges.add(invoiceChange);
         payload.setInvoiceChanges(invoiceChanges);
+        Event event = new Event();
         event.setPayload(payload);
         Mockito.when(eventParser.parse(message)).thenReturn(payload);
 

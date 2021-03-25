@@ -25,6 +25,7 @@ public class DestinationKafkaListener {
                 .map(m -> m.value().getEvent())
                 .collect(Collectors.toList()));
         ack.acknowledge();
-        log.info("Batch has been committed, size={}, {}", messages.size(), LogUtil.toSummaryStringWithSinkEventValues(messages));
+        log.info("Batch has been committed, size={}, {}", messages.size(),
+                LogUtil.toSummaryStringWithSinkEventValues(messages));
     }
 }

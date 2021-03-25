@@ -45,9 +45,11 @@ public class CashFlowDaoImpl extends AbstractGenericDao implements CashFlowDao {
     }
 
     @Override
-    public List<CashFlow> getForAdjustments(Long adjId, AdjustmentCashFlowType adjustmentCashFlowType) throws DaoException {
+    public List<CashFlow> getForAdjustments(Long adjId, AdjustmentCashFlowType adjustmentCashFlowType)
+            throws DaoException {
         Query query = getDslContext().selectFrom(CASH_FLOW)
-                .where(CASH_FLOW.OBJ_ID.eq(adjId).and(CASH_FLOW.OBJ_TYPE.eq(PaymentChangeType.adjustment)).and(CASH_FLOW.ADJ_FLOW_TYPE.eq(adjustmentCashFlowType)));
+                .where(CASH_FLOW.OBJ_ID.eq(adjId).and(CASH_FLOW.OBJ_TYPE.eq(PaymentChangeType.adjustment))
+                        .and(CASH_FLOW.ADJ_FLOW_TYPE.eq(adjustmentCashFlowType)));
         return fetch(query, cashFlowRowMapper);
     }
 }

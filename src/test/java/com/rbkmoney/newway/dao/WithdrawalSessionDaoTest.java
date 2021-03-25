@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.dao;
 
-import com.rbkmoney.newway.dao.withdrawal_session.iface.WithdrawalSessionDao;
+import com.rbkmoney.newway.dao.withdrawal.session.iface.WithdrawalSessionDao;
 import com.rbkmoney.newway.domain.tables.pojos.WithdrawalSession;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

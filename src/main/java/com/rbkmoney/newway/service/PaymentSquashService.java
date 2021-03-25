@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
 public class PaymentSquashService {
 
     public List<PaymentWrapper> squash(List<PaymentWrapper> wrappers, List<Long> ids) {
-        var groupedMap = wrappers.stream().collect(Collectors.groupingBy(PaymentWrapper::getKey, LinkedHashMap::new, Collectors.toList()));
+        var groupedMap = wrappers.stream()
+                .collect(Collectors.groupingBy(PaymentWrapper::getKey, LinkedHashMap::new, Collectors.toList()));
         List<PaymentWrapper> result = new ArrayList<>();
         Iterator<Long> iterator = ids.iterator();
         groupedMap.forEach((key, pwList) -> {
@@ -29,7 +30,8 @@ public class PaymentSquashService {
 
     private List<PaymentWrapper> squashById(List<PaymentWrapper> pwList) {
         List<PaymentWrapper> result = new ArrayList<>();
-        var groupedById = pwList.stream().collect(Collectors.groupingBy(this::getId, LinkedHashMap::new, Collectors.toList()));
+        var groupedById =
+                pwList.stream().collect(Collectors.groupingBy(this::getId, LinkedHashMap::new, Collectors.toList()));
         groupedById.forEach((id, ws) -> {
             boolean shouldInsert = ws.get(0).isShouldInsert();
             PaymentWrapper pwLast = ws.get(ws.size() - 1);
@@ -40,14 +42,14 @@ public class PaymentSquashService {
     }
 
     private void setIds(List<PaymentWrapper> pwList, Iterator<Long> iterator) {
-        PaymentWrapper wInsert = pwList.get(0);
+        PaymentWrapper wrapInsert = pwList.get(0);
         for (PaymentWrapper w : pwList) {
             Long id;
             if (w.isShouldInsert()) {
-                wInsert = w;
+                wrapInsert = w;
                 id = iterator.next();
             } else {
-                id = getId(wInsert);
+                id = getId(wrapInsert);
             }
             setId(w, id);
         }

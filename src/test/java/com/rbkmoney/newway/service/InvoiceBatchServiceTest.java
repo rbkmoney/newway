@@ -32,7 +32,8 @@ public class InvoiceBatchServiceTest extends AbstractAppDaoTests {
     @Test
     public void processTest() {
         List<InvoiceWrapper> invoiceWrappers = IntStream.range(1, 5)
-                .mapToObj(x -> new InvoiceWrapper(random(Invoice.class, "id"), randomListOf(3, InvoiceCart.class, "id", "invId")))
+                .mapToObj(x -> new InvoiceWrapper(random(Invoice.class, "id"),
+                        randomListOf(3, InvoiceCart.class, "id", "invId")))
                 .collect(Collectors.toList());
 
         String invoiceIdFirst = "invoiceIdFirst";
@@ -56,9 +57,15 @@ public class InvoiceBatchServiceTest extends AbstractAppDaoTests {
 
         //Duplication check
         invoiceBatchService.process(invoiceWrappers);
-        assertEquals(2, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.invoice WHERE invoice_id = ? ", new Object[]{invoiceIdFirst}, Integer.class).intValue());
-        assertEquals(2, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.invoice WHERE invoice_id = ? ", new Object[]{invoiceIdSecond}, Integer.class).intValue());
-        assertEquals(3, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.invoice_cart where inv_id = ? ", new Object[]{invoiceFirstGet.getId()}, Integer.class).intValue());
-        assertEquals(24, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.invoice_cart ", Integer.class).intValue());
+        assertEquals(2, jdbcTemplate
+                .queryForObject("SELECT count(*) FROM nw.invoice WHERE invoice_id = ? ", new Object[] {invoiceIdFirst},
+                        Integer.class).intValue());
+        assertEquals(2, jdbcTemplate
+                .queryForObject("SELECT count(*) FROM nw.invoice WHERE invoice_id = ? ", new Object[] {invoiceIdSecond},
+                        Integer.class).intValue());
+        assertEquals(3, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.invoice_cart where inv_id = ? ",
+                new Object[] {invoiceFirstGet.getId()}, Integer.class).intValue());
+        assertEquals(24,
+                jdbcTemplate.queryForObject("SELECT count(*) FROM nw.invoice_cart ", Integer.class).intValue());
     }
 }

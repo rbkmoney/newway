@@ -4,9 +4,9 @@ import com.rbkmoney.damsel.payment_processing.EventPayload;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.model.*;
-import com.rbkmoney.newway.poller.event_stock.LocalStorage;
-import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingHandler;
-import com.rbkmoney.newway.poller.event_stock.impl.invoicing.AbstractInvoicingMapper;
+import com.rbkmoney.newway.poller.event.stock.LocalStorage;
+import com.rbkmoney.newway.poller.event.stock.impl.invoicing.AbstractInvoicingHandler;
+import com.rbkmoney.newway.poller.event.stock.impl.invoicing.AbstractInvoicingMapper;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +54,8 @@ public class InvoicingService {
                         handleOtherEvent(change, me, i);
                     }
                 } catch (Throwable e) {
-                    log.error("Unexpected error while handling events; machineId: {},  eventId: {}", me.getSourceId(), me.getEventId(), e);
+                    log.error("Unexpected error while handling events; machineId: {},  eventId: {}", me.getSourceId(),
+                            me.getEventId(), e);
                     throw e;
                 }
             }

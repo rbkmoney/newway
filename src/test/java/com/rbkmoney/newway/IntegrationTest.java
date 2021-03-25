@@ -22,6 +22,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+@SuppressWarnings("LineLength")
 public class IntegrationTest extends AbstractAppDaoTests {
 
     @Autowired
@@ -47,36 +48,55 @@ public class IntegrationTest extends AbstractAppDaoTests {
                                         List.of(InvoiceChange.invoice_created(new InvoiceCreated()
                                                         .setInvoice(MockUtils.buildInvoice(invoiceId))),
                                                 InvoiceChange.invoice_status_changed(new InvoiceStatusChanged()
-                                                        .setStatus(InvoiceStatus.fulfilled(new InvoiceFulfilled("keks")))),
+                                                        .setStatus(
+                                                                InvoiceStatus.fulfilled(
+                                                                        new InvoiceFulfilled("keks")))),
                                                 InvoiceChange.invoice_payment_change(new InvoicePaymentChange()
                                                         .setId(paymentId)
-                                                        .setPayload(InvoicePaymentChangePayload.invoice_payment_started(new InvoicePaymentStarted()
-                                                                .setPayment(MockUtils.buildPayment(paymentId))))),
+                                                        .setPayload(InvoicePaymentChangePayload
+                                                                .invoice_payment_started(new InvoicePaymentStarted()
+                                                                        .setPayment(
+                                                                                MockUtils.buildPayment(paymentId))))),
                                                 InvoiceChange.invoice_payment_change(new InvoicePaymentChange()
                                                         .setId(paymentId)
-                                                        .setPayload(InvoicePaymentChangePayload.invoice_payment_cash_flow_changed(
-                                                                new InvoicePaymentCashFlowChanged(
-                                                                        List.of(new FinalCashFlowPosting()
-                                                                                .setSource(new FinalCashFlowAccount(
-                                                                                        CashFlowAccount.system(SystemCashFlowAccount.settlement), 1))
-                                                                                .setDestination(new FinalCashFlowAccount(
-                                                                                        CashFlowAccount.system(SystemCashFlowAccount.settlement), 1))
-                                                                                .setVolume(new Cash(1, new CurrencyRef("RUB")))))
-                                                        ))),
+                                                        .setPayload(InvoicePaymentChangePayload
+                                                                .invoice_payment_cash_flow_changed(
+                                                                        new InvoicePaymentCashFlowChanged(
+                                                                                List.of(new FinalCashFlowPosting()
+                                                                                        .setSource(
+                                                                                                new FinalCashFlowAccount(
+                                                                                                        CashFlowAccount
+                                                                                                                .system(SystemCashFlowAccount.settlement),
+                                                                                                        1))
+                                                                                        .setDestination(
+                                                                                                new FinalCashFlowAccount(
+                                                                                                        CashFlowAccount
+                                                                                                                .system(SystemCashFlowAccount.settlement),
+                                                                                                        1))
+                                                                                        .setVolume(new Cash(1,
+                                                                                                new CurrencyRef(
+                                                                                                        "RUB")))))
+                                                                ))),
                                                 InvoiceChange.invoice_payment_change(new InvoicePaymentChange()
                                                         .setId(paymentId)
-                                                        .setPayload(InvoicePaymentChangePayload.invoice_payment_risk_score_changed(
-                                                                new InvoicePaymentRiskScoreChanged(RiskScore.high)))),
+                                                        .setPayload(InvoicePaymentChangePayload
+                                                                .invoice_payment_risk_score_changed(
+                                                                        new InvoicePaymentRiskScoreChanged(
+                                                                                RiskScore.high)))),
                                                 InvoiceChange.invoice_payment_change(new InvoicePaymentChange()
                                                         .setId(paymentId)
-                                                        .setPayload(InvoicePaymentChangePayload.invoice_payment_status_changed(
-                                                                new InvoicePaymentStatusChanged().setStatus(InvoicePaymentStatus.captured(
-                                                                        new InvoicePaymentCaptured()))
-                                                        ))))))))
+                                                        .setPayload(InvoicePaymentChangePayload
+                                                                .invoice_payment_status_changed(
+                                                                        new InvoicePaymentStatusChanged().setStatus(
+                                                                                InvoicePaymentStatus.captured(
+                                                                                        new InvoicePaymentCaptured()))
+                                                                ))))))))
         );
         invoicingService.handleEvents(machineEventsFirst);
-        assertEquals(3, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.payment WHERE invoice_id = ? and payment_id = ? ",
-                new Object[]{invoiceId, paymentId}, Integer.class).intValue());
+        assertEquals(3,
+                jdbcTemplate.queryForObject("SELECT count(*) FROM nw.payment " +
+                                "WHERE invoice_id = ? and payment_id = ? ",
+                        new Object[]{invoiceId, paymentId}, Integer.class).intValue());
 
         Payment payment = paymentDao.get(invoiceId, paymentId);
         assertEquals(PaymentStatus.captured, payment.getStatus());
@@ -94,20 +114,26 @@ public class IntegrationTest extends AbstractAppDaoTests {
                                 EventPayload.invoice_changes(
                                         List.of(InvoiceChange.invoice_payment_change(new InvoicePaymentChange()
                                                         .setId(paymentId)
-                                                        .setPayload(InvoicePaymentChangePayload.invoice_payment_risk_score_changed(
-                                                                new InvoicePaymentRiskScoreChanged(RiskScore.low)))),
+                                                        .setPayload(
+                                                                InvoicePaymentChangePayload
+                                                                        .invoice_payment_risk_score_changed(
+                                                                                new InvoicePaymentRiskScoreChanged(
+                                                                                        RiskScore.low)))),
                                                 InvoiceChange.invoice_payment_change(new InvoicePaymentChange()
                                                         .setId(paymentId)
-                                                        .setPayload(InvoicePaymentChangePayload.invoice_payment_rec_token_acquired(
-                                                                new InvoicePaymentRecTokenAcquired("keks")
-                                                        )))
+                                                        .setPayload(InvoicePaymentChangePayload
+                                                                .invoice_payment_rec_token_acquired(
+                                                                        new InvoicePaymentRecTokenAcquired("keks")
+                                                                )))
                                         )))))
         );
 
         invoicingService.handleEvents(machineEventsSecond);
 
-        assertEquals(3, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.payment WHERE invoice_id = ? and payment_id = ? ",
-                new Object[]{invoiceId, paymentId}, Integer.class).intValue());
+        assertEquals(3,
+                jdbcTemplate.queryForObject("SELECT count(*) FROM nw.payment " +
+                                "WHERE invoice_id = ? and payment_id = ? ",
+                        new Object[]{invoiceId, paymentId}, Integer.class).intValue());
 
         Payment paymentSecond = paymentDao.get(invoiceId, paymentId);
         assertEquals("low", paymentSecond.getRiskScore().name());
@@ -125,15 +151,20 @@ public class IntegrationTest extends AbstractAppDaoTests {
                                         List.of(InvoiceChange.invoice_payment_change(new InvoicePaymentChange()
                                                 .setId(paymentId)
                                                 .setPayload(InvoicePaymentChangePayload.invoice_payment_status_changed(
-                                                        new InvoicePaymentStatusChanged().setStatus(InvoicePaymentStatus.failed(
-                                                                new InvoicePaymentFailed(OperationFailure.operation_timeout(new OperationTimeout()))))
+                                                        new InvoicePaymentStatusChanged()
+                                                                .setStatus(InvoicePaymentStatus.failed(
+                                                                        new InvoicePaymentFailed(OperationFailure
+                                                                                .operation_timeout(
+                                                                                        new OperationTimeout()))))
                                                 ))))))))
         );
 
         invoicingService.handleEvents(machineEventsThird);
 
-        assertEquals(4, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.payment WHERE invoice_id = ? and payment_id = ? ",
-                new Object[]{invoiceId, paymentId}, Integer.class).intValue());
+        assertEquals(4,
+                jdbcTemplate.queryForObject("SELECT count(*) FROM nw.payment " +
+                                "WHERE invoice_id = ? and payment_id = ? ",
+                        new Object[]{invoiceId, paymentId}, Integer.class).intValue());
 
         Payment paymentThird = paymentDao.get(invoiceId, paymentId);
         assertEquals(PaymentStatus.failed, paymentThird.getStatus());
@@ -146,7 +177,8 @@ public class IntegrationTest extends AbstractAppDaoTests {
         //--- duplication check
 
         invoicingService.handleEvents(machineEventsFirst);
-        assertEquals(4, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.payment WHERE invoice_id = ? and payment_id = ? ",
-                new Object[]{invoiceId, paymentId}, Integer.class).intValue());
+        assertEquals(4,
+                jdbcTemplate.queryForObject("SELECT count(*) FROM nw.payment WHERE invoice_id = ? and payment_id = ? ",
+                        new Object[]{invoiceId, paymentId}, Integer.class).intValue());
     }
 }

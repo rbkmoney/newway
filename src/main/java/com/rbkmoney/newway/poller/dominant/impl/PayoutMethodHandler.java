@@ -38,7 +38,8 @@ public class PayoutMethodHandler extends AbstractDominantHandler<PayoutMethodObj
     }
 
     @Override
-    public PayoutMethod convertToDatabaseObject(PayoutMethodObject payoutMethodObject, Long versionId, boolean current) {
+    public PayoutMethod convertToDatabaseObject(PayoutMethodObject payoutMethodObject, Long versionId,
+                                                boolean current) {
         PayoutMethod payoutMethod = new PayoutMethod();
         payoutMethod.setVersionId(versionId);
         payoutMethod.setPayoutMethodRefId(getTargetObjectRefId());

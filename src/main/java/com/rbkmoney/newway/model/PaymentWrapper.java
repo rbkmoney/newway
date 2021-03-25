@@ -26,9 +26,9 @@ public class PaymentWrapper {
         if (cashFlows != null) {
             List<CashFlow> cashFlowsTarget = new ArrayList<>();
             cashFlows.forEach(c -> {
-                CashFlow cTarget = new CashFlow();
-                BeanUtils.copyProperties(c, cTarget);
-                cashFlowsTarget.add(cTarget);
+                CashFlow cartTarget = new CashFlow();
+                BeanUtils.copyProperties(c, cartTarget);
+                cashFlowsTarget.add(cartTarget);
             });
             paymentWrapperTarget.setCashFlows(cashFlowsTarget);
         }

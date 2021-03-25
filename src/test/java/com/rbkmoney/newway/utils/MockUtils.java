@@ -28,7 +28,7 @@ public class MockUtils {
                                         .setMetadata(new HashMap<>())))))
                 .setDue(TypeUtil.temporalToString(LocalDateTime.now()))
                 .setCost(new Cash().setAmount(1).setCurrency(new CurrencyRef("RUB")))
-                .setContext(new Content("type", ByteBuffer.wrap(new byte[]{})));
+                .setContext(new Content("type", ByteBuffer.wrap(new byte[] {})));
     }
 
     public static InvoicePayment buildPayment(String paymentId) {

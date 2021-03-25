@@ -54,8 +54,11 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
     @Override
     public void switchCurrent(Collection<InvoicingKey> invoicesSwitchIds) throws DaoException {
         invoicesSwitchIds.forEach(ik ->
-                this.getNamedParameterJdbcTemplate().update("update nw.invoice set current = false where invoice_id =:invoice_id and current;" +
-                                "update nw.invoice set current = true where id = (select max(id) from nw.invoice where invoice_id =:invoice_id);",
-                        new MapSqlParameterSource("invoice_id", ik.getInvoiceId())));
+                this.getNamedParameterJdbcTemplate()
+                        .update("update nw.invoice set current = false " +
+                                        "where invoice_id =:invoice_id and current;" +
+                                        "update nw.invoice set current = true " +
+                                        "where id = (select max(id) from nw.invoice where invoice_id =:invoice_id);",
+                                new MapSqlParameterSource("invoice_id", ik.getInvoiceId())));
     }
 }

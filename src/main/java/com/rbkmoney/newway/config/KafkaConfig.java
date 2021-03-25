@@ -30,6 +30,7 @@ import java.util.Map;
 @Configuration
 @RequiredArgsConstructor
 @EnableConfigurationProperties(KafkaSslProperties.class)
+@SuppressWarnings("LineLength")
 public class KafkaConfig {
 
     private final KafkaConsumerProperties kafkaConsumerProperties;
@@ -67,11 +68,13 @@ public class KafkaConfig {
     private void configureSsl(Map<String, Object> props, KafkaSslProperties kafkaSslProperties) {
         if (kafkaSslProperties.isEnabled()) {
             props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, SecurityProtocol.SSL.name());
-            props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, new File(kafkaSslProperties.getTrustStoreLocation()).getAbsolutePath());
+            props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG,
+                    new File(kafkaSslProperties.getTrustStoreLocation()).getAbsolutePath());
             props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, kafkaSslProperties.getTrustStorePassword());
             props.put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, kafkaSslProperties.getKeyStoreType());
             props.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, kafkaSslProperties.getTrustStoreType());
-            props.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, new File(kafkaSslProperties.getKeyStoreLocation()).getAbsolutePath());
+            props.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG,
+                    new File(kafkaSslProperties.getKeyStoreLocation()).getAbsolutePath());
             props.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, kafkaSslProperties.getKeyStorePassword());
             props.put(SslConfigs.SSL_KEY_PASSWORD_CONFIG, kafkaSslProperties.getKeyPassword());
         }
@@ -125,10 +128,13 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Event>> payoutContainerFactory(KafkaSslProperties kafkaSslProperties) {
-        DefaultKafkaConsumerFactory<String, Event> kafkaConsumerFactory = new DefaultKafkaConsumerFactory<>(createConsumerConfig(kafkaSslProperties));
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Event>> payoutContainerFactory(
+            KafkaSslProperties kafkaSslProperties) {
+        DefaultKafkaConsumerFactory<String, Event> kafkaConsumerFactory =
+                new DefaultKafkaConsumerFactory<>(createConsumerConfig(kafkaSslProperties));
         kafkaConsumerFactory.setValueDeserializer(new PayoutEventDeserializer());
-        ConcurrentKafkaListenerContainerFactory<String, Event> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<String, Event> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
         initFactory(kafkaConsumerFactory, kafkaConsumerProperties.getPayoutConcurrency(), factory);
         return factory;
     }
@@ -162,12 +168,15 @@ public class KafkaConfig {
 
     private KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> createConcurrentFactory(
             ConsumerFactory<String, MachineEvent> consumerFactory, int threadsNumber) {
-        ConcurrentKafkaListenerContainerFactory<String, MachineEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<String, MachineEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
         initFactory(consumerFactory, threadsNumber, factory);
         return factory;
     }
 
-    private <T> void initFactory(ConsumerFactory<String, T> consumerFactory, int threadsNumber, ConcurrentKafkaListenerContainerFactory<String, T> factory) {
+    private <T> void initFactory(ConsumerFactory<String, T> consumerFactory,
+                                 int threadsNumber,
+                                 ConcurrentKafkaListenerContainerFactory<String, T> factory) {
         factory.setConsumerFactory(consumerFactory);
         factory.setBatchListener(true);
         factory.getContainerProperties().setAckOnError(false);

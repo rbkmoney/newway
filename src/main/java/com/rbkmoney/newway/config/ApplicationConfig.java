@@ -25,8 +25,9 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public RecurrentPaymentToolEventSinkSrv.Iface recurrentPaymentToolClient(@Value("${recurrentPaymentTool.url}") Resource resource,
-                                                                             @Value("${recurrentPaymentTool.networkTimeout}") int networkTimeout) throws IOException {
+    public RecurrentPaymentToolEventSinkSrv.Iface recurrentPaymentToolClient(
+            @Value("${recurrentPaymentTool.url}") Resource resource,
+            @Value("${recurrentPaymentTool.networkTimeout}") int networkTimeout) throws IOException {
         return new THSpawnClientBuilder()
                 .withNetworkTimeout(networkTimeout)
                 .withAddress(resource.getURI())

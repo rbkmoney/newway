@@ -35,7 +35,7 @@ public class DominantService {
     private void processOperation(DominantHandler handler, Operation operation, Long versionId) {
         try {
             log.info("Start to process commit with versionId={} operation={} ",
-                    versionId, JsonUtil.tBaseToJsonString(operation));
+                    versionId, JsonUtil.thriftBaseToJsonString(operation));
             handler.handle(operation, versionId);
             log.info("End to process commit with versionId={}", versionId);
         } catch (Exception ex) {
