@@ -55,8 +55,8 @@ public class DaoUtils {
         if (source == com.rbkmoney.newway.domain.enums.CashFlowAccount.system
                 && sourceValue.equals(SystemCashFlowAccount.settlement.name())
                 && destination == com.rbkmoney.newway.domain.enums.CashFlowAccount.external
-                && (destinationValue.equals(ExternalCashFlowAccount.income.name()) ||
-                destinationValue.equals(ExternalCashFlowAccount.outcome.name()))) {
+                && (destinationValue.equals(ExternalCashFlowAccount.income.name())
+                || destinationValue.equals(ExternalCashFlowAccount.outcome.name()))) {
             return FeeType.EXTERNAL_FEE;
         }
 

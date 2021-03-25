@@ -58,13 +58,13 @@ public class InvoiceBatchServiceTest extends AbstractAppDaoTests {
         //Duplication check
         invoiceBatchService.process(invoiceWrappers);
         assertEquals(2, jdbcTemplate
-                .queryForObject("SELECT count(*) FROM nw.invoice WHERE invoice_id = ? ", new Object[] {invoiceIdFirst},
+                .queryForObject("SELECT count(*) FROM nw.invoice WHERE invoice_id = ? ", new Object[]{invoiceIdFirst},
                         Integer.class).intValue());
         assertEquals(2, jdbcTemplate
-                .queryForObject("SELECT count(*) FROM nw.invoice WHERE invoice_id = ? ", new Object[] {invoiceIdSecond},
+                .queryForObject("SELECT count(*) FROM nw.invoice WHERE invoice_id = ? ", new Object[]{invoiceIdSecond},
                         Integer.class).intValue());
         assertEquals(3, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.invoice_cart where inv_id = ? ",
-                new Object[] {invoiceFirstGet.getId()}, Integer.class).intValue());
+                new Object[]{invoiceFirstGet.getId()}, Integer.class).intValue());
         assertEquals(24,
                 jdbcTemplate.queryForObject("SELECT count(*) FROM nw.invoice_cart ", Integer.class).intValue());
     }

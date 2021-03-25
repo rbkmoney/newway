@@ -31,8 +31,8 @@ public class ContractLegalAgreementBoundHandler extends AbstractClaimChangedHand
         List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects();
         for (int i = 0; i < claimEffects.size(); i++) {
             ClaimEffect claimEffect = claimEffects.get(i);
-            if (claimEffect.isSetContractEffect() &&
-                    claimEffect.getContractEffect().getEffect().isSetLegalAgreementBound()) {
+            if (claimEffect.isSetContractEffect()
+                    && claimEffect.getContractEffect().getEffect().isSetLegalAgreementBound()) {
                 handleEvent(event, changeId, sequenceId, claimEffects.get(i), i);
             }
         }

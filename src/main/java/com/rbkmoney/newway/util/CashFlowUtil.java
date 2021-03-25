@@ -2,8 +2,8 @@ package com.rbkmoney.newway.util;
 
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.geck.common.util.TypeUtil;
-import com.rbkmoney.newway.domain.enums.CashFlowAccount;
 import com.rbkmoney.newway.domain.enums.*;
+import com.rbkmoney.newway.domain.enums.CashFlowAccount;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 
 import java.util.List;
@@ -28,8 +28,8 @@ public class CashFlowUtil {
     }
 
     private static boolean isMerchantSettlement(com.rbkmoney.damsel.domain.CashFlowAccount cashFlowAccount) {
-        return cashFlowAccount.isSetMerchant() &&
-                cashFlowAccount.getMerchant() == MerchantCashFlowAccount.settlement;
+        return cashFlowAccount.isSetMerchant()
+                && cashFlowAccount.getMerchant() == MerchantCashFlowAccount.settlement;
     }
 
     private static CashFlowAccount getCashFlowAccountType(FinalCashFlowAccount cfa) {

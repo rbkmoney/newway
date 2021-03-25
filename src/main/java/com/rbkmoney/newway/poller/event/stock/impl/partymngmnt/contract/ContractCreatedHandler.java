@@ -83,8 +83,8 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
         if (contractCreated.isSetLegalAgreement()) {
             ContractUtil.fillContractLegalAgreementFields(contract, contractCreated.getLegalAgreement());
         }
-        if (contractCreated.isSetReportPreferences() &&
-                contractCreated.getReportPreferences().isSetServiceAcceptanceActPreferences()) {
+        if (contractCreated.isSetReportPreferences()
+                && contractCreated.getReportPreferences().isSetServiceAcceptanceActPreferences()) {
             ContractUtil.fillReportPreferences(contract,
                     contractCreated.getReportPreferences().getServiceAcceptanceActPreferences());
         }

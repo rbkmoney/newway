@@ -71,13 +71,13 @@ public class PaymentBatchServiceTest extends AbstractAppDaoTests {
         assertEquals(paymentWrappers.get(1).getPayment().getPartyId(), paymentFirstGet2.getPartyId());
         assertEquals(2, jdbcTemplate
                 .queryForObject("SELECT count(*) FROM nw.payment WHERE invoice_id = ? and payment_id = ? ",
-                        new Object[] {invoiceIdFirst, "1"}, Integer.class).intValue());
+                        new Object[]{invoiceIdFirst, "1"}, Integer.class).intValue());
         assertEquals(1, jdbcTemplate
                 .queryForObject("SELECT count(*) FROM nw.payment WHERE invoice_id = ? and payment_id = ? ",
-                        new Object[] {invoiceIdFirst, "2"}, Integer.class).intValue());
+                        new Object[]{invoiceIdFirst, "2"}, Integer.class).intValue());
         assertEquals(1, jdbcTemplate
                 .queryForObject("SELECT count(*) FROM nw.payment WHERE invoice_id = ? and payment_id = ? ",
-                        new Object[] {invoiceIdSecond, "1"}, Integer.class).intValue());
+                        new Object[]{invoiceIdSecond, "1"}, Integer.class).intValue());
         assertEquals(24, jdbcTemplate.queryForObject("SELECT count(*) FROM nw.cash_flow ", Integer.class).intValue());
     }
 }

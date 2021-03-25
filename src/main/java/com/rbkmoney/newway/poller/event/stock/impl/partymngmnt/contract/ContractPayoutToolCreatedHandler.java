@@ -30,8 +30,8 @@ public class ContractPayoutToolCreatedHandler extends AbstractClaimChangedHandle
         List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects();
         for (int i = 0; i < claimEffects.size(); i++) {
             ClaimEffect claimEffect = claimEffects.get(i);
-            if (claimEffect.isSetContractEffect() &&
-                    claimEffect.getContractEffect().getEffect().isSetPayoutToolCreated()) {
+            if (claimEffect.isSetContractEffect()
+                    && claimEffect.getContractEffect().getEffect().isSetPayoutToolCreated()) {
                 handleEvent(event, changeId, sequenceId, claimEffects.get(i), i);
             }
         }

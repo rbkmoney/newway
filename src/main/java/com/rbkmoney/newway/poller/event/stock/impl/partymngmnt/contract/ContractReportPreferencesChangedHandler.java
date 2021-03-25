@@ -31,8 +31,8 @@ public class ContractReportPreferencesChangedHandler extends AbstractClaimChange
         List<ClaimEffect> claimEffects = getClaimStatus(change).getAccepted().getEffects();
         for (int i = 0; i < claimEffects.size(); i++) {
             ClaimEffect claimEffect = claimEffects.get(i);
-            if (claimEffect.isSetContractEffect() &&
-                    claimEffect.getContractEffect().getEffect().isSetReportPreferencesChanged()) {
+            if (claimEffect.isSetContractEffect()
+                    && claimEffect.getContractEffect().getEffect().isSetReportPreferencesChanged()) {
                 handleEvent(event, changeId, sequenceId, claimEffects.get(i), i);
             }
         }

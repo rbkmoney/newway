@@ -53,9 +53,9 @@ public class PaymentWrapperService {
                 paymentWrapper.setKey(key);
             }
         }
-        if ((paymentWrapper.getPayment().getSequenceId() > sequenceId) ||
-                (paymentWrapper.getPayment().getSequenceId() == sequenceId &&
-                        paymentWrapper.getPayment().getChangeId() >= changeId)) {
+        if ((paymentWrapper.getPayment().getSequenceId() > sequenceId)
+                || (paymentWrapper.getPayment().getSequenceId() == sequenceId
+                && paymentWrapper.getPayment().getChangeId() >= changeId)) {
             paymentWrapper = null;
         }
         return paymentWrapper;

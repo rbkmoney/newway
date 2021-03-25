@@ -8,9 +8,9 @@ import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.dao.rate.iface.RateDao;
 import com.rbkmoney.newway.dao.recurrent.payment.tool.iface.RecurrentPaymentToolDao;
 import com.rbkmoney.newway.domain.enums.*;
+import com.rbkmoney.newway.domain.tables.pojos.*;
 import com.rbkmoney.newway.domain.tables.pojos.Calendar;
 import com.rbkmoney.newway.domain.tables.pojos.Currency;
-import com.rbkmoney.newway.domain.tables.pojos.*;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.InvoicingType;
 import com.rbkmoney.newway.util.HashUtil;
@@ -548,7 +548,7 @@ public class DaoTests extends AbstractAppDaoTests {
                 rate,
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM nw.rate WHERE id = ? ",
-                        new Object[] {id},
+                        new Object[]{id},
                         new BeanPropertyRowMapper(Rate.class)
                 )
         );
@@ -563,7 +563,7 @@ public class DaoTests extends AbstractAppDaoTests {
         try {
             jdbcTemplate.queryForObject(
                     "SELECT * FROM nw.rate AS rate WHERE rate.id = ? AND rate.current",
-                    new Object[] {id},
+                    new Object[]{id},
                     new BeanPropertyRowMapper(Rate.class)
             );
             fail();
