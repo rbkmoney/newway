@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@SuppressWarnings("VariableDeclarationUsageDistance")
 public class RecurrentPaymentToolHasAcquiredHandler extends AbstractRecurrentPaymentToolHandler {
 
     private final Filter filter;
@@ -29,10 +30,10 @@ public class RecurrentPaymentToolHasAcquiredHandler extends AbstractRecurrentPay
         log.info("Start recurrent payment tool acquired handling, sourceId={}, sequenceId={}, changeId={}",
                 event.getSourceId(), event.getEventId(), changeId);
         RecurrentPaymentTool recurrentPaymentTool = getRecurrentPaymentToolSource(event);
+        Long rptSourceId = recurrentPaymentTool.getId();
         setDefaultProperties(recurrentPaymentTool, event, changeId);
         recurrentPaymentTool.setStatus(RecurrentPaymentToolStatus.acquired);
         recurrentPaymentTool.setRecToken(change.getRecPaymentToolAcquired().getToken());
-        Long rptSourceId = recurrentPaymentTool.getId();
         saveAndUpdateNotCurrent(recurrentPaymentTool, rptSourceId);
         log.info("End recurrent payment tool acquired handling, sourceId={}, sequenceId={}, changeId={}",
                 event.getSourceId(), event.getEventId(), changeId);

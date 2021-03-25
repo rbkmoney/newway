@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@SuppressWarnings("VariableDeclarationUsageDistance")
 public class RecurrentPaymentToolHasFailedHandler extends AbstractRecurrentPaymentToolHandler {
 
     private final Filter filter;
@@ -30,11 +31,11 @@ public class RecurrentPaymentToolHasFailedHandler extends AbstractRecurrentPayme
         log.info("Start recurrent payment tool failed handling, sourceId={}, sequenceId={}, changeId={}",
                 event.getSourceId(), event.getEventId(), changeId);
         RecurrentPaymentTool recurrentPaymentTool = getRecurrentPaymentToolSource(event);
+        Long rptSourceId = recurrentPaymentTool.getId();
         setDefaultProperties(recurrentPaymentTool, event, changeId);
         recurrentPaymentTool.setStatus(RecurrentPaymentToolStatus.failed);
         recurrentPaymentTool
                 .setStatusFailedFailure(JsonUtil.thriftBaseToJsonString(change.getRecPaymentToolFailed().getFailure()));
-        Long rptSourceId = recurrentPaymentTool.getId();
         saveAndUpdateNotCurrent(recurrentPaymentTool, rptSourceId);
         log.info("End recurrent payment tool failed handling, sourceId={}, sequenceId={}, changeId={}",
                 event.getSourceId(), event.getEventId(), changeId);

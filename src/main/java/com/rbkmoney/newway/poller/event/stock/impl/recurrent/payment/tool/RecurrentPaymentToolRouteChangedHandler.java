@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@SuppressWarnings("VariableDeclarationUsageDistance")
 public class RecurrentPaymentToolRouteChangedHandler extends AbstractRecurrentPaymentToolHandler {
 
     private final Filter filter;
@@ -28,12 +29,12 @@ public class RecurrentPaymentToolRouteChangedHandler extends AbstractRecurrentPa
         log.info("Start recurrent payment tool route changed handling, sourceId={}, sequenceId={}, changeId={}",
                 event.getSourceId(), event.getEventId(), changeId);
         RecurrentPaymentTool recurrentPaymentTool = getRecurrentPaymentToolSource(event);
-        setDefaultProperties(recurrentPaymentTool, event, changeId);
-        recurrentPaymentTool
-                .setRouteProviderId(change.getRecPaymentToolRouteChanged().getRoute().getProvider().getId());
-        recurrentPaymentTool
-                .setRouteTerminalId(change.getRecPaymentToolRouteChanged().getRoute().getTerminal().getId());
         Long rptSourceId = recurrentPaymentTool.getId();
+        setDefaultProperties(recurrentPaymentTool, event, changeId);
+        recurrentPaymentTool.setRouteProviderId(
+                change.getRecPaymentToolRouteChanged().getRoute().getProvider().getId());
+        recurrentPaymentTool.setRouteTerminalId(
+                change.getRecPaymentToolRouteChanged().getRoute().getTerminal().getId());
         saveAndUpdateNotCurrent(recurrentPaymentTool, rptSourceId);
         log.info("End recurrent payment tool route changed handling, sourceId={}, sequenceId={}, changeId={}",
                 event.getSourceId(), event.getEventId(), changeId);

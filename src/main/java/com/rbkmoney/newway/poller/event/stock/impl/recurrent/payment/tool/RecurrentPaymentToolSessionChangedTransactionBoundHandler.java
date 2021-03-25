@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@SuppressWarnings("VariableDeclarationUsageDistance")
 public class RecurrentPaymentToolSessionChangedTransactionBoundHandler extends AbstractRecurrentPaymentToolHandler {
 
     private final Filter filter;
@@ -33,6 +34,7 @@ public class RecurrentPaymentToolSessionChangedTransactionBoundHandler extends A
                         "sourceId={}, sequenceId={}, changeId={}",
                 event.getSourceId(), event.getEventId(), changeId);
         RecurrentPaymentTool recurrentPaymentTool = getRecurrentPaymentToolSource(event);
+        Long rptSourceId = recurrentPaymentTool.getId();
         setDefaultProperties(recurrentPaymentTool, event, changeId);
         TransactionInfo trx =
                 change.getRecPaymentToolSessionChanged().getPayload().getSessionTransactionBound().getTrx();
@@ -42,7 +44,6 @@ public class RecurrentPaymentToolSessionChangedTransactionBoundHandler extends A
             recurrentPaymentTool
                     .setSessionPayloadTransactionBoundTrxAdditionalInfoRrn(trx.getAdditionalInfo().getRrn());
         }
-        Long rptSourceId = recurrentPaymentTool.getId();
         saveAndUpdateNotCurrent(recurrentPaymentTool, rptSourceId);
         log.info(
                 "End recurrent payment tool session changed transaction bound handling, " +

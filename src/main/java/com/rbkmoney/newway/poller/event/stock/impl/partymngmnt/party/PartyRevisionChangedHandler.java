@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@SuppressWarnings("VariableDeclarationUsageDistance")
 public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler {
 
     private final PartyDao partyDao;
@@ -38,19 +39,18 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
         long sequenceId = event.getEventId();
         PartyRevisionChanged partyRevisionChanged = change.getRevisionChanged();
         String partyId = event.getSourceId();
-        log.info("Start partySource revision changed handling, eventId={}, partyId={}, changeId={}", sequenceId,
-                partyId, changeId);
+        log.info("Start partySource revision changed handling, eventId={}, partyId={}, changeId={}",
+                sequenceId, partyId, changeId);
 
         Party partySource = partyDao.get(partyId);
-        PartyUtil.resetBaseFields(event, changeId, sequenceId, partySource);
         long revision = partyRevisionChanged.getRevision();
+        Long oldId = partySource.getId();
+        PartyUtil.resetBaseFields(event, changeId, sequenceId, partySource);
         partySource.setRevision(revision);
         partySource.setRevisionChangedAt(TypeUtil.stringToLocalDateTime(partyRevisionChanged.getTimestamp()));
-
-        Long oldId = partySource.getId();
         partyDao.save(partySource)
                 .ifPresentOrElse(
-                        atLong -> {
+                        anLong -> {
                             partyDao.updateNotCurrent(oldId);
                             updatePartyReferences(partyId, revision);
                             log.info("Party revision changed has been saved, sequenceId={}, partyId={}, changeId={}",
