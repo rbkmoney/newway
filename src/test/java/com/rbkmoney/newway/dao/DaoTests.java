@@ -493,11 +493,11 @@ public class DaoTests extends AbstractAppDaoTests {
         partyDao.save(party);
         Party partyGet = partyDao.get(party.getPartyId());
         assertEquals(party, partyGet);
+        Long oldId = party.getId();
 
         Integer changeId = party.getChangeId() + 1;
         party.setChangeId(changeId);
         party.setId(party.getId() + 1);
-        Long oldId = party.getId();
         partyDao.save(party);
         partyDao.updateNotCurrent(oldId);
 
