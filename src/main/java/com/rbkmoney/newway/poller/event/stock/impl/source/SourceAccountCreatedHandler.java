@@ -45,6 +45,7 @@ public class SourceAccountCreatedHandler extends AbstractSourceHandler {
         if (identity == null) {
             throw new NotFoundException(String.format("Identity not found, sourceId='%s'", account.getIdentity()));
         }
+        Long oldId = source.getId();
 
         initDefaultFields(event, (int) sequenceId, sourceId, source, timestampedChange.getOccuredAt());
 
@@ -54,7 +55,7 @@ public class SourceAccountCreatedHandler extends AbstractSourceHandler {
         source.setAccounterAccountId(account.getAccounterAccountId());
         source.setCurrencyCode(account.getCurrency().getSymbolicCode());
 
-        Long oldId = source.getId();
+
         sourceDao.save(source).ifPresentOrElse(
                 id -> {
                     sourceDao.updateNotCurrent(oldId);

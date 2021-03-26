@@ -50,12 +50,13 @@ public class DepositAdjustmentTransferCreatedHandler extends AbstractDepositHand
         List<FinalCashFlowPosting> postings =
                 change.getAdjustment().getPayload().getTransfer().getPayload().getCreated().getTransfer().getCashflow()
                         .getPostings();
+        Long oldDepositAdjustmentId = depositAdjustment.getId();
         initDefaultFieldsAdjustment(event.getCreatedAt(), timestampedChange.getOccuredAt(), sequenceId,
                 depositAdjustment);
         depositAdjustment.setTransferStatus(DepositTransferStatus.created);
         depositAdjustment.setFee(FistfulCashFlowUtil.getFistfulFee(postings));
         depositAdjustment.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(postings));
-        Long oldDepositAdjustmentId = depositAdjustment.getId();
+
         depositAdjustmentDao.save(depositAdjustment).ifPresentOrElse(
                 id -> {
                     depositAdjustmentDao.updateNotCurrent(oldDepositAdjustmentId);

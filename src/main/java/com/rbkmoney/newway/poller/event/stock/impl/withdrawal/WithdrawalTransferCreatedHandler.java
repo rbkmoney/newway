@@ -46,6 +46,7 @@ public class WithdrawalTransferCreatedHandler extends AbstractWithdrawalHandler 
                 sequenceId, withdrawalId, change.getTransfer());
 
         Withdrawal withdrawal = withdrawalDao.get(withdrawalId);
+        Long oldId = withdrawal.getId();
 
         initDefaultFields(event, sequenceId, withdrawalId, withdrawal, timestampedChange.getOccuredAt());
         withdrawal.setWithdrawalTransferStatus(WithdrawalTransferStatus.created);
@@ -54,7 +55,6 @@ public class WithdrawalTransferCreatedHandler extends AbstractWithdrawalHandler 
         withdrawal.setFee(FistfulCashFlowUtil.getFistfulFee(postings));
         withdrawal.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(postings));
 
-        Long oldId = withdrawal.getId();
         withdrawalDao.save(withdrawal).ifPresentOrElse(
                 id -> {
                     withdrawalDao.updateNotCurrent(oldId);

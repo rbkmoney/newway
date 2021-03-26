@@ -39,6 +39,7 @@ public class WithdrawalSessionTransactionBoundHandler extends AbstractWithdrawal
         log.info("Start withdrawal transaction bound handling, sequenceId={}, withdrawalSessionId={}",
                 sequenceId, withdrawalSessionId);
         WithdrawalSession withdrawalSession = withdrawalSessionDao.get(withdrawalSessionId);
+        Long oldId = withdrawalSession.getId();
         initDefaultFields(
                 event, sequenceId, withdrawalSession, withdrawalSessionId, timestampedChange.getOccuredAt()
         );
@@ -53,7 +54,7 @@ public class WithdrawalSessionTransactionBoundHandler extends AbstractWithdrawal
             withdrawalSession.setTranAdditionalInfoRrn(trxInfo.getAdditionalInfo().getRrn());
             withdrawalSession.setTranAdditionalInfoJson(JsonUtil.thriftBaseToJsonString(trxInfo.getAdditionalInfo()));
         }
-        Long oldId = withdrawalSession.getId();
+
         withdrawalSessionDao.save(withdrawalSession).ifPresentOrElse(
                 id -> {
                     withdrawalSessionDao.updateNotCurrent(oldId);

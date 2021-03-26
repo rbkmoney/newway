@@ -42,6 +42,7 @@ public class IdentityChallengeStatusChangedHandler extends AbstractIdentityHandl
                 sequenceId, identityId, challengeId);
 
         Challenge challenge = challengeDao.get(identityId, challengeChange.getId());
+        Long oldId = challenge.getId();
 
         initDefaultChallengeFields(event, challengeChange, (int) sequenceId, identityId, challenge,
                 timestampedChange.getOccuredAt());
@@ -56,8 +57,6 @@ public class IdentityChallengeStatusChangedHandler extends AbstractIdentityHandl
                 challenge.setChallengeValidUntil(TypeUtil.stringToLocalDateTime(challengeCompleted.getValidUntil()));
             }
         }
-
-        Long oldId = challenge.getId();
 
         challengeDao.save(challenge).ifPresentOrElse(
                 id -> {
