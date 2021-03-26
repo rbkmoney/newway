@@ -48,6 +48,7 @@ public class WithdrawalStatusChangedHandler extends AbstractWithdrawalHandler {
                 sequenceId, withdrawalId, change.getStatusChanged());
 
         Withdrawal withdrawal = withdrawalDao.get(withdrawalId);
+        Long oldId = withdrawal.getId();
 
         initDefaultFields(event, sequenceId, withdrawalId, withdrawal, timestampedChange.getOccuredAt());
 
@@ -57,8 +58,6 @@ public class WithdrawalStatusChangedHandler extends AbstractWithdrawalHandler {
                     .setWithdrawalStatusFailedFailureJson(
                             JsonUtil.thriftBaseToJsonString(status.getFailed().getFailure()));
         }
-
-        Long oldId = withdrawal.getId();
 
         withdrawalDao.save(withdrawal).ifPresentOrElse(
                 id -> {

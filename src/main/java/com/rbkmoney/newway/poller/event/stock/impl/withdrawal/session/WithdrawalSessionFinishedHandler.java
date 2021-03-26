@@ -40,6 +40,7 @@ public class WithdrawalSessionFinishedHandler extends AbstractWithdrawalSessionH
         log.info("Start withdrawal session next state handling, sequenceId={}, withdrawalSessionId={}",
                 sequenceId, withdrawalSessionId);
         WithdrawalSession withdrawalSession = withdrawalSessionDao.get(withdrawalSessionId);
+        Long oldId = withdrawalSession.getId();
         initDefaultFields(event, sequenceId, withdrawalSession, withdrawalSessionId, timestampedChange.getOccuredAt());
 
         withdrawalSession.setWithdrawalSessionStatus(
@@ -48,7 +49,6 @@ public class WithdrawalSessionFinishedHandler extends AbstractWithdrawalSessionH
             withdrawalSession.setFailureJson(JsonUtil.thriftBaseToJsonString(change.getFinished().getFailed()));
         }
 
-        Long oldId = withdrawalSession.getId();
         withdrawalSessionDao.save(withdrawalSession).ifPresentOrElse(
                 id -> {
                     withdrawalSessionDao.updateNotCurrent(oldId);

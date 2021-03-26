@@ -46,11 +46,12 @@ public class DepositTransferCreatedHandler extends AbstractDepositHandler {
         Deposit deposit = depositDao.get(depositId);
         List<FinalCashFlowPosting> postings =
                 change.getTransfer().getPayload().getCreated().getTransfer().getCashflow().getPostings();
+        Long oldId = deposit.getId();
         initDefaultFieldsDeposit(event, sequenceId, deposit, timestampedChange.getOccuredAt());
         deposit.setDepositTransferStatus(DepositTransferStatus.created);
         deposit.setFee(FistfulCashFlowUtil.getFistfulFee(postings));
         deposit.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(postings));
-        Long oldId = deposit.getId();
+
         depositDao.save(deposit).ifPresentOrElse(
                 id -> {
                     depositDao.updateNotCurrent(oldId);

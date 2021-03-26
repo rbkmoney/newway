@@ -50,6 +50,8 @@ public class WalletAccountCreatedHandler extends AbstractWalletHandler {
             throw new NotFoundException(String.format("Identity not found, walletId='%s'", walletId));
         }
 
+        Long oldId = wallet.getId();
+
         initDefaultFields(event, sequenceId, walletId, wallet, timestampedChange.getOccuredAt());
 
         wallet.setAccountId(account.getId());
@@ -58,7 +60,6 @@ public class WalletAccountCreatedHandler extends AbstractWalletHandler {
         wallet.setAccounterAccountId(account.getAccounterAccountId());
         wallet.setCurrencyCode(account.getCurrency().getSymbolicCode());
 
-        Long oldId = wallet.getId();
         walletDao.save(wallet).ifPresentOrElse(
                 id -> {
                     walletDao.updateNotCurrent(oldId);

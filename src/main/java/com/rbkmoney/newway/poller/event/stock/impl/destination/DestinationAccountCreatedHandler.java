@@ -47,14 +47,14 @@ public class DestinationAccountCreatedHandler extends AbstractDestinationHandler
         if (identity == null) {
             throw new NotFoundException(String.format("Identity not found, identityId='%s'", account.getIdentity()));
         }
-
+        Long oldId = destination.getId();
         initDefaultFields(event, sequenceId, destinationId, destination, timestampedChange.getOccuredAt());
         destination.setAccountId(account.getId());
         destination.setIdentityId(account.getIdentity());
         destination.setPartyId(identity.getPartyId());
         destination.setAccounterAccountId(account.getAccounterAccountId());
         destination.setCurrencyCode(account.getCurrency().getSymbolicCode());
-        Long oldId = destination.getId();
+
         destinationDao.save(destination).ifPresentOrElse(
                 id -> {
                     destinationDao.updateNotCurrent(oldId);

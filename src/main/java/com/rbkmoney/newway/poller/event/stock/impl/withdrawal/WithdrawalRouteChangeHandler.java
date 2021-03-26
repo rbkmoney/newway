@@ -42,6 +42,7 @@ public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
                 withdrawalId);
 
         Withdrawal withdrawal = withdrawalDao.get(withdrawalId);
+        Long oldId = withdrawal.getId();
 
         initDefaultFields(event, sequenceId, withdrawalId, withdrawal, timestampedChange.getOccuredAt());
         Route route = change.getRoute().getRoute();
@@ -50,7 +51,6 @@ public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
         withdrawal.setProviderId(providerId);
         withdrawal.setProviderIdLegacy(providerIdLegacy);
 
-        Long oldId = withdrawal.getId();
         withdrawalDao.save(withdrawal).ifPresentOrElse(
                 id -> {
                     withdrawalDao.updateNotCurrent(oldId);
