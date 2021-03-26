@@ -5,14 +5,12 @@ import com.rbkmoney.newway.dao.party.iface.PayoutToolDao;
 import com.rbkmoney.newway.domain.tables.pojos.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.pojos.PayoutTool;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ContractReferenceService {

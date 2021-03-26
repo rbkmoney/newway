@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -37,7 +35,7 @@ public class DominantService {
     private void processOperation(DominantHandler handler, Operation operation, Long versionId) {
         try {
             log.info("Start to process commit with versionId={} operation={} ",
-                    versionId, JsonUtil.tBaseToJsonString(operation));
+                    versionId, JsonUtil.thriftBaseToJsonString(operation));
             handler.handle(operation, versionId);
             log.info("End to process commit with versionId={}", versionId);
         } catch (Exception ex) {

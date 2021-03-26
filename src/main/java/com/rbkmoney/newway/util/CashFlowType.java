@@ -2,9 +2,7 @@ package com.rbkmoney.newway.util;
 
 import com.rbkmoney.damsel.domain.*;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public enum CashFlowType {
 
@@ -59,7 +57,8 @@ public enum CashFlowType {
     }
 
     public static CashFlowType getCashFlowType(FinalCashFlowPosting cashFlowPosting) {
-        return getCashFlowType(cashFlowPosting.getSource().getAccountType(), cashFlowPosting.getDestination().getAccountType());
+        return getCashFlowType(cashFlowPosting.getSource().getAccountType(),
+                cashFlowPosting.getDestination().getAccountType());
     }
 
     public static CashFlowType getCashFlowType(CashFlowAccount source, CashFlowAccount destination) {

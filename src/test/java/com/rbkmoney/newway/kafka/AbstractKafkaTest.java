@@ -6,10 +6,7 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import com.rbkmoney.newway.NewwayApplication;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -42,14 +39,16 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
     @Value("${kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    private static TestContainers testContainers = TestContainersBuilder.builderWithTestContainers(getTestContainersParametersSupplier())
-            .addKafkaTestContainer()
-            .addPostgresqlTestContainer()
-            .build();
+    private static TestContainers testContainers =
+            TestContainersBuilder.builderWithTestContainers(getTestContainersParametersSupplier())
+                    .addKafkaTestContainer()
+                    .addPostgresqlTestContainer()
+                    .build();
 
     @BeforeClass
     public static void beforeClass() {
-        testContainers.getKafkaTestContainer().ifPresent(kafkaContainer -> kafkaContainer.withStartupTimeout(Duration.ofMinutes(10)));
+        testContainers.getKafkaTestContainer()
+                .ifPresent(kafkaContainer -> kafkaContainer.withStartupTimeout(Duration.ofMinutes(10)));
         testContainers.startTestContainers();
     }
 
@@ -62,8 +61,8 @@ public abstract class AbstractKafkaTest extends AbstractTestUtils {
 
         @Override
         public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            TestPropertyValues.of(testContainers.getEnvironmentProperties(getEnvironmentPropertiesConsumer())).
-                    applyTo(configurableApplicationContext);
+            TestPropertyValues.of(testContainers.getEnvironmentProperties(getEnvironmentPropertiesConsumer()))
+                    .applyTo(configurableApplicationContext);
         }
     }
 

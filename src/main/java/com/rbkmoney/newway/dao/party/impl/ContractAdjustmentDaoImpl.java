@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,8 @@ public class ContractAdjustmentDaoImpl extends AbstractGenericDao implements Con
 
     public ContractAdjustmentDaoImpl(DataSource dataSource) {
         super(dataSource);
-        this.contractAdjustmentRowMapper = new RecordRowMapper<>(CONTRACT_ADJUSTMENT, ContractAdjustment.class);;
+        this.contractAdjustmentRowMapper = new RecordRowMapper<>(CONTRACT_ADJUSTMENT, ContractAdjustment.class);
+        ;
     }
 
     @Override

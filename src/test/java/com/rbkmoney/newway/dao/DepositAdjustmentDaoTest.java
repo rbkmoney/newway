@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.dao;
 
-import com.rbkmoney.newway.dao.deposit_adjustment.iface.DepositAdjustmentDao;
+import com.rbkmoney.newway.dao.deposit.adjustment.iface.DepositAdjustmentDao;
 import com.rbkmoney.newway.domain.tables.pojos.DepositAdjustment;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

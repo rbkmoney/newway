@@ -19,7 +19,8 @@ public class KafkaConsumerBeanEnableConfig {
 
     @Bean
     @ConditionalOnProperty(value = "info.single-instance-mode", havingValue = "false")
-    public RecurrentPaymentToolListener recurrentPaymentToolListener(RecurrentPaymentToolService recurrentPaymentToolService) {
+    public RecurrentPaymentToolListener recurrentPaymentToolListener(
+            RecurrentPaymentToolService recurrentPaymentToolService) {
         return new RecurrentPaymentToolListener(recurrentPaymentToolService);
     }
 
@@ -67,7 +68,8 @@ public class KafkaConsumerBeanEnableConfig {
 
     @Bean
     @ConditionalOnProperty(value = "info.single-instance-mode", havingValue = "false")
-    public WithdrawalSessionKafkaListener withdrawalSessionKafkaListener(WithdrawalSessionService withdrawalSessionService) {
+    public WithdrawalSessionKafkaListener withdrawalSessionKafkaListener(
+            WithdrawalSessionService withdrawalSessionService) {
         return new WithdrawalSessionKafkaListener(withdrawalSessionService);
     }
 

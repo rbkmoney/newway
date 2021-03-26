@@ -18,7 +18,8 @@ public class RecurrentPaymentToolListener {
 
     private final RecurrentPaymentToolService recurrentPaymentToolService;
 
-    @KafkaListener(topics = "${kafka.topics.recurrent-payment-tool.id}", containerFactory = "recPayToolContainerFactory")
+    @KafkaListener(topics = "${kafka.topics.recurrent-payment-tool.id}",
+            containerFactory = "recPayToolContainerFactory")
     public void handle(List<ConsumerRecord<String, SinkEvent>> messages, Acknowledgment ack) {
         log.info("Got recPayTool machineEvent batch with size: {}", messages.size());
         recurrentPaymentToolService.handleEvents(
@@ -27,6 +28,7 @@ public class RecurrentPaymentToolListener {
                         .collect(Collectors.toList())
         );
         ack.acknowledge();
-        log.info("Batch recPayTool has been committed, size={}, {}", messages.size(), LogUtil.toSummaryStringWithSinkEventValues(messages));
+        log.info("Batch recPayTool has been committed, size={}, {}", messages.size(),
+                LogUtil.toSummaryStringWithSinkEventValues(messages));
     }
 }

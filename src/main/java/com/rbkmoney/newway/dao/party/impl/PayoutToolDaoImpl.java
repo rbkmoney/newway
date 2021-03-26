@@ -4,13 +4,13 @@ import com.rbkmoney.dao.impl.AbstractGenericDao;
 import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.party.iface.PayoutToolDao;
 import com.rbkmoney.newway.domain.tables.pojos.PayoutTool;
-import com.rbkmoney.newway.domain.tables.records.PayoutToolRecord;
 import com.rbkmoney.newway.exception.DaoException;
 import org.jooq.Query;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+
 import java.util.List;
 import java.util.stream.Collectors;
 

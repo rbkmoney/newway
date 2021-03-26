@@ -27,6 +27,7 @@ public class PartyManagementListener {
                         .collect(Collectors.toList())
         );
         ack.acknowledge();
-        log.info("Batch partyManagement has been committed, size={}, {}", messages.size(), LogUtil.toSummaryStringWithSinkEventValues(messages));
+        log.info("Batch partyManagement has been committed, size={}, {}", messages.size(),
+                LogUtil.toSummaryStringWithSinkEventValues(messages));
     }
 }

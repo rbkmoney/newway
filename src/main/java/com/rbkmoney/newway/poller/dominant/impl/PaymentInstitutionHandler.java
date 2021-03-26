@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
 
 @Component
-public class PaymentInstitutionHandler extends AbstractDominantHandler<PaymentInstitutionObject, PaymentInstitution, Integer> {
+public class PaymentInstitutionHandler
+        extends AbstractDominantHandler<PaymentInstitutionObject, PaymentInstitution, Integer> {
 
     private final PaymentInstitutionDaoImpl paymentInstitutionDao;
 
@@ -40,7 +41,8 @@ public class PaymentInstitutionHandler extends AbstractDominantHandler<PaymentIn
     }
 
     @Override
-    public PaymentInstitution convertToDatabaseObject(PaymentInstitutionObject paymentInstitutionObject, Long versionId, boolean current) {
+    public PaymentInstitution convertToDatabaseObject(PaymentInstitutionObject paymentInstitutionObject, Long versionId,
+                                                      boolean current) {
         PaymentInstitution paymentInstitution = new PaymentInstitution();
         paymentInstitution.setVersionId(versionId);
         paymentInstitution.setPaymentInstitutionRefId(getTargetObjectRefId());
@@ -50,17 +52,20 @@ public class PaymentInstitutionHandler extends AbstractDominantHandler<PaymentIn
         if (data.isSetCalendar()) {
             paymentInstitution.setCalendarRefId(data.getCalendar().getId());
         }
-        paymentInstitution.setSystemAccountSetJson(JsonUtil.tBaseToJsonString(data.getSystemAccountSet()));
-        paymentInstitution.setDefaultContractTemplateJson(JsonUtil.tBaseToJsonString(data.getDefaultContractTemplate()));
+        paymentInstitution.setSystemAccountSetJson(JsonUtil.thriftBaseToJsonString(data.getSystemAccountSet()));
+        paymentInstitution
+                .setDefaultContractTemplateJson(JsonUtil.thriftBaseToJsonString(data.getDefaultContractTemplate()));
         if (data.isSetDefaultWalletContractTemplate()) {
-            paymentInstitution.setDefaultWalletContractTemplateJson(JsonUtil.tBaseToJsonString(data.getDefaultWalletContractTemplate()));
+            paymentInstitution.setDefaultWalletContractTemplateJson(
+                    JsonUtil.thriftBaseToJsonString(data.getDefaultWalletContractTemplate()));
         }
         if (data.isSetProviders()) {
-            paymentInstitution.setProvidersJson(JsonUtil.tBaseToJsonString(data.getProviders()));
+            paymentInstitution.setProvidersJson(JsonUtil.thriftBaseToJsonString(data.getProviders()));
         }
-        paymentInstitution.setInspectorJson(JsonUtil.tBaseToJsonString(data.getInspector()));
+        paymentInstitution.setInspectorJson(JsonUtil.thriftBaseToJsonString(data.getInspector()));
         paymentInstitution.setRealm(data.getRealm().name());
-        paymentInstitution.setResidencesJson(JsonUtil.objectToJsonString(data.getResidences().stream().map(Enum::name).collect(Collectors.toSet())));
+        paymentInstitution.setResidencesJson(
+                JsonUtil.objectToJsonString(data.getResidences().stream().map(Enum::name).collect(Collectors.toSet())));
         paymentInstitution.setCurrent(current);
         return paymentInstitution;
     }

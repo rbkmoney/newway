@@ -3,7 +3,7 @@ package com.rbkmoney.newway.model;
 import org.junit.Test;
 
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotEquals;
 
 public class InvoiceWrapperTest {
 

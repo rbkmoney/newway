@@ -2,7 +2,7 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.fistful.identity.TimestampedChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.poller.event_stock.impl.identity.AbstractIdentityHandler;
+import com.rbkmoney.newway.poller.event.stock.impl.identity.AbstractIdentityHandler;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

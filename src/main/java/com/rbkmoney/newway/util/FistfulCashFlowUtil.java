@@ -1,8 +1,6 @@
 package com.rbkmoney.newway.util;
 
-import com.rbkmoney.fistful.cashflow.FinalCashFlowAccount;
-import com.rbkmoney.fistful.cashflow.FinalCashFlowPosting;
-import com.rbkmoney.fistful.cashflow.MerchantCashFlowAccount;
+import com.rbkmoney.fistful.cashflow.*;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.newway.domain.enums.CashFlowAccount;
 import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
@@ -14,15 +12,18 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class FistfulCashFlowUtil {
-    public static List<FistfulCashFlow> convertFistfulCashFlows(List<FinalCashFlowPosting> cashFlowPostings, Long objId, FistfulCashFlowChangeType cashFlowChangeType) {
+    public static List<FistfulCashFlow> convertFistfulCashFlows(List<FinalCashFlowPosting> cashFlowPostings, Long objId,
+                                                                FistfulCashFlowChangeType cashFlowChangeType) {
         return cashFlowPostings.stream().map(cf -> {
             FistfulCashFlow fcf = new FistfulCashFlow();
             fcf.setObjId(objId);
             fcf.setObjType(cashFlowChangeType);
-            fcf.setSourceAccountType(TBaseUtil.unionFieldToEnum(cf.getSource().getAccountType(), CashFlowAccount.class));
+            fcf.setSourceAccountType(
+                    TBaseUtil.unionFieldToEnum(cf.getSource().getAccountType(), CashFlowAccount.class));
             fcf.setSourceAccountTypeValue(getCashFlowAccountTypeValue(cf.getSource()));
             fcf.setSourceAccountId(cf.getSource().getAccountId());
-            fcf.setDestinationAccountType(TBaseUtil.unionFieldToEnum(cf.getDestination().getAccountType(), CashFlowAccount.class));
+            fcf.setDestinationAccountType(
+                    TBaseUtil.unionFieldToEnum(cf.getDestination().getAccountType(), CashFlowAccount.class));
             fcf.setDestinationAccountTypeValue(getCashFlowAccountTypeValue(cf.getDestination()));
             fcf.setDestinationAccountId(cf.getDestination().getAccountId());
             fcf.setAmount(cf.getVolume().getAmount());
@@ -89,7 +90,7 @@ public class FistfulCashFlowUtil {
     }
 
     private static boolean isMerchantSettlement(com.rbkmoney.fistful.cashflow.CashFlowAccount cashFlowAccount) {
-        return cashFlowAccount.isSetMerchant() &&
-                cashFlowAccount.getMerchant() == MerchantCashFlowAccount.settlement;
+        return cashFlowAccount.isSetMerchant()
+                && cashFlowAccount.getMerchant() == MerchantCashFlowAccount.settlement;
     }
 }

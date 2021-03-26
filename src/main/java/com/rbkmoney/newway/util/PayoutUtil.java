@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PayoutUtil {
-    public static List<PayoutSummary> convertPayoutSummaries(com.rbkmoney.damsel.payout_processing.Payout payoutCreated, long pytId) {
+    public static List<PayoutSummary> convertPayoutSummaries(com.rbkmoney.damsel.payout_processing.Payout payoutCreated,
+                                                             long pytId) {
         return payoutCreated.getSummary().stream().map(s -> {
             PayoutSummary ps = new PayoutSummary();
             ps.setPytId(pytId);

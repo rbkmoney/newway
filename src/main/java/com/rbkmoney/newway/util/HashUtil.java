@@ -9,7 +9,7 @@ public class HashUtil {
     }
 
     /**
-     * @param str
+     * @param str for return a hexadecimal string
      * @return int value of first 7 digits of md5-hash of invoice_id
      */
     public static int getIntHash(String str) {

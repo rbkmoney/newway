@@ -13,9 +13,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+
 import java.util.Optional;
 
-import static com.rbkmoney.newway.domain.tables.Wallet.WALLET;
 import static com.rbkmoney.newway.domain.tables.Withdrawal.WITHDRAWAL;
 
 @Component

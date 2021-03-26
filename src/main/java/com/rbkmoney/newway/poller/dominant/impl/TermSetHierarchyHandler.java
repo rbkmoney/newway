@@ -11,7 +11,8 @@ import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
 
 @Component
-public class TermSetHierarchyHandler extends AbstractDominantHandler<TermSetHierarchyObject, TermSetHierarchy, Integer> {
+public class TermSetHierarchyHandler
+        extends AbstractDominantHandler<TermSetHierarchyObject, TermSetHierarchy, Integer> {
 
     private final TermSetHierarchyDaoImpl termSetHierarchyDao;
 
@@ -40,7 +41,8 @@ public class TermSetHierarchyHandler extends AbstractDominantHandler<TermSetHier
     }
 
     @Override
-    public TermSetHierarchy convertToDatabaseObject(TermSetHierarchyObject termSetHierarchyObject, Long versionId, boolean current) {
+    public TermSetHierarchy convertToDatabaseObject(TermSetHierarchyObject termSetHierarchyObject, Long versionId,
+                                                    boolean current) {
         TermSetHierarchy termSetHierarchy = new TermSetHierarchy();
         termSetHierarchy.setVersionId(versionId);
         termSetHierarchy.setTermSetHierarchyRefId(getTargetObjectRefId());
@@ -50,7 +52,8 @@ public class TermSetHierarchyHandler extends AbstractDominantHandler<TermSetHier
         if (data.isSetParentTerms()) {
             termSetHierarchy.setParentTermsRefId(data.getParentTerms().getId());
         }
-        termSetHierarchy.setTermSetsJson(JsonUtil.objectToJsonString(data.getTermSets().stream().map(JsonUtil::tBaseToJsonNode).collect(Collectors.toList())));
+        termSetHierarchy.setTermSetsJson(JsonUtil.objectToJsonString(
+                data.getTermSets().stream().map(JsonUtil::thriftBaseToJsonNode).collect(Collectors.toList())));
         termSetHierarchy.setCurrent(current);
         return termSetHierarchy;
     }

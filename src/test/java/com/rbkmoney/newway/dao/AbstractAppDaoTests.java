@@ -24,9 +24,10 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public abstract class AbstractAppDaoTests extends AbstractTestUtils {
 
-    private static TestContainers testContainers = TestContainersBuilder.builderWithTestContainers(getTestContainersParametersSupplier())
-            .addPostgresqlTestContainer()
-            .build();
+    private static TestContainers testContainers =
+            TestContainersBuilder.builderWithTestContainers(getTestContainersParametersSupplier())
+                    .addPostgresqlTestContainer()
+                    .build();
 
     @BeforeClass
     public static void beforeClass() {

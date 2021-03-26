@@ -13,6 +13,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+
 import java.util.Optional;
 
 import static com.rbkmoney.newway.domain.tables.Challenge.CHALLENGE;
@@ -48,8 +49,8 @@ public class ChallengeDaoImpl extends AbstractGenericDao implements ChallengeDao
         Query query = getDslContext().selectFrom(CHALLENGE)
                 .where(
                         CHALLENGE.IDENTITY_ID.eq(identityId)
-                        .and(CHALLENGE.CHALLENGE_ID.eq(challengeId))
-                        .and(CHALLENGE.CURRENT)
+                                .and(CHALLENGE.CHALLENGE_ID.eq(challengeId))
+                                .and(CHALLENGE.CURRENT)
                 );
 
         return fetchOne(query, challengeRowMapper);

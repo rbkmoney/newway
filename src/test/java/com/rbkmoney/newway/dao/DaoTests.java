@@ -3,18 +3,14 @@ package com.rbkmoney.newway.dao;
 import com.rbkmoney.newway.dao.dominant.iface.DominantDao;
 import com.rbkmoney.newway.dao.dominant.impl.*;
 import com.rbkmoney.newway.dao.invoicing.iface.*;
-import com.rbkmoney.newway.dao.invoicing.impl.InvoiceDaoImpl;
-import com.rbkmoney.newway.dao.invoicing.impl.PaymentDaoImpl;
-import com.rbkmoney.newway.dao.invoicing.impl.PaymentIdsGeneratorDaoImpl;
+import com.rbkmoney.newway.dao.invoicing.impl.*;
 import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.dao.rate.iface.RateDao;
-import com.rbkmoney.newway.dao.recurrent_payment_tool.iface.RecurrentPaymentToolDao;
-import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
-import com.rbkmoney.newway.domain.enums.CashFlowAccount;
-import com.rbkmoney.newway.domain.enums.PaymentChangeType;
+import com.rbkmoney.newway.dao.recurrent.payment.tool.iface.RecurrentPaymentToolDao;
+import com.rbkmoney.newway.domain.enums.*;
+import com.rbkmoney.newway.domain.tables.pojos.*;
 import com.rbkmoney.newway.domain.tables.pojos.Calendar;
 import com.rbkmoney.newway.domain.tables.pojos.Currency;
-import com.rbkmoney.newway.domain.tables.pojos.*;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.InvoicingType;
 import com.rbkmoney.newway.util.HashUtil;
@@ -22,9 +18,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.SingleColumnRowMapper;
+import org.springframework.jdbc.core.*;
 
 import java.util.*;
 import java.util.stream.LongStream;
@@ -35,6 +29,7 @@ import static io.github.benas.randombeans.api.EnhancedRandom.randomListOf;
 import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.*;
 
+@SuppressWarnings("VariableDeclarationUsageDistance")
 public class DaoTests extends AbstractAppDaoTests {
 
     @Autowired
@@ -196,54 +191,108 @@ public class DaoTests extends AbstractAppDaoTests {
         jdbcTemplate.execute("truncate table nw.cash_flow cascade");
         List<CashFlow> cashFlows = new ArrayList<>();
 
-        CashFlow cashFlowPaymentAmount = createCashFlow(1L, 1000L, "RUB", 1L, CashFlowAccount.provider, "settlement", 2L, CashFlowAccount.merchant, "settlement", PaymentChangeType.payment);
+        CashFlow cashFlowPaymentAmount =
+                createCashFlow(1L, 1000L, "RUB", 1L, CashFlowAccount.provider, "settlement", 2L,
+                        CashFlowAccount.merchant, "settlement", PaymentChangeType.payment);
         cashFlows.add(cashFlowPaymentAmount);
-        CashFlow cashFlowPaymentFee = createCashFlow(1L, 10L, "RUB", 2L, CashFlowAccount.merchant, "settlement", 2L, CashFlowAccount.system, "settlement", PaymentChangeType.payment);
+        CashFlow cashFlowPaymentFee =
+                createCashFlow(1L, 10L, "RUB", 2L, CashFlowAccount.merchant, "settlement", 2L, CashFlowAccount.system,
+                        "settlement", PaymentChangeType.payment);
         cashFlows.add(cashFlowPaymentFee);
-        CashFlow cashFlowPaymentExternalIncomeFee = createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 3L, CashFlowAccount.external, "income", PaymentChangeType.payment);
+        CashFlow cashFlowPaymentExternalIncomeFee =
+                createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 3L, CashFlowAccount.external,
+                        "income", PaymentChangeType.payment);
         cashFlows.add(cashFlowPaymentExternalIncomeFee);
-        CashFlow cashFlowPaymentExternalOutcomeFee = createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 4L, CashFlowAccount.external, "outcome", PaymentChangeType.payment);
+        CashFlow cashFlowPaymentExternalOutcomeFee =
+                createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 4L, CashFlowAccount.external,
+                        "outcome", PaymentChangeType.payment);
         cashFlows.add(cashFlowPaymentExternalOutcomeFee);
-        CashFlow cashFlowPaymentProviderFee = createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 5L, CashFlowAccount.provider, "settlement", PaymentChangeType.payment);
+        CashFlow cashFlowPaymentProviderFee =
+                createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 5L, CashFlowAccount.provider,
+                        "settlement", PaymentChangeType.payment);
         cashFlows.add(cashFlowPaymentProviderFee);
-        CashFlow cashFlowPaymentGuaranteeDeposit = createCashFlow(1L, 30L, "RUB", 2L, CashFlowAccount.merchant, "settlement", 5L, CashFlowAccount.merchant, "guarantee", PaymentChangeType.payment);
+        CashFlow cashFlowPaymentGuaranteeDeposit =
+                createCashFlow(1L, 30L, "RUB", 2L, CashFlowAccount.merchant, "settlement", 5L, CashFlowAccount.merchant,
+                        "guarantee", PaymentChangeType.payment);
         cashFlows.add(cashFlowPaymentGuaranteeDeposit);
-        CashFlow cashFlowRefundAmount = createCashFlow(1L, 1000L, "RUB", 2L, CashFlowAccount.merchant, "settlement", 5L, CashFlowAccount.provider, "settlement", PaymentChangeType.refund);
+        CashFlow cashFlowRefundAmount = createCashFlow(1L, 1000L, "RUB", 2L, CashFlowAccount.merchant, "settlement", 5L,
+                CashFlowAccount.provider, "settlement", PaymentChangeType.refund);
         cashFlows.add(cashFlowRefundAmount);
-        CashFlow cashFlowRefundFee = createCashFlow(1L, 10L, "RUB", 2L, CashFlowAccount.merchant, "settlement", 2L, CashFlowAccount.system, "settlement", PaymentChangeType.refund);
+        CashFlow cashFlowRefundFee =
+                createCashFlow(1L, 10L, "RUB", 2L, CashFlowAccount.merchant, "settlement", 2L, CashFlowAccount.system,
+                        "settlement", PaymentChangeType.refund);
         cashFlows.add(cashFlowRefundFee);
-        CashFlow cashFlowRefundExternalIncomeFee = createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 3L, CashFlowAccount.external, "income", PaymentChangeType.refund);
+        CashFlow cashFlowRefundExternalIncomeFee =
+                createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 3L, CashFlowAccount.external,
+                        "income", PaymentChangeType.refund);
         cashFlows.add(cashFlowRefundExternalIncomeFee);
-        CashFlow cashFlowRefundExternalOutcomeFee = createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 4L, CashFlowAccount.external, "outcome", PaymentChangeType.refund);
+        CashFlow cashFlowRefundExternalOutcomeFee =
+                createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 4L, CashFlowAccount.external,
+                        "outcome", PaymentChangeType.refund);
         cashFlows.add(cashFlowRefundExternalOutcomeFee);
-        CashFlow cashFlowRefundProviderFee = createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 5L, CashFlowAccount.provider, "settlement", PaymentChangeType.refund);
+        CashFlow cashFlowRefundProviderFee =
+                createCashFlow(1L, 3L, "RUB", 2L, CashFlowAccount.system, "settlement", 5L, CashFlowAccount.provider,
+                        "settlement", PaymentChangeType.refund);
         cashFlows.add(cashFlowRefundProviderFee);
-        CashFlow cashFlowPayoutAmount = createCashFlow(1L, 1000L, "RUB", 2L, CashFlowAccount.merchant, "settlement", 7L, CashFlowAccount.merchant, "payout", PaymentChangeType.payout);
+        CashFlow cashFlowPayoutAmount = createCashFlow(1L, 1000L, "RUB", 2L, CashFlowAccount.merchant, "settlement", 7L,
+                CashFlowAccount.merchant, "payout", PaymentChangeType.payout);
         cashFlows.add(cashFlowPayoutAmount);
-        CashFlow cashFlowPayoutFee = createCashFlow(1L, 10L, "RUB", 1L, CashFlowAccount.merchant, "settlement", 2L, CashFlowAccount.system, "settlement", PaymentChangeType.payout);
+        CashFlow cashFlowPayoutFee =
+                createCashFlow(1L, 10L, "RUB", 1L, CashFlowAccount.merchant, "settlement", 2L, CashFlowAccount.system,
+                        "settlement", PaymentChangeType.payout);
         cashFlows.add(cashFlowPayoutFee);
-        CashFlow cashFlowPayoutFixedFee = createCashFlow(1L, 100L, "RUB", 7L, CashFlowAccount.merchant, "payout", 2L, CashFlowAccount.system, "settlement", PaymentChangeType.payout);
+        CashFlow cashFlowPayoutFixedFee =
+                createCashFlow(1L, 100L, "RUB", 7L, CashFlowAccount.merchant, "payout", 2L, CashFlowAccount.system,
+                        "settlement", PaymentChangeType.payout);
         cashFlows.add(cashFlowPayoutFixedFee);
-        CashFlow cashFlowAdjustmentAmount = createCashFlow(1L, 1000L, "RUB", 1L, CashFlowAccount.provider, "settlement", 2L, CashFlowAccount.merchant, "settlement", PaymentChangeType.adjustment);
+        CashFlow cashFlowAdjustmentAmount =
+                createCashFlow(1L, 1000L, "RUB", 1L, CashFlowAccount.provider, "settlement", 2L,
+                        CashFlowAccount.merchant, "settlement", PaymentChangeType.adjustment);
         cashFlowAdjustmentAmount.setAdjFlowType(AdjustmentCashFlowType.new_cash_flow);
         cashFlows.add(cashFlowAdjustmentAmount);
 
         cashFlowDao.save(cashFlows);
 
-        assertEquals(cashFlowPaymentAmount.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payment_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowPaymentFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowPaymentExternalIncomeFee.getAmount() + cashFlowPaymentExternalOutcomeFee.getAmount(), (long) jdbcTemplate.queryForObject("SELECT nw.get_payment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowPaymentProviderFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowPaymentGuaranteeDeposit.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payment_guarantee_deposit(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPaymentAmount.getAmount(), jdbcTemplate
+                .queryForObject("SELECT nw.get_payment_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPaymentFee.getAmount(), jdbcTemplate
+                .queryForObject("SELECT nw.get_payment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPaymentExternalIncomeFee.getAmount() + cashFlowPaymentExternalOutcomeFee.getAmount(),
+                (long) jdbcTemplate.queryForObject(
+                        "SELECT nw.get_payment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPaymentProviderFee.getAmount(), jdbcTemplate
+                .queryForObject("SELECT nw.get_payment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPaymentGuaranteeDeposit.getAmount(), jdbcTemplate.queryForObject(
+                "SELECT nw.get_payment_guarantee_deposit(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                new SingleColumnRowMapper<>(Long.class)));
 
-        assertEquals(cashFlowRefundAmount.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_refund_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowRefundFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_refund_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowRefundExternalIncomeFee.getAmount() + cashFlowRefundExternalOutcomeFee.getAmount(), (long) jdbcTemplate.queryForObject("SELECT nw.get_refund_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowRefundProviderFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_refund_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowRefundAmount.getAmount(), jdbcTemplate
+                .queryForObject("SELECT nw.get_refund_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowRefundFee.getAmount(), jdbcTemplate
+                .queryForObject("SELECT nw.get_refund_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowRefundExternalIncomeFee.getAmount() + cashFlowRefundExternalOutcomeFee.getAmount(),
+                (long) jdbcTemplate.queryForObject(
+                        "SELECT nw.get_refund_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowRefundProviderFee.getAmount(), jdbcTemplate
+                .queryForObject("SELECT nw.get_refund_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
 
-        assertEquals(cashFlowPayoutAmount.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payout_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowPayoutFixedFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payout_fixed_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(cashFlowPayoutFee.getAmount(), jdbcTemplate.queryForObject("SELECT nw.get_payout_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPayoutAmount.getAmount(), jdbcTemplate
+                .queryForObject("SELECT nw.get_payout_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPayoutFixedFee.getAmount(), jdbcTemplate
+                .queryForObject("SELECT nw.get_payout_fixed_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(cashFlowPayoutFee.getAmount(), jdbcTemplate
+                .queryForObject("SELECT nw.get_payout_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
     }
 
     @Test
@@ -253,25 +302,57 @@ public class DaoTests extends AbstractAppDaoTests {
         notCashFlow.setObjId(1L);
         cashFlowDao.save(Collections.singletonList(notCashFlow));
 
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payment_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payment_guarantee_deposit(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate
+                .queryForObject("SELECT nw.get_payment_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate
+                .queryForObject("SELECT nw.get_payment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate
+                .queryForObject("SELECT nw.get_payment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate
+                .queryForObject("SELECT nw.get_payment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject(
+                "SELECT nw.get_payment_guarantee_deposit(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                new SingleColumnRowMapper<>(Long.class)));
 
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_refund_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_refund_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_refund_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_refund_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate
+                .queryForObject("SELECT nw.get_refund_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate
+                .queryForObject("SELECT nw.get_refund_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate
+                .queryForObject("SELECT nw.get_refund_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate
+                .queryForObject("SELECT nw.get_refund_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
 
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payout_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payout_fixed_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_payout_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate
+                .queryForObject("SELECT nw.get_payout_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate
+                .queryForObject("SELECT nw.get_payout_fixed_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate
+                .queryForObject("SELECT nw.get_payout_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
 
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_adjustment_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_adjustment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_adjustment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
-        assertEquals(0L, (long) jdbcTemplate.queryForObject("SELECT nw.get_adjustment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1", new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate
+                .queryForObject("SELECT nw.get_adjustment_amount(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate
+                .queryForObject("SELECT nw.get_adjustment_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                        new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject(
+                "SELECT nw.get_adjustment_external_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                new SingleColumnRowMapper<>(Long.class)));
+        assertEquals(0L, (long) jdbcTemplate.queryForObject(
+                "SELECT nw.get_adjustment_provider_fee(nw.cash_flow.*) FROM nw.cash_flow WHERE obj_id = 1",
+                new SingleColumnRowMapper<>(Long.class)));
     }
 
     @Test
@@ -304,9 +385,12 @@ public class DaoTests extends AbstractAppDaoTests {
         Adjustment adjustment = random(Adjustment.class);
         adjustment.setCurrent(true);
         adjustmentDao.save(adjustment);
-        assertEquals(adjustment.getPartyId(), adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()).getPartyId());
+        assertEquals(adjustment.getPartyId(),
+                adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId())
+                        .getPartyId());
         adjustmentDao.updateNotCurrent(adjustment.getId());
-        Assert.assertNull(adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()));
+        Assert.assertNull(
+                adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()));
     }
 
     @Test
@@ -339,7 +423,8 @@ public class DaoTests extends AbstractAppDaoTests {
         paymentTwo.setInvoiceId(payment.getInvoiceId());
         paymentTwo.setPaymentId(payment.getPaymentId());
         paymentDao.saveBatch(Arrays.asList(payment, paymentTwo));
-        paymentDao.switchCurrent(Collections.singletonList(new InvoicingKey(payment.getInvoiceId(), payment.getPaymentId(), InvoicingType.PAYMENT)));
+        paymentDao.switchCurrent(Collections.singletonList(
+                new InvoicingKey(payment.getInvoiceId(), payment.getPaymentId(), InvoicingType.PAYMENT)));
         Payment paymentGet = paymentDao.get(payment.getInvoiceId(), payment.getPaymentId());
         paymentTwo.setCurrent(true);
         assertEquals(paymentTwo, paymentGet);
@@ -409,8 +494,8 @@ public class DaoTests extends AbstractAppDaoTests {
         partyDao.save(party);
         Party partyGet = partyDao.get(party.getPartyId());
         assertEquals(party, partyGet);
-
         Long oldId = party.getId();
+
         Integer changeId = party.getChangeId() + 1;
         party.setChangeId(changeId);
         party.setId(party.getId() + 1);
@@ -491,7 +576,8 @@ public class DaoTests extends AbstractAppDaoTests {
     @Test
     public void getIntHashTest() {
         Integer javaHash = HashUtil.getIntHash("kek");
-        Integer postgresHash = jdbcTemplate.queryForObject("select ('x0'||substr(md5('kek'), 1, 7))::bit(32)::int", Integer.class);
+        Integer postgresHash =
+                jdbcTemplate.queryForObject("select ('x0'||substr(md5('kek'), 1, 7))::bit(32)::int", Integer.class);
         assertEquals(javaHash, postgresHash);
     }
 
@@ -506,13 +592,17 @@ public class DaoTests extends AbstractAppDaoTests {
         adjustment.setCurrent(true);
         adjustmentDao.save(adjustment);
 
-        assertEquals("1", adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()).getPartyId());
+        assertEquals("1",
+                adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId())
+                        .getPartyId());
 
         adjustment.setPartyId("2");
 
         adjustmentDao.save(adjustment);
 
-        assertEquals("1", adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()).getPartyId());
+        assertEquals("1",
+                adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId())
+                        .getPartyId());
     }
 
     @Test
@@ -530,7 +620,8 @@ public class DaoTests extends AbstractAppDaoTests {
         Optional<Long> id = recurrentPaymentToolDao.save(recurrentPaymentTool);
         assertTrue(id.isPresent());
         recurrentPaymentTool.setId(id.get());
-        assertEquals(recurrentPaymentTool, recurrentPaymentToolDao.get(recurrentPaymentTool.getRecurrentPaymentToolId()));
+        assertEquals(recurrentPaymentTool,
+                recurrentPaymentToolDao.get(recurrentPaymentTool.getRecurrentPaymentToolId()));
         recurrentPaymentToolDao.updateNotCurrent(recurrentPaymentTool.getId());
         assertNull(recurrentPaymentToolDao.get(recurrentPaymentTool.getRecurrentPaymentToolId()));
     }

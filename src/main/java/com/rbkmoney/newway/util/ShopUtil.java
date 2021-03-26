@@ -14,7 +14,8 @@ public class ShopUtil {
         shop.setAccountPayout(shopAccount.getPayout());
     }
 
-    public static void resetBaseFields(MachineEvent event, Integer changeId, long sequenceId, Shop shopSource, Integer claimEffectId) {
+    public static void resetBaseFields(MachineEvent event, Integer changeId, long sequenceId, Shop shopSource,
+                                       Integer claimEffectId) {
         shopSource.setId(null);
         shopSource.setWtime(null);
         shopSource.setSequenceId((int) sequenceId);

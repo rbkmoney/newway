@@ -11,7 +11,8 @@ import java.util.Map;
 @Slf4j
 public class PayoutEventDeserializer implements Deserializer<Event> {
 
-    ThreadLocal<TDeserializer> tDeserializerThreadLocal = ThreadLocal.withInitial(() -> new TDeserializer(new TBinaryProtocol.Factory()));
+    ThreadLocal<TDeserializer> thriftDeserializerThreadLocal =
+            ThreadLocal.withInitial(() -> new TDeserializer(new TBinaryProtocol.Factory()));
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {
@@ -23,7 +24,7 @@ public class PayoutEventDeserializer implements Deserializer<Event> {
         Event payoutEvent = new Event();
 
         try {
-            tDeserializerThreadLocal.get().deserialize(payoutEvent, data);
+            thriftDeserializerThreadLocal.get().deserialize(payoutEvent, data);
         } catch (Exception e) {
             log.error("Error when deserialize ruleTemplate data: {} ", data, e);
         }

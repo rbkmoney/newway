@@ -12,19 +12,19 @@ import java.io.IOException;
 public class JsonUtil {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static String tBaseToJsonString(TBase tBase) {
+    public static String thriftBaseToJsonString(TBase thriftBase) {
         try {
-            return new TBaseProcessor().process(tBase, new JsonHandler()).toString();
+            return new TBaseProcessor().process(thriftBase, new JsonHandler()).toString();
         } catch (IOException e) {
-            throw new RuntimeException("Couldn't convert to json string: " + tBase, e);
+            throw new RuntimeException("Couldn't convert to json string: " + thriftBase, e);
         }
     }
 
-    public static JsonNode tBaseToJsonNode(TBase tBase) {
+    public static JsonNode thriftBaseToJsonNode(TBase thriftBase) {
         try {
-            return new TBaseProcessor().process(tBase, new JsonHandler());
+            return new TBaseProcessor().process(thriftBase, new JsonHandler());
         } catch (IOException e) {
-            throw new RuntimeException("Couldn't convert to json node: " + tBase, e);
+            throw new RuntimeException("Couldn't convert to json node: " + thriftBase, e);
         }
     }
 

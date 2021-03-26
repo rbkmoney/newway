@@ -45,7 +45,7 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
     }
 
     @Override
-    public void updateBatch(List<Payment> payments) throws DaoException{
+    public void updateBatch(List<Payment> payments) throws DaoException {
         List<Query> queries = payments.stream()
                 .map(payment -> getDslContext().newRecord(PAYMENT, payment))
                 .map(paymentRecord -> getDslContext().update(PAYMENT)
@@ -68,8 +68,13 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
     @Override
     public void switchCurrent(Collection<InvoicingKey> paymentsSwitchIds) throws DaoException {
         paymentsSwitchIds.forEach(ik ->
-                this.getNamedParameterJdbcTemplate().update("update nw.payment set current = false where invoice_id =:invoice_id and payment_id=:payment_id and current;" +
-                                "update nw.payment set current = true where id = (select max(id) from nw.payment where invoice_id =:invoice_id and payment_id=:payment_id);",
-                        new MapSqlParameterSource("invoice_id", ik.getInvoiceId()).addValue("payment_id", ik.getPaymentId())));
+                this.getNamedParameterJdbcTemplate()
+                        .update("update nw.payment set current = false " +
+                                        "where invoice_id =:invoice_id and payment_id=:payment_id and current;" +
+                                        "update nw.payment set current = true " +
+                                        "where id = (select max(id) from nw.payment where invoice_id =:invoice_id " +
+                                        "and payment_id=:payment_id);",
+                                new MapSqlParameterSource("invoice_id", ik.getInvoiceId())
+                                        .addValue("payment_id", ik.getPaymentId())));
     }
 }

@@ -13,10 +13,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+
 import java.util.Optional;
 
-import static com.rbkmoney.newway.domain.tables.Deposit.DEPOSIT;
-import static com.rbkmoney.newway.domain.tables.Identity.IDENTITY;
 import static com.rbkmoney.newway.domain.tables.Source.SOURCE;
 
 @Component

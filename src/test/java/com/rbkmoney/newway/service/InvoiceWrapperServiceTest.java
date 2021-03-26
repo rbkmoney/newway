@@ -4,8 +4,7 @@ import com.rbkmoney.newway.dao.AbstractAppDaoTests;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.model.InvoiceWrapper;
-import com.rbkmoney.newway.model.InvoicingKey;
-import com.rbkmoney.newway.poller.event_stock.LocalStorage;
+import com.rbkmoney.newway.poller.event.stock.LocalStorage;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,7 +14,7 @@ import java.util.stream.IntStream;
 
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
 import static io.github.benas.randombeans.api.EnhancedRandom.randomListOf;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class InvoiceWrapperServiceTest extends AbstractAppDaoTests {
 

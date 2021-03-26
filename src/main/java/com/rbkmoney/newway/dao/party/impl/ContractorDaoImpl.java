@@ -9,16 +9,12 @@ import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.exception.NotFoundException;
 import org.jooq.Query;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import javax.sql.DataSource;
-import java.util.List;
-import java.util.Map;
+
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.Tables.CONTRACTOR;
 
@@ -48,7 +44,8 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
     @Override
     public Contractor get(String partyId, String contractorId) throws DaoException {
         Query query = getDslContext().selectFrom(CONTRACTOR)
-                .where(CONTRACTOR.PARTY_ID.eq(partyId).and(CONTRACTOR.CONTRACTOR_ID.eq(contractorId)).and(CONTRACTOR.CURRENT));
+                .where(CONTRACTOR.PARTY_ID.eq(partyId).and(CONTRACTOR.CONTRACTOR_ID.eq(contractorId))
+                        .and(CONTRACTOR.CURRENT));
         Contractor contractor = fetchOne(query, contractorRowMapper);
         if (contractor == null) {
             throw new NotFoundException(String.format("Contractor not found, contractorId='%s'", contractorId));

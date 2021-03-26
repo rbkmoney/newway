@@ -5,26 +5,24 @@
     <description>SQL-views of business objects</description>
 
     <artifactId>newway</artifactId>
-    <version>1.0.81-SNAPSHOT</version>
+    <version>1.2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
 
     <parent>
         <groupId>com.rbkmoney</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.7.RELEASE</version>
+        <artifactId>service-parent-pom</artifactId>
+        <version>1.0.9</version>
     </parent>
 
     <properties>
         <project.maintainer>Inal Arsanukaev &lt;i.arsanukaev@rbkmoney.com&gt;</project.maintainer>
-        <shared.resources.version>0.3.6</shared.resources.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <dockerfile.base.service.tag>57e26d8ee999d7b0b50248c22afc63e6f926d276</dockerfile.base.service.tag>
+        <dockerfile.base.service.tag>c0612d6052ac049496b72a23a04acb142035f249</dockerfile.base.service.tag>
         <dockerfile.registry>${env.REGISTRY}</dockerfile.registry>
         <server.port>8022</server.port>
-        <java.version>11</java.version>
-        <exposed.ports>${server.port}</exposed.ports>
+        <management.port>8023</management.port>
+        <exposed.ports>${server.port} ${management.port}</exposed.ports>
         <db.url>jdbc:postgresql://localhost:5432/newway</db.url>
         <db.user>postgres</db.user>
         <db.password>postgres</db.password>
@@ -33,12 +31,11 @@
         <local.pg.url>jdbc:postgresql://localhost:5432/newway</local.pg.url>
         <local.pg.port>5432</local.pg.port>
         <fistful-proto.version>1.106-ebe76ef</fistful-proto.version>
-        <damsel.version>1.483-ca2b3ad</damsel.version>
         <sink-common-lib.version>0.0.4</sink-common-lib.version>
     </properties>
 
     <dependencies>
-        <!--Thrirdparty libs-->
+        <!--spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -54,29 +51,34 @@
             <artifactId>spring-boot-starter-jdbc</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.rbkmoney</groupId>
-            <artifactId>spring-boot-starter-metrics-statsd</artifactId>
-            <version>1.1.0</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+
+        <!--Thrirdparty libs-->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>${flyway.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq</artifactId>
-            <version>${jooq.version}</version>
         </dependency>
         <dependency>
             <groupId>de.codecentric</groupId>
@@ -95,16 +97,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.4</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
@@ -119,7 +112,6 @@
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>db-common-lib</artifactId>
-            <version>0.0.3</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
@@ -129,7 +121,6 @@
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>kafka-common-lib</artifactId>
-            <version>0.1.2</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
@@ -149,7 +140,6 @@
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>damsel</artifactId>
-            <version>${damsel.version}</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
@@ -164,17 +154,18 @@
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>shared-resources</artifactId>
-            <version>${shared.resources.version}</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney.geck</groupId>
             <artifactId>serializer</artifactId>
-            <version>0.6.11</version>
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>custom-actuator-endpoints</artifactId>
-            <version>0.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
+            <artifactId>custom-metrics-spring-boot-starter</artifactId>
         </dependency>
 
         <!-- Test -->
@@ -219,7 +210,6 @@
             <version>0.5.0</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -252,7 +242,7 @@
             <plugin>
                 <groupId>com.rbkmoney.maven.plugins</groupId>
                 <artifactId>pg-embedded-plugin</artifactId>
-                <version>1.4</version>
+                <version>1.6</version>
                 <configuration>
                     <port>${local.pg.port}</port>
                     <dbName>newway</dbName>
@@ -280,7 +270,6 @@
             <plugin>
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
-                <version>${flyway.version}</version>
                 <configuration>
                     <url>${local.pg.url}</url>
                     <user>${db.user}</user>
@@ -309,7 +298,6 @@
             <plugin>
                 <groupId>org.jooq</groupId>
                 <artifactId>jooq-codegen-maven</artifactId>
-                <version>${jooq.version}</version>
                 <configuration>
                     <jdbc>
                         <driver>org.postgresql.Driver</driver>
@@ -368,7 +356,7 @@
                 </dependencies>
                 <configuration>
                     <resourceBundles>
-                        <resourceBundle>com.rbkmoney:shared-resources:${shared.resources.version}</resourceBundle>
+                        <resourceBundle>com.rbkmoney:shared-resources:${shared-resources.version}</resourceBundle>
                     </resourceBundles>
                     <attachToMain>false</attachToMain>
                     <attachToTest>false</attachToTest>

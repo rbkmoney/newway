@@ -33,11 +33,11 @@ public class WithdrawalProviderHandlerTest {
                 .setRef(new WithdrawalProviderRef(1))
                 .setData(new WithdrawalProvider()
                         .setName(random(String.class))
-                .setDescription(random(String.class))
-                .setProxy(new Proxy()
-                .setRef(new ProxyRef(random(Integer.class)))
-                .setAdditional(Map.of(random(String.class), random(String.class))))
-                .setIdentity(random(String.class))
-                .setAccounts(Map.of(new CurrencyRef("RUB"), new ProviderAccount(123))));
+                        .setDescription(random(String.class))
+                        .setProxy(new Proxy()
+                                .setRef(new ProxyRef(random(Integer.class)))
+                                .setAdditional(Map.of(random(String.class), random(String.class))))
+                        .setIdentity(random(String.class))
+                        .setAccounts(Map.of(new CurrencyRef("RUB"), new ProviderAccount(123))));
     }
 }

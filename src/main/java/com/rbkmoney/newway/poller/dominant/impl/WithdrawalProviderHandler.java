@@ -12,7 +12,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-public class WithdrawalProviderHandler extends AbstractDominantHandler<WithdrawalProviderObject, WithdrawalProvider, Integer> {
+public class WithdrawalProviderHandler
+        extends AbstractDominantHandler<WithdrawalProviderObject, WithdrawalProvider, Integer> {
 
     private final WithdrawalProviderDaoImpl withdrawalProviderDao;
 
@@ -41,7 +42,8 @@ public class WithdrawalProviderHandler extends AbstractDominantHandler<Withdrawa
     }
 
     @Override
-    public WithdrawalProvider convertToDatabaseObject(WithdrawalProviderObject withdrawalProviderObject, Long versionId, boolean current) {
+    public WithdrawalProvider convertToDatabaseObject(WithdrawalProviderObject withdrawalProviderObject, Long versionId,
+                                                      boolean current) {
         WithdrawalProvider withdrawalProvider = new WithdrawalProvider();
         withdrawalProvider.setVersionId(versionId);
         withdrawalProvider.setWithdrawalProviderRefId(getTargetObjectRefId());
@@ -52,7 +54,7 @@ public class WithdrawalProviderHandler extends AbstractDominantHandler<Withdrawa
         withdrawalProvider.setProxyAdditionalJson(JsonUtil.objectToJsonString(data.getProxy().getAdditional()));
         withdrawalProvider.setIdentity(data.getIdentity());
         if (data.isSetWithdrawalTerms()) {
-            withdrawalProvider.setWithdrawalTermsJson(JsonUtil.tBaseToJsonString(data.getWithdrawalTerms()));
+            withdrawalProvider.setWithdrawalTermsJson(JsonUtil.thriftBaseToJsonString(data.getWithdrawalTerms()));
         }
         if (data.isSetAccounts()) {
             Map<String, Long> accountsMap = data.getAccounts().entrySet()

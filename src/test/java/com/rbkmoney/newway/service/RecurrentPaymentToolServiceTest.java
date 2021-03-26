@@ -13,9 +13,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -36,7 +34,8 @@ public class RecurrentPaymentToolServiceTest extends AbstractAppDaoTests {
         String sql = "select * from nw.recurrent_payment_tool where recurrent_payment_tool_id = :id";
         List<com.rbkmoney.newway.domain.tables.pojos.RecurrentPaymentTool> recurrentPaymentTools =
                 jdbcTemplate.query(sql, new MapSqlParameterSource("id", recurrentId),
-                        new BeanPropertyRowMapper<>(com.rbkmoney.newway.domain.tables.pojos.RecurrentPaymentTool.class));
+                        new BeanPropertyRowMapper<>(
+                                com.rbkmoney.newway.domain.tables.pojos.RecurrentPaymentTool.class));
         assertEquals(7, recurrentPaymentTools.size());
 
         var created = recurrentPaymentTools.get(0);
@@ -96,7 +95,8 @@ public class RecurrentPaymentToolServiceTest extends AbstractAppDaoTests {
                                                         .setPartyId("party_id")
                                                         .setPartyRevision(124)
                                                         .setDomainRevision(1245)
-                                                        .setStatus(RecurrentPaymentToolStatus.created(new RecurrentPaymentToolCreated()))
+                                                        .setStatus(RecurrentPaymentToolStatus
+                                                                .created(new RecurrentPaymentToolCreated()))
                                                         .setCreatedAt("2016-03-22T06:12:27Z")
                                                         .setPaymentResource(new DisposablePaymentResource()
                                                                 .setPaymentTool(PaymentTool.bank_card(new BankCard()
@@ -104,10 +104,13 @@ public class RecurrentPaymentToolServiceTest extends AbstractAppDaoTests {
                                                                         .setPaymentSystem(BankCardPaymentSystem.amex)
                                                                         .setBin("bin")
                                                                         .setLastDigits("masked")
-                                                                        .setTokenProvider(BankCardTokenProvider.applepay)
+                                                                        .setTokenProvider(
+                                                                                BankCardTokenProvider.applepay)
                                                                         .setIssuerCountry(Residence.ABH)
                                                                         .setBankName("bank_name")
-                                                                        .setMetadata(Map.of("kek", com.rbkmoney.damsel.msgpack.Value.b(true)))))
+                                                                        .setMetadata(Map.of("kek",
+                                                                                com.rbkmoney.damsel.msgpack.Value
+                                                                                        .b(true)))))
                                                                 .setPaymentSessionId("kek_session_id")
                                                                 .setClientInfo(new ClientInfo()
                                                                         .setIpAddress("127.0.0.1")
@@ -151,8 +154,9 @@ public class RecurrentPaymentToolServiceTest extends AbstractAppDaoTests {
                                                                 .setTrx(new TransactionInfo()
                                                                         .setId("trxId")
                                                                         .setExtra(Map.of("lol", "kek"))
-                                                                        .setAdditionalInfo(new AdditionalTransactionInfo()
-                                                                                .setRrn("rrn")))
+                                                                        .setAdditionalInfo(
+                                                                                new AdditionalTransactionInfo()
+                                                                                        .setRrn("rrn")))
 
                                                 ))
                                 )

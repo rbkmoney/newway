@@ -14,7 +14,8 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.tables.Invoice.INVOICE;
@@ -53,8 +54,11 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
     @Override
     public void switchCurrent(Collection<InvoicingKey> invoicesSwitchIds) throws DaoException {
         invoicesSwitchIds.forEach(ik ->
-                this.getNamedParameterJdbcTemplate().update("update nw.invoice set current = false where invoice_id =:invoice_id and current;" +
-                                "update nw.invoice set current = true where id = (select max(id) from nw.invoice where invoice_id =:invoice_id);",
-                        new MapSqlParameterSource("invoice_id", ik.getInvoiceId())));
+                this.getNamedParameterJdbcTemplate()
+                        .update("update nw.invoice set current = false " +
+                                        "where invoice_id =:invoice_id and current;" +
+                                        "update nw.invoice set current = true " +
+                                        "where id = (select max(id) from nw.invoice where invoice_id =:invoice_id);",
+                                new MapSqlParameterSource("invoice_id", ik.getInvoiceId())));
     }
 }

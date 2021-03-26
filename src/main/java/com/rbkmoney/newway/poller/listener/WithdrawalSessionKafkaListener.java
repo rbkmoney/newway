@@ -19,7 +19,8 @@ public class WithdrawalSessionKafkaListener {
 
     private final WithdrawalSessionService withdrawalSessionService;
 
-    @KafkaListener(topics = "${kafka.topics.withdrawal-session.id}", containerFactory = "withdrawalSessionContainerFactory")
+    @KafkaListener(topics = "${kafka.topics.withdrawal-session.id}",
+            containerFactory = "withdrawalSessionContainerFactory")
     public void handle(List<ConsumerRecord<String, SinkEvent>> messages, Acknowledgment ack) {
         log.info("Got machineEvent batch with size: {}", messages.size());
         if (!CollectionUtils.isEmpty(messages)) {
@@ -28,6 +29,7 @@ public class WithdrawalSessionKafkaListener {
                     .collect(Collectors.toList()));
             ack.acknowledge();
         }
-        log.info("Batch has been committed, size={}, {}", messages.size(), LogUtil.toSummaryStringWithSinkEventValues(messages));
+        log.info("Batch has been committed, size={}, {}", messages.size(),
+                LogUtil.toSummaryStringWithSinkEventValues(messages));
     }
 }

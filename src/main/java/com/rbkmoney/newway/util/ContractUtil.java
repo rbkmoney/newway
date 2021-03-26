@@ -14,10 +14,12 @@ import java.util.stream.Collectors;
 
 public class ContractUtil {
     public static List<ContractAdjustment> convertContractAdjustments(Contract contract, long cntrctId) {
-        return contract.getAdjustments().stream().map(ca -> convertContractAdjustment(ca, cntrctId)).collect(Collectors.toList());
+        return contract.getAdjustments().stream().map(ca -> convertContractAdjustment(ca, cntrctId))
+                .collect(Collectors.toList());
     }
 
-    public static ContractAdjustment convertContractAdjustment(com.rbkmoney.damsel.domain.ContractAdjustment ca, long cntrctId) {
+    public static ContractAdjustment convertContractAdjustment(com.rbkmoney.damsel.domain.ContractAdjustment ca,
+                                                               long cntrctId) {
         ContractAdjustment adjustment = new ContractAdjustment();
         adjustment.setCntrctId(cntrctId);
         adjustment.setContractAdjustmentId(ca.getId());
@@ -33,7 +35,8 @@ public class ContractUtil {
     }
 
     public static List<PayoutTool> convertPayoutTools(Contract contract, long cntrctId) {
-        return contract.getPayoutTools().stream().map(pt -> convertPayoutTool(pt, cntrctId)).collect(Collectors.toList());
+        return contract.getPayoutTools().stream().map(pt -> convertPayoutTool(pt, cntrctId))
+                .collect(Collectors.toList());
     }
 
     public static PayoutTool convertPayoutTool(com.rbkmoney.damsel.domain.PayoutTool pt, long cntrctId) {
@@ -42,7 +45,8 @@ public class ContractUtil {
         payoutTool.setPayoutToolId(pt.getId());
         payoutTool.setCreatedAt(TypeUtil.stringToLocalDateTime(pt.getCreatedAt()));
         payoutTool.setCurrencyCode(pt.getCurrency().getSymbolicCode());
-        PayoutToolInfo payoutToolInfo = TypeUtil.toEnumField(pt.getPayoutToolInfo().getSetField().getFieldName(), PayoutToolInfo.class);
+        PayoutToolInfo payoutToolInfo =
+                TypeUtil.toEnumField(pt.getPayoutToolInfo().getSetField().getFieldName(), PayoutToolInfo.class);
         if (payoutToolInfo == null) {
             throw new IllegalArgumentException("Illegal payout tool info: " + pt.getPayoutToolInfo());
         }
@@ -74,15 +78,18 @@ public class ContractUtil {
             if (internationalBankAccount.isSetCorrespondentAccount()) {
                 InternationalBankAccount correspondentBankAccount = internationalBankAccount.getCorrespondentAccount();
                 payoutTool.setPayoutToolInfoInternationalCorrespondentBankNumber(correspondentBankAccount.getNumber());
-                payoutTool.setPayoutToolInfoInternationalCorrespondentBankAccount(correspondentBankAccount.getAccountHolder());
+                payoutTool.setPayoutToolInfoInternationalCorrespondentBankAccount(
+                        correspondentBankAccount.getAccountHolder());
                 payoutTool.setPayoutToolInfoInternationalCorrespondentBankIban(correspondentBankAccount.getIban());
 
                 if (correspondentBankAccount.isSetBank()) {
                     InternationalBankDetails correspondentBankDetails = correspondentBankAccount.getBank();
                     payoutTool.setPayoutToolInfoInternationalCorrespondentBankName(correspondentBankDetails.getName());
-                    payoutTool.setPayoutToolInfoInternationalCorrespondentBankAddress(correspondentBankDetails.getAddress());
+                    payoutTool.setPayoutToolInfoInternationalCorrespondentBankAddress(
+                            correspondentBankDetails.getAddress());
                     payoutTool.setPayoutToolInfoInternationalCorrespondentBankBic(correspondentBankDetails.getBic());
-                    payoutTool.setPayoutToolInfoInternationalCorrespondentBankAbaRtn(correspondentBankDetails.getAbaRtn());
+                    payoutTool.setPayoutToolInfoInternationalCorrespondentBankAbaRtn(
+                            correspondentBankDetails.getAbaRtn());
                     payoutTool.setPayoutToolInfoInternationalCorrespondentBankCountryCode(
                             Optional.ofNullable(correspondentBankDetails.getCountry())
                                     .map(country -> country.toString())
@@ -96,7 +103,8 @@ public class ContractUtil {
         return payoutTool;
     }
 
-    public static void fillContractLegalAgreementFields(com.rbkmoney.newway.domain.tables.pojos.Contract contract, LegalAgreement legalAgreement) {
+    public static void fillContractLegalAgreementFields(com.rbkmoney.newway.domain.tables.pojos.Contract contract,
+                                                        LegalAgreement legalAgreement) {
         contract.setLegalAgreementId(legalAgreement.getLegalAgreementId());
         contract.setLegalAgreementSignedAt(TypeUtil.stringToLocalDateTime(legalAgreement.getSignedAt()));
         if (legalAgreement.isSetValidUntil()) {
@@ -104,21 +112,27 @@ public class ContractUtil {
         }
     }
 
-    public static void fillReportPreferences(com.rbkmoney.newway.domain.tables.pojos.Contract contract, ServiceAcceptanceActPreferences serviceAcceptanceActPreferences) {
+    public static void fillReportPreferences(com.rbkmoney.newway.domain.tables.pojos.Contract contract,
+                                             ServiceAcceptanceActPreferences serviceAcceptanceActPreferences) {
         contract.setReportActScheduleId(serviceAcceptanceActPreferences.getSchedule().getId());
         contract.setReportActSignerPosition(serviceAcceptanceActPreferences.getSigner().getPosition());
         contract.setReportActSignerFullName(serviceAcceptanceActPreferences.getSigner().getFullName());
-        com.rbkmoney.damsel.domain.RepresentativeDocument representativeDocument = serviceAcceptanceActPreferences.getSigner().getDocument();
-        RepresentativeDocument reportActSignerDocument = TypeUtil.toEnumField(representativeDocument.getSetField().getFieldName(), RepresentativeDocument.class);
+        com.rbkmoney.damsel.domain.RepresentativeDocument representativeDocument =
+                serviceAcceptanceActPreferences.getSigner().getDocument();
+        RepresentativeDocument reportActSignerDocument =
+                TypeUtil.toEnumField(representativeDocument.getSetField().getFieldName(), RepresentativeDocument.class);
         if (reportActSignerDocument == null) {
             throw new IllegalArgumentException("Illegal representative document: " + representativeDocument);
         }
         contract.setReportActSignerDocument(reportActSignerDocument);
         if (representativeDocument.isSetPowerOfAttorney()) {
-            contract.setReportActSignerDocPowerOfAttorneyLegalAgreementId(representativeDocument.getPowerOfAttorney().getLegalAgreementId());
-            contract.setReportActSignerDocPowerOfAttorneySignedAt(TypeUtil.stringToLocalDateTime(representativeDocument.getPowerOfAttorney().getSignedAt()));
+            contract.setReportActSignerDocPowerOfAttorneyLegalAgreementId(
+                    representativeDocument.getPowerOfAttorney().getLegalAgreementId());
+            contract.setReportActSignerDocPowerOfAttorneySignedAt(
+                    TypeUtil.stringToLocalDateTime(representativeDocument.getPowerOfAttorney().getSignedAt()));
             if (representativeDocument.getPowerOfAttorney().isSetValidUntil()) {
-                contract.setReportActSignerDocPowerOfAttorneyValidUntil(TypeUtil.stringToLocalDateTime(representativeDocument.getPowerOfAttorney().getValidUntil()));
+                contract.setReportActSignerDocPowerOfAttorneyValidUntil(
+                        TypeUtil.stringToLocalDateTime(representativeDocument.getPowerOfAttorney().getValidUntil()));
             }
         }
     }
@@ -134,7 +148,8 @@ public class ContractUtil {
     }
 
     public static void resetBaseFields(MachineEvent event, Integer changeId, long sequenceId,
-                                       com.rbkmoney.newway.domain.tables.pojos.Contract contractSource, Integer claimEffectId) {
+                                       com.rbkmoney.newway.domain.tables.pojos.Contract contractSource,
+                                       Integer claimEffectId) {
         contractSource.setId(null);
         contractSource.setWtime(null);
         contractSource.setSequenceId((int) sequenceId);

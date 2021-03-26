@@ -6,10 +6,8 @@ import com.rbkmoney.newway.service.DominantService;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -50,7 +48,9 @@ public class DominantPoller {
                         dominantService.processCommit(versionId.get(), e);
                         after = versionId.get();
                     } catch (RuntimeException ex) {
-                        throw new RuntimeException(String.format("Unexpected error when polling dominant, versionId=%d", versionId.get()), ex);
+                        throw new RuntimeException(
+                                String.format("Unexpected error when polling dominant, versionId=%d", versionId.get()),
+                                ex);
                     }
                 });
             } catch (TException e) {

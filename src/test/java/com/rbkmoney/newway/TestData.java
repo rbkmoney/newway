@@ -3,21 +3,20 @@ package com.rbkmoney.newway;
 import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.domain.InvoicePaymentChargeback;
 import com.rbkmoney.damsel.payment_processing.*;
-import com.rbkmoney.fistful.cashflow.FinalCashFlow;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import io.github.benas.randombeans.api.EnhancedRandom;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestData {
 
     public static InvoiceChange buildInvoiceChangeChargebackCreated() {
-        InvoicePaymentChargeback invoicePaymentChargeback = EnhancedRandom.random(InvoicePaymentChargeback.class, "context", "status", "reason", "stage");
+        InvoicePaymentChargeback invoicePaymentChargeback =
+                EnhancedRandom.random(InvoicePaymentChargeback.class, "context", "status", "reason", "stage");
         invoicePaymentChargeback.setCreatedAt(TypeUtil.temporalToString(Instant.now()));
         InvoicePaymentChargebackStatus invoicePaymentChargebackStatus = buildChargebackStatus();
         invoicePaymentChargeback.setStatus(invoicePaymentChargebackStatus);
@@ -30,7 +29,8 @@ public class TestData {
 
         InvoicePaymentChargebackChange invoicePaymentChargebackChange = new InvoicePaymentChargebackChange();
         invoicePaymentChargebackChange.setId("testChargebackId");
-        InvoicePaymentChargebackChangePayload invoicePaymentChargebackChangePayload = new InvoicePaymentChargebackChangePayload();
+        InvoicePaymentChargebackChangePayload invoicePaymentChargebackChangePayload =
+                new InvoicePaymentChargebackChangePayload();
         InvoicePaymentChargebackCreated invoicePaymentChargebackCreated = new InvoicePaymentChargebackCreated();
         invoicePaymentChargebackCreated.setChargeback(invoicePaymentChargeback);
 
@@ -51,54 +51,70 @@ public class TestData {
     }
 
     public static InvoiceChange buildInvoiceChangeChargebackStatusChanged() {
-        InvoicePaymentChargebackStatusChanged invoicePaymentChargebackStatusChanged = new InvoicePaymentChargebackStatusChanged();
+        InvoicePaymentChargebackStatusChanged invoicePaymentChargebackStatusChanged =
+                new InvoicePaymentChargebackStatusChanged();
         invoicePaymentChargebackStatusChanged.setStatus(buildChargebackStatus());
-        InvoicePaymentChargebackChangePayload invoicePaymentChargebackChangePayload = new InvoicePaymentChargebackChangePayload();
-        invoicePaymentChargebackChangePayload.setInvoicePaymentChargebackStatusChanged(invoicePaymentChargebackStatusChanged);
+        InvoicePaymentChargebackChangePayload invoicePaymentChargebackChangePayload =
+                new InvoicePaymentChargebackChangePayload();
+        invoicePaymentChargebackChangePayload
+                .setInvoicePaymentChargebackStatusChanged(invoicePaymentChargebackStatusChanged);
 
         return buildInvoiceChangeChargeback(invoicePaymentChargebackChangePayload);
     }
 
     public static InvoiceChange buildInvoiceChangeChargebackLevyChanged() {
-        InvoicePaymentChargebackLevyChanged invoicePaymentChargebackLevyChanged = new InvoicePaymentChargebackLevyChanged();
+        InvoicePaymentChargebackLevyChanged invoicePaymentChargebackLevyChanged =
+                new InvoicePaymentChargebackLevyChanged();
         Cash cash = new Cash().setAmount(1000L).setCurrency(new CurrencyRef().setSymbolicCode("456"));
         invoicePaymentChargebackLevyChanged.setLevy(cash);
-        InvoicePaymentChargebackChangePayload invoicePaymentChargebackChangePayload = new InvoicePaymentChargebackChangePayload();
-        invoicePaymentChargebackChangePayload.setInvoicePaymentChargebackLevyChanged(invoicePaymentChargebackLevyChanged);
+        InvoicePaymentChargebackChangePayload invoicePaymentChargebackChangePayload =
+                new InvoicePaymentChargebackChangePayload();
+        invoicePaymentChargebackChangePayload
+                .setInvoicePaymentChargebackLevyChanged(invoicePaymentChargebackLevyChanged);
 
         return buildInvoiceChangeChargeback(invoicePaymentChargebackChangePayload);
     }
 
     public static InvoiceChange buildInvoiceChangeChargebackStageChanged() {
-        InvoicePaymentChargebackStageChanged invoicePaymentChargebackStageChanged = new InvoicePaymentChargebackStageChanged();
+        InvoicePaymentChargebackStageChanged invoicePaymentChargebackStageChanged =
+                new InvoicePaymentChargebackStageChanged();
         invoicePaymentChargebackStageChanged.setStage(buildChargebackStage());
-        InvoicePaymentChargebackChangePayload invoicePaymentChargebackChangePayload = new InvoicePaymentChargebackChangePayload();
-        invoicePaymentChargebackChangePayload.setInvoicePaymentChargebackStageChanged(invoicePaymentChargebackStageChanged);
+        InvoicePaymentChargebackChangePayload invoicePaymentChargebackChangePayload =
+                new InvoicePaymentChargebackChangePayload();
+        invoicePaymentChargebackChangePayload
+                .setInvoicePaymentChargebackStageChanged(invoicePaymentChargebackStageChanged);
 
         return buildInvoiceChangeChargeback(invoicePaymentChargebackChangePayload);
     }
 
     public static InvoiceChange buildInvoiceChangeChargebackCashFlowChanged() {
-        InvoicePaymentChargebackCashFlowChanged invoicePaymentChargebackCashFlowChanged = new InvoicePaymentChargebackCashFlowChanged();
+        InvoicePaymentChargebackCashFlowChanged invoicePaymentChargebackCashFlowChanged =
+                new InvoicePaymentChargebackCashFlowChanged();
         invoicePaymentChargebackCashFlowChanged.setCashFlow(Collections.singletonList(buildCashFlowPosting()));
-        InvoicePaymentChargebackChangePayload invoicePaymentChargebackChangePayload = new InvoicePaymentChargebackChangePayload();
-        invoicePaymentChargebackChangePayload.setInvoicePaymentChargebackCashFlowChanged(invoicePaymentChargebackCashFlowChanged);
+        InvoicePaymentChargebackChangePayload invoicePaymentChargebackChangePayload =
+                new InvoicePaymentChargebackChangePayload();
+        invoicePaymentChargebackChangePayload
+                .setInvoicePaymentChargebackCashFlowChanged(invoicePaymentChargebackCashFlowChanged);
 
         return buildInvoiceChangeChargeback(invoicePaymentChargebackChangePayload);
     }
 
     public static InvoiceChange buildInvoiceChangeChargebackBodyChanged() {
-        InvoicePaymentChargebackBodyChanged invoicePaymentChargebackBodyChanged = new InvoicePaymentChargebackBodyChanged();
+        InvoicePaymentChargebackBodyChanged invoicePaymentChargebackBodyChanged =
+                new InvoicePaymentChargebackBodyChanged();
         Cash cash = new Cash().setAmount(1000).setCurrency(new CurrencyRef("653"));
         invoicePaymentChargebackBodyChanged.setBody(cash);
-        InvoicePaymentChargebackChangePayload invoicePaymentChargebackChangePayload = new InvoicePaymentChargebackChangePayload();
-        invoicePaymentChargebackChangePayload.setInvoicePaymentChargebackBodyChanged(invoicePaymentChargebackBodyChanged);
+        InvoicePaymentChargebackChangePayload invoicePaymentChargebackChangePayload =
+                new InvoicePaymentChargebackChangePayload();
+        invoicePaymentChargebackChangePayload
+                .setInvoicePaymentChargebackBodyChanged(invoicePaymentChargebackBodyChanged);
 
         return buildInvoiceChangeChargeback(invoicePaymentChargebackChangePayload);
     }
 
     private static InvoiceChange buildInvoiceChangeChargeback(InvoicePaymentChargebackChangePayload payload) {
-        InvoicePaymentChargeback invoicePaymentChargeback = EnhancedRandom.random(InvoicePaymentChargeback.class, "context", "status", "reason", "stage");
+        InvoicePaymentChargeback invoicePaymentChargeback =
+                EnhancedRandom.random(InvoicePaymentChargeback.class, "context", "status", "reason", "stage");
         invoicePaymentChargeback.setCreatedAt(TypeUtil.temporalToString(Instant.now()));
         InvoicePaymentChargebackStatus invoicePaymentChargebackStatus = buildChargebackStatus();
         invoicePaymentChargeback.setStatus(invoicePaymentChargebackStatus);

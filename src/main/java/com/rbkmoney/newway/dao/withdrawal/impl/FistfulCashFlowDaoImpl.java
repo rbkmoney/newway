@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+
 import java.util.List;
 
 import static com.rbkmoney.newway.domain.tables.FistfulCashFlow.FISTFUL_CASH_FLOW;
@@ -37,7 +38,8 @@ public class FistfulCashFlowDaoImpl extends AbstractGenericDao implements Fistfu
     }
 
     @Override
-    public List<FistfulCashFlow> getByObjId(Long objId, FistfulCashFlowChangeType cashFlowChangeType) throws DaoException {
+    public List<FistfulCashFlow> getByObjId(Long objId, FistfulCashFlowChangeType cashFlowChangeType)
+            throws DaoException {
         Query query = getDslContext().selectFrom(FISTFUL_CASH_FLOW)
                 .where(FISTFUL_CASH_FLOW.OBJ_ID.eq(objId))
                 .and(FISTFUL_CASH_FLOW.OBJ_TYPE.eq(cashFlowChangeType));

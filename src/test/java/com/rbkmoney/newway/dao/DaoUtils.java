@@ -1,9 +1,6 @@
 package com.rbkmoney.newway.dao;
 
-import com.rbkmoney.damsel.domain.ExternalCashFlowAccount;
-import com.rbkmoney.damsel.domain.MerchantCashFlowAccount;
-import com.rbkmoney.damsel.domain.ProviderCashFlowAccount;
-import com.rbkmoney.damsel.domain.SystemCashFlowAccount;
+import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.newway.domain.enums.CashFlowAccount;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
@@ -14,7 +11,10 @@ import java.util.stream.Collectors;
 
 public class DaoUtils {
 
-    public static CashFlow createCashFlow(long objId, long amount, String currencyCode, long sourceAccountId, CashFlowAccount provider, String sourceAccountTypeValue, long destinationAccountId, CashFlowAccount destinationAccountType, String destinationAccountTypeValue, PaymentChangeType paymentChangeType) {
+    public static CashFlow createCashFlow(long objId, long amount, String currencyCode, long sourceAccountId,
+                                          CashFlowAccount provider, String sourceAccountTypeValue,
+                                          long destinationAccountId, CashFlowAccount destinationAccountType,
+                                          String destinationAccountTypeValue, PaymentChangeType paymentChangeType) {
         CashFlow cashFlowPaymentAmount = new CashFlow();
         cashFlowPaymentAmount.setObjId(objId);
         cashFlowPaymentAmount.setAmount(amount);
@@ -55,7 +55,8 @@ public class DaoUtils {
         if (source == com.rbkmoney.newway.domain.enums.CashFlowAccount.system
                 && sourceValue.equals(SystemCashFlowAccount.settlement.name())
                 && destination == com.rbkmoney.newway.domain.enums.CashFlowAccount.external
-                && (destinationValue.equals(ExternalCashFlowAccount.income.name()) || destinationValue.equals(ExternalCashFlowAccount.outcome.name()))) {
+                && (destinationValue.equals(ExternalCashFlowAccount.income.name())
+                || destinationValue.equals(ExternalCashFlowAccount.outcome.name()))) {
             return FeeType.EXTERNAL_FEE;
         }
 

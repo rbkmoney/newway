@@ -6,10 +6,7 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
 import com.rbkmoney.machinegun.msgpack.Value;
 import com.rbkmoney.xrates.base.TimestampInterval;
-import com.rbkmoney.xrates.rate.Change;
-import com.rbkmoney.xrates.rate.ExchangeRateCreated;
-import com.rbkmoney.xrates.rate.ExchangeRateData;
-import com.rbkmoney.xrates.rate.Quote;
+import com.rbkmoney.xrates.rate.*;
 
 import java.time.Instant;
 import java.util.Collections;

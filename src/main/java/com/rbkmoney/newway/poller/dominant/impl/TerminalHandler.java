@@ -52,7 +52,7 @@ public class TerminalHandler extends AbstractDominantHandler<TerminalObject, Ter
             terminal.setRiskCoverage(data.getRiskCoverage().name());
         }
         if (data.isSetTerms()) {
-            terminal.setTermsJson(JsonUtil.tBaseToJsonString(data.getTerms()));
+            terminal.setTermsJson(JsonUtil.thriftBaseToJsonString(data.getTerms()));
         }
         terminal.setExternalTerminalId(data.getExternalTerminalId());
         terminal.setExternalMerchantId(data.getExternalMerchantId());

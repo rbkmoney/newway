@@ -2,9 +2,7 @@ package com.rbkmoney.newway.config;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.rbkmoney.newway.model.InvoiceWrapper;
-import com.rbkmoney.newway.model.InvoicingKey;
-import com.rbkmoney.newway.model.PaymentWrapper;
+import com.rbkmoney.newway.model.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

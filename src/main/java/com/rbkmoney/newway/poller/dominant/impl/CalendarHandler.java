@@ -59,7 +59,7 @@ public class CalendarHandler extends AbstractDominantHandler<CalendarObject, Cal
                 .collect(Collectors.toMap(Map.Entry::getKey,
                         e -> e.getValue()
                                 .stream()
-                                .map(JsonUtil::tBaseToJsonNode)
+                                .map(JsonUtil::thriftBaseToJsonNode)
                                 .collect(Collectors.toSet())));
         calendar.setHolidaysJson(JsonUtil.objectToJsonString(holidaysJsonNodeMap));
         calendar.setCurrent(current);

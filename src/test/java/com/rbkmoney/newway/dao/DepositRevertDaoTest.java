@@ -1,7 +1,6 @@
 package com.rbkmoney.newway.dao;
 
-import com.rbkmoney.newway.dao.deposit_revert.iface.DepositRevertDao;
-import com.rbkmoney.newway.domain.tables.pojos.Deposit;
+import com.rbkmoney.newway.dao.deposit.revert.iface.DepositRevertDao;
 import com.rbkmoney.newway.domain.tables.pojos.DepositRevert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

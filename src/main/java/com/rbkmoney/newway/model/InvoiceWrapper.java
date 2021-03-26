@@ -2,9 +2,7 @@ package com.rbkmoney.newway.model;
 
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
@@ -25,9 +23,9 @@ public class InvoiceWrapper {
         if (carts != null) {
             List<InvoiceCart> cartsTarget = new ArrayList<>();
             carts.forEach(c -> {
-                InvoiceCart cTarget = new InvoiceCart();
-                BeanUtils.copyProperties(c, cTarget);
-                cartsTarget.add(cTarget);
+                InvoiceCart cartTarget = new InvoiceCart();
+                BeanUtils.copyProperties(c, cartTarget);
+                cartsTarget.add(cartTarget);
             });
             invoiceWrapperTarget.setCarts(cartsTarget);
         }

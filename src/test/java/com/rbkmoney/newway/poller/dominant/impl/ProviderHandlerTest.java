@@ -1,21 +1,14 @@
 package com.rbkmoney.newway.poller.dominant.impl;
 
 import com.rbkmoney.damsel.domain.*;
-import com.rbkmoney.geck.serializer.kit.mock.MockMode;
-import com.rbkmoney.geck.serializer.kit.mock.MockTBaseProcessor;
-import com.rbkmoney.geck.serializer.kit.tbase.TBaseHandler;
 import com.rbkmoney.newway.dao.dominant.impl.ProviderDaoImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
 import static org.junit.Assert.*;
@@ -57,7 +50,8 @@ public class ProviderHandlerTest {
                                 .setAdditional(Map.of(random(String.class), random(String.class)))
                         )
                         .setIdentity(random(String.class))
-                        .setAccounts(Map.of(new CurrencyRef(random(String.class)), new ProviderAccount(random(Long.class))))
+                        .setAccounts(
+                                Map.of(new CurrencyRef(random(String.class)), new ProviderAccount(random(Long.class))))
                         .setTerms(new ProvisionTermSet()
                                 .setPayments(buildProvisionTermSet())
                                 .setRecurrentPaytools(buildRecurrentPaytools())
@@ -68,7 +62,6 @@ public class ProviderHandlerTest {
     }
 
     private PaymentsProvisionTerms buildProvisionTermSet() throws IOException {
-        PaymentsProvisionTerms provisionTermSet = new PaymentsProvisionTerms();
         CashFlowPosting cashFlowPosting = new CashFlowPosting();
         cashFlowPosting.setSource(buildMerchantCashFlowAccount());
         cashFlowPosting.setDestination(buildProviderCashFlowAccount());
@@ -76,6 +69,7 @@ public class ProviderHandlerTest {
         cashVolume.setFixed(new CashVolumeFixed().setCash(new Cash(1000L, new CurrencyRef("RUB"))));
         cashFlowPosting.setVolume(cashVolume);
         PaymentChargebackProvisionTerms paymentChargebackProvisionTerms = new PaymentChargebackProvisionTerms();
+        PaymentsProvisionTerms provisionTermSet = new PaymentsProvisionTerms();
         paymentChargebackProvisionTerms.setCashFlow(CashFlowSelector.value(List.of(cashFlowPosting)));
         provisionTermSet.setChargebacks(paymentChargebackProvisionTerms);
         return provisionTermSet;
@@ -84,7 +78,8 @@ public class ProviderHandlerTest {
     private RecurrentPaytoolsProvisionTerms buildRecurrentPaytools() throws IOException {
         RecurrentPaytoolsProvisionTerms recurrentPaytoolsProvisionTerms = new RecurrentPaytoolsProvisionTerms();
         PaymentMethodSelector paymentMethodSelector = new PaymentMethodSelector();
-        paymentMethodSelector.setValue(Set.of(new PaymentMethodRef(PaymentMethod.bank_card(new BankCardPaymentMethod(BankCardPaymentSystem.visa)))));
+        paymentMethodSelector.setValue(Set.of(new PaymentMethodRef(
+                PaymentMethod.bank_card(new BankCardPaymentMethod(BankCardPaymentSystem.visa)))));
         recurrentPaytoolsProvisionTerms.setPaymentMethods(paymentMethodSelector);
         CashValueSelector cashValueSelector = new CashValueSelector();
         cashValueSelector.setValue(buildCash(1000L));

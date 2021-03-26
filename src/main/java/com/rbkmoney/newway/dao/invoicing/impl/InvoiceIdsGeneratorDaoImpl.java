@@ -3,7 +3,6 @@ package com.rbkmoney.newway.dao.invoicing.impl;
 import com.rbkmoney.newway.dao.invoicing.iface.IdsGeneratorDao;
 import com.rbkmoney.newway.exception.DaoException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Slf4j
 @Component
 @RequiredArgsConstructor
 public class InvoiceIdsGeneratorDaoImpl implements IdsGeneratorDao {

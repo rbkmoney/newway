@@ -14,7 +14,8 @@ import javax.sql.DataSource;
 import static com.rbkmoney.newway.domain.Tables.WITHDRAWAL_PROVIDER;
 
 @Component
-public class WithdrawalProviderDaoImpl extends AbstractGenericDao implements DomainObjectDao<WithdrawalProvider, Integer> {
+public class WithdrawalProviderDaoImpl extends AbstractGenericDao
+        implements DomainObjectDao<WithdrawalProvider, Integer> {
 
     public WithdrawalProviderDaoImpl(DataSource dataSource) {
         super(dataSource);
@@ -23,7 +24,8 @@ public class WithdrawalProviderDaoImpl extends AbstractGenericDao implements Dom
     @Override
     public Long save(WithdrawalProvider provider) throws DaoException {
         WithdrawalProviderRecord withdrawalProviderRecord = getDslContext().newRecord(WITHDRAWAL_PROVIDER, provider);
-        Query query = getDslContext().insertInto(WITHDRAWAL_PROVIDER).set(withdrawalProviderRecord).returning(WITHDRAWAL_PROVIDER.ID);
+        Query query = getDslContext().insertInto(WITHDRAWAL_PROVIDER).set(withdrawalProviderRecord)
+                .returning(WITHDRAWAL_PROVIDER.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();

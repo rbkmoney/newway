@@ -6,7 +6,6 @@ import com.rbkmoney.newway.domain.tables.pojos.Rate;
 import com.rbkmoney.newway.domain.tables.records.RateRecord;
 import com.rbkmoney.newway.exception.DaoException;
 import org.jooq.Query;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
