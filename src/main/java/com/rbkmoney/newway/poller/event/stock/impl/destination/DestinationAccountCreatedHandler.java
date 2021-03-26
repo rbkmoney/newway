@@ -13,6 +13,7 @@ import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.domain.tables.pojos.Destination;
 import com.rbkmoney.newway.domain.tables.pojos.Identity;
 import com.rbkmoney.newway.exception.NotFoundException;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +22,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DestinationAccountCreatedHandler extends AbstractDestinationHandler {
+public class DestinationAccountCreatedHandler implements DestinationHandler {
 
     private final DestinationDao destinationDao;
     private final IdentityDao identityDao;
+    private final MachineEventCopyFactory<Destination> destinationMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -38,26 +40,20 @@ public class DestinationAccountCreatedHandler extends AbstractDestinationHandler
         String destinationId = event.getSourceId();
         log.info("Start destination account created handling, sequenceId={}, destinationId={}", sequenceId,
                 destinationId);
-        Destination destination = destinationDao.get(destinationId);
-        if (destination == null) {
-            throw new NotFoundException(String.format("Destination not found, destinationId='%s'", destinationId));
-        }
-        Identity identity = identityDao.get(account.getIdentity());
+        Destination destinationOld = destinationDao.get(destinationId);
+        Identity identity = findIdentity(account, destinationId, destinationOld);
+        Destination destinationNew = destinationMachineEventCopyFactory
+                .create(event, sequenceId, destinationId, destinationOld, timestampedChange.getOccuredAt());
 
-        if (identity == null) {
-            throw new NotFoundException(String.format("Identity not found, identityId='%s'", account.getIdentity()));
-        }
+        destinationNew.setAccountId(account.getId());
+        destinationNew.setIdentityId(account.getIdentity());
+        destinationNew.setPartyId(identity.getPartyId());
+        destinationNew.setAccounterAccountId(account.getAccounterAccountId());
+        destinationNew.setCurrencyCode(account.getCurrency().getSymbolicCode());
 
-        initDefaultFields(event, sequenceId, destinationId, destination, timestampedChange.getOccuredAt());
-        destination.setAccountId(account.getId());
-        destination.setIdentityId(account.getIdentity());
-        destination.setPartyId(identity.getPartyId());
-        destination.setAccounterAccountId(account.getAccounterAccountId());
-        destination.setCurrencyCode(account.getCurrency().getSymbolicCode());
-        Long oldId = destination.getId();
-        destinationDao.save(destination).ifPresentOrElse(
+        destinationDao.save(destinationOld).ifPresentOrElse(
                 id -> {
-                    destinationDao.updateNotCurrent(oldId);
+                    destinationDao.updateNotCurrent(destinationOld.getId());
                     log.info("Destination account have been changed, sequenceId={}, destinationId={}", sequenceId,
                             destinationId);
                 },
@@ -66,5 +62,16 @@ public class DestinationAccountCreatedHandler extends AbstractDestinationHandler
         );
     }
 
+    private Identity findIdentity(Account account, String destinationId, Destination destinationOld) {
+        if (destinationOld == null) {
+            throw new NotFoundException(String.format("Destination not found, destinationId='%s'", destinationId));
+        }
+        Identity identity = identityDao.get(account.getIdentity());
+
+        if (identity == null) {
+            throw new NotFoundException(String.format("Identity not found, identityId='%s'", account.getIdentity()));
+        }
+        return identity;
+    }
 
 }

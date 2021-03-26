@@ -15,6 +15,7 @@ import com.rbkmoney.newway.dao.destination.iface.DestinationDao;
 import com.rbkmoney.newway.domain.enums.DestinationResourceType;
 import com.rbkmoney.newway.domain.enums.DestinationStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Destination;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,9 +28,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DestinationCreatedHandler extends AbstractDestinationHandler {
+public class DestinationCreatedHandler implements DestinationHandler {
 
     private final DestinationDao destinationDao;
+    private final MachineEventCopyFactory<Destination> destinationMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -41,8 +43,9 @@ public class DestinationCreatedHandler extends AbstractDestinationHandler {
         Change change = timestampedChange.getChange();
         String destinationId = event.getSourceId();
         log.info("Start destination created handling, sequenceId={}, destinationId={}", sequenceId, destinationId);
-        Destination destination = new Destination();
-        initDefaultFields(event, sequenceId, destinationId, destination, timestampedChange.getOccuredAt());
+
+        Destination destination = destinationMachineEventCopyFactory
+                .create(event, sequenceId, destinationId, timestampedChange.getOccuredAt());
 
         destination.setDestinationName(change.getCreated().getName());
         destination.setDestinationStatus(DestinationStatus.unauthorized);

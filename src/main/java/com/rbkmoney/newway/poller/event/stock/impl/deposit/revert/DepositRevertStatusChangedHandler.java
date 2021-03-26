@@ -15,7 +15,8 @@ import com.rbkmoney.newway.domain.enums.DepositRevertStatus;
 import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.DepositRevert;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
-import com.rbkmoney.newway.poller.event.stock.impl.deposit.AbstractDepositHandler;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
+import com.rbkmoney.newway.poller.event.stock.impl.deposit.DepositHandler;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +29,11 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DepositRevertStatusChangedHandler extends AbstractDepositHandler {
+public class DepositRevertStatusChangedHandler implements DepositHandler {
 
     private final DepositRevertDao depositRevertDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
+    private final MachineEventCopyFactory<DepositRevert> depositRevertMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -46,16 +48,18 @@ public class DepositRevertStatusChangedHandler extends AbstractDepositHandler {
         String depositId = event.getSourceId();
         String revertId = change.getRevert().getId();
         log.info("Start deposit revert status changed handling, sequenceId={}, depositId={}", sequenceId, depositId);
-        DepositRevert depositRevert = depositRevertDao.get(depositId, revertId);
-        Long oldDepositRevertId = depositRevert.getId();
-        initDefaultFieldsRevert(event.getCreatedAt(), timestampedChange.getOccuredAt(), sequenceId, depositRevert);
-        depositRevert.setStatus(TBaseUtil.unionFieldToEnum(status, DepositRevertStatus.class));
+        DepositRevert depositRevertOld = depositRevertDao.get(depositId, revertId);
+        DepositRevert depositRevertNew = depositRevertMachineEventCopyFactory
+                .create(event, sequenceId, depositId, depositRevertOld, timestampedChange.getOccuredAt());
 
-        depositRevertDao.save(depositRevert).ifPresentOrElse(
+        depositRevertNew.setStatus(TBaseUtil.unionFieldToEnum(status, DepositRevertStatus.class));
+
+        depositRevertDao.save(depositRevertNew).ifPresentOrElse(
                 id -> {
-                    depositRevertDao.updateNotCurrent(oldDepositRevertId);
+                    Long oldId = depositRevertOld.getId();
+                    depositRevertDao.updateNotCurrent(oldId);
                     List<FistfulCashFlow> cashFlows = fistfulCashFlowDao
-                            .getByObjId(depositRevert.getId(), FistfulCashFlowChangeType.deposit_revert);
+                            .getByObjId(oldId, FistfulCashFlowChangeType.deposit_revert);
                     cashFlows.forEach(pcf -> {
                         pcf.setId(null);
                         pcf.setObjId(id);

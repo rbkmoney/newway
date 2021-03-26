@@ -15,6 +15,7 @@ import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.enums.WithdrawalTransferStatus;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Withdrawal;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +28,11 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class WithdrawalTransferStatusChangedHandler extends AbstractWithdrawalHandler {
+public class WithdrawalTransferStatusChangedHandler implements WithdrawalHandler {
 
     private final WithdrawalDao withdrawalDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
+    private final MachineEventCopyFactory<Withdrawal> machineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -46,16 +48,16 @@ public class WithdrawalTransferStatusChangedHandler extends AbstractWithdrawalHa
         log.info("Start withdrawal transfer status changed handling, sequenceId={}, withdrawalId={} transfer={}",
                 sequenceId, withdrawalId, change.getTransfer());
 
-        Withdrawal withdrawal = withdrawalDao.get(withdrawalId);
-        Long oldId = withdrawal.getId();
-        initDefaultFields(event, sequenceId, withdrawalId, withdrawal, timestampedChange.getOccuredAt());
-        withdrawal.setWithdrawalTransferStatus(TBaseUtil.unionFieldToEnum(status, WithdrawalTransferStatus.class));
+        Withdrawal withdrawalOld = withdrawalDao.get(withdrawalId);
+        Withdrawal withdrawalNew = machineEventCopyFactory
+                .create(event, sequenceId, withdrawalId, withdrawalOld, timestampedChange.getOccuredAt());
+        withdrawalNew.setWithdrawalTransferStatus(TBaseUtil.unionFieldToEnum(status, WithdrawalTransferStatus.class));
 
-        withdrawalDao.save(withdrawal).ifPresentOrElse(
+        withdrawalDao.save(withdrawalOld).ifPresentOrElse(
                 id -> {
-                    withdrawalDao.updateNotCurrent(oldId);
+                    withdrawalDao.updateNotCurrent(withdrawalOld.getId());
                     List<FistfulCashFlow> cashFlows =
-                            fistfulCashFlowDao.getByObjId(withdrawal.getId(), FistfulCashFlowChangeType.withdrawal);
+                            fistfulCashFlowDao.getByObjId(withdrawalOld.getId(), FistfulCashFlowChangeType.withdrawal);
                     cashFlows.forEach(pcf -> {
                         pcf.setId(null);
                         pcf.setObjId(id);

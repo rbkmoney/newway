@@ -15,6 +15,7 @@ import com.rbkmoney.newway.domain.enums.DepositStatus;
 import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.Deposit;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +28,11 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DepositStatusChangedHandler extends AbstractDepositHandler {
+public class DepositStatusChangedHandler implements DepositHandler {
 
     private final DepositDao depositDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
+    private final MachineEventCopyFactory<Deposit> depositMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -44,16 +46,18 @@ public class DepositStatusChangedHandler extends AbstractDepositHandler {
         long sequenceId = event.getEventId();
         String depositId = event.getSourceId();
         log.info("Start deposit status changed handling, sequenceId={}, depositId={}", sequenceId, depositId);
-        Deposit deposit = depositDao.get(depositId);
-        Long oldDepositId = deposit.getId();
-        initDefaultFieldsDeposit(event, sequenceId, deposit, timestampedChange.getOccuredAt());
-        deposit.setDepositStatus(TBaseUtil.unionFieldToEnum(status, DepositStatus.class));
+        Deposit depositOld = depositDao.get(depositId);
+        Deposit depositNew =
+                depositMachineEventCopyFactory.create(event, sequenceId, depositId, timestampedChange.getOccuredAt());
 
-        depositDao.save(deposit).ifPresentOrElse(
+        depositNew.setDepositStatus(TBaseUtil.unionFieldToEnum(status, DepositStatus.class));
+
+        depositDao.save(depositNew).ifPresentOrElse(
                 id -> {
-                    depositDao.updateNotCurrent(oldDepositId);
+                    Long oldId = depositOld.getId();
+                    depositDao.updateNotCurrent(oldId);
                     List<FistfulCashFlow> cashFlows =
-                            fistfulCashFlowDao.getByObjId(deposit.getId(), FistfulCashFlowChangeType.deposit);
+                            fistfulCashFlowDao.getByObjId(oldId, FistfulCashFlowChangeType.deposit);
                     cashFlows.forEach(pcf -> {
                         pcf.setId(null);
                         pcf.setObjId(id);

@@ -14,7 +14,8 @@ import com.rbkmoney.newway.domain.enums.DepositTransferStatus;
 import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.DepositRevert;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
-import com.rbkmoney.newway.poller.event.stock.impl.deposit.AbstractDepositHandler;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
+import com.rbkmoney.newway.poller.event.stock.impl.deposit.DepositHandler;
 import com.rbkmoney.newway.util.FistfulCashFlowUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,11 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DepositRevertTransferCreatedHandler extends AbstractDepositHandler {
+public class DepositRevertTransferCreatedHandler implements DepositHandler {
 
     private final DepositRevertDao depositRevertDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
+    private final MachineEventCopyFactory<DepositRevert> depositRevertMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -45,18 +47,20 @@ public class DepositRevertTransferCreatedHandler extends AbstractDepositHandler 
         String depositId = event.getSourceId();
         String revertId = change.getRevert().getId();
         log.info("Start deposit revert transfer created handling, sequenceId={}, depositId={}", sequenceId, depositId);
-        DepositRevert depositRevert = depositRevertDao.get(depositId, revertId);
-        initDefaultFieldsRevert(event.getCreatedAt(), timestampedChange.getOccuredAt(), sequenceId, depositRevert);
+        DepositRevert depositRevertOld = depositRevertDao.get(depositId, revertId);
+        DepositRevert depositRevertNew = depositRevertMachineEventCopyFactory
+                .create(event, sequenceId, depositId, depositRevertOld, timestampedChange.getOccuredAt());
+
         List<FinalCashFlowPosting> postings =
                 change.getRevert().getPayload().getTransfer().getPayload().getCreated().getTransfer().getCashflow()
                         .getPostings();
-        depositRevert.setTransferStatus(DepositTransferStatus.created);
-        depositRevert.setFee(FistfulCashFlowUtil.getFistfulFee(postings));
-        depositRevert.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(postings));
-        Long oldDepositRevertId = depositRevert.getId();
-        depositRevertDao.save(depositRevert).ifPresentOrElse(
+        depositRevertNew.setTransferStatus(DepositTransferStatus.created);
+        depositRevertNew.setFee(FistfulCashFlowUtil.getFistfulFee(postings));
+        depositRevertNew.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(postings));
+
+        depositRevertDao.save(depositRevertNew).ifPresentOrElse(
                 id -> {
-                    depositRevertDao.updateNotCurrent(oldDepositRevertId);
+                    depositRevertDao.updateNotCurrent(depositRevertOld.getId());
                     List<FistfulCashFlow> fistfulCashFlows = FistfulCashFlowUtil
                             .convertFistfulCashFlows(postings, id, FistfulCashFlowChangeType.deposit_revert);
                     fistfulCashFlowDao.save(fistfulCashFlows);

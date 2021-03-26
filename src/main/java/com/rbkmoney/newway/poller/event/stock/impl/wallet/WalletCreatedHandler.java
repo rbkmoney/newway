@@ -9,6 +9,7 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.wallet.iface.WalletDao;
 import com.rbkmoney.newway.domain.tables.pojos.Wallet;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +18,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class WalletCreatedHandler extends AbstractWalletHandler {
+public class WalletCreatedHandler implements WalletHandler {
 
     private final WalletDao walletDao;
+    private final MachineEventCopyFactory<Wallet> walletMachineEventCopyFactory;
 
     @Getter
     private final Filter filter =
@@ -31,8 +33,9 @@ public class WalletCreatedHandler extends AbstractWalletHandler {
         long sequenceId = event.getEventId();
         String walletId = event.getSourceId();
         log.info("Start wallet created handling, sequenceId={}, walletId={}", sequenceId, walletId);
-        Wallet wallet = new Wallet();
-        initDefaultFields(event, sequenceId, walletId, wallet, timestampedChange.getOccuredAt());
+
+        Wallet wallet =
+                walletMachineEventCopyFactory.create(event, sequenceId, walletId, timestampedChange.getOccuredAt());
 
         wallet.setWalletName(change.getCreated().getName());
         wallet.setExternalId(change.getCreated().getExternalId());

@@ -15,6 +15,7 @@ import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.enums.WithdrawalStatus;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Withdrawal;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,11 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class WithdrawalStatusChangedHandler extends AbstractWithdrawalHandler {
+public class WithdrawalStatusChangedHandler implements WithdrawalHandler {
 
     private final WithdrawalDao withdrawalDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
+    private final MachineEventCopyFactory<Withdrawal> machineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -47,24 +49,21 @@ public class WithdrawalStatusChangedHandler extends AbstractWithdrawalHandler {
         log.info("Start withdrawal status changed handling, sequenceId={}, withdrawalId={}, status={}",
                 sequenceId, withdrawalId, change.getStatusChanged());
 
-        Withdrawal withdrawal = withdrawalDao.get(withdrawalId);
+        final Withdrawal withdrawalOld = withdrawalDao.get(withdrawalId);
+        Withdrawal withdrawalNew = machineEventCopyFactory
+                .create(event, sequenceId, withdrawalId, withdrawalOld, timestampedChange.getOccuredAt());
 
-        initDefaultFields(event, sequenceId, withdrawalId, withdrawal, timestampedChange.getOccuredAt());
-
-        withdrawal.setWithdrawalStatus(TBaseUtil.unionFieldToEnum(status, WithdrawalStatus.class));
+        withdrawalNew.setWithdrawalStatus(TBaseUtil.unionFieldToEnum(status, WithdrawalStatus.class));
         if (status.isSetFailed() && status.getFailed().isSetFailure()) {
-            withdrawal
-                    .setWithdrawalStatusFailedFailureJson(
-                            JsonUtil.thriftBaseToJsonString(status.getFailed().getFailure()));
+            withdrawalNew.setWithdrawalStatusFailedFailureJson(
+                    JsonUtil.thriftBaseToJsonString(status.getFailed().getFailure()));
         }
 
-        Long oldId = withdrawal.getId();
-
-        withdrawalDao.save(withdrawal).ifPresentOrElse(
+        withdrawalDao.save(withdrawalNew).ifPresentOrElse(
                 id -> {
-                    withdrawalDao.updateNotCurrent(oldId);
+                    withdrawalDao.updateNotCurrent(withdrawalOld.getId());
                     List<FistfulCashFlow> cashFlows =
-                            fistfulCashFlowDao.getByObjId(withdrawal.getId(), FistfulCashFlowChangeType.withdrawal);
+                            fistfulCashFlowDao.getByObjId(withdrawalOld.getId(), FistfulCashFlowChangeType.withdrawal);
                     cashFlows.forEach(pcf -> {
                         pcf.setId(null);
                         pcf.setObjId(id);

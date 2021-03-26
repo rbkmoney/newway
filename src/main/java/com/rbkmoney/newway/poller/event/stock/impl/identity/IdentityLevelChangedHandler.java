@@ -9,6 +9,7 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.domain.tables.pojos.Identity;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class IdentityLevelChangedHandler extends AbstractIdentityHandler {
+public class IdentityLevelChangedHandler implements IdentityHandler {
 
     private final IdentityDao identityDao;
+    private final MachineEventCopyFactory<Identity> identityMachineEventCopyFactory;
 
     @Getter
     private Filter filter = new PathConditionFilter(
@@ -34,15 +36,15 @@ public class IdentityLevelChangedHandler extends AbstractIdentityHandler {
         long sequenceId = event.getEventId();
         String identityId = event.getSourceId();
         log.info("Start identity level changed handling, sequenceId={}, identityId={}", sequenceId, identityId);
-        Identity identity = identityDao.get(identityId);
-        Long oldId = identity.getId();
+        Identity identityOld = identityDao.get(identityId);
+        Identity identityNew = identityMachineEventCopyFactory
+                .create(event, sequenceId, identityId, identityOld, timestampedChange.getOccuredAt());
 
-        initDefaultFieldsIdentity(change, event, sequenceId, identityId, identity, timestampedChange.getOccuredAt());
-        identity.setIdentityLevelId(change.getLevelChanged());
+        identityNew.setIdentityLevelId(change.getLevelChanged());
 
-        identityDao.save(identity).ifPresentOrElse(
+        identityDao.save(identityNew).ifPresentOrElse(
                 id -> {
-                    identityDao.updateNotCurrent(oldId);
+                    identityDao.updateNotCurrent(identityOld.getId());
                     log.info("Identity level have been changed, sequenceId={}, identityId={}", sequenceId, identityId);
                 },
                 () -> log.info("Identity have been saved, sequenceId={}, identityId={}", sequenceId, identityId));

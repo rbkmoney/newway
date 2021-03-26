@@ -1,6 +1,8 @@
 package com.rbkmoney.newway.poller.event.stock.impl.destination;
 
-import com.rbkmoney.fistful.destination.*;
+import com.rbkmoney.fistful.destination.Change;
+import com.rbkmoney.fistful.destination.Status;
+import com.rbkmoney.fistful.destination.TimestampedChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -10,6 +12,7 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.destination.iface.DestinationDao;
 import com.rbkmoney.newway.domain.enums.DestinationStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Destination;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +21,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DestinationStatusChangedHandler extends AbstractDestinationHandler {
+public class DestinationStatusChangedHandler implements DestinationHandler {
 
     private final DestinationDao destinationDao;
+    private final MachineEventCopyFactory<Destination> destinationMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -35,15 +39,15 @@ public class DestinationStatusChangedHandler extends AbstractDestinationHandler 
         log.info("Start destination status changed handling, sequenceId={}, destinationId={}", sequenceId,
                 destinationId);
 
-        Destination destination = destinationDao.get(destinationId);
-        Long oldId = destination.getId();
+        Destination destinationOld = destinationDao.get(destinationId);
+        Destination destinationNew = destinationMachineEventCopyFactory
+                .create(event, sequenceId, destinationId, destinationOld, timestampedChange.getOccuredAt());
 
-        initDefaultFields(event, sequenceId, destinationId, destination, timestampedChange.getOccuredAt());
-        destination.setDestinationStatus(TBaseUtil.unionFieldToEnum(status, DestinationStatus.class));
+        destinationNew.setDestinationStatus(TBaseUtil.unionFieldToEnum(status, DestinationStatus.class));
 
-        destinationDao.save(destination).ifPresentOrElse(
+        destinationDao.save(destinationNew).ifPresentOrElse(
                 id -> {
-                    destinationDao.updateNotCurrent(oldId);
+                    destinationDao.updateNotCurrent(destinationOld.getId());
                     log.info("Destination status have been changed, sequenceId={}, destinationId={}", sequenceId,
                             destinationId);
                 },

@@ -14,7 +14,8 @@ import com.rbkmoney.newway.domain.enums.DepositTransferStatus;
 import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.DepositAdjustment;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
-import com.rbkmoney.newway.poller.event.stock.impl.deposit.AbstractDepositHandler;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
+import com.rbkmoney.newway.poller.event.stock.impl.deposit.DepositHandler;
 import com.rbkmoney.newway.util.FistfulCashFlowUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +29,11 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DepositAdjustmentTransferCreatedHandler extends AbstractDepositHandler {
+public class DepositAdjustmentTransferCreatedHandler implements DepositHandler {
 
     private final DepositAdjustmentDao depositAdjustmentDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
+    private final MachineEventCopyFactory<DepositAdjustment> depositRevertMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -46,19 +48,20 @@ public class DepositAdjustmentTransferCreatedHandler extends AbstractDepositHand
         String adjustmentId = change.getAdjustment().getId();
         log.info("Start deposit adjustment transfer created handling, sequenceId={}, depositId={}", sequenceId,
                 depositId);
-        DepositAdjustment depositAdjustment = depositAdjustmentDao.get(depositId, adjustmentId);
+        DepositAdjustment depositAdjustmentOld = depositAdjustmentDao.get(depositId, adjustmentId);
+        DepositAdjustment depositAdjustmentNew = depositRevertMachineEventCopyFactory
+                .create(event, sequenceId, depositId, depositAdjustmentOld, timestampedChange.getOccuredAt());
+
         List<FinalCashFlowPosting> postings =
                 change.getAdjustment().getPayload().getTransfer().getPayload().getCreated().getTransfer().getCashflow()
                         .getPostings();
-        initDefaultFieldsAdjustment(event.getCreatedAt(), timestampedChange.getOccuredAt(), sequenceId,
-                depositAdjustment);
-        depositAdjustment.setTransferStatus(DepositTransferStatus.created);
-        depositAdjustment.setFee(FistfulCashFlowUtil.getFistfulFee(postings));
-        depositAdjustment.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(postings));
-        Long oldDepositAdjustmentId = depositAdjustment.getId();
-        depositAdjustmentDao.save(depositAdjustment).ifPresentOrElse(
+        depositAdjustmentNew.setTransferStatus(DepositTransferStatus.created);
+        depositAdjustmentNew.setFee(FistfulCashFlowUtil.getFistfulFee(postings));
+        depositAdjustmentNew.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(postings));
+
+        depositAdjustmentDao.save(depositAdjustmentNew).ifPresentOrElse(
                 id -> {
-                    depositAdjustmentDao.updateNotCurrent(oldDepositAdjustmentId);
+                    depositAdjustmentDao.updateNotCurrent(depositAdjustmentOld.getId());
                     List<FistfulCashFlow> fistfulCashFlows = FistfulCashFlowUtil
                             .convertFistfulCashFlows(postings, id, FistfulCashFlowChangeType.deposit_adjustment);
                     fistfulCashFlowDao.save(fistfulCashFlows);

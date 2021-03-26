@@ -1,6 +1,8 @@
 package com.rbkmoney.newway.poller.event.stock.impl.withdrawal;
 
-import com.rbkmoney.fistful.withdrawal.*;
+import com.rbkmoney.fistful.withdrawal.Change;
+import com.rbkmoney.fistful.withdrawal.Route;
+import com.rbkmoney.fistful.withdrawal.TimestampedChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -11,6 +13,7 @@ import com.rbkmoney.newway.dao.withdrawal.iface.WithdrawalDao;
 import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Withdrawal;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +26,11 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
+public class WithdrawalRouteChangeHandler implements WithdrawalHandler {
 
     private final WithdrawalDao withdrawalDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
+    private final MachineEventCopyFactory<Withdrawal> machineEventCopyFactory;
 
     @Getter
     private final Filter filter =
@@ -41,21 +45,21 @@ public class WithdrawalRouteChangeHandler extends AbstractWithdrawalHandler {
         log.info("Start withdrawal provider id changed handling, sequenceId={}, withdrawalId={}", sequenceId,
                 withdrawalId);
 
-        Withdrawal withdrawal = withdrawalDao.get(withdrawalId);
+        Withdrawal withdrawalOld = withdrawalDao.get(withdrawalId);
+        Withdrawal withdrawalNew = machineEventCopyFactory
+                .create(event, sequenceId, withdrawalId, withdrawalOld, timestampedChange.getOccuredAt());
 
-        initDefaultFields(event, sequenceId, withdrawalId, withdrawal, timestampedChange.getOccuredAt());
         Route route = change.getRoute().getRoute();
         int providerId = route.getProviderId();
         String providerIdLegacy = route.getProviderIdLegacy();
-        withdrawal.setProviderId(providerId);
-        withdrawal.setProviderIdLegacy(providerIdLegacy);
+        withdrawalNew.setProviderId(providerId);
+        withdrawalNew.setProviderIdLegacy(providerIdLegacy);
 
-        Long oldId = withdrawal.getId();
-        withdrawalDao.save(withdrawal).ifPresentOrElse(
+        withdrawalDao.save(withdrawalNew).ifPresentOrElse(
                 id -> {
-                    withdrawalDao.updateNotCurrent(oldId);
+                    withdrawalDao.updateNotCurrent(withdrawalOld.getId());
                     List<FistfulCashFlow> cashFlows =
-                            fistfulCashFlowDao.getByObjId(withdrawal.getId(), FistfulCashFlowChangeType.withdrawal);
+                            fistfulCashFlowDao.getByObjId(withdrawalOld.getId(), FistfulCashFlowChangeType.withdrawal);
                     cashFlows.forEach(pcf -> {
                         pcf.setId(null);
                         pcf.setObjId(id);

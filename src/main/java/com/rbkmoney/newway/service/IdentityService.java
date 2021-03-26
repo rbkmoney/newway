@@ -2,7 +2,7 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.fistful.identity.TimestampedChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.poller.event.stock.impl.identity.AbstractIdentityHandler;
+import com.rbkmoney.newway.poller.event.stock.impl.identity.IdentityHandler;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.List;
 public class IdentityService {
 
     private final MachineEventParser<TimestampedChange> parser;
-    private final List<AbstractIdentityHandler> identityHandlers;
+    private final List<IdentityHandler> identityHandlers;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(List<MachineEvent> machineEvents) {

@@ -3,7 +3,6 @@ package com.rbkmoney.newway.poller.event.stock.impl.identity;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.rbkmoney.fistful.identity.Change;
 import com.rbkmoney.fistful.identity.TimestampedChange;
-import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -11,6 +10,7 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.domain.tables.pojos.Identity;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +23,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class IdentityCreatedHandler extends AbstractIdentityHandler {
+public class IdentityCreatedHandler implements IdentityHandler {
 
     private final IdentityDao identityDao;
+    private final MachineEventCopyFactory<Identity> identityMachineEventCopyFactory;
 
     @Getter
     private Filter filter =
@@ -36,11 +37,10 @@ public class IdentityCreatedHandler extends AbstractIdentityHandler {
         long sequenceId = event.getEventId();
         String identityId = event.getSourceId();
         log.info("Start identity created handling, sequenceId={}, identityId={}", sequenceId, identityId);
-        Identity identity = new Identity();
-        identity.setIdentityId(identityId);
-        identity.setSequenceId((int) sequenceId);
-        identity.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-        identity.setEventOccuredAt(TypeUtil.stringToLocalDateTime(timestampedChange.getOccuredAt()));
+
+        Identity identity =
+                identityMachineEventCopyFactory.create(event, sequenceId, identityId, timestampedChange.getOccuredAt());
+
         Change change = timestampedChange.getChange();
         com.rbkmoney.fistful.identity.Identity changeCreated = change.getCreated();
         identity.setPartyId(changeCreated.getParty());

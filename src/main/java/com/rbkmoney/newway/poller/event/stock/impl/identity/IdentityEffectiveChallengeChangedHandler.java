@@ -9,6 +9,7 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.domain.tables.pojos.Identity;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class IdentityEffectiveChallengeChangedHandler extends AbstractIdentityHandler {
+public class IdentityEffectiveChallengeChangedHandler implements IdentityHandler {
 
     private final IdentityDao identityDao;
+    private final MachineEventCopyFactory<Identity> identityMachineEventCopyFactory;
 
     @Getter
     private Filter filter = new PathConditionFilter(
@@ -35,16 +37,15 @@ public class IdentityEffectiveChallengeChangedHandler extends AbstractIdentityHa
         String identityId = event.getSourceId();
         log.info("Start effective identity challenge changed handling, sequenceId={}, identityId={}", sequenceId,
                 identityId);
-        Identity identity = identityDao.get(identityId);
+        Identity identityOld = identityDao.get(identityId);
+        Identity identityNew = identityMachineEventCopyFactory
+                .create(event, sequenceId, identityId, identityOld, timestampedChange.getOccuredAt());
 
-        Long oldId = identity.getId();
+        identityNew.setIdentityEffectiveChalengeId(change.getEffectiveChallengeChanged());
 
-        initDefaultFieldsIdentity(change, event, sequenceId, identityId, identity, timestampedChange.getOccuredAt());
-        identity.setIdentityEffectiveChalengeId(change.getEffectiveChallengeChanged());
-
-        identityDao.save(identity).ifPresentOrElse(
+        identityDao.save(identityNew).ifPresentOrElse(
                 id -> {
-                    identityDao.updateNotCurrent(oldId);
+                    identityDao.updateNotCurrent(identityOld.getId());
                     log.info("Effective identity challenge have been changed, sequenceId={}, identityId={}", sequenceId,
                             identityId);
                 },

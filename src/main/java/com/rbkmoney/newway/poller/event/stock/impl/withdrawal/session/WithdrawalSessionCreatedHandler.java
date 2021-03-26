@@ -1,7 +1,10 @@
 package com.rbkmoney.newway.poller.event.stock.impl.withdrawal.session;
 
 import com.rbkmoney.fistful.base.*;
-import com.rbkmoney.fistful.withdrawal_session.*;
+import com.rbkmoney.fistful.withdrawal_session.Change;
+import com.rbkmoney.fistful.withdrawal_session.Session;
+import com.rbkmoney.fistful.withdrawal_session.TimestampedChange;
+import com.rbkmoney.fistful.withdrawal_session.Withdrawal;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -12,6 +15,7 @@ import com.rbkmoney.newway.dao.withdrawal.session.iface.WithdrawalSessionDao;
 import com.rbkmoney.newway.domain.enums.BankCardPaymentSystem;
 import com.rbkmoney.newway.domain.enums.DestinationResourceType;
 import com.rbkmoney.newway.domain.tables.pojos.WithdrawalSession;
+import com.rbkmoney.newway.factory.WithdrawalSessionMachineEventCopyFactoryImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +26,10 @@ import static com.rbkmoney.newway.domain.enums.WithdrawalSessionStatus.active;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class WithdrawalSessionCreatedHandler extends AbstractWithdrawalSessionHandler {
+public class WithdrawalSessionCreatedHandler implements WithdrawalSessionHandler {
 
     private final WithdrawalSessionDao withdrawalSessionDao;
+    private final WithdrawalSessionMachineEventCopyFactoryImpl withdrawalSessionMachineEventCopyFactory;
 
     @Getter
     private final Filter filter =
@@ -38,8 +43,8 @@ public class WithdrawalSessionCreatedHandler extends AbstractWithdrawalSessionHa
         log.info("Start withdrawal session created handling, sequenceId={}, withdrawalId={}",
                 sequenceId, withdrawalSessionId);
 
-        WithdrawalSession withdrawalSession = new WithdrawalSession();
-        initDefaultFields(event, sequenceId, withdrawalSession, withdrawalSessionId, timestampedChange.getOccuredAt());
+        WithdrawalSession withdrawalSession = withdrawalSessionMachineEventCopyFactory
+                .create(event, sequenceId, withdrawalSessionId, timestampedChange.getOccuredAt());
 
         Session session = change.getCreated();
         withdrawalSession.setProviderId(session.getRoute().getProviderId());

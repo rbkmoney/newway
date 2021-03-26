@@ -11,6 +11,7 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.deposit.iface.DepositDao;
 import com.rbkmoney.newway.domain.enums.DepositStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Deposit;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +20,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DepositCreatedHandler extends AbstractDepositHandler {
+public class DepositCreatedHandler implements DepositHandler {
 
     private final DepositDao depositDao;
+    private final MachineEventCopyFactory<Deposit> depositMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -33,13 +35,12 @@ public class DepositCreatedHandler extends AbstractDepositHandler {
         long sequenceId = event.getEventId();
         String depositId = event.getSourceId();
         log.info("Start deposit created handling, sequenceId={}, depositId={}", sequenceId, depositId);
-        Deposit deposit = new Deposit();
+        Deposit deposit =
+                depositMachineEventCopyFactory.create(event, sequenceId, depositId, timestampedChange.getOccuredAt());
+
         var depositDamsel = change.getCreated().getDeposit();
-        initDefaultFieldsDeposit(event, sequenceId, deposit, timestampedChange.getOccuredAt());
-        deposit.setDepositId(depositId);
         deposit.setSourceId(depositDamsel.getSourceId());
         deposit.setWalletId(depositDamsel.getWalletId());
-
         Cash cash = depositDamsel.getBody();
         deposit.setAmount(cash.getAmount());
         deposit.setCurrencyCode(cash.getCurrency().getSymbolicCode());

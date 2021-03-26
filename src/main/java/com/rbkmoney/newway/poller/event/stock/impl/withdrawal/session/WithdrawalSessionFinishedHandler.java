@@ -11,6 +11,8 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.withdrawal.session.iface.WithdrawalSessionDao;
 import com.rbkmoney.newway.domain.enums.WithdrawalSessionStatus;
 import com.rbkmoney.newway.domain.tables.pojos.WithdrawalSession;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
+import com.rbkmoney.newway.factory.WithdrawalSessionMachineEventCopyFactoryImpl;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class WithdrawalSessionFinishedHandler extends AbstractWithdrawalSessionHandler {
+public class WithdrawalSessionFinishedHandler implements WithdrawalSessionHandler {
 
     private final WithdrawalSessionDao withdrawalSessionDao;
+    private final MachineEventCopyFactory<WithdrawalSession> withdrawalSessionMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -39,28 +42,28 @@ public class WithdrawalSessionFinishedHandler extends AbstractWithdrawalSessionH
         String withdrawalSessionId = event.getSourceId();
         log.info("Start withdrawal session next state handling, sequenceId={}, withdrawalSessionId={}",
                 sequenceId, withdrawalSessionId);
-        WithdrawalSession withdrawalSession = withdrawalSessionDao.get(withdrawalSessionId);
-        initDefaultFields(event, sequenceId, withdrawalSession, withdrawalSessionId, timestampedChange.getOccuredAt());
+        WithdrawalSession withdrawalSessionOld = withdrawalSessionDao.get(withdrawalSessionId);
+        WithdrawalSession withdrawalSessionNew = withdrawalSessionMachineEventCopyFactory
+                .create(event, sequenceId, withdrawalSessionId, withdrawalSessionOld, timestampedChange.getOccuredAt());
 
-        withdrawalSession.setWithdrawalSessionStatus(
+        withdrawalSessionNew.setWithdrawalSessionStatus(
                 TBaseUtil.unionFieldToEnum(change.getFinished(), WithdrawalSessionStatus.class));
         if (change.getFinished().isSetFailed()) {
-            withdrawalSession.setFailureJson(JsonUtil.thriftBaseToJsonString(change.getFinished().getFailed()));
+            withdrawalSessionNew.setFailureJson(JsonUtil.thriftBaseToJsonString(change.getFinished().getFailed()));
         }
 
-        Long oldId = withdrawalSession.getId();
-        withdrawalSessionDao.save(withdrawalSession).ifPresentOrElse(
+        withdrawalSessionDao.save(withdrawalSessionNew).ifPresentOrElse(
                 id -> {
-                    withdrawalSessionDao.updateNotCurrent(oldId);
+                    withdrawalSessionDao.updateNotCurrent(withdrawalSessionOld.getId());
                     log.info(
                             "Withdrawal session state have been changed, " +
                                     "sequenceId={}, withdrawalSessionId={}, WithdrawalSessionStatus={}",
-                            sequenceId, withdrawalSessionId, withdrawalSession.getWithdrawalSessionStatus());
+                            sequenceId, withdrawalSessionId, withdrawalSessionOld.getWithdrawalSessionStatus());
                 },
                 () -> log
                         .info("Withdrawal session state have been changed, " +
                                         "sequenceId={}, withdrawalSessionId={}, WithdrawalSessionStatus={}",
-                                sequenceId, withdrawalSessionId, withdrawalSession.getWithdrawalSessionStatus()));
+                                sequenceId, withdrawalSessionId, withdrawalSessionOld.getWithdrawalSessionStatus()));
 
     }
 

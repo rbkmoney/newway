@@ -16,7 +16,8 @@ import com.rbkmoney.newway.domain.enums.DepositAdjustmentStatus;
 import com.rbkmoney.newway.domain.enums.DepositStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Deposit;
 import com.rbkmoney.newway.domain.tables.pojos.DepositAdjustment;
-import com.rbkmoney.newway.poller.event.stock.impl.deposit.AbstractDepositHandler;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
+import com.rbkmoney.newway.poller.event.stock.impl.deposit.DepositHandler;
 import com.rbkmoney.newway.util.FistfulCashFlowUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +27,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DepositAdjustmentCreatedHandler extends AbstractDepositHandler {
+public class DepositAdjustmentCreatedHandler implements DepositHandler {
 
     private final DepositAdjustmentDao depositAdjustmentDao;
     private final DepositDao depositDao;
+    private final MachineEventCopyFactory<DepositAdjustment> depositRevertMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -41,16 +43,15 @@ public class DepositAdjustmentCreatedHandler extends AbstractDepositHandler {
         long sequenceId = event.getEventId();
         String depositId = event.getSourceId();
         log.info("Start deposit adjustment created handling, sequenceId={}, depositId={}", sequenceId, depositId);
-        DepositAdjustment depositAdjustment = new DepositAdjustment();
+
         var adjustment = change.getAdjustment().getPayload().getCreated().getAdjustment();
         Deposit deposit = depositDao.get(depositId);
-        initDefaultFieldsAdjustment(event.getCreatedAt(), timestampedChange.getOccuredAt(), sequenceId,
-                depositAdjustment);
+        DepositAdjustment depositAdjustment = depositRevertMachineEventCopyFactory
+                .create(event, sequenceId, depositId, timestampedChange.getOccuredAt());
+
         depositAdjustment.setAdjustmentId(adjustment.getId());
         depositAdjustment.setWalletId(deposit.getWalletId());
         depositAdjustment.setSourceId(deposit.getSourceId());
-        depositAdjustment.setDepositId(depositId);
-
 
         if (adjustment.getChangesPlan().isSetNewCashFlow()) {
             CashFlowChangePlan cashFlow = adjustment.getChangesPlan().getNewCashFlow();

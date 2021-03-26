@@ -15,7 +15,8 @@ import com.rbkmoney.newway.domain.enums.DepositAdjustmentStatus;
 import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.DepositAdjustment;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
-import com.rbkmoney.newway.poller.event.stock.impl.deposit.AbstractDepositHandler;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
+import com.rbkmoney.newway.poller.event.stock.impl.deposit.DepositHandler;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +29,11 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class DepositAdjustmentStatusChangedHandler extends AbstractDepositHandler {
+public class DepositAdjustmentStatusChangedHandler implements DepositHandler {
 
     private final DepositAdjustmentDao depositAdjustmentDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
+    private final MachineEventCopyFactory<DepositAdjustment> depositRevertMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -47,17 +49,18 @@ public class DepositAdjustmentStatusChangedHandler extends AbstractDepositHandle
         String adjustmentId = change.getAdjustment().getId();
         log.info("Start deposit adjustment status changed handling, sequenceId={}, depositId={}", sequenceId,
                 depositId);
-        DepositAdjustment depositAdjustment = depositAdjustmentDao.get(depositId, adjustmentId);
-        Long oldDepositAdjustmentId = depositAdjustment.getId();
-        initDefaultFieldsAdjustment(event.getCreatedAt(), timestampedChange.getOccuredAt(), sequenceId,
-                depositAdjustment);
-        depositAdjustment.setStatus(TBaseUtil.unionFieldToEnum(status, DepositAdjustmentStatus.class));
+        DepositAdjustment depositAdjustmentOld = depositAdjustmentDao.get(depositId, adjustmentId);
+        DepositAdjustment depositAdjustmentNew = depositRevertMachineEventCopyFactory
+                .create(event, sequenceId, depositId, depositAdjustmentOld, timestampedChange.getOccuredAt());
 
-        depositAdjustmentDao.save(depositAdjustment).ifPresentOrElse(
+        depositAdjustmentNew.setStatus(TBaseUtil.unionFieldToEnum(status, DepositAdjustmentStatus.class));
+
+        depositAdjustmentDao.save(depositAdjustmentNew).ifPresentOrElse(
                 id -> {
-                    depositAdjustmentDao.updateNotCurrent(oldDepositAdjustmentId);
+                    Long oldId = depositAdjustmentOld.getId();
+                    depositAdjustmentDao.updateNotCurrent(oldId);
                     List<FistfulCashFlow> cashFlows = fistfulCashFlowDao
-                            .getByObjId(depositAdjustment.getId(), FistfulCashFlowChangeType.deposit_adjustment);
+                            .getByObjId(oldId, FistfulCashFlowChangeType.deposit_adjustment);
                     cashFlows.forEach(pcf -> {
                         pcf.setId(null);
                         pcf.setObjId(id);

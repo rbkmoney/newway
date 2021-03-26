@@ -14,6 +14,7 @@ import com.rbkmoney.newway.domain.enums.FistfulCashFlowChangeType;
 import com.rbkmoney.newway.domain.enums.WithdrawalTransferStatus;
 import com.rbkmoney.newway.domain.tables.pojos.FistfulCashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Withdrawal;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import com.rbkmoney.newway.util.FistfulCashFlowUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,11 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class WithdrawalTransferCreatedHandler extends AbstractWithdrawalHandler {
+public class WithdrawalTransferCreatedHandler implements WithdrawalHandler {
 
     private final WithdrawalDao withdrawalDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
+    private final MachineEventCopyFactory<Withdrawal> machineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -45,19 +47,19 @@ public class WithdrawalTransferCreatedHandler extends AbstractWithdrawalHandler 
         log.info("Start withdrawal transfer created handling, sequenceId={}, withdrawalId={}, transfer={}",
                 sequenceId, withdrawalId, change.getTransfer());
 
-        Withdrawal withdrawal = withdrawalDao.get(withdrawalId);
+        Withdrawal withdrawalOld = withdrawalDao.get(withdrawalId);
+        Withdrawal withdrawalNew = machineEventCopyFactory
+                .create(event, sequenceId, withdrawalId, withdrawalOld, timestampedChange.getOccuredAt());
 
-        initDefaultFields(event, sequenceId, withdrawalId, withdrawal, timestampedChange.getOccuredAt());
-        withdrawal.setWithdrawalTransferStatus(WithdrawalTransferStatus.created);
+        withdrawalNew.setWithdrawalTransferStatus(WithdrawalTransferStatus.created);
         List<FinalCashFlowPosting> postings =
                 change.getTransfer().getPayload().getCreated().getTransfer().getCashflow().getPostings();
-        withdrawal.setFee(FistfulCashFlowUtil.getFistfulFee(postings));
-        withdrawal.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(postings));
+        withdrawalNew.setFee(FistfulCashFlowUtil.getFistfulFee(postings));
+        withdrawalNew.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(postings));
 
-        Long oldId = withdrawal.getId();
-        withdrawalDao.save(withdrawal).ifPresentOrElse(
+        withdrawalDao.save(withdrawalNew).ifPresentOrElse(
                 id -> {
-                    withdrawalDao.updateNotCurrent(oldId);
+                    withdrawalDao.updateNotCurrent(withdrawalOld.getId());
                     List<FistfulCashFlow> fistfulCashFlows = FistfulCashFlowUtil
                             .convertFistfulCashFlows(postings, id, FistfulCashFlowChangeType.withdrawal);
                     fistfulCashFlowDao.save(fistfulCashFlows);

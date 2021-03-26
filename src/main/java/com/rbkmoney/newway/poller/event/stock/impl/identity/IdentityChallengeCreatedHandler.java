@@ -1,6 +1,9 @@
 package com.rbkmoney.newway.poller.event.stock.impl.identity;
 
-import com.rbkmoney.fistful.identity.*;
+import com.rbkmoney.fistful.identity.ChallengeChange;
+import com.rbkmoney.fistful.identity.ChallengeChangePayload;
+import com.rbkmoney.fistful.identity.Change;
+import com.rbkmoney.fistful.identity.TimestampedChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -9,6 +12,7 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.identity.iface.ChallengeDao;
 import com.rbkmoney.newway.domain.enums.ChallengeStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Challenge;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +24,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class IdentityChallengeCreatedHandler extends AbstractIdentityHandler {
+public class IdentityChallengeCreatedHandler implements IdentityHandler {
 
     private final ChallengeDao challengeDao;
+    private final MachineEventCopyFactory<Challenge> challengeMachineEventCopyFactory;
 
     @Getter
     private Filter filter = new PathConditionFilter(
@@ -38,10 +43,10 @@ public class IdentityChallengeCreatedHandler extends AbstractIdentityHandler {
         log.info("Start identity challenge created handling, sequenceId={}, identityId={}, challengeId={}",
                 sequenceId, identityId, challengeId);
 
-        Challenge challenge = new Challenge();
-        initDefaultChallengeFields(event, challengeChange, (int) sequenceId, identityId, challenge,
-                timestampedChange.getOccuredAt());
+        Challenge challenge = challengeMachineEventCopyFactory
+                .create(event, (int) sequenceId, identityId, timestampedChange.getOccuredAt());
 
+        challenge.setChallengeId(challengeChange.getId());
         ChallengeChangePayload challengePayload = challengeChange.getPayload();
         com.rbkmoney.fistful.identity.Challenge challengePayloadCreated = challengePayload.getCreated();
         challenge.setChallengeClassId(challengePayloadCreated.getCls());

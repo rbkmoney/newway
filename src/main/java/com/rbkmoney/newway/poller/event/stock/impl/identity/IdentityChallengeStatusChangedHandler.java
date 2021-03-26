@@ -11,6 +11,7 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.identity.iface.ChallengeDao;
 import com.rbkmoney.newway.domain.enums.ChallengeResolution;
 import com.rbkmoney.newway.domain.tables.pojos.Challenge;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +22,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class IdentityChallengeStatusChangedHandler extends AbstractIdentityHandler {
+public class IdentityChallengeStatusChangedHandler implements IdentityHandler {
 
     private final ChallengeDao challengeDao;
+    private final MachineEventCopyFactory<Challenge> challengeMachineEventCopyFactory;
 
     @Getter
     private Filter filter = new PathConditionFilter(
@@ -41,27 +43,25 @@ public class IdentityChallengeStatusChangedHandler extends AbstractIdentityHandl
         log.info("Start identity challenge status changed handling, sequenceId={}, identityId={}, challengeId={}",
                 sequenceId, identityId, challengeId);
 
-        Challenge challenge = challengeDao.get(identityId, challengeChange.getId());
+        Challenge challengeOld = challengeDao.get(identityId, challengeChange.getId());
+        Challenge challengeNew = challengeMachineEventCopyFactory
+                .create(event, (int) sequenceId, identityId, timestampedChange.getOccuredAt());
 
-        initDefaultChallengeFields(event, challengeChange, (int) sequenceId, identityId, challenge,
-                timestampedChange.getOccuredAt());
-
-        challenge.setChallengeStatus(
+        challengeNew.setChallengeId(challengeChange.getId());
+        challengeNew.setChallengeStatus(
                 TBaseUtil.unionFieldToEnum(status, com.rbkmoney.newway.domain.enums.ChallengeStatus.class));
         if (status.isSetCompleted()) {
             ChallengeCompleted challengeCompleted = status.getCompleted();
-            challenge.setChallengeResolution(
+            challengeNew.setChallengeResolution(
                     TypeUtil.toEnumField(challengeCompleted.getResolution().toString(), ChallengeResolution.class));
             if (challengeCompleted.isSetValidUntil()) {
-                challenge.setChallengeValidUntil(TypeUtil.stringToLocalDateTime(challengeCompleted.getValidUntil()));
+                challengeNew.setChallengeValidUntil(TypeUtil.stringToLocalDateTime(challengeCompleted.getValidUntil()));
             }
         }
 
-        Long oldId = challenge.getId();
-
-        challengeDao.save(challenge).ifPresentOrElse(
+        challengeDao.save(challengeNew).ifPresentOrElse(
                 id -> {
-                    challengeDao.updateNotCurrent(identityId, oldId);
+                    challengeDao.updateNotCurrent(identityId, challengeOld.getId());
                     log.info("Identity challenge status have been changed, sequenceId={}, identityId={}", sequenceId,
                             identityId);
                 },

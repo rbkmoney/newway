@@ -11,6 +11,7 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.withdrawal.iface.WithdrawalDao;
 import com.rbkmoney.newway.domain.enums.WithdrawalStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Withdrawal;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +20,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class WithdrawalCreatedHandler extends AbstractWithdrawalHandler {
+public class WithdrawalCreatedHandler implements WithdrawalHandler {
 
     private final WithdrawalDao withdrawalDao;
+    private final MachineEventCopyFactory<Withdrawal> machineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -35,8 +37,8 @@ public class WithdrawalCreatedHandler extends AbstractWithdrawalHandler {
         String withdrawalId = event.getSourceId();
         log.info("Start withdrawal created handling, sequenceId={}, withdrawalId={}", sequenceId, withdrawalId);
 
-        Withdrawal withdrawal = new Withdrawal();
-        initDefaultFields(event, sequenceId, withdrawalId, withdrawal, timestampedChange.getOccuredAt());
+        Withdrawal withdrawal =
+                machineEventCopyFactory.create(event, sequenceId, withdrawalId, timestampedChange.getOccuredAt());
 
         withdrawal.setWalletId(withdrawalDamsel.getWalletId());
         withdrawal.setDestinationId(withdrawalDamsel.getDestinationId());
