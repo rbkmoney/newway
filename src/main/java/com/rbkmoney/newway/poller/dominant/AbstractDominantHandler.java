@@ -17,7 +17,8 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final String UNKNOWN_TYPE_EX = "Unknown type of operation. Only insert/update/remove supports. Operation: ";
+    private static final String UNKNOWN_TYPE_EX = "Unknown type of operation. Only insert/update/remove supports. " +
+            "Operation: ";
 
     private DomainObject domainObject;
 
