@@ -46,6 +46,7 @@ public class DepositRevertTransferCreatedHandler extends AbstractDepositHandler 
         String revertId = change.getRevert().getId();
         log.info("Start deposit revert transfer created handling, sequenceId={}, depositId={}", sequenceId, depositId);
         DepositRevert depositRevert = depositRevertDao.get(depositId, revertId);
+        Long oldDepositRevertId = depositRevert.getId();
         initDefaultFieldsRevert(event.getCreatedAt(), timestampedChange.getOccuredAt(), sequenceId, depositRevert);
         List<FinalCashFlowPosting> postings =
                 change.getRevert().getPayload().getTransfer().getPayload().getCreated().getTransfer().getCashflow()
@@ -53,7 +54,7 @@ public class DepositRevertTransferCreatedHandler extends AbstractDepositHandler 
         depositRevert.setTransferStatus(DepositTransferStatus.created);
         depositRevert.setFee(FistfulCashFlowUtil.getFistfulFee(postings));
         depositRevert.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(postings));
-        Long oldDepositRevertId = depositRevert.getId();
+
         depositRevertDao.save(depositRevert).ifPresentOrElse(
                 id -> {
                     depositRevertDao.updateNotCurrent(oldDepositRevertId);
