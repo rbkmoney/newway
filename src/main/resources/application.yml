@@ -1,16 +1,18 @@
 info:
   single-instance-mode: false
+
 server:
-  port: @server.port@
+  port: '@server.port@'
+
 spring:
   application:
     name: newway
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.postgresql.Driver
-    url: @db.url@
-    username: @db.user@
-    password: @db.password@
+    url: '@db.url@'
+    username: '@db.user@'
+    password: '@db.password@'
     hikari:
       idle-timeout: 30000
       maximum-pool-size: 10
@@ -20,11 +22,29 @@ spring:
     schemas: nw
 
 management:
+  security:
+    flag: false
+  server:
+    port: '@management.port@'
   metrics:
     export:
       statsd:
         flavor: etsy
         enabled: false
+      prometheus:
+        enabled: false
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+
 retry-policy:
   maxAttempts: -1
 
