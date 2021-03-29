@@ -30,7 +30,7 @@ public class WithdrawalRouteChangeHandler implements WithdrawalHandler {
 
     private final WithdrawalDao withdrawalDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
-    private final MachineEventCopyFactory<Withdrawal> machineEventCopyFactory;
+    private final MachineEventCopyFactory<Withdrawal, String> machineEventCopyFactory;
 
     @Getter
     private final Filter filter =
@@ -45,7 +45,7 @@ public class WithdrawalRouteChangeHandler implements WithdrawalHandler {
         log.info("Start withdrawal provider id changed handling, sequenceId={}, withdrawalId={}", sequenceId,
                 withdrawalId);
 
-        Withdrawal withdrawalOld = withdrawalDao.get(withdrawalId);
+        final Withdrawal withdrawalOld = withdrawalDao.get(withdrawalId);
         Withdrawal withdrawalNew = machineEventCopyFactory
                 .create(event, sequenceId, withdrawalId, withdrawalOld, timestampedChange.getOccuredAt());
 

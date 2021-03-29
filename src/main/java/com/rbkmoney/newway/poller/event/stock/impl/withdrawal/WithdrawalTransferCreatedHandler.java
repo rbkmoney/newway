@@ -32,7 +32,7 @@ public class WithdrawalTransferCreatedHandler implements WithdrawalHandler {
 
     private final WithdrawalDao withdrawalDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
-    private final MachineEventCopyFactory<Withdrawal> machineEventCopyFactory;
+    private final MachineEventCopyFactory<Withdrawal, String> machineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -47,7 +47,7 @@ public class WithdrawalTransferCreatedHandler implements WithdrawalHandler {
         log.info("Start withdrawal transfer created handling, sequenceId={}, withdrawalId={}, transfer={}",
                 sequenceId, withdrawalId, change.getTransfer());
 
-        Withdrawal withdrawalOld = withdrawalDao.get(withdrawalId);
+        final Withdrawal withdrawalOld = withdrawalDao.get(withdrawalId);
         Withdrawal withdrawalNew = machineEventCopyFactory
                 .create(event, sequenceId, withdrawalId, withdrawalOld, timestampedChange.getOccuredAt());
 

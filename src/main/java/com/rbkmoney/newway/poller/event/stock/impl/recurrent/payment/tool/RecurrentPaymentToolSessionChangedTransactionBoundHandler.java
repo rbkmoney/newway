@@ -9,50 +9,54 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.recurrent.payment.tool.iface.RecurrentPaymentToolDao;
 import com.rbkmoney.newway.domain.tables.pojos.RecurrentPaymentTool;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import com.rbkmoney.newway.util.JsonUtil;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@SuppressWarnings("VariableDeclarationUsageDistance")
-public class RecurrentPaymentToolSessionChangedTransactionBoundHandler extends AbstractRecurrentPaymentToolHandler {
+@RequiredArgsConstructor
+public class RecurrentPaymentToolSessionChangedTransactionBoundHandler implements RecurrentPaymentToolHandler {
 
-    private final Filter filter;
+    private final RecurrentPaymentToolDao recurrentPaymentToolDao;
+    private final MachineEventCopyFactory<RecurrentPaymentTool, Integer> recurrentPaymentToolCopyFactory;
 
-    public RecurrentPaymentToolSessionChangedTransactionBoundHandler(RecurrentPaymentToolDao recurrentPaymentToolDao) {
-        super(recurrentPaymentToolDao);
-        this.filter = new PathConditionFilter(
-                new PathConditionRule("rec_payment_tool_session_changed.payload.session_transaction_bound",
-                        new IsNullCondition().not()));
-    }
+    @Getter
+    private final Filter filter = new PathConditionFilter(
+            new PathConditionRule("rec_payment_tool_session_changed.payload.session_transaction_bound",
+                    new IsNullCondition().not()));
 
     @Override
     public void handle(RecurrentPaymentToolChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         log.info(
                 "Start recurrent payment tool session changed transaction bound handling, " +
                         "sourceId={}, sequenceId={}, changeId={}",
-                event.getSourceId(), event.getEventId(), changeId);
-        RecurrentPaymentTool recurrentPaymentTool = getRecurrentPaymentToolSource(event);
-        Long rptSourceId = recurrentPaymentTool.getId();
-        setDefaultProperties(recurrentPaymentTool, event, changeId);
+                event.getSourceId(), sequenceId, changeId);
+        final RecurrentPaymentTool recurrentPaymentToolOld = recurrentPaymentToolDao.getNotNull(event.getSourceId());
+        RecurrentPaymentTool recurrentPaymentToolNew =
+                recurrentPaymentToolCopyFactory.create(event, sequenceId, changeId, recurrentPaymentToolOld, null);
         TransactionInfo trx =
                 change.getRecPaymentToolSessionChanged().getPayload().getSessionTransactionBound().getTrx();
-        recurrentPaymentTool.setSessionPayloadTransactionBoundTrxId(trx.getId());
-        recurrentPaymentTool.setSessionPayloadTransactionBoundTrxExtraJson(JsonUtil.objectToJsonString(trx.getExtra()));
+        recurrentPaymentToolNew.setSessionPayloadTransactionBoundTrxId(trx.getId());
+        recurrentPaymentToolNew
+                .setSessionPayloadTransactionBoundTrxExtraJson(JsonUtil.objectToJsonString(trx.getExtra()));
         if (trx.isSetAdditionalInfo()) {
-            recurrentPaymentTool
+            recurrentPaymentToolNew
                     .setSessionPayloadTransactionBoundTrxAdditionalInfoRrn(trx.getAdditionalInfo().getRrn());
         }
-        saveAndUpdateNotCurrent(recurrentPaymentTool, rptSourceId);
-        log.info(
-                "End recurrent payment tool session changed transaction bound handling, " +
-                        "sourceId={}, sequenceId={}, changeId={}",
-                event.getSourceId(), event.getEventId(), changeId);
+
+        recurrentPaymentToolDao.save(recurrentPaymentToolNew).ifPresentOrElse(
+                id -> {
+                    recurrentPaymentToolDao.updateNotCurrent(recurrentPaymentToolOld.getId());
+                    log.info("End recurrent payment tool session changed transaction handling, " +
+                            "sourceId={}, sequenceId={}, changeId={}", event.getSourceId(), sequenceId, changeId);
+                },
+                () -> log.info("End recurrent payment tool session changed transaction bound duplicated, " +
+                        "sequenceId={}, changeId={}", sequenceId, changeId));
     }
 
-    @Override
-    public Filter<RecurrentPaymentToolChange> getFilter() {
-        return filter;
-    }
 }

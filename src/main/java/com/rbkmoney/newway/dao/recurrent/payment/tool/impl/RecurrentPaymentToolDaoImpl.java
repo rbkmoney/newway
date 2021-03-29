@@ -6,6 +6,7 @@ import com.rbkmoney.newway.dao.recurrent.payment.tool.iface.RecurrentPaymentTool
 import com.rbkmoney.newway.domain.tables.pojos.RecurrentPaymentTool;
 import com.rbkmoney.newway.domain.tables.records.RecurrentPaymentToolRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.jooq.Query;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -57,5 +58,16 @@ public class RecurrentPaymentToolDaoImpl extends AbstractGenericDao implements R
                 .where(RECURRENT_PAYMENT_TOOL.ID.eq(id));
         executeOne(query);
     }
+
+    @Override
+    public RecurrentPaymentTool getNotNull(String eventId) {
+        RecurrentPaymentTool recurrentPaymentTool = get(eventId);
+        if (recurrentPaymentTool == null) {
+            throw new NotFoundException(
+                    String.format("Recurrent payment tool not found, sourceId='%s'", eventId));
+        }
+        return recurrentPaymentTool;
+    }
+
 }
 

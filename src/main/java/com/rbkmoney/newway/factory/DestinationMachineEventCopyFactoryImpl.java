@@ -6,7 +6,7 @@ import com.rbkmoney.newway.domain.tables.pojos.Destination;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DestinationMachineEventCopyFactoryImpl implements MachineEventCopyFactory<Destination> {
+public class DestinationMachineEventCopyFactoryImpl implements MachineEventCopyFactory<Destination, String> {
 
     @Override
     public Destination create(MachineEvent event, long sequenceId, String id, Destination old, String occurredAt) {

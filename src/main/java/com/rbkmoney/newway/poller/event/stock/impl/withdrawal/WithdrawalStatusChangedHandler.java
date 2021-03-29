@@ -33,7 +33,7 @@ public class WithdrawalStatusChangedHandler implements WithdrawalHandler {
 
     private final WithdrawalDao withdrawalDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
-    private final MachineEventCopyFactory<Withdrawal> machineEventCopyFactory;
+    private final MachineEventCopyFactory<Withdrawal, String> machineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(

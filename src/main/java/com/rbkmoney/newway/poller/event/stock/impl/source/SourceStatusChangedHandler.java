@@ -1,6 +1,8 @@
 package com.rbkmoney.newway.poller.event.stock.impl.source;
 
-import com.rbkmoney.fistful.source.*;
+import com.rbkmoney.fistful.source.Change;
+import com.rbkmoney.fistful.source.Status;
+import com.rbkmoney.fistful.source.TimestampedChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
@@ -10,6 +12,7 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.source.iface.SourceDao;
 import com.rbkmoney.newway.domain.enums.SourceStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Source;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +21,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SourceStatusChangedHandler extends AbstractSourceHandler {
+public class SourceStatusChangedHandler implements SourceHandler {
 
     private final SourceDao sourceDao;
+    private final MachineEventCopyFactory<Source, String> sourceMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -34,19 +38,18 @@ public class SourceStatusChangedHandler extends AbstractSourceHandler {
         String sourceId = event.getSourceId();
         log.info("Start source status changed handling, sequenceId={}, sourceId={}", sequenceId, sourceId);
 
-        Source source = sourceDao.get(sourceId);
-        Long oldId = source.getId();
+        final Source sourceOld = sourceDao.get(sourceId);
+        Source sourceNew = sourceMachineEventCopyFactory
+                .create(event, sequenceId, sourceId, sourceOld, timestampedChange.getOccuredAt());
 
-        initDefaultFields(event, (int) sequenceId, sourceId, source, timestampedChange.getOccuredAt());
+        sourceNew.setSourceStatus(TBaseUtil.unionFieldToEnum(status, SourceStatus.class));
 
-        source.setSourceStatus(TBaseUtil.unionFieldToEnum(status, SourceStatus.class));
-
-        sourceDao.save(source).ifPresentOrElse(
+        sourceDao.save(sourceNew).ifPresentOrElse(
                 id -> {
-                    sourceDao.updateNotCurrent(oldId);
+                    sourceDao.updateNotCurrent(sourceOld.getId());
                     log.info("Source status have been changed, sequenceId={}, sourceId={}", sequenceId, sourceId);
                 },
-                () -> log.info("Source status have been saved, sequenceId={}, sourceId={}", sequenceId, sourceId));
+                () -> log.info("Source status bound duplicated, sequenceId={}, sourceId={}", sequenceId, sourceId));
     }
 
 }

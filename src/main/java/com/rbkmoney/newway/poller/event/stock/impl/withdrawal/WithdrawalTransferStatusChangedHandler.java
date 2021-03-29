@@ -32,7 +32,7 @@ public class WithdrawalTransferStatusChangedHandler implements WithdrawalHandler
 
     private final WithdrawalDao withdrawalDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
-    private final MachineEventCopyFactory<Withdrawal> machineEventCopyFactory;
+    private final MachineEventCopyFactory<Withdrawal, String> machineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -48,7 +48,7 @@ public class WithdrawalTransferStatusChangedHandler implements WithdrawalHandler
         log.info("Start withdrawal transfer status changed handling, sequenceId={}, withdrawalId={} transfer={}",
                 sequenceId, withdrawalId, change.getTransfer());
 
-        Withdrawal withdrawalOld = withdrawalDao.get(withdrawalId);
+        final Withdrawal withdrawalOld = withdrawalDao.get(withdrawalId);
         Withdrawal withdrawalNew = machineEventCopyFactory
                 .create(event, sequenceId, withdrawalId, withdrawalOld, timestampedChange.getOccuredAt());
         withdrawalNew.setWithdrawalTransferStatus(TBaseUtil.unionFieldToEnum(status, WithdrawalTransferStatus.class));

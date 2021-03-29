@@ -8,36 +8,41 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.recurrent.payment.tool.iface.RecurrentPaymentToolDao;
 import com.rbkmoney.newway.domain.tables.pojos.RecurrentPaymentTool;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class RecurrentPaymentToolRiskScoreChangedHandler extends AbstractRecurrentPaymentToolHandler {
+@RequiredArgsConstructor
+public class RecurrentPaymentToolRiskScoreChangedHandler implements RecurrentPaymentToolHandler {
 
-    private final Filter filter;
+    private final RecurrentPaymentToolDao recurrentPaymentToolDao;
+    private final MachineEventCopyFactory<RecurrentPaymentTool, Integer> recurrentPaymentToolCopyFactory;
 
-    public RecurrentPaymentToolRiskScoreChangedHandler(RecurrentPaymentToolDao recurrentPaymentToolDao) {
-        super(recurrentPaymentToolDao);
-        this.filter = new PathConditionFilter(
-                new PathConditionRule("rec_payment_tool_risk_score_changed", new IsNullCondition().not()));
-    }
+    @Getter
+    private final Filter filter = new PathConditionFilter(
+            new PathConditionRule("rec_payment_tool_risk_score_changed", new IsNullCondition().not()));
 
     @Override
     public void handle(RecurrentPaymentToolChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         log.info("Start recurrent payment tool risk score changed handling, sourceId={}, sequenceId={}, changeId={}",
-                event.getSourceId(), event.getEventId(), changeId);
-        RecurrentPaymentTool recurrentPaymentTool = getRecurrentPaymentToolSource(event);
-        Long rptSourceId = recurrentPaymentTool.getId();
-        setDefaultProperties(recurrentPaymentTool, event, changeId);
-        recurrentPaymentTool.setRiskScore(change.getRecPaymentToolRiskScoreChanged().getRiskScore().name());
-        saveAndUpdateNotCurrent(recurrentPaymentTool, rptSourceId);
-        log.info("End recurrent payment tool risk score changed handling, sourceId={}, sequenceId={}, changeId={}",
-                event.getSourceId(), event.getEventId(), changeId);
-    }
+                event.getSourceId(), sequenceId, changeId);
+        final RecurrentPaymentTool recurrentPaymentToolOld = recurrentPaymentToolDao.getNotNull(event.getSourceId());
+        RecurrentPaymentTool recurrentPaymentToolNew =
+                recurrentPaymentToolCopyFactory.create(event, sequenceId, changeId, recurrentPaymentToolOld, null);
+        recurrentPaymentToolNew.setRiskScore(change.getRecPaymentToolRiskScoreChanged().getRiskScore().name());
 
-    @Override
-    public Filter<RecurrentPaymentToolChange> getFilter() {
-        return filter;
+        recurrentPaymentToolDao.save(recurrentPaymentToolNew).ifPresentOrElse(
+                id -> {
+                    recurrentPaymentToolDao.updateNotCurrent(recurrentPaymentToolOld.getId());
+                    log.info("End recurrent payment tool risk score changed handling, " +
+                            "sourceId={}, sequenceId={}, changeId={}", event.getSourceId(), sequenceId, changeId);
+                },
+                () -> log.info("End recurrent payment tool risk score changed bound duplicated, " +
+                        "sequenceId={}, changeId={}", sequenceId, changeId));
     }
 }

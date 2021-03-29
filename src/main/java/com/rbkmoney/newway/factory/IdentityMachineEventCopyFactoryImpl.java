@@ -7,7 +7,7 @@ import com.rbkmoney.newway.domain.tables.pojos.Identity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IdentityMachineEventCopyFactoryImpl implements MachineEventCopyFactory<Identity> {
+public class IdentityMachineEventCopyFactoryImpl implements MachineEventCopyFactory<Identity, String> {
 
     @Override
     public Identity create(MachineEvent event, long sequenceId, String id, Identity old, String occurredAt) {

@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WithdrawalSessionNextStateHandler implements WithdrawalSessionHandler {
 
     private final WithdrawalSessionDao withdrawalSessionDao;
-    private final MachineEventCopyFactory<WithdrawalSession> withdrawalSessionMachineEventCopyFactory;
+    private final MachineEventCopyFactory<WithdrawalSession, String> withdrawalSessionMachineEventCopyFactory;
 
     @Getter
     private final Filter filter =
@@ -39,7 +39,7 @@ public class WithdrawalSessionNextStateHandler implements WithdrawalSessionHandl
         String withdrawalSessionId = event.getSourceId();
         log.info("Start adapter state for withdrawal session handling, sequenceId={}, withdrawalSessionId={}",
                 sequenceId, withdrawalSessionId);
-        WithdrawalSession withdrawalSessionOld = withdrawalSessionDao.get(withdrawalSessionId);
+        final WithdrawalSession withdrawalSessionOld = withdrawalSessionDao.get(withdrawalSessionId);
         WithdrawalSession withdrawalSessionNew = withdrawalSessionMachineEventCopyFactory
                 .create(event, sequenceId, withdrawalSessionId, withdrawalSessionOld, timestampedChange.getOccuredAt());
         withdrawalSessionNew.setAdapterState(JsonUtil.thriftBaseToJsonString(change.getNextState()));

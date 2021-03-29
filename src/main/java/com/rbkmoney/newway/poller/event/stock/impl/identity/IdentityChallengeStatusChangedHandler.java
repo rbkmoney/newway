@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class IdentityChallengeStatusChangedHandler implements IdentityHandler {
 
     private final ChallengeDao challengeDao;
-    private final MachineEventCopyFactory<Challenge> challengeMachineEventCopyFactory;
+    private final MachineEventCopyFactory<Challenge, String> challengeMachineEventCopyFactory;
 
     @Getter
     private Filter filter = new PathConditionFilter(
@@ -43,7 +43,7 @@ public class IdentityChallengeStatusChangedHandler implements IdentityHandler {
         log.info("Start identity challenge status changed handling, sequenceId={}, identityId={}, challengeId={}",
                 sequenceId, identityId, challengeId);
 
-        Challenge challengeOld = challengeDao.get(identityId, challengeChange.getId());
+        final Challenge challengeOld = challengeDao.get(identityId, challengeChange.getId());
         Challenge challengeNew = challengeMachineEventCopyFactory
                 .create(event, (int) sequenceId, identityId, timestampedChange.getOccuredAt());
 

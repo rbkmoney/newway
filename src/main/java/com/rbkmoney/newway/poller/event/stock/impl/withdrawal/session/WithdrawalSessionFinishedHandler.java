@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WithdrawalSessionFinishedHandler implements WithdrawalSessionHandler {
 
     private final WithdrawalSessionDao withdrawalSessionDao;
-    private final MachineEventCopyFactory<WithdrawalSession> withdrawalSessionMachineEventCopyFactory;
+    private final MachineEventCopyFactory<WithdrawalSession, String> withdrawalSessionMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -42,7 +42,7 @@ public class WithdrawalSessionFinishedHandler implements WithdrawalSessionHandle
         String withdrawalSessionId = event.getSourceId();
         log.info("Start withdrawal session next state handling, sequenceId={}, withdrawalSessionId={}",
                 sequenceId, withdrawalSessionId);
-        WithdrawalSession withdrawalSessionOld = withdrawalSessionDao.get(withdrawalSessionId);
+        final WithdrawalSession withdrawalSessionOld = withdrawalSessionDao.get(withdrawalSessionId);
         WithdrawalSession withdrawalSessionNew = withdrawalSessionMachineEventCopyFactory
                 .create(event, sequenceId, withdrawalSessionId, withdrawalSessionOld, timestampedChange.getOccuredAt());
 

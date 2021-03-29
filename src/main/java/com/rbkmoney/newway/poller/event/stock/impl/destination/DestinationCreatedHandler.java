@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 public class DestinationCreatedHandler implements DestinationHandler {
 
     private final DestinationDao destinationDao;
-    private final MachineEventCopyFactory<Destination> destinationMachineEventCopyFactory;
+    private final MachineEventCopyFactory<Destination, String> destinationMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(

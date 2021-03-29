@@ -13,6 +13,7 @@ import com.rbkmoney.newway.dao.source.iface.SourceDao;
 import com.rbkmoney.newway.domain.tables.pojos.Identity;
 import com.rbkmoney.newway.domain.tables.pojos.Source;
 import com.rbkmoney.newway.exception.NotFoundException;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +22,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SourceAccountCreatedHandler extends AbstractSourceHandler {
+public class SourceAccountCreatedHandler implements SourceHandler {
 
     private final SourceDao sourceDao;
     private final IdentityDao identityDao;
+    private final MachineEventCopyFactory<Source, String> sourceMachineEventCopyFactory;
 
     @Getter
     private final Filter filter =
@@ -37,8 +39,8 @@ public class SourceAccountCreatedHandler extends AbstractSourceHandler {
         long sequenceId = event.getEventId();
         String sourceId = event.getSourceId();
         log.info("Start source account created handling, sequenceId={}, sourceId={}", sequenceId, sourceId);
-        Source source = sourceDao.get(sourceId);
-        if (source == null) {
+        final Source sourceOld = sourceDao.get(sourceId);
+        if (sourceOld == null) {
             throw new NotFoundException(String.format("Source not found, sourceId='%s'", sourceId));
         }
         Identity identity = identityDao.get(account.getIdentity());
@@ -46,18 +48,18 @@ public class SourceAccountCreatedHandler extends AbstractSourceHandler {
             throw new NotFoundException(String.format("Identity not found, sourceId='%s'", account.getIdentity()));
         }
 
-        initDefaultFields(event, (int) sequenceId, sourceId, source, timestampedChange.getOccuredAt());
+        Source sourceNew = sourceMachineEventCopyFactory
+                .create(event, sequenceId, sourceId, sourceOld, timestampedChange.getOccuredAt());
 
-        source.setAccountId(account.getId());
-        source.setIdentityId(account.getIdentity());
-        source.setPartyId(identity.getPartyId());
-        source.setAccounterAccountId(account.getAccounterAccountId());
-        source.setCurrencyCode(account.getCurrency().getSymbolicCode());
+        sourceNew.setAccountId(account.getId());
+        sourceNew.setIdentityId(account.getIdentity());
+        sourceNew.setPartyId(identity.getPartyId());
+        sourceNew.setAccounterAccountId(account.getAccounterAccountId());
+        sourceNew.setCurrencyCode(account.getCurrency().getSymbolicCode());
 
-        Long oldId = source.getId();
-        sourceDao.save(source).ifPresentOrElse(
+        sourceDao.save(sourceOld).ifPresentOrElse(
                 id -> {
-                    sourceDao.updateNotCurrent(oldId);
+                    sourceDao.updateNotCurrent(sourceOld.getId());
                     log.info("Source account have been changed, sequenceId={}, sourceId={}", sequenceId, sourceId);
                 },
                 () -> log.info("Source account have been saved, sequenceId={}, sourceId={}", sequenceId, sourceId));

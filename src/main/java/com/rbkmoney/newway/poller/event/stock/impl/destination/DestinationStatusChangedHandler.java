@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class DestinationStatusChangedHandler implements DestinationHandler {
 
     private final DestinationDao destinationDao;
-    private final MachineEventCopyFactory<Destination> destinationMachineEventCopyFactory;
+    private final MachineEventCopyFactory<Destination, String> destinationMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -39,7 +39,7 @@ public class DestinationStatusChangedHandler implements DestinationHandler {
         log.info("Start destination status changed handling, sequenceId={}, destinationId={}", sequenceId,
                 destinationId);
 
-        Destination destinationOld = destinationDao.get(destinationId);
+        final Destination destinationOld = destinationDao.get(destinationId);
         Destination destinationNew = destinationMachineEventCopyFactory
                 .create(event, sequenceId, destinationId, destinationOld, timestampedChange.getOccuredAt());
 

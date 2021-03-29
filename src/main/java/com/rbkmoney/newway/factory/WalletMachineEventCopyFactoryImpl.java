@@ -6,7 +6,7 @@ import com.rbkmoney.newway.domain.tables.pojos.Wallet;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WalletMachineEventCopyFactoryImpl implements MachineEventCopyFactory<Wallet> {
+public class WalletMachineEventCopyFactoryImpl implements MachineEventCopyFactory<Wallet, String> {
 
     @Override
     public Wallet create(MachineEvent event, long sequenceId, String id, Wallet withdrawalOld,

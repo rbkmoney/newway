@@ -6,7 +6,7 @@ import com.rbkmoney.newway.domain.tables.pojos.Challenge;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ChallengeMachineEventCopyFactoryImpl implements MachineEventCopyFactory<Challenge> {
+public class ChallengeMachineEventCopyFactoryImpl implements MachineEventCopyFactory<Challenge, String> {
 
     @Override
     public Challenge create(MachineEvent event, long sequenceId, String identityId, Challenge old, String occurredAt) {

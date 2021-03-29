@@ -26,7 +26,7 @@ public class DestinationAccountCreatedHandler implements DestinationHandler {
 
     private final DestinationDao destinationDao;
     private final IdentityDao identityDao;
-    private final MachineEventCopyFactory<Destination> destinationMachineEventCopyFactory;
+    private final MachineEventCopyFactory<Destination, String> destinationMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -40,7 +40,7 @@ public class DestinationAccountCreatedHandler implements DestinationHandler {
         String destinationId = event.getSourceId();
         log.info("Start destination account created handling, sequenceId={}, destinationId={}", sequenceId,
                 destinationId);
-        Destination destinationOld = destinationDao.get(destinationId);
+        final Destination destinationOld = destinationDao.get(destinationId);
         Identity identity = findIdentity(account, destinationId, destinationOld);
         Destination destinationNew = destinationMachineEventCopyFactory
                 .create(event, sequenceId, destinationId, destinationOld, timestampedChange.getOccuredAt());
@@ -51,7 +51,7 @@ public class DestinationAccountCreatedHandler implements DestinationHandler {
         destinationNew.setAccounterAccountId(account.getAccounterAccountId());
         destinationNew.setCurrencyCode(account.getCurrency().getSymbolicCode());
 
-        destinationDao.save(destinationOld).ifPresentOrElse(
+        destinationDao.save(destinationNew).ifPresentOrElse(
                 id -> {
                     destinationDao.updateNotCurrent(destinationOld.getId());
                     log.info("Destination account have been changed, sequenceId={}, destinationId={}", sequenceId,

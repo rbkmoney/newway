@@ -32,7 +32,7 @@ public class DepositTransferCreatedHandler implements DepositHandler {
 
     private final DepositDao depositDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
-    private final MachineEventCopyFactory<Deposit> depositMachineEventCopyFactory;
+    private final MachineEventCopyFactory<Deposit, String> depositMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -45,7 +45,7 @@ public class DepositTransferCreatedHandler implements DepositHandler {
         long sequenceId = event.getEventId();
         String depositId = event.getSourceId();
         log.info("Start deposit transfer created handling, sequenceId={}, depositId={}", sequenceId, depositId);
-        Deposit depositOld = depositDao.get(depositId);
+        final Deposit depositOld = depositDao.get(depositId);
         List<FinalCashFlowPosting> postings =
                 change.getTransfer().getPayload().getCreated().getTransfer().getCashflow().getPostings();
         Deposit depositNew =

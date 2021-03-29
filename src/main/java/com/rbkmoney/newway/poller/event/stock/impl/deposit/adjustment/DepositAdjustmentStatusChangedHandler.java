@@ -33,7 +33,7 @@ public class DepositAdjustmentStatusChangedHandler implements DepositHandler {
 
     private final DepositAdjustmentDao depositAdjustmentDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
-    private final MachineEventCopyFactory<DepositAdjustment> depositRevertMachineEventCopyFactory;
+    private final MachineEventCopyFactory<DepositAdjustment, String> depositRevertMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(

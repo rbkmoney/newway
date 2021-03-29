@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class IdentityChallengeCreatedHandler implements IdentityHandler {
 
     private final ChallengeDao challengeDao;
-    private final MachineEventCopyFactory<Challenge> challengeMachineEventCopyFactory;
+    private final MachineEventCopyFactory<Challenge, String> challengeMachineEventCopyFactory;
 
     @Getter
     private Filter filter = new PathConditionFilter(

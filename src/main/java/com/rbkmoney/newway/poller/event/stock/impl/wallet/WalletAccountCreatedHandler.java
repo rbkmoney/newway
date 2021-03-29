@@ -28,7 +28,7 @@ public class WalletAccountCreatedHandler implements WalletHandler {
 
     private final IdentityDao identityDao;
     private final WalletDao walletDao;
-    private final MachineEventCopyFactory<Wallet> walletMachineEventCopyFactory;
+    private final MachineEventCopyFactory<Wallet, String> walletMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(

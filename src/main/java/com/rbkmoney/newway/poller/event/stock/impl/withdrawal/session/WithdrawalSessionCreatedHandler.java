@@ -15,6 +15,7 @@ import com.rbkmoney.newway.dao.withdrawal.session.iface.WithdrawalSessionDao;
 import com.rbkmoney.newway.domain.enums.BankCardPaymentSystem;
 import com.rbkmoney.newway.domain.enums.DestinationResourceType;
 import com.rbkmoney.newway.domain.tables.pojos.WithdrawalSession;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import com.rbkmoney.newway.factory.WithdrawalSessionMachineEventCopyFactoryImpl;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ import static com.rbkmoney.newway.domain.enums.WithdrawalSessionStatus.active;
 public class WithdrawalSessionCreatedHandler implements WithdrawalSessionHandler {
 
     private final WithdrawalSessionDao withdrawalSessionDao;
-    private final WithdrawalSessionMachineEventCopyFactoryImpl withdrawalSessionMachineEventCopyFactory;
+    private final MachineEventCopyFactory<WithdrawalSession, String> withdrawalSessionMachineEventCopyFactory;
 
     @Getter
     private final Filter filter =

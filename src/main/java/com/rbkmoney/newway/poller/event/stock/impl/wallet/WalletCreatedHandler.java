@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class WalletCreatedHandler implements WalletHandler {
 
     private final WalletDao walletDao;
-    private final MachineEventCopyFactory<Wallet> walletMachineEventCopyFactory;
+    private final MachineEventCopyFactory<Wallet, String> walletMachineEventCopyFactory;
 
     @Getter
     private final Filter filter =

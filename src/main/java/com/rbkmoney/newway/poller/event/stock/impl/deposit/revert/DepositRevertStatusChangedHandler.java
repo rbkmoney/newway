@@ -33,7 +33,7 @@ public class DepositRevertStatusChangedHandler implements DepositHandler {
 
     private final DepositRevertDao depositRevertDao;
     private final FistfulCashFlowDao fistfulCashFlowDao;
-    private final MachineEventCopyFactory<DepositRevert> depositRevertMachineEventCopyFactory;
+    private final MachineEventCopyFactory<DepositRevert, String> depositRevertMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -48,7 +48,7 @@ public class DepositRevertStatusChangedHandler implements DepositHandler {
         String depositId = event.getSourceId();
         String revertId = change.getRevert().getId();
         log.info("Start deposit revert status changed handling, sequenceId={}, depositId={}", sequenceId, depositId);
-        DepositRevert depositRevertOld = depositRevertDao.get(depositId, revertId);
+        final DepositRevert depositRevertOld = depositRevertDao.get(depositId, revertId);
         DepositRevert depositRevertNew = depositRevertMachineEventCopyFactory
                 .create(event, sequenceId, depositId, depositRevertOld, timestampedChange.getOccuredAt());
 

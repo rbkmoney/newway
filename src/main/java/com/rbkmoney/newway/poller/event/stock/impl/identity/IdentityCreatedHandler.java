@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class IdentityCreatedHandler implements IdentityHandler {
 
     private final IdentityDao identityDao;
-    private final MachineEventCopyFactory<Identity> identityMachineEventCopyFactory;
+    private final MachineEventCopyFactory<Identity, String> identityMachineEventCopyFactory;
 
     @Getter
     private Filter filter =

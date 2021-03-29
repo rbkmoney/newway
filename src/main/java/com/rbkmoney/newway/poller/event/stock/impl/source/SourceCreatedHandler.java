@@ -1,6 +1,9 @@
 package com.rbkmoney.newway.poller.event.stock.impl.source;
 
-import com.rbkmoney.fistful.source.*;
+import com.rbkmoney.fistful.source.Change;
+import com.rbkmoney.fistful.source.Internal;
+import com.rbkmoney.fistful.source.Resource;
+import com.rbkmoney.fistful.source.TimestampedChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -9,6 +12,7 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.source.iface.SourceDao;
 import com.rbkmoney.newway.domain.enums.SourceStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Source;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +21,10 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class SourceCreatedHandler extends AbstractSourceHandler {
+public class SourceCreatedHandler implements SourceHandler {
 
     private final SourceDao sourceDao;
+    private final MachineEventCopyFactory<Source, String> sourceMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -31,9 +36,9 @@ public class SourceCreatedHandler extends AbstractSourceHandler {
         long sequenceId = event.getEventId();
         String sourceId = event.getSourceId();
         log.info("Start source created handling, sequenceId={}, sourceId={}", sequenceId, sourceId);
-        Source source = new Source();
 
-        initDefaultFields(event, (int) sequenceId, sourceId, source, timestampedChange.getOccuredAt());
+        Source source =
+                sourceMachineEventCopyFactory.create(event, sequenceId, sourceId, timestampedChange.getOccuredAt());
 
         source.setSourceName(change.getCreated().getName());
         source.setSourceStatus(SourceStatus.unauthorized);

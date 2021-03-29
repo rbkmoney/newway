@@ -1,6 +1,8 @@
 package com.rbkmoney.newway.poller.event.stock.impl.recurrent.payment.tool;
 
-import com.rbkmoney.damsel.domain.*;
+import com.rbkmoney.damsel.domain.BankCard;
+import com.rbkmoney.damsel.domain.DisposablePaymentResource;
+import com.rbkmoney.damsel.domain.PaymentTool;
 import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolChange;
 import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolHasCreated;
 import com.rbkmoney.geck.common.util.TBaseUtil;
@@ -11,9 +13,14 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.recurrent.payment.tool.iface.RecurrentPaymentToolDao;
-import com.rbkmoney.newway.domain.enums.*;
+import com.rbkmoney.newway.domain.enums.MobileOperatorType;
+import com.rbkmoney.newway.domain.enums.PaymentToolType;
+import com.rbkmoney.newway.domain.enums.RecurrentPaymentToolStatus;
 import com.rbkmoney.newway.domain.tables.pojos.RecurrentPaymentTool;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import com.rbkmoney.newway.util.JsonUtil;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -22,26 +29,25 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class RecurrentPaymentToolHasCreatedHandler extends AbstractRecurrentPaymentToolHandler {
+@RequiredArgsConstructor
+public class RecurrentPaymentToolHasCreatedHandler implements RecurrentPaymentToolHandler {
 
     private final RecurrentPaymentToolDao recurrentPaymentToolDao;
-    private final Filter filter;
+    private final MachineEventCopyFactory<RecurrentPaymentTool, Integer> recurrentPaymentToolCopyFactory;
 
-    public RecurrentPaymentToolHasCreatedHandler(RecurrentPaymentToolDao recurrentPaymentToolDao) {
-        super(recurrentPaymentToolDao);
-        this.recurrentPaymentToolDao = recurrentPaymentToolDao;
-        this.filter = new PathConditionFilter(
-                new PathConditionRule("rec_payment_tool_created", new IsNullCondition().not()));
-    }
+    @Getter
+    private final Filter filter = new PathConditionFilter(
+            new PathConditionRule("rec_payment_tool_created", new IsNullCondition().not()));
 
     @Override
     public void handle(RecurrentPaymentToolChange change, MachineEvent event, Integer changeId) {
+        long sequenceId = event.getEventId();
         log.info("Start recurrent payment tool created handling, sourceId={}, sequenceId={}, changeId={}",
-                event.getSourceId(), event.getEventId(), changeId);
+                event.getSourceId(), sequenceId, changeId);
         RecurrentPaymentToolHasCreated recPaymentToolCreated = change.getRecPaymentToolCreated();
         var recurrentPaymentToolOrigin = recPaymentToolCreated.getRecPaymentTool();
-        RecurrentPaymentTool recurrentPaymentTool = new RecurrentPaymentTool();
-        setDefaultProperties(recurrentPaymentTool, event, changeId);
+        RecurrentPaymentTool recurrentPaymentTool =
+                recurrentPaymentToolCopyFactory.create(event, sequenceId, changeId, null);
         recurrentPaymentTool.setRecurrentPaymentToolId(event.getSourceId());
         recurrentPaymentTool.setCreatedAt(TypeUtil.stringToLocalDateTime(recurrentPaymentToolOrigin.getCreatedAt()));
         recurrentPaymentTool.setPartyId(recurrentPaymentToolOrigin.getPartyId());
@@ -76,7 +82,7 @@ public class RecurrentPaymentToolHasCreatedHandler extends AbstractRecurrentPaym
         }
         recurrentPaymentToolDao.save(recurrentPaymentTool);
         log.info("End recurrent payment tool created handling, sourceId={}, sequenceId={}, changeId={}",
-                event.getSourceId(), event.getEventId(), changeId);
+                event.getSourceId(), sequenceId, changeId);
     }
 
     private void fillPaymentTool(RecurrentPaymentTool recurrentPaymentTool, PaymentTool paymentTool) {

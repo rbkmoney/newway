@@ -6,7 +6,7 @@ import com.rbkmoney.newway.domain.tables.pojos.Deposit;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DepositMachineEventCopyFactoryImpl implements MachineEventCopyFactory<Deposit> {
+public class DepositMachineEventCopyFactoryImpl implements MachineEventCopyFactory<Deposit, String> {
 
     @Override
     public Deposit create(MachineEvent event, long sequenceId, String id, Deposit depositOld,
