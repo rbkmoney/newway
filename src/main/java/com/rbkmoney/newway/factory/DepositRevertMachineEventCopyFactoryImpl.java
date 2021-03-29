@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class DepositRevertMachineEventCopyFactoryImpl implements MachineEventCopyFactory<DepositRevert, String> {
 
     @Override
-    public DepositRevert create(MachineEvent event, long sequenceId, String id, DepositRevert old, String occurredAt) {
+    public DepositRevert create(MachineEvent event, Long sequenceId, String id, DepositRevert old, String occurredAt) {
         DepositRevert depositRevert = null;
         if (old != null) {
             depositRevert = new DepositRevert(old);
@@ -18,7 +18,7 @@ public class DepositRevertMachineEventCopyFactoryImpl implements MachineEventCop
         }
         depositRevert.setId(null);
         depositRevert.setWtime(null);
-        depositRevert.setSequenceId((int) sequenceId);
+        depositRevert.setSequenceId(sequenceId.intValue());
         depositRevert.setDepositId(id);
         depositRevert.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         depositRevert.setEventOccuredAt(TypeUtil.stringToLocalDateTime(occurredAt));
@@ -26,7 +26,7 @@ public class DepositRevertMachineEventCopyFactoryImpl implements MachineEventCop
     }
 
     @Override
-    public DepositRevert create(MachineEvent event, long sequenceId, String id, String occurredAt) {
+    public DepositRevert create(MachineEvent event, Long sequenceId, String id, String occurredAt) {
         return create(event, sequenceId, id, null, occurredAt);
     }
 

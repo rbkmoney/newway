@@ -8,7 +8,7 @@ import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.model.*;
-import com.rbkmoney.newway.poller.event.stock.LocalStorage;
+import com.rbkmoney.newway.handler.event.stock.LocalStorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

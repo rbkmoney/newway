@@ -4,8 +4,8 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 
 public interface MachineEventCopyFactory<T, K> {
 
-    T create(MachineEvent event, long sequenceId, K id, T copiedObject, String occurredAt);
+    T create(MachineEvent event, Long sequenceId, K id, T copiedObject, String occurredAt);
 
-    T create(MachineEvent event, long sequenceId, K id, String occurredAt);
+    T create(MachineEvent event, Long sequenceId, K id, String occurredAt);
 
 }

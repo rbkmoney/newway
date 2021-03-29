@@ -68,13 +68,4 @@ public class ContractorUtil {
         return contractor;
     }
 
-
-    public static void resetBaseFields(MachineEvent event, long sequenceId, Contractor contractorSource,
-                                       Integer claimEffectId) {
-        contractorSource.setId(null);
-        contractorSource.setWtime(null);
-        contractorSource.setClaimEffectId(claimEffectId);
-        contractorSource.setSequenceId((int) sequenceId);
-        contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-    }
 }

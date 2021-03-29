@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class DepositAjustmentMachineEventCopyFactoryImpl implements MachineEventCopyFactory<DepositAdjustment, String> {
 
     @Override
-    public DepositAdjustment create(MachineEvent event, long sequenceId, String id, DepositAdjustment old,
+    public DepositAdjustment create(MachineEvent event, Long sequenceId, String id, DepositAdjustment old,
                                     String occurredAt) {
         DepositAdjustment depositAdjustment = null;
         if (old != null) {
@@ -19,14 +19,14 @@ public class DepositAjustmentMachineEventCopyFactoryImpl implements MachineEvent
         }
         depositAdjustment.setId(null);
         depositAdjustment.setWtime(null);
-        depositAdjustment.setSequenceId((int) sequenceId);
+        depositAdjustment.setSequenceId(sequenceId.intValue());
         depositAdjustment.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         depositAdjustment.setEventOccuredAt(TypeUtil.stringToLocalDateTime(occurredAt));
         return depositAdjustment;
     }
 
     @Override
-    public DepositAdjustment create(MachineEvent event, long sequenceId, String id, String occurredAt) {
+    public DepositAdjustment create(MachineEvent event, Long sequenceId, String id, String occurredAt) {
         return create(event, sequenceId, id, null, occurredAt);
     }
 

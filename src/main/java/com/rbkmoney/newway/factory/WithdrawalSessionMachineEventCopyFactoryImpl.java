@@ -10,7 +10,8 @@ public class WithdrawalSessionMachineEventCopyFactoryImpl
         implements MachineEventCopyFactory<WithdrawalSession, String> {
 
     @Override
-    public WithdrawalSession create(MachineEvent event, long sequenceId,
+    public WithdrawalSession create(MachineEvent event,
+                                    Long sequenceId,
                                     String withdrawalSessionId,
                                     WithdrawalSession withdrawalSessionOld,
                                     String occurredAt) {
@@ -22,7 +23,7 @@ public class WithdrawalSessionMachineEventCopyFactoryImpl
         }
         withdrawalSession.setId(null);
         withdrawalSession.setWtime(null);
-        withdrawalSession.setSequenceId((int) sequenceId);
+        withdrawalSession.setSequenceId(sequenceId.intValue());
         withdrawalSession.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         withdrawalSession.setEventOccuredAt(TypeUtil.stringToLocalDateTime(occurredAt));
         withdrawalSession.setWithdrawalSessionId(withdrawalSessionId);
@@ -30,7 +31,7 @@ public class WithdrawalSessionMachineEventCopyFactoryImpl
     }
 
     @Override
-    public WithdrawalSession create(MachineEvent event, long sequenceId, String id, String occurredAt) {
+    public WithdrawalSession create(MachineEvent event, Long sequenceId, String id, String occurredAt) {
         return create(event, sequenceId, id, null, occurredAt);
     }
 

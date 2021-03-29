@@ -2,7 +2,7 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.fistful.source.TimestampedChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.poller.event.stock.impl.source.SourceHandler;
+import com.rbkmoney.newway.handler.event.stock.impl.source.SourceHandler;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

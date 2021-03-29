@@ -2,7 +2,7 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.fistful.withdrawal_session.TimestampedChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.poller.event.stock.impl.withdrawal.session.WithdrawalSessionHandler;
+import com.rbkmoney.newway.handler.event.stock.impl.withdrawal.session.WithdrawalSessionHandler;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

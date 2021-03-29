@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class SourceMachineEventCopyFactoryImpl implements MachineEventCopyFactory<Source, String> {
 
     @Override
-    public Source create(MachineEvent event, long sequenceId, String id, Source old, String occurredAt) {
+    public Source create(MachineEvent event, Long sequenceId, String id, Source old, String occurredAt) {
         Source source = null;
         if (old != null) {
             source = new Source(old);
@@ -18,7 +18,7 @@ public class SourceMachineEventCopyFactoryImpl implements MachineEventCopyFactor
         }
         source.setId(null);
         source.setWtime(null);
-        source.setSequenceId((int) sequenceId);
+        source.setSequenceId(sequenceId.intValue());
         source.setSourceId(id);
         source.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         source.setEventOccuredAt(TypeUtil.stringToLocalDateTime(occurredAt));
@@ -26,7 +26,7 @@ public class SourceMachineEventCopyFactoryImpl implements MachineEventCopyFactor
     }
 
     @Override
-    public Source create(MachineEvent event, long sequenceId, String id, String occurredAt) {
+    public Source create(MachineEvent event, Long sequenceId, String id, String occurredAt) {
         return create(event, sequenceId, id, null, occurredAt);
     }
 

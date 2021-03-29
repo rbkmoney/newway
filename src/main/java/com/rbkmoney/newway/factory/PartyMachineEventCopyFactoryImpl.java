@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class PartyMachineEventCopyFactoryImpl implements MachineEventCopyFactory<Party, Integer> {
 
     @Override
-    public Party create(MachineEvent event, long sequenceId, Integer id, Party old,
+    public Party create(MachineEvent event, Long sequenceId, Integer id, Party old,
                         String occurredAt) {
         Party party = null;
         if (old != null) {
@@ -20,14 +20,14 @@ public class PartyMachineEventCopyFactoryImpl implements MachineEventCopyFactory
         party.setId(null);
         party.setRevision(null);
         party.setWtime(null);
-        party.setSequenceId((int) sequenceId);
+        party.setSequenceId(sequenceId.intValue());
         party.setChangeId(id);
         party.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         return party;
     }
 
     @Override
-    public Party create(MachineEvent event, long sequenceId, Integer id, String occurredAt) {
+    public Party create(MachineEvent event, Long sequenceId, Integer id, String occurredAt) {
         return create(event, sequenceId, id, null, occurredAt);
     }
 

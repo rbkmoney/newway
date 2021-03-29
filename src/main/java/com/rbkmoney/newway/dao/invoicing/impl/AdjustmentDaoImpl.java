@@ -30,7 +30,7 @@ public class AdjustmentDaoImpl extends AbstractGenericDao implements AdjustmentD
     }
 
     @Override
-    public Long save(Adjustment adjustment) throws DaoException {
+    public Optional<Long> save(Adjustment adjustment) throws DaoException {
         AdjustmentRecord record = getDslContext().newRecord(ADJUSTMENT, adjustment);
         Query query = getDslContext().insertInto(ADJUSTMENT)
                 .set(record)
@@ -39,7 +39,7 @@ public class AdjustmentDaoImpl extends AbstractGenericDao implements AdjustmentD
                 .returning(ADJUSTMENT.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         execute(query, keyHolder);
-        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override

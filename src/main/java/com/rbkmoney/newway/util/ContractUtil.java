@@ -147,14 +147,4 @@ public class ContractUtil {
         contract.setReportActSignerDocPowerOfAttorneyValidUntil(null);
     }
 
-    public static void resetBaseFields(MachineEvent event, Integer changeId, long sequenceId,
-                                       com.rbkmoney.newway.domain.tables.pojos.Contract contractSource,
-                                       Integer claimEffectId) {
-        contractSource.setId(null);
-        contractSource.setWtime(null);
-        contractSource.setSequenceId((int) sequenceId);
-        contractSource.setChangeId(changeId);
-        contractSource.setClaimEffectId(claimEffectId);
-        contractSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-    }
 }

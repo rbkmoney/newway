@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class ChallengeMachineEventCopyFactoryImpl implements MachineEventCopyFactory<Challenge, String> {
 
     @Override
-    public Challenge create(MachineEvent event, long sequenceId, String identityId, Challenge old, String occurredAt) {
+    public Challenge create(MachineEvent event, Long sequenceId, String identityId, Challenge old, String occurredAt) {
         Challenge challenge = null;
         if (old != null) {
             challenge = new Challenge(old);
@@ -18,7 +18,7 @@ public class ChallengeMachineEventCopyFactoryImpl implements MachineEventCopyFac
         }
         challenge.setId(null);
         challenge.setWtime(null);
-        challenge.setSequenceId((int) sequenceId);
+        challenge.setSequenceId(sequenceId.intValue());
         challenge.setIdentityId(identityId);
         challenge.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         challenge.setEventOccuredAt(TypeUtil.stringToLocalDateTime(occurredAt));
@@ -26,7 +26,7 @@ public class ChallengeMachineEventCopyFactoryImpl implements MachineEventCopyFac
     }
 
     @Override
-    public Challenge create(MachineEvent event, long sequenceId, String id, String occurredAt) {
+    public Challenge create(MachineEvent event, Long sequenceId, String id, String occurredAt) {
         return create(event, sequenceId, id, null, occurredAt);
     }
 

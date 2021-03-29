@@ -9,7 +9,7 @@ import com.rbkmoney.machinegun.msgpack.Value;
 import com.rbkmoney.newway.config.SerializationConfig;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.factory.PartyMachineEventCopyFactoryImpl;
-import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.party.PartyCreatedHandler;
+import com.rbkmoney.newway.handler.event.stock.impl.partymngmnt.party.PartyCreatedHandler;
 import com.rbkmoney.sink.common.serialization.impl.PartyEventDataSerializer;
 import org.junit.Before;
 import org.junit.Test;

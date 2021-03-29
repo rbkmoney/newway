@@ -2,7 +2,7 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
-import com.rbkmoney.newway.poller.event.stock.impl.rate.RateHandler;
+import com.rbkmoney.newway.handler.event.stock.impl.rate.RateHandler;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import com.rbkmoney.xrates.rate.Change;
 import lombok.RequiredArgsConstructor;

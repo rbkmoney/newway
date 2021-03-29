@@ -32,7 +32,7 @@ public class RefundDaoImpl extends AbstractGenericDao implements RefundDao {
     }
 
     @Override
-    public Long save(Refund refund) throws DaoException {
+    public Optional<Long> save(Refund refund) throws DaoException {
         RefundRecord record = getDslContext().newRecord(REFUND, refund);
         Query query = getDslContext().insertInto(REFUND)
                 .set(record)
@@ -41,7 +41,7 @@ public class RefundDaoImpl extends AbstractGenericDao implements RefundDao {
                 .returning(REFUND.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         execute(query, keyHolder);
-        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.service;
 
 import com.rbkmoney.damsel.payout_processing.*;
-import com.rbkmoney.newway.poller.event.stock.impl.payout.PayoutHandler;
+import com.rbkmoney.newway.handler.event.stock.impl.payout.PayoutHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

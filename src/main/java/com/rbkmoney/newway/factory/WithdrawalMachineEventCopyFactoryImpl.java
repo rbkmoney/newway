@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class WithdrawalMachineEventCopyFactoryImpl implements MachineEventCopyFactory<Withdrawal, String> {
 
     @Override
-    public Withdrawal create(MachineEvent event, long sequenceId, String withdrawalId, Withdrawal withdrawalOld,
+    public Withdrawal create(MachineEvent event, Long sequenceId, String withdrawalId, Withdrawal withdrawalOld,
                              String occurredAt) {
         Withdrawal withdrawal = null;
         if (withdrawalOld != null) {
@@ -19,7 +19,7 @@ public class WithdrawalMachineEventCopyFactoryImpl implements MachineEventCopyFa
         }
         withdrawal.setId(null);
         withdrawal.setWtime(null);
-        withdrawal.setSequenceId((int) sequenceId);
+        withdrawal.setSequenceId(sequenceId.intValue());
         withdrawal.setWithdrawalId(withdrawalId);
         withdrawal.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         withdrawal.setEventOccuredAt(TypeUtil.stringToLocalDateTime(occurredAt));
@@ -27,7 +27,7 @@ public class WithdrawalMachineEventCopyFactoryImpl implements MachineEventCopyFa
     }
 
     @Override
-    public Withdrawal create(MachineEvent event, long sequenceId, String id, String occurredAt) {
+    public Withdrawal create(MachineEvent event, Long sequenceId, String id, String occurredAt) {
         return create(event, sequenceId, id, null, occurredAt);
     }
 

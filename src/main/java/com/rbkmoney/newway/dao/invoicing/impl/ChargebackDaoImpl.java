@@ -30,7 +30,7 @@ public class ChargebackDaoImpl extends AbstractGenericDao implements ChargebackD
     }
 
     @Override
-    public Long save(Chargeback chargeback) throws DaoException {
+    public Optional<Long> save(Chargeback chargeback) throws DaoException {
         ChargebackRecord chargebackRecord = getDslContext().newRecord(CHARGEBACK, chargeback);
         Query query = getDslContext().insertInto(CHARGEBACK)
                 .set(chargebackRecord)
@@ -39,7 +39,7 @@ public class ChargebackDaoImpl extends AbstractGenericDao implements ChargebackD
                 .returning(CHARGEBACK.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         execute(query, keyHolder);
-        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
     @Override

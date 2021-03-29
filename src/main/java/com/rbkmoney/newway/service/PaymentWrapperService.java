@@ -10,7 +10,7 @@ import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.PaymentWrapper;
-import com.rbkmoney.newway.poller.event.stock.LocalStorage;
+import com.rbkmoney.newway.handler.event.stock.LocalStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
