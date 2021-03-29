@@ -4,5 +4,5 @@ import com.rbkmoney.damsel.payout_processing.Event;
 import com.rbkmoney.damsel.payout_processing.PayoutChange;
 import com.rbkmoney.newway.poller.event.stock.Handler;
 
-public abstract class AbstractPayoutHandler implements Handler<PayoutChange, Event> {
+public interface PayoutHandler extends Handler<PayoutChange, Event> {
 }

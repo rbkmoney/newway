@@ -35,8 +35,8 @@ public class RecurrentPaymentToolHasAcquiredHandler implements RecurrentPaymentT
         final RecurrentPaymentTool recurrentPaymentToolOld = recurrentPaymentToolDao.getNotNull(event.getSourceId());
         RecurrentPaymentTool recurrentPaymentToolNew =
                 recurrentPaymentToolCopyFactory.create(event, sequenceId, changeId, recurrentPaymentToolOld, null);
-        recurrentPaymentToolOld.setStatus(RecurrentPaymentToolStatus.acquired);
-        recurrentPaymentToolOld.setRecToken(change.getRecPaymentToolAcquired().getToken());
+        recurrentPaymentToolNew.setStatus(RecurrentPaymentToolStatus.acquired);
+        recurrentPaymentToolNew.setRecToken(change.getRecPaymentToolAcquired().getToken());
         recurrentPaymentToolDao.save(recurrentPaymentToolNew).ifPresentOrElse(
                 id -> {
                     recurrentPaymentToolDao.updateNotCurrent(recurrentPaymentToolOld.getId());

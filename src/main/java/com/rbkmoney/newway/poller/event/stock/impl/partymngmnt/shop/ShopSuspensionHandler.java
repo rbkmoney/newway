@@ -11,8 +11,9 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.ShopDao;
 import com.rbkmoney.newway.domain.tables.pojos.Shop;
-import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.AbstractPartyManagementHandler;
-import com.rbkmoney.newway.util.ShopUtil;
+import com.rbkmoney.newway.factory.ClaimEffectCopyFactory;
+import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.PartyManagementHandler;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,11 +24,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 @SuppressWarnings("VariableDeclarationUsageDistance")
-public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
+public class ShopSuspensionHandler implements PartyManagementHandler {
 
     private final ShopDao shopDao;
-    private final Filter filter = new PathConditionFilter(new PathConditionRule(
-            "shop_suspension",
+    private final ClaimEffectCopyFactory<Shop, Integer> claimEffectCopyFactory;
+
+    @Getter
+    private final Filter filter = new PathConditionFilter(new PathConditionRule("shop_suspension",
             new IsNullCondition().not()));
 
     @Override
@@ -40,25 +43,20 @@ public class ShopSuspensionHandler extends AbstractPartyManagementHandler {
         log.info("Start shop suspension handling, sequenceId={}, partyId={}, shopId={}, changeId={}",
                 sequenceId, partyId, shopId, changeId);
 
-        Shop shopSource = shopDao.get(partyId, shopId);
-        Long oldEventId = shopSource.getId();
-        ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource, -1);
-        shopSource.setSuspension(
+        Shop shopOld = shopDao.get(partyId, shopId);
+        Shop shopNew = claimEffectCopyFactory.create(event, sequenceId, -1, changeId, shopOld);
+
+        shopNew.setSuspension(
                 TBaseUtil.unionFieldToEnum(suspension, com.rbkmoney.newway.domain.enums.Suspension.class));
         if (suspension.isSetActive()) {
-            shopSource.setSuspensionActiveSince(TypeUtil.stringToLocalDateTime(suspension.getActive().getSince()));
-            shopSource.setSuspensionSuspendedSince(null);
+            shopNew.setSuspensionActiveSince(TypeUtil.stringToLocalDateTime(suspension.getActive().getSince()));
+            shopNew.setSuspensionSuspendedSince(null);
         } else if (suspension.isSetSuspended()) {
-            shopSource.setSuspensionActiveSince(null);
-            shopSource
-                    .setSuspensionSuspendedSince(TypeUtil.stringToLocalDateTime(suspension.getSuspended().getSince()));
+            shopNew.setSuspensionActiveSince(null);
+            shopNew.setSuspensionSuspendedSince(TypeUtil.stringToLocalDateTime(suspension.getSuspended().getSince()));
         }
 
-        shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "suspension");
+        shopDao.saveWithUpdateCurrent(shopNew, shopOld.getId(), "suspension");
     }
 
-    @Override
-    public Filter<PartyChange> getFilter() {
-        return filter;
-    }
 }

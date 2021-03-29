@@ -11,31 +11,28 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
-import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.AbstractPartyManagementHandler;
-import com.rbkmoney.newway.util.PartyUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
+import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.PartyManagementHandler;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Component
-@SuppressWarnings("VariableDeclarationUsageDistance")
-public class PartySuspensionHandler extends AbstractPartyManagementHandler {
+@RequiredArgsConstructor
+public class PartySuspensionHandler implements PartyManagementHandler {
 
     public static final String PARTY_SUSPENSION = "party_suspension";
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final PartyDao partyDao;
+    private final MachineEventCopyFactory<Party, Integer> partyIntegerMachineEventCopyFactory;
 
-    private final Filter filter;
-
-    public PartySuspensionHandler(PartyDao partyDao) {
-        this.partyDao = partyDao;
-        this.filter = new PathConditionFilter(new PathConditionRule(
-                PARTY_SUSPENSION,
-                new IsNullCondition().not()));
-    }
+    @Getter
+    private final Filter filter =
+            new PathConditionFilter(new PathConditionRule(PARTY_SUSPENSION, new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -45,27 +42,21 @@ public class PartySuspensionHandler extends AbstractPartyManagementHandler {
         String partyId = event.getSourceId();
         log.info("Start {} handling, eventId={}, partyId={}, changeId={}", PARTY_SUSPENSION, sequenceId, partyId,
                 changeId);
-        Party partySource = partyDao.get(partyId);
-        Long oldId = partySource.getId();
-        PartyUtil.resetBaseFields(event, changeId, sequenceId, partySource);
+        Party partyOld = partyDao.get(partyId);
+        Party partyNew = partyIntegerMachineEventCopyFactory.create(event, sequenceId, changeId, partyOld, null);
 
-        partySource.setSuspension(
+        partyNew.setSuspension(
                 TBaseUtil.unionFieldToEnum(partySuspension, com.rbkmoney.newway.domain.enums.Suspension.class));
         if (partySuspension.isSetActive()) {
-            partySource
-                    .setSuspensionActiveSince(TypeUtil.stringToLocalDateTime(partySuspension.getActive().getSince()));
-            partySource.setSuspensionSuspendedSince(null);
+            partyNew.setSuspensionActiveSince(TypeUtil.stringToLocalDateTime(partySuspension.getActive().getSince()));
+            partyNew.setSuspensionSuspendedSince(null);
         } else if (partySuspension.isSetSuspended()) {
-            partySource.setSuspensionActiveSince(null);
-            partySource.setSuspensionSuspendedSince(
+            partyNew.setSuspensionActiveSince(null);
+            partyNew.setSuspensionSuspendedSince(
                     TypeUtil.stringToLocalDateTime(partySuspension.getSuspended().getSince()));
         }
 
-        partyDao.saveWithUpdateCurrent(partySource, oldId, PARTY_SUSPENSION);
+        partyDao.saveWithUpdateCurrent(partyNew, partyOld.getId(), PARTY_SUSPENSION);
     }
 
-    @Override
-    public Filter<PartyChange> getFilter() {
-        return filter;
-    }
 }

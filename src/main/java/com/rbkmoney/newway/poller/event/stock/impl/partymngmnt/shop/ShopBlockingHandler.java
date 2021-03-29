@@ -11,8 +11,9 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.ShopDao;
 import com.rbkmoney.newway.domain.tables.pojos.Shop;
-import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.AbstractPartyManagementHandler;
-import com.rbkmoney.newway.util.ShopUtil;
+import com.rbkmoney.newway.factory.ClaimEffectCopyFactory;
+import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.PartyManagementHandler;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,9 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ShopBlockingHandler extends AbstractPartyManagementHandler {
+public class ShopBlockingHandler implements PartyManagementHandler {
 
     private final ShopDao shopDao;
+    private final ClaimEffectCopyFactory<Shop, Integer> claimEffectCopyFactory;
+
+    @Getter
     private final Filter filter = new PathConditionFilter(new PathConditionRule(
             "shop_blocking",
             new IsNullCondition().not()));
@@ -39,12 +43,12 @@ public class ShopBlockingHandler extends AbstractPartyManagementHandler {
         log.info("Start shop blocking handling, sequenceId={}, partyId={}, shopId={}, changeId={}",
                 sequenceId, partyId, shopId, changeId);
 
-        Shop shopSource = shopDao.get(partyId, shopId);
-        Long oldEventId = shopSource.getId();
-        ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource, -1);
-        initBlockingFields(blocking, shopSource);
+        final Shop shopOld = shopDao.get(partyId, shopId);
+        Shop shopNew = claimEffectCopyFactory.create(event, sequenceId, -1, changeId, shopOld);
 
-        shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "blocking");
+        initBlockingFields(blocking, shopNew);
+
+        shopDao.saveWithUpdateCurrent(shopNew, shopOld.getId(), "blocking");
     }
 
     private void initBlockingFields(Blocking blocking, Shop shopSource) {
@@ -62,8 +66,4 @@ public class ShopBlockingHandler extends AbstractPartyManagementHandler {
         }
     }
 
-    @Override
-    public Filter<PartyChange> getFilter() {
-        return filter;
-    }
 }

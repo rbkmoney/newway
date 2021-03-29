@@ -7,7 +7,7 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 
-public abstract class AbstractClaimChangedHandler extends AbstractPartyManagementHandler {
+public abstract class AbstractClaimChangedHandler implements PartyManagementHandler {
 
     private final Filter claimCreatedFilter = new PathConditionFilter(
             new PathConditionRule("claim_created.status.accepted", new IsNullCondition().not()));

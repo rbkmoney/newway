@@ -1,6 +1,8 @@
 package com.rbkmoney.newway.poller.event.stock.impl.payout;
 
-import com.rbkmoney.damsel.domain.*;
+import com.rbkmoney.damsel.domain.InternationalBankAccount;
+import com.rbkmoney.damsel.domain.InternationalBankDetails;
+import com.rbkmoney.damsel.domain.RussianBankAccount;
 import com.rbkmoney.damsel.payout_processing.*;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
@@ -10,7 +12,7 @@ import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
 import com.rbkmoney.newway.dao.payout.iface.PayoutSummaryDao;
-import com.rbkmoney.newway.domain.enums.*;
+import com.rbkmoney.newway.domain.enums.PayoutAccountType;
 import com.rbkmoney.newway.domain.enums.PayoutStatus;
 import com.rbkmoney.newway.domain.enums.PayoutType;
 import com.rbkmoney.newway.domain.tables.pojos.Payout;
@@ -29,7 +31,7 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PayoutCreatedHandler extends AbstractPayoutHandler {
+public class PayoutCreatedHandler implements PayoutHandler {
 
     private final PayoutDao payoutDao;
     private final PayoutSummaryDao payoutSummaryDao;

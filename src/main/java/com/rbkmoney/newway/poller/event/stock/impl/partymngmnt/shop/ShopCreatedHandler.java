@@ -1,7 +1,9 @@
 package com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.shop;
 
 import com.rbkmoney.damsel.domain.Shop;
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
+import com.rbkmoney.damsel.payment_processing.PartyChange;
+import com.rbkmoney.damsel.payment_processing.ShopEffectUnit;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;

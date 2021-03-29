@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 public class WithdrawalCreatedHandler implements WithdrawalHandler {
 
     private final WithdrawalDao withdrawalDao;
-    private final MachineEventCopyFactory<Withdrawal> machineEventCopyFactory;
+    private final MachineEventCopyFactory<Withdrawal, String> machineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(

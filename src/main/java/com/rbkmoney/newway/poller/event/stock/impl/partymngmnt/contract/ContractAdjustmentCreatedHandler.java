@@ -1,9 +1,16 @@
 package com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.contract;
 
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
+import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
+import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.dao.party.iface.*;
-import com.rbkmoney.newway.domain.tables.pojos.*;
+import com.rbkmoney.newway.dao.party.iface.ContractAdjustmentDao;
+import com.rbkmoney.newway.dao.party.iface.ContractDao;
+import com.rbkmoney.newway.dao.party.iface.PayoutToolDao;
+import com.rbkmoney.newway.domain.tables.pojos.Contract;
+import com.rbkmoney.newway.domain.tables.pojos.ContractAdjustment;
+import com.rbkmoney.newway.domain.tables.pojos.PayoutTool;
+import com.rbkmoney.newway.factory.ClaimEffectCopyFactory;
 import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.AbstractClaimChangedHandler;
 import com.rbkmoney.newway.util.ContractUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +30,7 @@ public class ContractAdjustmentCreatedHandler extends AbstractClaimChangedHandle
     private final ContractDao contractDao;
     private final ContractAdjustmentDao contractAdjustmentDao;
     private final PayoutToolDao payoutToolDao;
+    private final ClaimEffectCopyFactory<Contract, Integer> claimEffectCopyFactory;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -48,14 +56,15 @@ public class ContractAdjustmentCreatedHandler extends AbstractClaimChangedHandle
         log.info("Start contract adjustment created handling, sequenceId={}, partyId={}, contractId={}, changeId={}",
                 sequenceId, partyId, contractId, changeId);
 
-        Contract contractSource = contractDao.get(partyId, contractId);
-        Long contractSourceId = contractSource.getId();
-        ContractUtil.resetBaseFields(event, changeId, sequenceId, contractSource, claimEffectId);
+        Contract contractSourceOld = contractDao.get(partyId, contractId);
+        Contract contractNew =
+                claimEffectCopyFactory.create(event, sequenceId, changeId, claimEffectId, contractSourceOld);
 
-        contractDao.save(contractSource).ifPresentOrElse(
+        contractDao.save(contractNew).ifPresentOrElse(
                 cntrctId -> {
-                    contractDao.updateNotCurrent(contractSourceId);
-                    updateContractReference(adjustmentCreated, contractSourceId, cntrctId);
+                    Long contractSourceOldId = contractSourceOld.getId();
+                    contractDao.updateNotCurrent(contractSourceOldId);
+                    updateContractReference(adjustmentCreated, contractSourceOldId, cntrctId);
                     log.info(
                             "Contract adjustment has been saved, sequenceId={}, partyId={}, contractId={}, changeId={}",
                             sequenceId, partyId, contractId, changeId);

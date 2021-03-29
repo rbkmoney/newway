@@ -1,7 +1,9 @@
 package com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.contractor;
 
 import com.rbkmoney.damsel.domain.PartyContractor;
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
+import com.rbkmoney.damsel.payment_processing.ContractorEffectUnit;
+import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.ContractorDao;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
@@ -49,20 +51,18 @@ public class ContractorCreatedHandler extends AbstractClaimChangedHandler {
         com.rbkmoney.damsel.domain.Contractor contractorCreated = partyContractor.getContractor();
         String contractorId = contractorEffect.getId();
         String partyId = event.getSourceId();
-        log.info("Start contractor created handling, eventId={}, partyId={}, contractorId={}", eventId, partyId,
-                contractorId);
+        log.info("Start contractor created handling, eventId={}, partyId={}, contractorId={}",
+                eventId, partyId, contractorId);
         partyDao.get(partyId); //check party is exist
 
-        Contractor contractor =
-                ContractorUtil.convertContractor(eventId, event.getCreatedAt(), partyId, contractorCreated,
-                        contractorId, changeId, claimEffectId);
+        Contractor contractor = ContractorUtil.convertContractor(
+                eventId, event.getCreatedAt(), partyId, contractorCreated, contractorId, changeId, claimEffectId);
         contractor.setIdentificationalLevel(partyContractor.getStatus().name());
         contractorDao.save(contractor).ifPresentOrElse(
-                cntrctId -> log
-                        .info("Contract contractor has been saved, eventId={}, partyId={}, contractorId={}", eventId,
-                                partyId, contractorId),
-                () -> log.info("contract contractor duplicated, sequenceId={}, partyId={}, changeId={}", sequenceId,
-                        partyId, changeId)
+                cntrctId -> log.info("Contract contractor has been saved, eventId={}, partyId={}, contractorId={}",
+                        eventId, partyId, contractorId),
+                () -> log.info("contract contractor duplicated, sequenceId={}, partyId={}, changeId={}",
+                        sequenceId, partyId, changeId)
         );
     }
 

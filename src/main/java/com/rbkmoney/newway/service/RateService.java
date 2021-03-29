@@ -2,7 +2,7 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.eventsink.SinkEvent;
-import com.rbkmoney.newway.poller.event.stock.impl.rate.AbstractRateHandler;
+import com.rbkmoney.newway.poller.event.stock.impl.rate.RateHandler;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import com.rbkmoney.xrates.rate.Change;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RateService {
 
-    private final List<AbstractRateHandler> rateHandlers;
+    private final List<RateHandler> rateHandlers;
     private final MachineEventParser<Change> parser;
 
     @Transactional(propagation = Propagation.REQUIRED)

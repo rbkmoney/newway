@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 public class DepositCreatedHandler implements DepositHandler {
 
     private final DepositDao depositDao;
-    private final MachineEventCopyFactory<Deposit> depositMachineEventCopyFactory;
+    private final MachineEventCopyFactory<Deposit, String> depositMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(

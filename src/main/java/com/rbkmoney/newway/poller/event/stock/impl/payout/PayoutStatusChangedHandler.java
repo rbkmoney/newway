@@ -25,7 +25,7 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
+public class PayoutStatusChangedHandler implements PayoutHandler {
 
     private final PayoutDao payoutDao;
     private final PayoutSummaryDao payoutSummaryDao;
@@ -41,45 +41,47 @@ public class PayoutStatusChangedHandler extends AbstractPayoutHandler {
         long eventId = event.getId();
         String payoutId = event.getSource().getPayoutId();
         log.info("Start payout status changed handling, eventId={}, payoutId={}", eventId, payoutId);
-        Payout payoutSource = payoutDao.get(payoutId);
-        if (payoutSource == null) {
+        Payout payoutSourceOld = payoutDao.get(payoutId);
+        if (payoutSourceOld == null) {
             throw new NotFoundException(String.format("Payout not found, payoutId='%s'", payoutId));
         }
-        payoutSource.setId(null);
-        payoutSource.setWtime(null);
-        payoutSource.setEventId(eventId);
-        payoutSource.setChangeId(changeId);
-        payoutSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+        Payout payoutNew = new Payout(payoutSourceOld);
+        payoutNew.setId(null);
+        payoutNew.setWtime(null);
+        payoutNew.setEventId(eventId);
+        payoutNew.setChangeId(changeId);
+        payoutNew.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         PayoutStatusChanged payoutStatusChanged = change.getPayoutStatusChanged();
         PayoutStatus payoutStatus = payoutStatusChanged.getStatus();
-        payoutSource.setStatus(
+        payoutNew.setStatus(
                 TBaseUtil.unionFieldToEnum(payoutStatus, com.rbkmoney.newway.domain.enums.PayoutStatus.class));
+
         if (payoutStatus.isSetPaid()) {
-            payoutSource.setStatusCancelledUserInfoId(null);
-            payoutSource.setStatusCancelledUserInfoType(null);
-            payoutSource.setStatusCancelledDetails(null);
-            payoutSource.setStatusConfirmedUserInfoType(null);
+            payoutNew.setStatusCancelledUserInfoId(null);
+            payoutNew.setStatusCancelledUserInfoType(null);
+            payoutNew.setStatusCancelledDetails(null);
+            payoutNew.setStatusConfirmedUserInfoType(null);
         } else if (payoutStatus.isSetCancelled()) {
-            payoutSource.setStatusPaidDetails(null);
-            payoutSource.setStatusPaidDetailsCardProviderName(null);
-            payoutSource.setStatusPaidDetailsCardProviderTransactionId(null);
+            payoutNew.setStatusPaidDetails(null);
+            payoutNew.setStatusPaidDetailsCardProviderName(null);
+            payoutNew.setStatusPaidDetailsCardProviderTransactionId(null);
             PayoutCancelled cancelled = payoutStatus.getCancelled();
-            payoutSource.setStatusCancelledDetails(cancelled.getDetails());
-            payoutSource.setStatusConfirmedUserInfoType(null);
+            payoutNew.setStatusCancelledDetails(cancelled.getDetails());
+            payoutNew.setStatusConfirmedUserInfoType(null);
         } else if (payoutStatus.isSetConfirmed()) {
-            payoutSource.setStatusPaidDetails(null);
-            payoutSource.setStatusPaidDetailsCardProviderName(null);
-            payoutSource.setStatusPaidDetailsCardProviderTransactionId(null);
-            payoutSource.setStatusCancelledUserInfoId(null);
-            payoutSource.setStatusCancelledUserInfoType(null);
-            payoutSource.setStatusCancelledDetails(null);
+            payoutNew.setStatusPaidDetails(null);
+            payoutNew.setStatusPaidDetailsCardProviderName(null);
+            payoutNew.setStatusPaidDetailsCardProviderTransactionId(null);
+            payoutNew.setStatusCancelledUserInfoId(null);
+            payoutNew.setStatusCancelledUserInfoType(null);
+            payoutNew.setStatusCancelledDetails(null);
         }
 
-        Long oldPayoutId = payoutSource.getId();
-        payoutDao.save(payoutSource).ifPresentOrElse(
+        payoutDao.save(payoutNew).ifPresentOrElse(
                 id -> {
-                    payoutDao.updateNotCurrent(oldPayoutId);
-                    List<PayoutSummary> payoutSummaries = payoutSummaryDao.getByPytId(oldPayoutId);
+                    Long oldId = payoutSourceOld.getId();
+                    payoutDao.updateNotCurrent(oldId);
+                    List<PayoutSummary> payoutSummaries = payoutSummaryDao.getByPytId(oldId);
                     if (!CollectionUtils.isEmpty(payoutSummaries)) {
                         payoutSummaries.forEach(pt -> {
                             pt.setId(null);

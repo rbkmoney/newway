@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 public class DepositRevertCreatedHandler implements DepositHandler {
 
     private final DepositRevertDao depositRevertDao;
-    private final MachineEventCopyFactory<DepositRevert> depositRevertMachineEventCopyFactory;
+    private final MachineEventCopyFactory<DepositRevert, String> depositRevertMachineEventCopyFactory;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -38,8 +38,8 @@ public class DepositRevertCreatedHandler implements DepositHandler {
         String depositId = event.getSourceId();
         log.info("Start deposit revert created handling, sequenceId={}, depositId={}", sequenceId, depositId);
 
-        DepositRevert depositRevert =
-                depositRevertMachineEventCopyFactory.create(event, sequenceId, depositId, timestampedChange.getOccuredAt());
+        DepositRevert depositRevert = depositRevertMachineEventCopyFactory
+                        .create(event, sequenceId, depositId, timestampedChange.getOccuredAt());
 
         var revert = change.getRevert().getPayload().getCreated().getRevert();
         depositRevert.setRevertId(revert.getId());

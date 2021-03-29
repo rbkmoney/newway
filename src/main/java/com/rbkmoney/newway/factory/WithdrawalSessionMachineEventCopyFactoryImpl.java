@@ -6,7 +6,8 @@ import com.rbkmoney.newway.domain.tables.pojos.WithdrawalSession;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WithdrawalSessionMachineEventCopyFactoryImpl implements MachineEventCopyFactory<WithdrawalSession, String> {
+public class WithdrawalSessionMachineEventCopyFactoryImpl
+        implements MachineEventCopyFactory<WithdrawalSession, String> {
 
     @Override
     public WithdrawalSession create(MachineEvent event, long sequenceId,

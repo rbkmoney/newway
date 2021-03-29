@@ -9,9 +9,10 @@ import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
-import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.AbstractPartyManagementHandler;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
+import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.PartyManagementHandler;
 import com.rbkmoney.newway.util.JsonUtil;
-import com.rbkmoney.newway.util.PartyUtil;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,14 +22,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@SuppressWarnings("VariableDeclarationUsageDistance")
-public class PartyMetaSetHandler extends AbstractPartyManagementHandler {
+public class PartyMetaSetHandler implements PartyManagementHandler {
 
     private final PartyDao partyDao;
+    private final MachineEventCopyFactory<Party, Integer> partyIntegerMachineEventCopyFactory;
 
-    private final Filter filter = new PathConditionFilter(new PathConditionRule(
-            "party_meta_set",
-            new IsNullCondition().not()));
+    @Getter
+    private final Filter filter =
+            new PathConditionFilter(new PathConditionRule("party_meta_set", new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -38,17 +39,13 @@ public class PartyMetaSetHandler extends AbstractPartyManagementHandler {
         String partyId = event.getSourceId();
         log.info("Start party metaset handling, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId, changeId);
 
-        Party partySource = partyDao.get(partyId);
-        Long oldId = partySource.getId();
-        PartyUtil.resetBaseFields(event, changeId, sequenceId, partySource);
-        partySource.setPartyMetaSetNs(partyMetaSet.getNs());
-        partySource.setPartyMetaSetDataJson(JsonUtil.thriftBaseToJsonString(partyMetaSet.getData()));
+        Party partyOld = partyDao.get(partyId);
+        Party partyNew = partyIntegerMachineEventCopyFactory.create(event, sequenceId, changeId, partyOld, null);
 
-        partyDao.saveWithUpdateCurrent(partySource, oldId, "metaset");
+        partyNew.setPartyMetaSetNs(partyMetaSet.getNs());
+        partyNew.setPartyMetaSetDataJson(JsonUtil.thriftBaseToJsonString(partyMetaSet.getData()));
+
+        partyDao.saveWithUpdateCurrent(partyNew, partyOld.getId(), "metaset");
     }
 
-    @Override
-    public Filter<PartyChange> getFilter() {
-        return filter;
-    }
 }

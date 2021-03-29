@@ -1,12 +1,17 @@
 package com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.contract;
 
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
+import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
+import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.domain.enums.ContractStatus;
-import com.rbkmoney.newway.domain.tables.pojos.*;
+import com.rbkmoney.newway.domain.tables.pojos.Contract;
+import com.rbkmoney.newway.domain.tables.pojos.ContractAdjustment;
+import com.rbkmoney.newway.domain.tables.pojos.Contractor;
+import com.rbkmoney.newway.factory.ClaimEffectCopyFactory;
 import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.AbstractClaimChangedHandler;
 import com.rbkmoney.newway.util.ContractUtil;
 import com.rbkmoney.newway.util.ContractorUtil;
@@ -33,6 +38,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
     private final PartyDao partyDao;
     private final ContractAdjustmentDao contractAdjustmentDao;
     private final PayoutToolDao payoutToolDao;
+    private final ClaimEffectCopyFactory<Contract, Integer> claimEffectCopyFactory;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -54,11 +60,7 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
         String partyId = event.getSourceId();
         log.info("Start contract created handling, sequenceId={}, partyId={}, contractId={}, changeId={}",
                 sequenceId, partyId, contractId, changeId);
-        Contract contract = new Contract();
-        contract.setSequenceId((int) sequenceId);
-        contract.setChangeId(changeId);
-        contract.setClaimEffectId(claimEffectId);
-        contract.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+        Contract contract = claimEffectCopyFactory.create(event, sequenceId, claimEffectId, changeId);
         partyDao.get(partyId); //check party is exist
 
         contract.setContractId(contractId);
@@ -95,9 +97,8 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
         contractDao.save(contract).ifPresentOrElse(
                 cntrctId -> updateContractReference(event, changeId, sequenceId, contractCreated, contractId, partyId,
                         contractorId, cntrctId, claimEffectId),
-                () -> log
-                        .info("contract create duplicated, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId,
-                                changeId)
+                () -> log.info("contract create duplicated, sequenceId={}, partyId={}, changeId={}",
+                        sequenceId, partyId, changeId)
         );
     }
 

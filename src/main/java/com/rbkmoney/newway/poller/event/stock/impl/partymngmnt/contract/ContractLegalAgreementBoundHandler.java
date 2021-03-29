@@ -1,10 +1,13 @@
 package com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.contract;
 
 import com.rbkmoney.damsel.domain.LegalAgreement;
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
+import com.rbkmoney.damsel.payment_processing.ContractEffectUnit;
+import com.rbkmoney.damsel.payment_processing.PartyChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.ContractDao;
 import com.rbkmoney.newway.domain.tables.pojos.Contract;
+import com.rbkmoney.newway.factory.ClaimEffectCopyFactory;
 import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.AbstractClaimChangedHandler;
 import com.rbkmoney.newway.service.ContractReferenceService;
 import com.rbkmoney.newway.util.ContractUtil;
@@ -23,6 +26,7 @@ public class ContractLegalAgreementBoundHandler extends AbstractClaimChangedHand
 
     private final ContractDao contractDao;
     private final ContractReferenceService contractReferenceService;
+    private final ClaimEffectCopyFactory<Contract, Integer> claimEffectCopyFactory;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -47,24 +51,24 @@ public class ContractLegalAgreementBoundHandler extends AbstractClaimChangedHand
         log.info("Start contract legal agreement bound handling, sequenceId={}, partyId={}, contractId={}, changeId={}",
                 sequenceId, partyId, contractId, changeId);
 
-        Contract contractSource = contractDao.get(partyId, contractId);
-        Long contractSourceId = contractSource.getId();
-        ContractUtil.resetBaseFields(event, changeId, sequenceId, contractSource, claimEffectId);
-        ContractUtil.fillContractLegalAgreementFields(contractSource, legalAgreementBound);
+        Contract contractSourceOld = contractDao.get(partyId, contractId);
+        Contract contractNew =
+                claimEffectCopyFactory.create(event, sequenceId, claimEffectId, changeId, contractSourceOld);
 
-        contractDao.save(contractSource).ifPresentOrElse(
+        ContractUtil.fillContractLegalAgreementFields(contractNew, legalAgreementBound);
+
+        contractDao.save(contractNew).ifPresentOrElse(
                 dbContractId -> {
-                    contractDao.updateNotCurrent(contractSourceId);
-                    contractReferenceService.updateContractReference(contractSourceId, dbContractId);
-                    log.info(
-                            "Contract legal agreement bound has been saved, " +
+                    Long oldId = contractSourceOld.getId();
+                    contractDao.updateNotCurrent(oldId);
+                    contractReferenceService.updateContractReference(oldId, dbContractId);
+                    log.info("Contract legal agreement bound has been saved, " +
                                     "sequenceId={}, partyId={}, contractId={}, changeId={}",
                             sequenceId, partyId, contractId, changeId);
                 },
-                () -> log
-                        .info("Contract legal agreement bound duplicated, " +
-                                        "sequenceId={}, partyId={}, contractId={}, changeId={}",
-                                sequenceId, partyId, contractId, changeId)
+                () -> log.info("Contract legal agreement bound duplicated, " +
+                                "sequenceId={}, partyId={}, contractId={}, changeId={}",
+                        sequenceId, partyId, contractId, changeId)
         );
     }
 }

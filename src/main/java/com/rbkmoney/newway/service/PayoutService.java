@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.service;
 
 import com.rbkmoney.damsel.payout_processing.*;
-import com.rbkmoney.newway.poller.event.stock.impl.payout.AbstractPayoutHandler;
+import com.rbkmoney.newway.poller.event.stock.impl.payout.PayoutHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PayoutService {
 
-    private final List<AbstractPayoutHandler> payoutHandlers;
+    private final List<PayoutHandler> payoutHandlers;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(List<Event> machineEvents) {

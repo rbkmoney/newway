@@ -1,11 +1,14 @@
 package com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.shop;
 
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
+import com.rbkmoney.damsel.payment_processing.PartyChange;
+import com.rbkmoney.damsel.payment_processing.ShopContractChanged;
+import com.rbkmoney.damsel.payment_processing.ShopEffectUnit;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.ShopDao;
 import com.rbkmoney.newway.domain.tables.pojos.Shop;
+import com.rbkmoney.newway.factory.ClaimEffectCopyFactory;
 import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.AbstractClaimChangedHandler;
-import com.rbkmoney.newway.util.ShopUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,6 +24,7 @@ import java.util.List;
 public class ShopContractChangedHandler extends AbstractClaimChangedHandler {
 
     private final ShopDao shopDao;
+    private final ClaimEffectCopyFactory<Shop, Integer> claimEffectCopyFactory;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -44,13 +48,12 @@ public class ShopContractChangedHandler extends AbstractClaimChangedHandler {
         log.info("Start shop contractChanged handling, sequenceId={}, partyId={}, shopId={}, changeId={}",
                 sequenceId, partyId, shopId, changeId);
 
-        Shop shopSource = shopDao.get(partyId, shopId);
-        Long oldEventId = shopSource.getId();
-        ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource, claimEffectId);
+        final Shop shopOld = shopDao.get(partyId, shopId);
+        Shop shopNew = claimEffectCopyFactory.create(event, sequenceId, claimEffectId, changeId, shopOld);
 
-        shopSource.setContractId(contractChanged.getContractId());
-        shopSource.setPayoutToolId(contractChanged.getPayoutToolId());
+        shopNew.setContractId(contractChanged.getContractId());
+        shopNew.setPayoutToolId(contractChanged.getPayoutToolId());
 
-        shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "contractChanged");
+        shopDao.saveWithUpdateCurrent(shopNew, shopOld.getId(), "contractChanged");
     }
 }

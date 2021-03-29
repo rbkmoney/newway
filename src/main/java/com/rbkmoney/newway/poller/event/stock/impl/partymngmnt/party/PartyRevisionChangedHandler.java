@@ -11,8 +11,9 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
 import com.rbkmoney.newway.dao.party.iface.RevisionDao;
 import com.rbkmoney.newway.domain.tables.pojos.Party;
-import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.AbstractPartyManagementHandler;
-import com.rbkmoney.newway.util.PartyUtil;
+import com.rbkmoney.newway.factory.MachineEventCopyFactory;
+import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.PartyManagementHandler;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,15 +24,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@SuppressWarnings("VariableDeclarationUsageDistance")
-public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler {
+public class PartyRevisionChangedHandler implements PartyManagementHandler {
 
     private final PartyDao partyDao;
     private final RevisionDao revisionDao;
+    private final MachineEventCopyFactory<Party, Integer> partyIntegerMachineEventCopyFactory;
 
-    private final Filter filter = new PathConditionFilter(new PathConditionRule(
-            "revision_changed",
-            new IsNullCondition().not()));
+    @Getter
+    private final Filter filter =
+            new PathConditionFilter(new PathConditionRule("revision_changed", new IsNullCondition().not()));
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -42,16 +43,16 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
         log.info("Start partySource revision changed handling, eventId={}, partyId={}, changeId={}",
                 sequenceId, partyId, changeId);
 
-        Party partySource = partyDao.get(partyId);
+        Party partyOld = partyDao.get(partyId);
         long revision = partyRevisionChanged.getRevision();
-        Long oldId = partySource.getId();
-        PartyUtil.resetBaseFields(event, changeId, sequenceId, partySource);
-        partySource.setRevision(revision);
-        partySource.setRevisionChangedAt(TypeUtil.stringToLocalDateTime(partyRevisionChanged.getTimestamp()));
-        partyDao.save(partySource)
+        Party partyNew = partyIntegerMachineEventCopyFactory.create(event, sequenceId, changeId, partyOld, null);
+        partyNew.setRevision(revision);
+        partyNew.setRevisionChangedAt(TypeUtil.stringToLocalDateTime(partyRevisionChanged.getTimestamp()));
+
+        partyDao.save(partyNew)
                 .ifPresentOrElse(
                         anLong -> {
-                            partyDao.updateNotCurrent(oldId);
+                            partyDao.updateNotCurrent(partyOld.getId());
                             updatePartyReferences(partyId, revision);
                             log.info("Party revision changed has been saved, sequenceId={}, partyId={}, changeId={}",
                                     sequenceId, partyId, changeId);
@@ -71,8 +72,4 @@ public class PartyRevisionChangedHandler extends AbstractPartyManagementHandler 
         log.info("Shops revisions has been saved, partyId={}, revision={}", partyId, revision);
     }
 
-    @Override
-    public Filter<PartyChange> getFilter() {
-        return filter;
-    }
 }

@@ -1,12 +1,14 @@
 package com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.shop;
 
 import com.rbkmoney.damsel.domain.ShopDetails;
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.payment_processing.ClaimEffect;
+import com.rbkmoney.damsel.payment_processing.PartyChange;
+import com.rbkmoney.damsel.payment_processing.ShopEffectUnit;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.party.iface.ShopDao;
 import com.rbkmoney.newway.domain.tables.pojos.Shop;
+import com.rbkmoney.newway.factory.ClaimEffectCopyFactory;
 import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.AbstractClaimChangedHandler;
-import com.rbkmoney.newway.util.ShopUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,7 @@ import java.util.List;
 public class ShopDetailsChangedHandler extends AbstractClaimChangedHandler {
 
     private final ShopDao shopDao;
+    private final ClaimEffectCopyFactory<Shop, Integer> claimEffectCopyFactory;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -45,13 +48,12 @@ public class ShopDetailsChangedHandler extends AbstractClaimChangedHandler {
         log.info("Start shop detailsChanged handling, sequenceId={}, partyId={}, shopId={}, changeId={}",
                 sequenceId, partyId, shopId, changeId);
 
-        Shop shopSource = shopDao.get(partyId, shopId);
-        Long oldEventId = shopSource.getId();
-        ShopUtil.resetBaseFields(event, changeId, sequenceId, shopSource, claimEffectId);
+        final Shop shopOld = shopDao.get(partyId, shopId);
+        Shop shopNew = claimEffectCopyFactory.create(event, sequenceId, claimEffectId, changeId, shopOld);
 
-        shopSource.setDetailsName(detailsChanged.getName());
-        shopSource.setDetailsDescription(detailsChanged.getDescription());
+        shopNew.setDetailsName(detailsChanged.getName());
+        shopNew.setDetailsDescription(detailsChanged.getDescription());
 
-        shopDao.saveWithUpdateCurrent(shopSource, oldEventId, "detailsChanged");
+        shopDao.saveWithUpdateCurrent(shopOld, shopOld.getId(), "detailsChanged");
     }
 }
