@@ -60,11 +60,11 @@ public class RecurrentPaymentToolDaoImpl extends AbstractGenericDao implements R
     }
 
     @Override
-    public RecurrentPaymentTool getNotNull(String eventId) {
-        RecurrentPaymentTool recurrentPaymentTool = get(eventId);
+    public RecurrentPaymentTool getNotNull(String recurrentPaymentToolId) {
+        RecurrentPaymentTool recurrentPaymentTool = get(recurrentPaymentToolId);
         if (recurrentPaymentTool == null) {
             throw new NotFoundException(
-                    String.format("Recurrent payment tool not found, sourceId='%s'", eventId));
+                    String.format("Recurrent payment tool not found, sourceId='%s'", recurrentPaymentToolId));
         }
         return recurrentPaymentTool;
     }

@@ -15,6 +15,6 @@ public interface RecurrentPaymentToolDao extends GenericDao {
 
     void updateNotCurrent(Long rptId) throws DaoException;
 
-    RecurrentPaymentTool getNotNull(String eventId);
+    RecurrentPaymentTool getNotNull(String recurrentPaymentToolId);
 
 }

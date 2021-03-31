@@ -47,8 +47,8 @@ public class DepositStatusChangedHandler implements DepositHandler {
         String depositId = event.getSourceId();
         log.info("Start deposit status changed handling, sequenceId={}, depositId={}", sequenceId, depositId);
         final Deposit depositOld = depositDao.get(depositId);
-        Deposit depositNew =
-                depositMachineEventCopyFactory.create(event, sequenceId, depositId, timestampedChange.getOccuredAt());
+        Deposit depositNew = depositMachineEventCopyFactory
+                .create(event, sequenceId, depositId, depositOld, timestampedChange.getOccuredAt());
 
         depositNew.setDepositStatus(TBaseUtil.unionFieldToEnum(status, DepositStatus.class));
 
