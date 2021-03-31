@@ -45,7 +45,7 @@ public class IdentityChallengeStatusChangedHandler implements IdentityHandler {
 
         final Challenge challengeOld = challengeDao.get(identityId, challengeChange.getId());
         Challenge challengeNew = challengeMachineEventCopyFactory
-                .create(event, sequenceId, identityId, timestampedChange.getOccuredAt());
+                .create(event, sequenceId, identityId, challengeOld, timestampedChange.getOccuredAt());
 
         challengeNew.setChallengeId(challengeChange.getId());
         challengeNew.setChallengeStatus(
