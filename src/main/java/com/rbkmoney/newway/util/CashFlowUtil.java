@@ -1,9 +1,12 @@
 package com.rbkmoney.newway.util;
 
-import com.rbkmoney.damsel.domain.*;
+import com.rbkmoney.damsel.domain.FinalCashFlowAccount;
+import com.rbkmoney.damsel.domain.FinalCashFlowPosting;
+import com.rbkmoney.damsel.domain.MerchantCashFlowAccount;
 import com.rbkmoney.geck.common.util.TypeUtil;
-import com.rbkmoney.newway.domain.enums.*;
+import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
 import com.rbkmoney.newway.domain.enums.CashFlowAccount;
+import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 
 import java.util.List;

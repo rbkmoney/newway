@@ -1,10 +1,11 @@
 package com.rbkmoney.newway.util;
 
-import com.rbkmoney.damsel.domain.*;
+import com.rbkmoney.damsel.domain.InternationalLegalEntity;
+import com.rbkmoney.damsel.domain.RussianLegalEntity;
+import com.rbkmoney.damsel.domain.RussianPrivateEntity;
 import com.rbkmoney.geck.common.util.TBaseUtil;
 import com.rbkmoney.geck.common.util.TypeUtil;
-import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.domain.enums.*;
+import com.rbkmoney.newway.domain.enums.ContractorType;
 import com.rbkmoney.newway.domain.enums.LegalEntity;
 import com.rbkmoney.newway.domain.enums.PrivateEntity;
 import com.rbkmoney.newway.domain.tables.pojos.Contractor;
@@ -68,13 +69,4 @@ public class ContractorUtil {
         return contractor;
     }
 
-
-    public static void resetBaseFields(MachineEvent event, long sequenceId, Contractor contractorSource,
-                                       Integer claimEffectId) {
-        contractorSource.setId(null);
-        contractorSource.setWtime(null);
-        contractorSource.setClaimEffectId(claimEffectId);
-        contractorSource.setSequenceId((int) sequenceId);
-        contractorSource.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
-    }
 }

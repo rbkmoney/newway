@@ -2,7 +2,7 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolEventData;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.poller.event.stock.impl.recurrent.payment.tool.AbstractRecurrentPaymentToolHandler;
+import com.rbkmoney.newway.handler.event.stock.impl.recurrent.payment.tool.RecurrentPaymentToolHandler;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class RecurrentPaymentToolService {
 
-    private final List<AbstractRecurrentPaymentToolHandler> handlers;
+    private final List<RecurrentPaymentToolHandler> handlers;
     private final MachineEventParser<RecurrentPaymentToolEventData> parser;
 
     @Transactional(propagation = Propagation.REQUIRED)

@@ -2,6 +2,7 @@ package com.rbkmoney.newway.dao;
 
 import com.rbkmoney.newway.dao.destination.iface.DestinationDao;
 import com.rbkmoney.newway.domain.tables.pojos.Destination;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class DestinationDaoTest extends AbstractAppDaoTests {
     @Autowired
     private DestinationDao destinationDao;
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void destinationDaoTest() {
         jdbcTemplate.execute("truncate table nw.destination cascade");
         Destination destination = random(Destination.class);
@@ -28,10 +29,11 @@ public class DestinationDaoTest extends AbstractAppDaoTests {
         Destination actual = destinationDao.get(destination.getDestinationId());
         assertEquals(destination, actual);
         destinationDao.updateNotCurrent(actual.getId());
-        Assert.assertNull(destinationDao.get(destination.getDestinationId()));
 
         //check duplicate not error
         destinationDao.save(destination);
+
+        destinationDao.get(destination.getDestinationId());
     }
 
 }

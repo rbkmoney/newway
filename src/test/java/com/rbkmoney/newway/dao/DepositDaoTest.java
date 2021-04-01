@@ -2,6 +2,7 @@ package com.rbkmoney.newway.dao;
 
 import com.rbkmoney.newway.dao.deposit.iface.DepositDao;
 import com.rbkmoney.newway.domain.tables.pojos.Deposit;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,7 +19,7 @@ public class DepositDaoTest extends AbstractAppDaoTests {
     @Autowired
     private DepositDao depositDao;
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void depositDaoTest() {
         jdbcTemplate.execute("truncate table nw.deposit cascade");
         Deposit deposit = random(Deposit.class);
@@ -28,10 +29,11 @@ public class DepositDaoTest extends AbstractAppDaoTests {
         Deposit actual = depositDao.get(deposit.getDepositId());
         assertEquals(deposit, actual);
         depositDao.updateNotCurrent(actual.getId());
-        assertNull(depositDao.get(deposit.getDepositId()));
 
         //check duplicate not error
         depositDao.save(deposit);
+
+        depositDao.get(deposit.getDepositId());
     }
 
 }

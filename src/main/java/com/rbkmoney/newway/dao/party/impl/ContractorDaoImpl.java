@@ -13,6 +13,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 
 import java.util.Optional;
 
@@ -41,16 +42,15 @@ public class ContractorDaoImpl extends AbstractGenericDao implements ContractorD
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
+    @NotNull
     @Override
     public Contractor get(String partyId, String contractorId) throws DaoException {
         Query query = getDslContext().selectFrom(CONTRACTOR)
                 .where(CONTRACTOR.PARTY_ID.eq(partyId).and(CONTRACTOR.CONTRACTOR_ID.eq(contractorId))
                         .and(CONTRACTOR.CURRENT));
-        Contractor contractor = fetchOne(query, contractorRowMapper);
-        if (contractor == null) {
-            throw new NotFoundException(String.format("Contractor not found, contractorId='%s'", contractorId));
-        }
-        return contractor;
+        return Optional.ofNullable(fetchOne(query, contractorRowMapper))
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Contractor not found, contractorId='%s'", contractorId)));
     }
 
     @Override

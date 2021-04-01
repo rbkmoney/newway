@@ -3,7 +3,7 @@ package com.rbkmoney.newway.service;
 import com.rbkmoney.damsel.domain_config.Commit;
 import com.rbkmoney.damsel.domain_config.Operation;
 import com.rbkmoney.newway.dao.dominant.iface.DominantDao;
-import com.rbkmoney.newway.poller.dominant.DominantHandler;
+import com.rbkmoney.newway.handler.dominant.DominantHandler;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service

@@ -4,7 +4,7 @@ import com.rbkmoney.newway.dao.AbstractAppDaoTests;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.model.InvoiceWrapper;
-import com.rbkmoney.newway.poller.event.stock.LocalStorage;
+import com.rbkmoney.newway.handler.event.stock.LocalStorage;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

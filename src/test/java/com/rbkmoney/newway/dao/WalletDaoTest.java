@@ -2,6 +2,7 @@ package com.rbkmoney.newway.dao;
 
 import com.rbkmoney.newway.dao.wallet.iface.WalletDao;
 import com.rbkmoney.newway.domain.tables.pojos.Wallet;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class WalletDaoTest extends AbstractAppDaoTests {
     @Autowired
     private WalletDao walletDao;
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void walletDaoTest() {
         jdbcTemplate.execute("truncate table nw.wallet cascade");
         Wallet wallet = random(Wallet.class);
@@ -28,10 +29,11 @@ public class WalletDaoTest extends AbstractAppDaoTests {
         Wallet actual = walletDao.get(wallet.getWalletId());
         assertEquals(wallet, actual);
         walletDao.updateNotCurrent(actual.getId());
-        Assert.assertNull(walletDao.get(wallet.getWalletId()));
 
         //check duplicate not error
         walletDao.save(wallet);
+
+        walletDao.get(wallet.getWalletId());
     }
 
 }

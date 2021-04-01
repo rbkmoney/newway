@@ -5,6 +5,7 @@ import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.invoicing.iface.PaymentDao;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.model.InvoicingKey;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,11 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.Tables.PAYMENT;
@@ -55,6 +58,7 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
         batchExecute(queries);
     }
 
+    @NotNull
     @Override
     public Payment get(String invoiceId, String paymentId) throws DaoException {
         Query query = getDslContext().selectFrom(PAYMENT)
@@ -62,7 +66,9 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
                         .and(PAYMENT.PAYMENT_ID.eq(paymentId))
                         .and(PAYMENT.CURRENT));
 
-        return fetchOne(query, paymentRowMapper);
+        return Optional.ofNullable(fetchOne(query, paymentRowMapper))
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Payment not found, invoiceId='%s', paymentId='%s'", invoiceId, paymentId)));
     }
 
     @Override

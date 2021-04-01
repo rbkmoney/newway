@@ -1,6 +1,6 @@
 package com.rbkmoney.newway.config;
 
-import com.rbkmoney.newway.poller.listener.*;
+import com.rbkmoney.newway.listener.*;
 import com.rbkmoney.newway.service.*;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;

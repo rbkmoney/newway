@@ -2,7 +2,7 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.fistful.wallet.TimestampedChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.poller.event.stock.impl.wallet.AbstractWalletHandler;
+import com.rbkmoney.newway.handler.event.stock.impl.wallet.WalletHandler;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.List;
 public class WalletService {
 
     private final MachineEventParser<TimestampedChange> parser;
-    private final List<AbstractWalletHandler> handlers;
+    private final List<WalletHandler> handlers;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(List<MachineEvent> machineEvents) {

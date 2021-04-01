@@ -7,8 +7,10 @@ import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.domain.tables.pojos.InvoiceCart;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.exception.NotFoundException;
-import com.rbkmoney.newway.model.*;
-import com.rbkmoney.newway.poller.event.stock.LocalStorage;
+import com.rbkmoney.newway.handler.event.stock.LocalStorage;
+import com.rbkmoney.newway.model.InvoiceWrapper;
+import com.rbkmoney.newway.model.InvoicingKey;
+import com.rbkmoney.newway.model.InvoicingType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,9 +37,6 @@ public class InvoiceWrapperService {
             return invoiceWrapper.copy();
         }
         Invoice invoice = invoiceDao.get(invoiceId);
-        if (invoice == null) {
-            throw new NotFoundException(String.format("Invoice not found, invoiceId='%s'", invoiceId));
-        }
         List<InvoiceCart> carts = invoiceCartDao.getByInvId(invoice.getId());
         return new InvoiceWrapper(invoice, carts);
     }

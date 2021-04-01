@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.config;
 
 import com.rbkmoney.damsel.domain_config.RepositorySrv;
-import com.rbkmoney.newway.poller.dominant.DominantPoller;
+import com.rbkmoney.newway.handler.dominant.DominantPoller;
 import com.rbkmoney.newway.service.DominantService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

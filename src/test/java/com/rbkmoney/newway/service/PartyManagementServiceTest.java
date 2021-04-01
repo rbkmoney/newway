@@ -1,12 +1,15 @@
 package com.rbkmoney.newway.service;
 
 import com.rbkmoney.damsel.domain.PartyContactInfo;
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.payment_processing.PartyChange;
+import com.rbkmoney.damsel.payment_processing.PartyCreated;
+import com.rbkmoney.damsel.payment_processing.PartyEventData;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.machinegun.msgpack.Value;
 import com.rbkmoney.newway.config.SerializationConfig;
 import com.rbkmoney.newway.dao.party.iface.PartyDao;
-import com.rbkmoney.newway.poller.event.stock.impl.partymngmnt.party.PartyCreatedHandler;
+import com.rbkmoney.newway.factory.PartyMachineEventCopyFactoryImpl;
+import com.rbkmoney.newway.handler.event.stock.impl.partymngmnt.party.PartyCreatedHandler;
 import com.rbkmoney.sink.common.serialization.impl.PartyEventDataSerializer;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,14 +21,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {PartyCreatedHandler.class, SerializationConfig.class, PartyManagementService.class})
+@ContextConfiguration(classes = {PartyMachineEventCopyFactoryImpl.class,
+        PartyCreatedHandler.class, SerializationConfig.class, PartyManagementService.class})
 public class PartyManagementServiceTest {
 
     @Autowired

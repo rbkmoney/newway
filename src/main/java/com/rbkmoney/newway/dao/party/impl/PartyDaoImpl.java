@@ -14,6 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 
 import java.util.Optional;
 
@@ -42,17 +43,14 @@ public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
+    @NotNull
     @Override
     public Party get(String partyId) throws DaoException {
         Query query = getDslContext().selectFrom(PARTY)
                 .where(PARTY.PARTY_ID.eq(partyId).and(PARTY.CURRENT));
 
-        Party party = fetchOne(query, partyRowMapper);
-
-        if (party == null) {
-            throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
-        }
-        return party;
+        return Optional.ofNullable(fetchOne(query, partyRowMapper))
+                .orElseThrow(() -> new NotFoundException(String.format("Party not found, partyId='%s'", partyId)));
     }
 
     @Override

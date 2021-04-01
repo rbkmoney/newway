@@ -7,6 +7,7 @@ import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.Refund;
 import com.rbkmoney.newway.domain.tables.records.RefundRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,6 +16,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 
 import java.util.Optional;
 
@@ -32,7 +34,7 @@ public class RefundDaoImpl extends AbstractGenericDao implements RefundDao {
     }
 
     @Override
-    public Long save(Refund refund) throws DaoException {
+    public Optional<Long> save(Refund refund) throws DaoException {
         RefundRecord record = getDslContext().newRecord(REFUND, refund);
         Query query = getDslContext().insertInto(REFUND)
                 .set(record)
@@ -41,9 +43,10 @@ public class RefundDaoImpl extends AbstractGenericDao implements RefundDao {
                 .returning(REFUND.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         execute(query, keyHolder);
-        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
+    @NotNull
     @Override
     public Refund get(String invoiceId, String paymentId, String refundId) throws DaoException {
         Query query = getDslContext().selectFrom(REFUND)
@@ -52,7 +55,9 @@ public class RefundDaoImpl extends AbstractGenericDao implements RefundDao {
                         .and(REFUND.REFUND_ID.eq(refundId))
                         .and(REFUND.CURRENT));
 
-        return fetchOne(query, refundRowMapper);
+        return Optional.ofNullable(fetchOne(query, refundRowMapper))
+                .orElseThrow(() -> new NotFoundException(String.format("Refund not found, " +
+                        "invoiceId='%s', paymentId='%s', refundId='%s'", invoiceId, paymentId, refundId)));
     }
 
     @Override

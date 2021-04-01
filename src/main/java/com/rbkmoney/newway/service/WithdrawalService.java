@@ -2,7 +2,7 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.fistful.withdrawal.TimestampedChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.poller.event.stock.impl.withdrawal.AbstractWithdrawalHandler;
+import com.rbkmoney.newway.handler.event.stock.impl.withdrawal.WithdrawalHandler;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.List;
 public class WithdrawalService {
 
     private final MachineEventParser<TimestampedChange> parser;
-    private final List<AbstractWithdrawalHandler> withdrawalHandlers;
+    private final List<WithdrawalHandler> withdrawalHandlers;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void handleEvents(List<MachineEvent> machineEvents) {

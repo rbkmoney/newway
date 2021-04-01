@@ -3,10 +3,12 @@ package com.rbkmoney.newway.service;
 import com.rbkmoney.damsel.payment_processing.EventPayload;
 import com.rbkmoney.damsel.payment_processing.InvoiceChange;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
-import com.rbkmoney.newway.model.*;
-import com.rbkmoney.newway.poller.event.stock.LocalStorage;
-import com.rbkmoney.newway.poller.event.stock.impl.invoicing.AbstractInvoicingHandler;
-import com.rbkmoney.newway.poller.event.stock.impl.invoicing.AbstractInvoicingMapper;
+import com.rbkmoney.newway.handler.event.stock.LocalStorage;
+import com.rbkmoney.newway.handler.event.stock.impl.invoicing.InvoicingHandler;
+import com.rbkmoney.newway.mapper.AbstractInvoicingMapper;
+import com.rbkmoney.newway.model.InvoiceWrapper;
+import com.rbkmoney.newway.model.InvoicingKey;
+import com.rbkmoney.newway.model.PaymentWrapper;
 import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class InvoicingService {
 
-    private final List<AbstractInvoicingHandler> otherHandlers;
+    private final List<InvoicingHandler> otherHandlers;
     private final List<AbstractInvoicingMapper<InvoiceWrapper>> invoiceMappers;
     private final List<AbstractInvoicingMapper<PaymentWrapper>> paymentMappers;
     private final InvoiceBatchService invoiceBatchService;
