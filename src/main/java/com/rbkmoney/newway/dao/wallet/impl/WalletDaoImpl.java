@@ -6,6 +6,7 @@ import com.rbkmoney.newway.dao.wallet.iface.WalletDao;
 import com.rbkmoney.newway.domain.tables.pojos.Wallet;
 import com.rbkmoney.newway.domain.tables.records.WalletRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,6 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 
 import java.util.Optional;
 
@@ -44,12 +46,15 @@ public class WalletDaoImpl extends AbstractGenericDao implements WalletDao {
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
+    @NotNull
     @Override
     public Wallet get(String walletId) throws DaoException {
         Query query = getDslContext().selectFrom(WALLET)
                 .where(WALLET.WALLET_ID.eq(walletId)
                         .and(WALLET.CURRENT));
-        return fetchOne(query, walletRowMapper);
+        return Optional.ofNullable(fetchOne(query, walletRowMapper))
+                .orElseThrow(
+                        () -> new NotFoundException(String.format("Wallet not found, walletId='%s'", walletId)));
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.rbkmoney.newway.dao.withdrawal.iface.WithdrawalDao;
 import com.rbkmoney.newway.domain.tables.pojos.Withdrawal;
 import com.rbkmoney.newway.domain.tables.records.WithdrawalRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,6 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 
 import java.util.Optional;
 
@@ -44,12 +46,15 @@ public class WithdrawalDaoImpl extends AbstractGenericDao implements WithdrawalD
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
+    @NotNull
     @Override
     public Withdrawal get(String withdrawalId) throws DaoException {
         Query query = getDslContext().selectFrom(WITHDRAWAL)
                 .where(WITHDRAWAL.WITHDRAWAL_ID.eq(withdrawalId)
                         .and(WITHDRAWAL.CURRENT));
-        return fetchOne(query, withdrawalRowMapper);
+        return Optional.ofNullable(fetchOne(query, withdrawalRowMapper))
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Withdrawal not found, withdrawalId='%s'", withdrawalId)));
     }
 
     @Override

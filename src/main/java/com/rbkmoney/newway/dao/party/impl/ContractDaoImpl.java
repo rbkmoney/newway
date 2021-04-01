@@ -13,6 +13,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 
 import java.util.Optional;
 
@@ -41,16 +42,15 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
+    @NotNull
     @Override
     public Contract get(String partyId, String contractId) throws DaoException {
         Query query = getDslContext().selectFrom(CONTRACT)
                 .where(CONTRACT.PARTY_ID.eq(partyId).and(CONTRACT.CONTRACT_ID.eq(contractId)).and(CONTRACT.CURRENT));
 
-        Contract contract = fetchOne(query, contractRowMapper);
-        if (contract == null) {
-            throw new NotFoundException(String.format("Contract not found, contractId='%s'", contractId));
-        }
-        return contract;
+        return Optional.ofNullable(fetchOne(query, contractRowMapper))
+                .orElseThrow(
+                        () -> new NotFoundException(String.format("Contract not found, contractId='%s'", contractId)));
     }
 
     @Override

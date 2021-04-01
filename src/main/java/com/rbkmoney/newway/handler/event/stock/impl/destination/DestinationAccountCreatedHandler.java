@@ -12,7 +12,6 @@ import com.rbkmoney.newway.dao.destination.iface.DestinationDao;
 import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.domain.tables.pojos.Destination;
 import com.rbkmoney.newway.domain.tables.pojos.Identity;
-import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +40,7 @@ public class DestinationAccountCreatedHandler implements DestinationHandler {
         log.info("Start destination account created handling, sequenceId={}, destinationId={}", sequenceId,
                 destinationId);
         final Destination destinationOld = destinationDao.get(destinationId);
-        Identity identity = findIdentity(account, destinationId, destinationOld);
+        Identity identity = identityDao.get(account.getIdentity());
         Destination destinationNew = destinationMachineEventCopyFactory
                 .create(event, sequenceId, destinationId, destinationOld, timestampedChange.getOccuredAt());
 
@@ -60,18 +59,6 @@ public class DestinationAccountCreatedHandler implements DestinationHandler {
                 () -> log
                         .info("Destination have been saved, sequenceId={}, destinationId={}", sequenceId, destinationId)
         );
-    }
-
-    private Identity findIdentity(Account account, String destinationId, Destination destinationOld) {
-        if (destinationOld == null) {
-            throw new NotFoundException(String.format("Destination not found, destinationId='%s'", destinationId));
-        }
-        Identity identity = identityDao.get(account.getIdentity());
-
-        if (identity == null) {
-            throw new NotFoundException(String.format("Identity not found, identityId='%s'", account.getIdentity()));
-        }
-        return identity;
     }
 
 }

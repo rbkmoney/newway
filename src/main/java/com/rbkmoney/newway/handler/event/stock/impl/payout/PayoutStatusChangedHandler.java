@@ -42,9 +42,6 @@ public class PayoutStatusChangedHandler implements PayoutHandler {
         String payoutId = event.getSource().getPayoutId();
         log.info("Start payout status changed handling, eventId={}, payoutId={}", eventId, payoutId);
         Payout payoutSourceOld = payoutDao.get(payoutId);
-        if (payoutSourceOld == null) {
-            throw new NotFoundException(String.format("Payout not found, payoutId='%s'", payoutId));
-        }
         Payout payoutNew = new Payout(payoutSourceOld);
         payoutNew.setId(null);
         payoutNew.setWtime(null);

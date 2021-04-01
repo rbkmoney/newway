@@ -35,9 +35,6 @@ public class InvoiceWrapperService {
             return invoiceWrapper.copy();
         }
         Invoice invoice = invoiceDao.get(invoiceId);
-        if (invoice == null) {
-            throw new NotFoundException(String.format("Invoice not found, invoiceId='%s'", invoiceId));
-        }
         List<InvoiceCart> carts = invoiceCartDao.getByInvId(invoice.getId());
         return new InvoiceWrapper(invoice, carts);
     }

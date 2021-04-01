@@ -2,6 +2,7 @@ package com.rbkmoney.newway.dao;
 
 import com.rbkmoney.newway.dao.withdrawal.session.iface.WithdrawalSessionDao;
 import com.rbkmoney.newway.domain.tables.pojos.WithdrawalSession;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,7 +19,7 @@ public class WithdrawalSessionDaoTest extends AbstractAppDaoTests {
     @Autowired
     private WithdrawalSessionDao withdrawalSessionDao;
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void withdrawalSessionDao() {
         jdbcTemplate.execute("truncate table nw.withdrawal_session cascade");
         WithdrawalSession withdrawalSession = random(WithdrawalSession.class);
@@ -28,10 +29,11 @@ public class WithdrawalSessionDaoTest extends AbstractAppDaoTests {
         WithdrawalSession actual = withdrawalSessionDao.get(withdrawalSession.getWithdrawalSessionId());
         assertEquals(withdrawalSession, actual);
         withdrawalSessionDao.updateNotCurrent(actual.getId());
-        assertNull(withdrawalSessionDao.get(withdrawalSession.getWithdrawalSessionId()));
 
         //check duplicate not error
         withdrawalSessionDao.save(withdrawalSession);
+
+        withdrawalSessionDao.get(withdrawalSession.getWithdrawalSessionId());
     }
 
 }

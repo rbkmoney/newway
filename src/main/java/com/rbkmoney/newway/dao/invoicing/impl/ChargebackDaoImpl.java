@@ -6,6 +6,7 @@ import com.rbkmoney.newway.dao.invoicing.iface.ChargebackDao;
 import com.rbkmoney.newway.domain.tables.pojos.Chargeback;
 import com.rbkmoney.newway.domain.tables.records.ChargebackRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,6 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 
 import java.util.Optional;
 
@@ -42,6 +44,7 @@ public class ChargebackDaoImpl extends AbstractGenericDao implements ChargebackD
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
+    @NotNull
     @Override
     public Chargeback get(String invoiceId, String paymentId, String chargebackId) throws DaoException {
         Query query = getDslContext().selectFrom(CHARGEBACK)
@@ -50,8 +53,10 @@ public class ChargebackDaoImpl extends AbstractGenericDao implements ChargebackD
                         .and(CHARGEBACK.CHARGEBACK_ID.eq(chargebackId))
                         .and(CHARGEBACK.CURRENT));
 
-        return fetchOne(query, chargebackRowMapper);
-
+        return Optional.ofNullable(fetchOne(query, chargebackRowMapper))
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Chargeback not found, invoiceId='%s', paymentId='%s', chargebackId='%s'",
+                                invoiceId, paymentId, chargebackId)));
     }
 
     @Override

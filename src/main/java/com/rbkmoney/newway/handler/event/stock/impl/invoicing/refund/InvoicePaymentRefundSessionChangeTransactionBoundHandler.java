@@ -56,10 +56,6 @@ public class InvoicePaymentRefundSessionChangeTransactionBoundHandler implements
                         "sequenceId='{}', invoiceId='{}', paymentId='{}', refundId='{}'",
                 sequenceId, invoiceId, paymentId, refundId);
         Refund refundOld = refundDao.get(invoiceId, paymentId, refundId);
-        if (refundOld == null) {
-            throw new NotFoundException(String.format("Refund not found, " +
-                    "invoiceId='%s', paymentId='%s', refundId='%s'", invoiceId, paymentId, refundId));
-        }
         Refund refundNew = machineEventCopyFactory.create(event, sequenceId, changeId, refundOld, null);
 
         InvoicePaymentSessionChange sessionChange =

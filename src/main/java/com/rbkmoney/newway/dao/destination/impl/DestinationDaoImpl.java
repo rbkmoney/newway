@@ -6,6 +6,7 @@ import com.rbkmoney.newway.dao.destination.iface.DestinationDao;
 import com.rbkmoney.newway.domain.tables.pojos.Destination;
 import com.rbkmoney.newway.domain.tables.records.DestinationRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,6 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 
 import java.util.Optional;
 
@@ -44,13 +46,16 @@ public class DestinationDaoImpl extends AbstractGenericDao implements Destinatio
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
+    @NotNull
     @Override
     public Destination get(String destinationId) throws DaoException {
         Query query = getDslContext().selectFrom(DESTINATION)
                 .where(DESTINATION.DESTINATION_ID.eq(destinationId)
                         .and(DESTINATION.CURRENT));
 
-        return fetchOne(query, destinationRowMapper);
+        return Optional.ofNullable(fetchOne(query, destinationRowMapper))
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Destination not found, destinationId='%s'", destinationId)));
     }
 
     @Override

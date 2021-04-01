@@ -17,7 +17,6 @@ import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
 import com.rbkmoney.newway.domain.enums.AdjustmentStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Adjustment;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
-import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import com.rbkmoney.newway.handler.event.stock.impl.invoicing.InvoicingHandler;
 import lombok.Getter;
@@ -62,12 +61,6 @@ public class InvoicePaymentAdjustmentStatusChangedHandler implements InvoicingHa
                 sequenceId, invoiceId, paymentId, adjustmentId,
                 invoicePaymentAdjustmentStatus.getSetField().getFieldName());
         Adjustment adjustmentOld = adjustmentDao.get(invoiceId, paymentId, adjustmentId);
-        if (adjustmentOld == null) {
-            throw new NotFoundException(
-                    String.format("Adjustment not found, invoiceId='%s', paymentId='%s', adjustmentId='%s'",
-                            invoiceId, paymentId, adjustmentId));
-        }
-
         Adjustment adjustmentNew = machineEventCopyFactory.create(event, sequenceId, changeId, adjustmentOld, null);
 
         adjustmentNew.setStatus(TBaseUtil.unionFieldToEnum(invoicePaymentAdjustmentStatus, AdjustmentStatus.class));

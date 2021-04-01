@@ -48,9 +48,8 @@ public class DepositTransferCreatedHandler implements DepositHandler {
         final Deposit depositOld = depositDao.get(depositId);
         List<FinalCashFlowPosting> postings =
                 change.getTransfer().getPayload().getCreated().getTransfer().getCashflow().getPostings();
-        Deposit depositNew =
-                depositMachineEventCopyFactory
-                        .create(event, sequenceId, depositId, depositOld, timestampedChange.getOccuredAt());
+        Deposit depositNew = depositMachineEventCopyFactory
+                .create(event, sequenceId, depositId, depositOld, timestampedChange.getOccuredAt());
         depositNew.setDepositTransferStatus(DepositTransferStatus.created);
         depositNew.setFee(FistfulCashFlowUtil.getFistfulFee(postings));
         depositNew.setProviderFee(FistfulCashFlowUtil.getFistfulProviderFee(postings));

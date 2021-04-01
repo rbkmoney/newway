@@ -2,15 +2,23 @@ package com.rbkmoney.newway.dao;
 
 import com.rbkmoney.newway.dao.dominant.iface.DominantDao;
 import com.rbkmoney.newway.dao.dominant.impl.*;
-import com.rbkmoney.newway.dao.invoicing.iface.*;
-import com.rbkmoney.newway.dao.invoicing.impl.*;
+import com.rbkmoney.newway.dao.invoicing.iface.AdjustmentDao;
+import com.rbkmoney.newway.dao.invoicing.iface.CashFlowDao;
+import com.rbkmoney.newway.dao.invoicing.iface.InvoiceCartDao;
+import com.rbkmoney.newway.dao.invoicing.iface.RefundDao;
+import com.rbkmoney.newway.dao.invoicing.impl.InvoiceDaoImpl;
+import com.rbkmoney.newway.dao.invoicing.impl.PaymentDaoImpl;
+import com.rbkmoney.newway.dao.invoicing.impl.PaymentIdsGeneratorDaoImpl;
 import com.rbkmoney.newway.dao.party.iface.*;
 import com.rbkmoney.newway.dao.rate.iface.RateDao;
 import com.rbkmoney.newway.dao.recurrent.payment.tool.iface.RecurrentPaymentToolDao;
-import com.rbkmoney.newway.domain.enums.*;
-import com.rbkmoney.newway.domain.tables.pojos.*;
+import com.rbkmoney.newway.domain.enums.AdjustmentCashFlowType;
+import com.rbkmoney.newway.domain.enums.CashFlowAccount;
+import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.Calendar;
 import com.rbkmoney.newway.domain.tables.pojos.Currency;
+import com.rbkmoney.newway.domain.tables.pojos.*;
+import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.InvoicingType;
 import com.rbkmoney.newway.util.HashUtil;
@@ -18,7 +26,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SingleColumnRowMapper;
 
 import java.util.*;
 import java.util.stream.LongStream;
@@ -26,7 +36,6 @@ import java.util.stream.LongStream;
 import static com.rbkmoney.newway.dao.DaoUtils.createCashFlow;
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
 import static io.github.benas.randombeans.api.EnhancedRandom.randomListOf;
-import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.*;
 
 @SuppressWarnings("VariableDeclarationUsageDistance")
@@ -379,7 +388,7 @@ public class DaoTests extends AbstractAppDaoTests {
     }
 
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void adjustmentDaoTest() {
         jdbcTemplate.execute("truncate table nw.adjustment cascade");
         Adjustment adjustment = random(Adjustment.class);
@@ -389,8 +398,8 @@ public class DaoTests extends AbstractAppDaoTests {
                 adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId())
                         .getPartyId());
         adjustmentDao.updateNotCurrent(adjustment.getId());
-        Assert.assertNull(
-                adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()));
+
+        adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId());
     }
 
     @Test
@@ -434,7 +443,7 @@ public class DaoTests extends AbstractAppDaoTests {
         assertEquals(paymentTwo, paymentGet2);
     }
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void refundDaoTest() {
         jdbcTemplate.execute("truncate table nw.refund cascade");
         Refund refund = random(Refund.class);
@@ -443,7 +452,8 @@ public class DaoTests extends AbstractAppDaoTests {
         Refund refundGet = refundDao.get(refund.getInvoiceId(), refund.getPaymentId(), refund.getRefundId());
         assertEquals(refund, refundGet);
         refundDao.updateNotCurrent(refund.getId());
-        Assert.assertNull(refundDao.get(refund.getInvoiceId(), refund.getPaymentId(), refund.getRefundId()));
+
+        refundDao.get(refund.getInvoiceId(), refund.getPaymentId(), refund.getRefundId());
     }
 
     @Test
@@ -549,7 +559,7 @@ public class DaoTests extends AbstractAppDaoTests {
                 rate,
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM nw.rate WHERE id = ? ",
-                        new Object[]{id},
+                        new Object[] {id},
                         new BeanPropertyRowMapper(Rate.class)
                 )
         );
@@ -564,7 +574,7 @@ public class DaoTests extends AbstractAppDaoTests {
         try {
             jdbcTemplate.queryForObject(
                     "SELECT * FROM nw.rate AS rate WHERE rate.id = ? AND rate.current",
-                    new Object[]{id},
+                    new Object[] {id},
                     new BeanPropertyRowMapper(Rate.class)
             );
             fail();
@@ -612,7 +622,7 @@ public class DaoTests extends AbstractAppDaoTests {
         assertEquals(99, list.get(99) - list.get(0));
     }
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void recurrentPaymentToolDaoTest() {
         jdbcTemplate.execute("truncate table nw.recurrent_payment_tool cascade");
         RecurrentPaymentTool recurrentPaymentTool = random(RecurrentPaymentTool.class);
@@ -623,6 +633,7 @@ public class DaoTests extends AbstractAppDaoTests {
         assertEquals(recurrentPaymentTool,
                 recurrentPaymentToolDao.get(recurrentPaymentTool.getRecurrentPaymentToolId()));
         recurrentPaymentToolDao.updateNotCurrent(recurrentPaymentTool.getId());
-        assertNull(recurrentPaymentToolDao.get(recurrentPaymentTool.getRecurrentPaymentToolId()));
+
+        recurrentPaymentToolDao.get(recurrentPaymentTool.getRecurrentPaymentToolId());
     }
 }

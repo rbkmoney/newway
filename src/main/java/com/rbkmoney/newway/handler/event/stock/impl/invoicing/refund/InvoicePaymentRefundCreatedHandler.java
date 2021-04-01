@@ -77,12 +77,6 @@ public class InvoicePaymentRefundCreatedHandler implements InvoicingHandler {
         refund.setExternalId(invoicePaymentRefund.getExternalId());
 
         Payment payment = paymentDao.get(invoiceId, paymentId);
-        if (payment == null) {
-            throw new NotFoundException(
-                    String.format("Payment on refund not found, invoiceId='%s', paymentId='%s', refundId='%s'",
-                            invoiceId, paymentId, refundId));
-        }
-
         refund.setPartyId(payment.getPartyId());
         refund.setShopId(payment.getShopId());
         refund.setCreatedAt(TypeUtil.stringToLocalDateTime(invoicePaymentRefund.getCreatedAt()));

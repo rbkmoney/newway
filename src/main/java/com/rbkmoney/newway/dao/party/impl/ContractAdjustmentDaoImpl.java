@@ -24,7 +24,6 @@ public class ContractAdjustmentDaoImpl extends AbstractGenericDao implements Con
     public ContractAdjustmentDaoImpl(DataSource dataSource) {
         super(dataSource);
         this.contractAdjustmentRowMapper = new RecordRowMapper<>(CONTRACT_ADJUSTMENT, ContractAdjustment.class);
-        ;
     }
 
     @Override

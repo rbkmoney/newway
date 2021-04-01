@@ -8,9 +8,9 @@ import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.exception.DaoException;
 import com.rbkmoney.newway.exception.NotFoundException;
+import com.rbkmoney.newway.handler.event.stock.LocalStorage;
 import com.rbkmoney.newway.model.InvoicingKey;
 import com.rbkmoney.newway.model.PaymentWrapper;
-import com.rbkmoney.newway.handler.event.stock.LocalStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,10 +42,6 @@ public class PaymentWrapperService {
                 paymentWrapper = paymentWrapper.copy();
             } else {
                 Payment payment = paymentDao.get(invoiceId, paymentId);
-                if (payment == null) {
-                    throw new NotFoundException(
-                            String.format("Payment not found, invoiceId='%s', payment='%s'", invoiceId, paymentId));
-                }
                 List<CashFlow> cashFlows = cashFlowDao.getByObjId(payment.getId(), PaymentChangeType.payment);
                 paymentWrapper = new PaymentWrapper();
                 paymentWrapper.setPayment(payment);

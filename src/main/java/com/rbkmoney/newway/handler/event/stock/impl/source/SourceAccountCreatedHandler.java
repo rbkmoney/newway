@@ -12,7 +12,6 @@ import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.dao.source.iface.SourceDao;
 import com.rbkmoney.newway.domain.tables.pojos.Identity;
 import com.rbkmoney.newway.domain.tables.pojos.Source;
-import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -40,13 +39,7 @@ public class SourceAccountCreatedHandler implements SourceHandler {
         String sourceId = event.getSourceId();
         log.info("Start source account created handling, sequenceId={}, sourceId={}", sequenceId, sourceId);
         final Source sourceOld = sourceDao.get(sourceId);
-        if (sourceOld == null) {
-            throw new NotFoundException(String.format("Source not found, sourceId='%s'", sourceId));
-        }
         Identity identity = identityDao.get(account.getIdentity());
-        if (identity == null) {
-            throw new NotFoundException(String.format("Identity not found, sourceId='%s'", account.getIdentity()));
-        }
 
         Source sourceNew = sourceMachineEventCopyFactory
                 .create(event, sequenceId, sourceId, sourceOld, timestampedChange.getOccuredAt());

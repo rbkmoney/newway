@@ -13,6 +13,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 
 import java.util.Optional;
 
@@ -43,13 +44,16 @@ public class RecurrentPaymentToolDaoImpl extends AbstractGenericDao implements R
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
+    @NotNull
     @Override
     public RecurrentPaymentTool get(String recurrentPaymentToolId) throws DaoException {
         Query query = getDslContext().selectFrom(RECURRENT_PAYMENT_TOOL)
                 .where(RECURRENT_PAYMENT_TOOL.RECURRENT_PAYMENT_TOOL_ID.eq(recurrentPaymentToolId)
                         .and(RECURRENT_PAYMENT_TOOL.CURRENT));
 
-        return fetchOne(query, recurrentPaymentToolRowMapper);
+        return Optional.ofNullable(fetchOne(query, recurrentPaymentToolRowMapper))
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Recurrent payment tool not found, sourceId='%s'", recurrentPaymentToolId)));
     }
 
     @Override
@@ -59,15 +63,6 @@ public class RecurrentPaymentToolDaoImpl extends AbstractGenericDao implements R
         executeOne(query);
     }
 
-    @Override
-    public RecurrentPaymentTool getNotNull(String recurrentPaymentToolId) {
-        RecurrentPaymentTool recurrentPaymentTool = get(recurrentPaymentToolId);
-        if (recurrentPaymentTool == null) {
-            throw new NotFoundException(
-                    String.format("Recurrent payment tool not found, sourceId='%s'", recurrentPaymentToolId));
-        }
-        return recurrentPaymentTool;
-    }
 
 }
 

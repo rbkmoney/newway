@@ -58,12 +58,6 @@ public class InvoicePaymentChargebackStatusChangedHandler implements InvoicingHa
                 invoicePaymentChargebackStatusChanged.getStatus().getSetField().getFieldName());
 
         Chargeback chargebackOld = chargebackDao.get(invoiceId, paymentId, chargebackId);
-        if (chargebackOld == null) {
-            throw new NotFoundException(
-                    String.format("Chargeback not found, invoiceId='%s', paymentId='%s', chargebackId='%s'",
-                            invoiceId, paymentId, chargebackId));
-        }
-
         Chargeback chargebackNew = machineEventCopyFactory.create(event, sequenceId, changeId, chargebackOld, null);
 
         chargebackNew.setStatus(

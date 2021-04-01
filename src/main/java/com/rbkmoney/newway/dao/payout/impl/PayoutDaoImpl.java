@@ -6,6 +6,7 @@ import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
 import com.rbkmoney.newway.domain.tables.pojos.Payout;
 import com.rbkmoney.newway.domain.tables.records.PayoutRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -47,7 +48,8 @@ public class PayoutDaoImpl extends AbstractGenericDao implements PayoutDao {
     public Payout get(String payoutId) throws DaoException {
         Query query = getDslContext().selectFrom(PAYOUT)
                 .where(PAYOUT.PAYOUT_ID.eq(payoutId).and(PAYOUT.CURRENT));
-        return fetchOne(query, payoutRowMapper);
+        return Optional.ofNullable(fetchOne(query, payoutRowMapper))
+                .orElseThrow(() -> new NotFoundException(String.format("Payout not found, payoutId='%s'", payoutId)));
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.rbkmoney.newway.dao;
 
 import com.rbkmoney.newway.dao.source.iface.SourceDao;
 import com.rbkmoney.newway.domain.tables.pojos.Source;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class SourceDaoTest extends AbstractAppDaoTests {
     @Autowired
     private SourceDao sourceDao;
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void sourceDaoTest() {
         jdbcTemplate.execute("truncate table nw.source cascade");
         Source source = random(Source.class);
@@ -28,10 +29,11 @@ public class SourceDaoTest extends AbstractAppDaoTests {
         Source actual = sourceDao.get(source.getSourceId());
         assertEquals(source, actual);
         sourceDao.updateNotCurrent(actual.getId());
-        Assert.assertNull(sourceDao.get(source.getSourceId()));
 
         //check duplicate not error
         sourceDao.save(source);
+
+        sourceDao.get(source.getSourceId());
     }
 
 }

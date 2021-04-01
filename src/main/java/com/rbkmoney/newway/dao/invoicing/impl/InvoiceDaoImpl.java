@@ -5,6 +5,7 @@ import com.rbkmoney.mapper.RecordRowMapper;
 import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.model.InvoicingKey;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +14,11 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.rbkmoney.newway.domain.tables.Invoice.INVOICE;
@@ -44,11 +47,14 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
         batchExecute(queries);
     }
 
+    @NotNull
     @Override
     public Invoice get(String invoiceId) throws DaoException {
         Query query = getDslContext().selectFrom(INVOICE)
                 .where(INVOICE.INVOICE_ID.eq(invoiceId).and(INVOICE.CURRENT));
-        return fetchOne(query, invoiceRowMapper);
+        return Optional.ofNullable(fetchOne(query, invoiceRowMapper))
+                .orElseThrow(
+                        () -> new NotFoundException(String.format("Invoice not found, invoiceId='%s'", invoiceId)));
     }
 
     @Override

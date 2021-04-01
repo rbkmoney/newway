@@ -69,13 +69,6 @@ public class InvoicePaymentChargebackCreatedHandler implements InvoicingHandler 
         chargeback.setExternalId(invoicePaymentChargeback.getExternalId());
 
         Payment payment = paymentDao.get(invoiceId, paymentId);
-        if (payment == null) {
-            String errMsg = String.format(
-                    "Payment on chargeback not found, invoiceId='%s', paymentId='%s', chargebackId='%s'",
-                    invoiceId, paymentId, chargebackId);
-            throw new NotFoundException(errMsg);
-        }
-
         chargeback.setPartyId(payment.getPartyId());
         chargeback.setShopId(payment.getShopId());
         chargeback.setCreatedAt(TypeUtil.stringToLocalDateTime(invoicePaymentChargeback.getCreatedAt()));

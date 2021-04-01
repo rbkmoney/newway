@@ -4,12 +4,14 @@ import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
 import com.rbkmoney.newway.dao.payout.iface.PayoutSummaryDao;
 import com.rbkmoney.newway.domain.tables.pojos.Payout;
 import com.rbkmoney.newway.domain.tables.pojos.PayoutSummary;
-import org.junit.Assert;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
 import static io.github.benas.randombeans.api.EnhancedRandom.randomListOf;
@@ -26,7 +28,7 @@ public class PayoutDaoTest extends AbstractAppDaoTests {
     @Autowired
     private PayoutSummaryDao payoutSummaryDao;
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void payoutDaoTest() {
         jdbcTemplate.execute("truncate table nw.payout cascade");
         Payout payout = random(Payout.class);
@@ -35,10 +37,11 @@ public class PayoutDaoTest extends AbstractAppDaoTests {
         Payout payoutGet = payoutDao.get(payout.getPayoutId());
         assertEquals(payout, payoutGet);
         payoutDao.updateNotCurrent(save.get());
-        Assert.assertNull(payoutDao.get(payout.getPayoutId()));
 
         //check duplicate not error
         payoutDao.save(payout);
+
+        payoutDao.get(payout.getPayoutId());
     }
 
     @Test

@@ -6,6 +6,7 @@ import com.rbkmoney.newway.dao.source.iface.SourceDao;
 import com.rbkmoney.newway.domain.tables.pojos.Source;
 import com.rbkmoney.newway.domain.tables.records.SourceRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,6 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 
 import java.util.Optional;
 
@@ -44,13 +46,15 @@ public class SourceDaoImpl extends AbstractGenericDao implements SourceDao {
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
+    @NotNull
     @Override
     public Source get(String sourceId) throws DaoException {
         Query query = getDslContext().selectFrom(SOURCE)
                 .where(SOURCE.SOURCE_ID.eq(sourceId)
                         .and(SOURCE.CURRENT));
 
-        return fetchOne(query, sourceRowMapper);
+        return Optional.ofNullable(fetchOne(query, sourceRowMapper))
+                .orElseThrow(() -> new NotFoundException(String.format("Source not found, sourceId='%s'", sourceId)));
     }
 
     @Override

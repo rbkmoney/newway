@@ -2,6 +2,7 @@ package com.rbkmoney.newway.dao;
 
 import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.domain.tables.pojos.Identity;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,7 +19,7 @@ public class IdentityDaoTest extends AbstractAppDaoTests {
     @Autowired
     private IdentityDao identityDao;
 
-    @Test
+    @Test(expected = NotFoundException.class)
     public void identityDaoTest() {
         jdbcTemplate.execute("truncate table nw.identity cascade");
         Identity identity = random(Identity.class);
@@ -28,10 +29,11 @@ public class IdentityDaoTest extends AbstractAppDaoTests {
         Identity actual = identityDao.get(identity.getIdentityId());
         assertEquals(identity, actual);
         identityDao.updateNotCurrent(actual.getId());
-        assertNull(identityDao.get(identity.getIdentityId()));
 
         //check duplicate not error
         identityDao.save(identity);
+
+        identityDao.get(identity.getIdentityId());
     }
 
 }

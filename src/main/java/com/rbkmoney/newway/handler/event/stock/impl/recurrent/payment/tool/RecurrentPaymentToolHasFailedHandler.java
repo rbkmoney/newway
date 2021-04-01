@@ -34,7 +34,7 @@ public class RecurrentPaymentToolHasFailedHandler implements RecurrentPaymentToo
         log.info("Start recurrent payment tool failed handling, sourceId={}, sequenceId={}, changeId={}",
                 event.getSourceId(), sequenceId, changeId);
 
-        final RecurrentPaymentTool recurrentPaymentToolOld = recurrentPaymentToolDao.getNotNull(event.getSourceId());
+        final RecurrentPaymentTool recurrentPaymentToolOld = recurrentPaymentToolDao.get(event.getSourceId());
         RecurrentPaymentTool recurrentPaymentToolNew =
                 recurrentPaymentToolCopyFactory.create(event, sequenceId, changeId, recurrentPaymentToolOld, null);
         recurrentPaymentToolNew.setStatus(RecurrentPaymentToolStatus.failed);

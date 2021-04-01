@@ -36,7 +36,7 @@ public class RecurrentPaymentToolSessionChangedTransactionBoundHandler implement
                 "Start recurrent payment tool session changed transaction bound handling, " +
                         "sourceId={}, sequenceId={}, changeId={}",
                 event.getSourceId(), sequenceId, changeId);
-        final RecurrentPaymentTool recurrentPaymentToolOld = recurrentPaymentToolDao.getNotNull(event.getSourceId());
+        final RecurrentPaymentTool recurrentPaymentToolOld = recurrentPaymentToolDao.get(event.getSourceId());
         RecurrentPaymentTool recurrentPaymentToolNew =
                 recurrentPaymentToolCopyFactory.create(event, sequenceId, changeId, recurrentPaymentToolOld, null);
         TransactionInfo trx =

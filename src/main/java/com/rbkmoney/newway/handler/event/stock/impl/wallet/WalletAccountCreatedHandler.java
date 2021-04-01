@@ -12,7 +12,6 @@ import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.dao.wallet.iface.WalletDao;
 import com.rbkmoney.newway.domain.tables.pojos.Identity;
 import com.rbkmoney.newway.domain.tables.pojos.Wallet;
-import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +44,7 @@ public class WalletAccountCreatedHandler implements WalletHandler {
                 sequenceId, walletId);
 
         final Wallet walletOld = walletDao.get(walletId);
-        Identity identity = findIdentity(account, walletId, walletOld);
+        Identity identity = identityDao.get(account.getIdentity());
         Wallet walletNew = walletMachineEventCopyFactory
                 .create(event, sequenceId, walletId, walletOld, timestampedChange.getOccuredAt());
         walletNew.setIdentityId(account.getIdentity());
@@ -60,17 +59,6 @@ public class WalletAccountCreatedHandler implements WalletHandler {
                     log.info("Wallet account have been changed, sequenceId={}, walletId={}", sequenceId, walletId);
                 },
                 () -> log.info("Wallet account have been saved, sequenceId={}, walletId={}", sequenceId, walletId));
-    }
-
-    private Identity findIdentity(Account account, String walletId, Wallet walletOld) {
-        if (walletOld == null) {
-            throw new NotFoundException(String.format("Wallet not found, walletId='%s'", walletId));
-        }
-        Identity identity = identityDao.get(account.getIdentity());
-        if (identity == null) {
-            throw new NotFoundException(String.format("Identity not found, walletId='%s'", walletId));
-        }
-        return identity;
     }
 
 }

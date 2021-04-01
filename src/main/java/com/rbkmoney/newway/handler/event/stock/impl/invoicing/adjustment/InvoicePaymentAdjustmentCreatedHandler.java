@@ -73,11 +73,6 @@ public class InvoicePaymentAdjustmentCreatedHandler implements InvoicingHandler 
         adjustment.setPaymentId(paymentId);
         adjustment.setInvoiceId(invoiceId);
         Payment payment = paymentDao.get(invoiceId, paymentId);
-        if (payment == null) {
-            throw new NotFoundException(
-                    String.format("Payment on adjustment not found, invoiceId='%s', paymentId='%s', adjustmentId='%s'",
-                            invoiceId, paymentId, adjustmentId));
-        }
         adjustment.setPartyId(payment.getPartyId());
         adjustment.setShopId(payment.getShopId());
         adjustment.setCreatedAt(TypeUtil.stringToLocalDateTime(invoicePaymentAdjustment.getCreatedAt()));

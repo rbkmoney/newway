@@ -31,7 +31,7 @@ public class RecurrentPaymentToolRiskScoreChangedHandler implements RecurrentPay
         long sequenceId = event.getEventId();
         log.info("Start recurrent payment tool risk score changed handling, sourceId={}, sequenceId={}, changeId={}",
                 event.getSourceId(), sequenceId, changeId);
-        final RecurrentPaymentTool recurrentPaymentToolOld = recurrentPaymentToolDao.getNotNull(event.getSourceId());
+        final RecurrentPaymentTool recurrentPaymentToolOld = recurrentPaymentToolDao.get(event.getSourceId());
         RecurrentPaymentTool recurrentPaymentToolNew =
                 recurrentPaymentToolCopyFactory.create(event, sequenceId, changeId, recurrentPaymentToolOld, null);
         recurrentPaymentToolNew.setRiskScore(change.getRecPaymentToolRiskScoreChanged().getRiskScore().name());

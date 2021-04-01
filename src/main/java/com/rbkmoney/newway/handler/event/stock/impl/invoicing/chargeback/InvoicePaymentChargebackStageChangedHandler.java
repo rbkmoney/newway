@@ -14,7 +14,6 @@ import com.rbkmoney.newway.dao.invoicing.iface.ChargebackDao;
 import com.rbkmoney.newway.domain.enums.ChargebackStage;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.Chargeback;
-import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import com.rbkmoney.newway.handler.event.stock.impl.invoicing.InvoicingHandler;
 import com.rbkmoney.newway.service.CashFlowService;
@@ -56,12 +55,6 @@ public class InvoicePaymentChargebackStageChangedHandler implements InvoicingHan
                 invoicePaymentChargebackStageChanged.getStage().getSetField().getFieldName());
 
         Chargeback chargebackOld = chargebackDao.get(invoiceId, paymentId, chargebackId);
-        if (chargebackOld == null) {
-            throw new NotFoundException(
-                    String.format("Chargeback not found, invoiceId='%s', paymentId='%s', chargebackId='%s'",
-                            invoiceId, paymentId, chargebackId));
-        }
-
         Chargeback chargebackNew = machineEventCopyFactory.create(event, sequenceId, changeId, chargebackOld, null);
 
         chargebackNew.setStage(

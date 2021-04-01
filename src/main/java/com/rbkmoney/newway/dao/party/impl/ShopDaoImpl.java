@@ -14,6 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 
 import java.util.Optional;
 
@@ -42,15 +43,13 @@ public class ShopDaoImpl extends AbstractGenericDao implements ShopDao {
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
+    @NotNull
     @Override
     public Shop get(String partyId, String shopId) throws DaoException {
         Query query = getDslContext().selectFrom(SHOP)
                 .where(SHOP.PARTY_ID.eq(partyId).and(SHOP.SHOP_ID.eq(shopId)).and(SHOP.CURRENT));
-        Shop shop = fetchOne(query, shopRowMapper);
-        if (shop == null) {
-            throw new NotFoundException(String.format("Shop not found, shopId='%s'", shopId));
-        }
-        return shop;
+        return Optional.ofNullable(fetchOne(query, shopRowMapper))
+                .orElseThrow(() -> new NotFoundException(String.format("Shop not found, shopId='%s'", shopId)));
     }
 
     @Override

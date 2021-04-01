@@ -6,6 +6,7 @@ import com.rbkmoney.newway.dao.identity.iface.IdentityDao;
 import com.rbkmoney.newway.domain.tables.pojos.Identity;
 import com.rbkmoney.newway.domain.tables.records.IdentityRecord;
 import com.rbkmoney.newway.exception.DaoException;
+import com.rbkmoney.newway.exception.NotFoundException;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,6 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
 
 import java.util.Optional;
 
@@ -44,13 +46,16 @@ public class IdentityDaoImpl extends AbstractGenericDao implements IdentityDao {
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
+    @NotNull
     @Override
     public Identity get(String identityId) throws DaoException {
         Query query = getDslContext().selectFrom(IDENTITY)
                 .where(IDENTITY.IDENTITY_ID.eq(identityId)
                         .and(IDENTITY.CURRENT));
 
-        return fetchOne(query, identityRowMapper);
+        return Optional.ofNullable(fetchOne(query, identityRowMapper))
+                .orElseThrow(
+                        () -> new NotFoundException(String.format("Identity not found, identityId='%s'", identityId)));
     }
 
     @Override
