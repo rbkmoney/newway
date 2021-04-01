@@ -11,7 +11,6 @@ import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
 import com.rbkmoney.newway.dao.payout.iface.PayoutSummaryDao;
 import com.rbkmoney.newway.domain.tables.pojos.Payout;
 import com.rbkmoney.newway.domain.tables.pojos.PayoutSummary;
-import com.rbkmoney.newway.exception.NotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

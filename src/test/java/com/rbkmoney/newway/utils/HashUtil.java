@@ -1,4 +1,4 @@
-package com.rbkmoney.newway.util;
+package com.rbkmoney.newway.utils;
 
 import org.springframework.util.DigestUtils;
 

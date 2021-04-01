@@ -54,7 +54,7 @@ public class ContractorIdentificationalLevelChangedHandler extends AbstractClaim
 
         contractorNew.setIdentificationalLevel(identificationLevelChanged.name());
 
-        contractorDao.save(contractorOld)
+        contractorDao.save(contractorNew)
                 .ifPresentOrElse(
                         saveResult -> {
                             contractorDao.updateNotCurrent(contractorOld.getId());

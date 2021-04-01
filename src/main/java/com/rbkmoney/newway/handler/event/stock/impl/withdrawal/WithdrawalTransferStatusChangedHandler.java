@@ -53,11 +53,12 @@ public class WithdrawalTransferStatusChangedHandler implements WithdrawalHandler
                 .create(event, sequenceId, withdrawalId, withdrawalOld, timestampedChange.getOccuredAt());
         withdrawalNew.setWithdrawalTransferStatus(TBaseUtil.unionFieldToEnum(status, WithdrawalTransferStatus.class));
 
-        withdrawalDao.save(withdrawalOld).ifPresentOrElse(
+        withdrawalDao.save(withdrawalNew).ifPresentOrElse(
                 id -> {
-                    withdrawalDao.updateNotCurrent(withdrawalOld.getId());
+                    Long oldId = withdrawalOld.getId();
+                    withdrawalDao.updateNotCurrent(oldId);
                     List<FistfulCashFlow> cashFlows =
-                            fistfulCashFlowDao.getByObjId(withdrawalOld.getId(), FistfulCashFlowChangeType.withdrawal);
+                            fistfulCashFlowDao.getByObjId(oldId, FistfulCashFlowChangeType.withdrawal);
                     cashFlows.forEach(pcf -> {
                         pcf.setId(null);
                         pcf.setObjId(id);

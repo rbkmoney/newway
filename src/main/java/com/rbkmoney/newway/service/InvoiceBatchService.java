@@ -2,7 +2,9 @@ package com.rbkmoney.newway.service;
 
 import com.rbkmoney.newway.dao.invoicing.iface.InvoiceDao;
 import com.rbkmoney.newway.dao.invoicing.impl.InvoiceIdsGeneratorDaoImpl;
-import com.rbkmoney.newway.model.*;
+import com.rbkmoney.newway.model.InvoiceWrapper;
+import com.rbkmoney.newway.model.InvoicingKey;
+import com.rbkmoney.newway.model.InvoicingType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

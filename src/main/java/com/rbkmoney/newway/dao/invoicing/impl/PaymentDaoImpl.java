@@ -68,8 +68,7 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
 
         return Optional.ofNullable(fetchOne(query, paymentRowMapper))
                 .orElseThrow(() -> new NotFoundException(
-                        String.format("Payment on adjustment not found, invoiceId='%s', paymentId='%s'",
-                                invoiceId, paymentId)));
+                        String.format("Payment not found, invoiceId='%s', paymentId='%s'", invoiceId, paymentId)));
     }
 
     @Override

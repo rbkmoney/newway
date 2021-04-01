@@ -1,14 +1,17 @@
 package com.rbkmoney.newway.mapper.payment;
 
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.payment_processing.InvoiceChange;
+import com.rbkmoney.damsel.payment_processing.InvoicePaymentCaptureParams;
+import com.rbkmoney.damsel.payment_processing.InvoicePaymentCaptureStarted;
+import com.rbkmoney.damsel.payment_processing.InvoicePaymentChange;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
-import com.rbkmoney.newway.model.PaymentWrapper;
 import com.rbkmoney.newway.handler.event.stock.LocalStorage;
+import com.rbkmoney.newway.model.PaymentWrapper;
 import com.rbkmoney.newway.service.PaymentWrapperService;
 import com.rbkmoney.newway.util.JsonUtil;
 import lombok.RequiredArgsConstructor;

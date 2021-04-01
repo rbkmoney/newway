@@ -19,7 +19,6 @@ import com.rbkmoney.newway.domain.enums.ChargebackStage;
 import com.rbkmoney.newway.domain.enums.ChargebackStatus;
 import com.rbkmoney.newway.domain.tables.pojos.Chargeback;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
-import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import com.rbkmoney.newway.handler.event.stock.impl.invoicing.InvoicingHandler;
 import lombok.Getter;

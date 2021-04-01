@@ -13,7 +13,6 @@ import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.dao.invoicing.iface.RefundDao;
 import com.rbkmoney.newway.domain.enums.PaymentChangeType;
 import com.rbkmoney.newway.domain.tables.pojos.Refund;
-import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import com.rbkmoney.newway.handler.event.stock.impl.invoicing.InvoicingHandler;
 import com.rbkmoney.newway.service.CashFlowService;

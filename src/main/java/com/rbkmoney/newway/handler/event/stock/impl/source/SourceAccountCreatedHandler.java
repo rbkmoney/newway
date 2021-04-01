@@ -50,7 +50,7 @@ public class SourceAccountCreatedHandler implements SourceHandler {
         sourceNew.setAccounterAccountId(account.getAccounterAccountId());
         sourceNew.setCurrencyCode(account.getCurrency().getSymbolicCode());
 
-        sourceDao.save(sourceOld).ifPresentOrElse(
+        sourceDao.save(sourceNew).ifPresentOrElse(
                 id -> {
                     sourceDao.updateNotCurrent(sourceOld.getId());
                     log.info("Source account have been changed, sequenceId={}, sourceId={}", sequenceId, sourceId);

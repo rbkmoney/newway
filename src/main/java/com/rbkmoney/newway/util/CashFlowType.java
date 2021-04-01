@@ -2,7 +2,9 @@ package com.rbkmoney.newway.util;
 
 import com.rbkmoney.damsel.domain.*;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public enum CashFlowType {
 

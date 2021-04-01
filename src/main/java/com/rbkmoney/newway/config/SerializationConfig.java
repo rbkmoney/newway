@@ -1,10 +1,16 @@
 package com.rbkmoney.newway.config;
 
-import com.rbkmoney.damsel.payment_processing.*;
+import com.rbkmoney.damsel.payment_processing.EventPayload;
+import com.rbkmoney.damsel.payment_processing.PartyEventData;
+import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolEventData;
 import com.rbkmoney.geck.serializer.Geck;
-import com.rbkmoney.sink.common.parser.impl.*;
+import com.rbkmoney.sink.common.parser.impl.MachineEventParser;
+import com.rbkmoney.sink.common.parser.impl.PartyEventDataMachineEventParser;
+import com.rbkmoney.sink.common.parser.impl.PaymentEventPayloadMachineEventParser;
 import com.rbkmoney.sink.common.serialization.BinaryDeserializer;
-import com.rbkmoney.sink.common.serialization.impl.*;
+import com.rbkmoney.sink.common.serialization.impl.AbstractThriftBinaryDeserializer;
+import com.rbkmoney.sink.common.serialization.impl.PartyEventDataDeserializer;
+import com.rbkmoney.sink.common.serialization.impl.PaymentEventPayloadDeserializer;
 import com.rbkmoney.xrates.rate.Change;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

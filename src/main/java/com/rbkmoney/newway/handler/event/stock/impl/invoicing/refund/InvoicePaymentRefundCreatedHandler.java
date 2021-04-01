@@ -20,7 +20,6 @@ import com.rbkmoney.newway.domain.enums.RefundStatus;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
 import com.rbkmoney.newway.domain.tables.pojos.Refund;
-import com.rbkmoney.newway.exception.NotFoundException;
 import com.rbkmoney.newway.factory.MachineEventCopyFactory;
 import com.rbkmoney.newway.handler.event.stock.impl.invoicing.InvoicingHandler;
 import com.rbkmoney.newway.util.CashFlowUtil;

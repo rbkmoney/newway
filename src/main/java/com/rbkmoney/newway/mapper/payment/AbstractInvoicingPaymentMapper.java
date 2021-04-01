@@ -2,8 +2,8 @@ package com.rbkmoney.newway.mapper.payment;
 
 import com.rbkmoney.geck.common.util.TypeUtil;
 import com.rbkmoney.newway.domain.tables.pojos.Payment;
-import com.rbkmoney.newway.model.PaymentWrapper;
 import com.rbkmoney.newway.mapper.AbstractInvoicingMapper;
+import com.rbkmoney.newway.model.PaymentWrapper;
 
 public abstract class AbstractInvoicingPaymentMapper extends AbstractInvoicingMapper<PaymentWrapper> {
 
