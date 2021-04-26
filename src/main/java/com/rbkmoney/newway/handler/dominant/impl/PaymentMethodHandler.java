@@ -2,6 +2,7 @@ package com.rbkmoney.newway.handler.dominant.impl;
 
 import com.rbkmoney.damsel.domain.PaymentMethodObject;
 import com.rbkmoney.damsel.domain.TokenizedBankCard;
+import com.rbkmoney.mamsel.*;
 import com.rbkmoney.newway.dao.dominant.iface.DomainObjectDao;
 import com.rbkmoney.newway.dao.dominant.impl.PaymentMethodDaoImpl;
 import com.rbkmoney.newway.domain.enums.PaymentMethodType;
@@ -37,19 +38,31 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
         var paymentMethodObjectRefId = getTargetObject().getRef().getId();
         String paymentMethodRefId;
         if (paymentMethodObjectRefId.isSetBankCard()) {
-            paymentMethodRefId = paymentMethodObjectRefId.getBankCard().getPaymentSystem().name();
+            paymentMethodRefId = PaymentSystemUtil.getPaymentSystemName(paymentMethodObjectRefId.getBankCard());
         } else if (paymentMethodObjectRefId.isSetPaymentTerminal()) {
-            paymentMethodRefId = paymentMethodObjectRefId.getPaymentTerminal().name();
+            paymentMethodRefId = TerminalPaymentUtil.getTerminalPaymentProviderName(
+                    paymentMethodObjectRefId.getPaymentTerminal(),
+                    paymentMethodObjectRefId.getPaymentTerminalDeprecated()
+            );
         } else if (paymentMethodObjectRefId.isSetDigitalWallet()) {
-            paymentMethodRefId = paymentMethodObjectRefId.getDigitalWallet().name();
+            paymentMethodRefId = DigitalWalletUtil.getDigitalWalletName(
+                    paymentMethodObjectRefId.getDigitalWallet(),
+                    paymentMethodObjectRefId.getDigitalWalletDeprecated()
+            );
         } else if (paymentMethodObjectRefId.isSetTokenizedBankCardDeprecated()) {
             paymentMethodRefId = getTokenizedBankCardId(paymentMethodObjectRefId.getTokenizedBankCardDeprecated());
         } else if (paymentMethodObjectRefId.isSetEmptyCvvBankCardDeprecated()) {
             paymentMethodRefId = EMPTY_CVV + paymentMethodObjectRefId.getEmptyCvvBankCardDeprecated().name();
         } else if (paymentMethodObjectRefId.isSetCryptoCurrency()) {
-            paymentMethodRefId = paymentMethodObjectRefId.getCryptoCurrency().name();
+            paymentMethodRefId = CryptoCurrencyUtil.getCryptoCurrencyName(
+                    paymentMethodObjectRefId.getCryptoCurrency(),
+                    paymentMethodObjectRefId.getCryptoCurrencyDeprecated()
+            );
         } else if (paymentMethodObjectRefId.isSetMobile()) {
-            paymentMethodRefId = paymentMethodObjectRefId.getMobile().name();
+            paymentMethodRefId = MobileOperatorUtil.getMobileOperatorName(
+                    paymentMethodObjectRefId.getMobile(),
+                    paymentMethodObjectRefId.getMobileDeprecated()
+            );
         } else if (paymentMethodObjectRefId.isSetBankCardDeprecated()) {
             paymentMethodRefId = paymentMethodObjectRefId.getBankCardDeprecated().name();
         } else {
@@ -60,7 +73,11 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
     }
 
     private String getTokenizedBankCardId(TokenizedBankCard card) {
-        return card.getPaymentSystem().name() + TOKENIZED_BANK_CARD_SEPARATOR + card.getTokenProvider().name();
+        String paymentSystemName =
+                PaymentSystemUtil.getPaymentSystemName(card.getPaymentSystem(), card.getPaymentSystemDeprecated());
+        String tokenProviderName =
+                TokenProviderUtil.getTokenProviderName(card.getPaymentToken(), card.getTokenProviderDeprecated());
+        return paymentSystemName + TOKENIZED_BANK_CARD_SEPARATOR + tokenProviderName;
     }
 
     private String getPaymentType(PaymentMethodObject pmObj) {
