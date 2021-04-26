@@ -10,6 +10,7 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
+import com.rbkmoney.mamsel.*;
 import com.rbkmoney.newway.domain.enums.*;
 import com.rbkmoney.newway.domain.tables.pojos.CashFlow;
 import com.rbkmoney.newway.domain.tables.pojos.Invoice;
@@ -151,7 +152,8 @@ public class InvoicePaymentCreatedMapper extends AbstractInvoicingPaymentMapper 
         if (paymentTool.isSetBankCard()) {
             BankCard bankCard = paymentTool.getBankCard();
             payment.setPayerBankCardToken(bankCard.getToken());
-            payment.setPayerBankCardPaymentSystem(bankCard.getPaymentSystem().name());
+            String paymentSystemName = PaymentSystemUtil.getPaymentSystemName(bankCard);
+            payment.setPayerBankCardPaymentSystem(paymentSystemName);
             payment.setPayerBankCardBin(bankCard.getBin());
             payment.setPayerBankCardMaskedPan(bankCard.getLastDigits());
             payment.setPayerBankName(bankCard.getBankName());
@@ -159,19 +161,22 @@ public class InvoicePaymentCreatedMapper extends AbstractInvoicingPaymentMapper 
             if (bankCard.isSetIssuerCountry()) {
                 payment.setPayerIssuerCountry(bankCard.getIssuerCountry().name());
             }
-            if (bankCard.isSetTokenProvider()) {
-                payment.setPayerBankCardTokenProvider(bankCard.getTokenProvider().name());
+            if (TokenProviderUtil.isSetTokenProvider(bankCard)) {
+                payment.setPayerBankCardTokenProvider(TokenProviderUtil.getTokenProviderName(bankCard));
             }
         } else if (paymentTool.isSetPaymentTerminal()) {
-            payment.setPayerPaymentTerminalType(paymentTool.getPaymentTerminal().getTerminalType().name());
+            String terminalPaymentProviderName =
+                    TerminalPaymentUtil.getTerminalPaymentProviderName(paymentTool.getPaymentTerminal());
+            payment.setPayerPaymentTerminalType(terminalPaymentProviderName);
         } else if (paymentTool.isSetDigitalWallet()) {
             payment.setPayerDigitalWalletId(paymentTool.getDigitalWallet().getId());
-            payment.setPayerDigitalWalletProvider(paymentTool.getDigitalWallet().getProvider().name());
+            String digitalWalletName = DigitalWalletUtil.getDigitalWalletName(paymentTool.getDigitalWallet());
+            payment.setPayerDigitalWalletProvider(digitalWalletName);
         } else if (paymentTool.isSetCryptoCurrency()) {
             payment.setPayerCryptoCurrencyType(paymentTool.getCryptoCurrency().toString());
         } else if (paymentTool.isSetMobileCommerce()) {
-            payment.setPayerMobileOperator(TypeUtil.toEnumField(paymentTool.getMobileCommerce().getOperator().name(),
-                    MobileOperatorType.class));
+            String mobileOperatorName = MobileOperatorUtil.getMobileOperatorName(paymentTool.getMobileCommerce());
+            payment.setPayerMobileOperator(mobileOperatorName);
             payment.setPayerMobilePhoneCc(paymentTool.getMobileCommerce().getPhone().getCc());
             payment.setPayerMobilePhoneCtn(paymentTool.getMobileCommerce().getPhone().getCtn());
         }

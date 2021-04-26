@@ -8,7 +8,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
 import static org.junit.Assert.*;
@@ -79,7 +82,9 @@ public class ProviderHandlerTest {
         RecurrentPaytoolsProvisionTerms recurrentPaytoolsProvisionTerms = new RecurrentPaytoolsProvisionTerms();
         PaymentMethodSelector paymentMethodSelector = new PaymentMethodSelector();
         paymentMethodSelector.setValue(Set.of(new PaymentMethodRef(
-                PaymentMethod.bank_card(new BankCardPaymentMethod(BankCardPaymentSystem.visa)))));
+                PaymentMethod.bank_card(
+                        new BankCardPaymentMethod().setPaymentSystemDeprecated(LegacyBankCardPaymentSystem.visa)
+                ))));
         recurrentPaytoolsProvisionTerms.setPaymentMethods(paymentMethodSelector);
         CashValueSelector cashValueSelector = new CashValueSelector();
         cashValueSelector.setValue(buildCash(1000L));

@@ -28,7 +28,7 @@ public class MockUtils {
                                         .setMetadata(new HashMap<>())))))
                 .setDue(TypeUtil.temporalToString(LocalDateTime.now()))
                 .setCost(new Cash().setAmount(1).setCurrency(new CurrencyRef("RUB")))
-                .setContext(new Content("type", ByteBuffer.wrap(new byte[]{})));
+                .setContext(new Content("type", ByteBuffer.wrap(new byte[] {})));
     }
 
     public static InvoicePayment buildPayment(String paymentId) {
@@ -42,7 +42,9 @@ public class MockUtils {
                 .setPayer(Payer.recurrent(
                         new RecurrentPayer()
                                 .setPaymentTool(PaymentTool.payment_terminal(
-                                        new PaymentTerminal(TerminalPaymentProvider.alipay)))
+                                        new PaymentTerminal()
+                                                .setTerminalTypeDeprecated(LegacyTerminalPaymentProvider.alipay)
+                                ))
                                 .setRecurrentParent(new RecurrentParentPayment("1", "2"))
                                 .setContactInfo(new ContactInfo())));
     }
