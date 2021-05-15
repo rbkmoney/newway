@@ -1,6 +1,7 @@
 package com.rbkmoney.newway.handler.event.stock.impl.recurrent.payment.tool;
 
 import com.rbkmoney.damsel.domain.BankCard;
+import com.rbkmoney.damsel.domain.DigitalWallet;
 import com.rbkmoney.damsel.domain.DisposablePaymentResource;
 import com.rbkmoney.damsel.domain.PaymentTool;
 import com.rbkmoney.damsel.payment_processing.RecurrentPaymentToolChange;
@@ -12,6 +13,7 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
+import com.rbkmoney.mamsel.*;
 import com.rbkmoney.newway.dao.recurrent.payment.tool.iface.RecurrentPaymentToolDao;
 import com.rbkmoney.newway.domain.enums.MobileOperatorType;
 import com.rbkmoney.newway.domain.enums.PaymentToolType;
@@ -93,7 +95,7 @@ public class RecurrentPaymentToolHasCreatedHandler implements RecurrentPaymentTo
             fillPaymentTerminal(recurrentPaymentTool, paymentTool);
         } else if (paymentTool.isSetDigitalWallet()) {
             fillDigitalWallet(recurrentPaymentTool, paymentTool);
-        } else if (paymentTool.isSetCryptoCurrency()) {
+        } else if (CryptoCurrencyUtil.isSetCryptoCurrency(paymentTool)) {
             fillCryptoCurrency(recurrentPaymentTool, paymentTool);
         } else if (paymentTool.isSetMobileCommerce()) {
             fillMobileCommerce(recurrentPaymentTool, paymentTool);
@@ -101,36 +103,35 @@ public class RecurrentPaymentToolHasCreatedHandler implements RecurrentPaymentTo
     }
 
     private void fillMobileCommerce(RecurrentPaymentTool recurrentPaymentTool, PaymentTool paymentTool) {
-        recurrentPaymentTool
-                .setMobileCommerceOperator(TypeUtil.toEnumField(paymentTool.getMobileCommerce().getOperator().name(),
-                        MobileOperatorType.class));
+        recurrentPaymentTool.setMobileCommerceOperator(
+                MobileOperatorUtil.getMobileOperatorName(paymentTool.getMobileCommerce()));
         recurrentPaymentTool.setMobileCommercePhoneCc(paymentTool.getMobileCommerce().getPhone().getCc());
         recurrentPaymentTool.setMobileCommercePhoneCtn(paymentTool.getMobileCommerce().getPhone().getCtn());
     }
 
     private void fillCryptoCurrency(RecurrentPaymentTool recurrentPaymentTool, PaymentTool paymentTool) {
-        recurrentPaymentTool.setCryptoCurrency(paymentTool.getCryptoCurrency().toString());
+        recurrentPaymentTool.setCryptoCurrency(CryptoCurrencyUtil.getCryptoCurrencyName(paymentTool));
     }
 
     private void fillDigitalWallet(RecurrentPaymentTool recurrentPaymentTool, PaymentTool paymentTool) {
-        recurrentPaymentTool.setDigitalWalletId(paymentTool.getDigitalWallet().getId());
-        recurrentPaymentTool.setDigitalWalletProvider(paymentTool.getDigitalWallet().getProvider().name());
-        recurrentPaymentTool.setDigitalWalletToken(paymentTool.getDigitalWallet().getToken());
+        DigitalWallet digitalWallet = paymentTool.getDigitalWallet();
+        recurrentPaymentTool.setDigitalWalletId(digitalWallet.getId());
+        recurrentPaymentTool.setDigitalWalletProvider(DigitalWalletUtil.getDigitalWalletName(digitalWallet));
+        recurrentPaymentTool.setDigitalWalletToken(digitalWallet.getToken());
     }
 
     private void fillPaymentTerminal(RecurrentPaymentTool recurrentPaymentTool, PaymentTool paymentTool) {
-        recurrentPaymentTool.setPaymentTerminalType(paymentTool.getPaymentTerminal().getTerminalType().name());
+        recurrentPaymentTool.setPaymentTerminalType(
+                TerminalPaymentUtil.getTerminalPaymentProviderName(paymentTool.getPaymentTerminal()));
     }
 
     private void fillBankCard(RecurrentPaymentTool recurrentPaymentTool, PaymentTool paymentTool) {
         BankCard bankCard = paymentTool.getBankCard();
         recurrentPaymentTool.setBankCardToken(bankCard.getToken());
-        recurrentPaymentTool.setBankCardPaymentSystem(bankCard.getPaymentSystem().name());
+        recurrentPaymentTool.setBankCardPaymentSystem(PaymentSystemUtil.getPaymentSystemName(bankCard));
         recurrentPaymentTool.setBankCardBin(bankCard.getBin());
         recurrentPaymentTool.setBankCardMaskedPan(bankCard.getLastDigits());
-        if (bankCard.isSetTokenProvider()) {
-            recurrentPaymentTool.setBankCardTokenProvider(bankCard.getTokenProvider().name());
-        }
+        recurrentPaymentTool.setBankCardTokenProvider(TokenProviderUtil.getTokenProviderName(bankCard));
         if (bankCard.isSetIssuerCountry()) {
             recurrentPaymentTool.setBankCardIssuerCountry(bankCard.getIssuerCountry().name());
         }

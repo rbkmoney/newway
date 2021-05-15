@@ -101,11 +101,12 @@ public class RecurrentPaymentToolServiceTest extends AbstractAppDaoTests {
                                                         .setPaymentResource(new DisposablePaymentResource()
                                                                 .setPaymentTool(PaymentTool.bank_card(new BankCard()
                                                                         .setToken("kkekekek_token")
-                                                                        .setPaymentSystem(BankCardPaymentSystem.amex)
+                                                                        .setPaymentSystemDeprecated(
+                                                                                LegacyBankCardPaymentSystem.amex)
                                                                         .setBin("bin")
                                                                         .setLastDigits("masked")
-                                                                        .setTokenProvider(
-                                                                                BankCardTokenProvider.applepay)
+                                                                        .setTokenProviderDeprecated(
+                                                                                LegacyBankCardTokenProvider.applepay)
                                                                         .setIssuerCountry(Residence.ABH)
                                                                         .setBankName("bank_name")
                                                                         .setMetadata(Map.of("kek",

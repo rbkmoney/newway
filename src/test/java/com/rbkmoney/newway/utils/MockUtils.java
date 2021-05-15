@@ -42,7 +42,8 @@ public class MockUtils {
                 .setPayer(Payer.recurrent(
                         new RecurrentPayer()
                                 .setPaymentTool(PaymentTool.payment_terminal(
-                                        new PaymentTerminal(TerminalPaymentProvider.alipay)))
+                                        new PaymentTerminal()
+                                                .setTerminalTypeDeprecated(LegacyTerminalPaymentProvider.alipay)))
                                 .setRecurrentParent(new RecurrentParentPayment("1", "2"))
                                 .setContactInfo(new ContactInfo())));
     }
