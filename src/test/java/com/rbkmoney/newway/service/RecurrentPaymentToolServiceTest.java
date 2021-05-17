@@ -107,7 +107,7 @@ public class RecurrentPaymentToolServiceTest extends AbstractAppDaoTests {
                                                                         .setLastDigits("masked")
                                                                         .setTokenProviderDeprecated(
                                                                                 LegacyBankCardTokenProvider.applepay)
-                                                                        .setIssuerCountry(Residence.ABH)
+                                                                        .setIssuerCountry(CountryCode.ABH)
                                                                         .setBankName("bank_name")
                                                                         .setMetadata(Map.of("kek",
                                                                                 com.rbkmoney.damsel.msgpack.Value
