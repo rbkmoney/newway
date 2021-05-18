@@ -52,6 +52,10 @@ public class ContractorUtil {
                         .setInternationalLegalEntityRegisteredAddress(internationalLegalEntity.getRegisteredAddress());
                 contractor.setInternationalLegalEntityActualAddress(internationalLegalEntity.getActualAddress());
                 contractor.setInternationalLegalEntityRegisteredNumber(internationalLegalEntity.getRegisteredNumber());
+                if (internationalLegalEntity.isSetCountry()) {
+                    contractor.setInternationalLegalEntityCountryCode(
+                            internationalLegalEntity.getCountry().getId().name());
+                }
             }
         } else if (contractorSource.isSetPrivateEntity()) {
             contractor.setPrivateEntity(
