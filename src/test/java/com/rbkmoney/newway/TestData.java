@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.Set;
 import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -202,6 +203,26 @@ public class TestData {
 
     public static String randomString() {
         return UUID.randomUUID().toString();
+    }
+
+    public static CountryObject buildCountryObject() {
+        Country country = new Country();
+        country.setName(randomString());
+        country.setTradeBlocs(Set.of(new TradeBlocRef().setId(randomString())));
+        CountryObject countryObject = new CountryObject();
+        countryObject.setData(country);
+        countryObject.setRef(new CountryRef().setId(CountryCode.ABH));
+        return countryObject;
+    }
+
+    public static TradeBlocObject buildTradeBlocObject() {
+        TradeBloc tradeBloc = new TradeBloc();
+        tradeBloc.setName(randomString());
+        tradeBloc.setDescription(randomString());
+        TradeBlocObject tradeBlocObject = new TradeBlocObject();
+        tradeBlocObject.setData(tradeBloc);
+        tradeBlocObject.setRef(new TradeBlocRef().setId(randomString()));
+        return tradeBlocObject;
     }
 
 }
