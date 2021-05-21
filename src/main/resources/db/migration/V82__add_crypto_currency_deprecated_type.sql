@@ -1,1 +1,1 @@
-alter type nw.payment_tool_type add value 'crypto_currency_deprecated';
+alter type nw.payment_tool_type add value if not exists 'crypto_currency_deprecated';
