@@ -42,7 +42,9 @@ public class CountryHandler extends AbstractDominantHandler<CountryObject, Count
         country.setCountryRefId(getTargetObjectRefId());
         com.rbkmoney.damsel.domain.Country data = object.getData();
         country.setName(data.getName());
-        String[] tradeBlocs = data.getTradeBlocs().stream().map(TradeBlocRef::getId).toArray(String[]::new);
+        String[] tradeBlocs = data.getTradeBlocs().stream()
+                .map(TradeBlocRef::getId)
+                .toArray(String[]::new);
         country.setTradeBloc(tradeBlocs);
         country.setCurrent(current);
         return country;
