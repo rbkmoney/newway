@@ -1,7 +1,7 @@
 package com.rbkmoney.newway;
 
-import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.domain.InvoicePaymentChargeback;
+import com.rbkmoney.damsel.domain.*;
 import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.geck.common.util.TypeUtil;
 import io.github.benas.randombeans.api.EnhancedRandom;
@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.Set;
+import java.util.UUID;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestData {
@@ -183,6 +185,44 @@ public class TestData {
         invoicePaymentChargebackStage.setChargeback(new InvoicePaymentChargebackStageChargeback());
 
         return invoicePaymentChargebackStage;
+    }
+
+    public static Contractor buildContractor() {
+        Contractor contractor = new Contractor();
+        LegalEntity legalEntity = new LegalEntity();
+        contractor.setLegalEntity(legalEntity);
+        InternationalLegalEntity internationalLegalEntity = new InternationalLegalEntity();
+        legalEntity.setInternationalLegalEntity(internationalLegalEntity);
+        internationalLegalEntity
+                .setCountry(new CountryRef().setId(CountryCode.findByValue(CountryCode.AUT.getValue())));
+        internationalLegalEntity.setLegalName(randomString());
+        internationalLegalEntity.setActualAddress(randomString());
+        internationalLegalEntity.setRegisteredAddress(randomString());
+        return contractor;
+    }
+
+    public static String randomString() {
+        return UUID.randomUUID().toString();
+    }
+
+    public static CountryObject buildCountryObject() {
+        Country country = new Country();
+        country.setName(randomString());
+        country.setTradeBlocs(Set.of(new TradeBlocRef().setId(randomString())));
+        CountryObject countryObject = new CountryObject();
+        countryObject.setData(country);
+        countryObject.setRef(new CountryRef().setId(CountryCode.ABH));
+        return countryObject;
+    }
+
+    public static TradeBlocObject buildTradeBlocObject() {
+        TradeBloc tradeBloc = new TradeBloc();
+        tradeBloc.setName(randomString());
+        tradeBloc.setDescription(randomString());
+        TradeBlocObject tradeBlocObject = new TradeBlocObject();
+        tradeBlocObject.setData(tradeBloc);
+        tradeBlocObject.setRef(new TradeBlocRef().setId(randomString()));
+        return tradeBlocObject;
     }
 
 }
