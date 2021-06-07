@@ -48,7 +48,7 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
             throw new IllegalArgumentException("Unknown payment method: " + paymentMethod);
         }
 
-        return getPaymentType(getTargetObject()) + SEPARATOR + paymentMethodRefId.get();
+        return getPaymentType(getTargetObject()) + SEPARATOR + paymentMethodRefId.orElseThrow();
     }
 
     private Supplier<Optional<com.rbkmoney.damsel.domain.PaymentMethod>> wrapPaymentMethod(
