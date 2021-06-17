@@ -181,7 +181,7 @@ public class KafkaConfig {
                                  ConcurrentKafkaListenerContainerFactory<String, T> factory) {
         factory.setConsumerFactory(consumerFactory);
         factory.setBatchListener(true);
-        factory.getContainerProperties().setAckOnError(false);
+        factory.getContainerProperties();
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         factory.setBatchErrorHandler(kafkaErrorHandler());
         factory.setConcurrency(threadsNumber);
