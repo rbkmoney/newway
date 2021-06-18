@@ -245,10 +245,10 @@
             <plugin>
                 <groupId>com.rbkmoney.maven.plugins</groupId>
                 <artifactId>pg-embedded-plugin</artifactId>
-                <version>1.6</version>
+                <version>1.7</version>
                 <configuration>
                     <port>${local.pg.port}</port>
-                    <dbName>newway</dbName>
+                    <dbName>${db.name}</dbName>
                     <schemas>
                         <schema>${db.schema}</schema>
                     </schemas>
