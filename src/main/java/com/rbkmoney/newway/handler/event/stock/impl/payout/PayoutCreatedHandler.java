@@ -35,7 +35,7 @@ public class PayoutCreatedHandler implements PayoutHandler {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(PayoutChange change, Event event) {
-        com.rbkmoney.payout.manager.Payout payoutSource = change.getCreated().getPayout();
+        var payoutSource = change.getCreated().getPayout();
         String payoutId = payoutSource.getPayoutId();
         String partyId = payoutSource.getPartyId();
         log.info("Start payout created handling, sequenceId={}, partyId={}, payoutId={}",

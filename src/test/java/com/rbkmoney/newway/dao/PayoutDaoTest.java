@@ -7,12 +7,9 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 
 import static io.github.benas.randombeans.api.EnhancedRandom.random;
-import static io.github.benas.randombeans.api.EnhancedRandom.randomListOf;
 import static org.junit.Assert.assertEquals;
 
 public class PayoutDaoTest extends AbstractAppDaoTests {
@@ -22,7 +19,6 @@ public class PayoutDaoTest extends AbstractAppDaoTests {
 
     @Autowired
     private PayoutDao payoutDao;
-
 
     @Test(expected = NotFoundException.class)
     public void payoutDaoTest() {
@@ -38,13 +34,5 @@ public class PayoutDaoTest extends AbstractAppDaoTests {
         payoutDao.save(payout);
 
         payoutDao.get(payout.getPayoutId());
-    }
-
-    @Test
-    public void payoutSummaryDaoTest() {
-        jdbcTemplate.execute("truncate table nw.payout_summary cascade");
-        Payout payout = random(Payout.class);
-        payout.setCurrent(true);
-        Long pytId = payoutDao.save(payout).get();
     }
 }
