@@ -1,12 +1,12 @@
 package com.rbkmoney.newway.config;
 
-import com.rbkmoney.damsel.payout_processing.Event;
 import com.rbkmoney.kafka.common.exception.handler.SeekToCurrentWithSleepBatchErrorHandler;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
 import com.rbkmoney.newway.config.properties.KafkaConsumerProperties;
 import com.rbkmoney.newway.config.properties.KafkaSslProperties;
 import com.rbkmoney.newway.serde.PayoutEventDeserializer;
 import com.rbkmoney.newway.serde.SinkEventDeserializer;
+import com.rbkmoney.payout.manager.Event;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

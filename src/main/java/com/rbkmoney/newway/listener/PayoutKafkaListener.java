@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.listener;
 
-import com.rbkmoney.damsel.payout_processing.Event;
 import com.rbkmoney.newway.service.PayoutService;
+import com.rbkmoney.payout.manager.Event;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

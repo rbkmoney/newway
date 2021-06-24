@@ -7,9 +7,7 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.newway.dao.payout.iface.PayoutDao;
-import com.rbkmoney.newway.dao.payout.iface.PayoutSummaryDao;
 import com.rbkmoney.newway.domain.tables.pojos.Payout;
-import com.rbkmoney.newway.domain.tables.pojos.PayoutSummary;
 import com.rbkmoney.payout.manager.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-
-import java.util.List;
 
 @Slf4j
 @Component
@@ -27,7 +22,6 @@ import java.util.List;
 public class PayoutStatusChangedHandler implements PayoutHandler {
 
     private final PayoutDao payoutDao;
-    private final PayoutSummaryDao payoutSummaryDao;
 
     @Getter
     private final Filter filter = new PathConditionFilter(new PathConditionRule(
