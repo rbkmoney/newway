@@ -25,7 +25,7 @@ public class PayoutStatusChangedHandler implements PayoutHandler {
 
     @Getter
     private final Filter filter = new PathConditionFilter(new PathConditionRule(
-            "payout_status_changed",
+            "status_changed",
             new IsNullCondition().not()));
 
     @Override

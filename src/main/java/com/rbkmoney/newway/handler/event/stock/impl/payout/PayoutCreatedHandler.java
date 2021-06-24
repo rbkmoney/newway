@@ -29,7 +29,7 @@ public class PayoutCreatedHandler implements PayoutHandler {
 
     @Getter
     private final Filter filter = new PathConditionFilter(new PathConditionRule(
-            "payout_created",
+            "created",
             new IsNullCondition().not()));
 
     @Override
