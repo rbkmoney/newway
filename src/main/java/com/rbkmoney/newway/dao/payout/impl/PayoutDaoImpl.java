@@ -36,7 +36,7 @@ public class PayoutDaoImpl extends AbstractGenericDao implements PayoutDao {
         Query query = getDslContext()
                 .insertInto(PAYOUT)
                 .set(payoutRecord)
-                .onConflict(PAYOUT.EVENT_ID, PAYOUT.PAYOUT_ID, PAYOUT.CHANGE_ID)
+                .onConflict(PAYOUT.PAYOUT_ID, PAYOUT.SEQUENCE_ID)
                 .doNothing()
                 .returning(PAYOUT.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
