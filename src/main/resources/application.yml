@@ -105,8 +105,8 @@ kafka:
       id: mg-events-ff-source
     destination:
       id: mg-events-ff-destination
-    payout:
-      id: payout
+    pm-events-payout:
+      id: pm-events-payout
 
 bm:
   polling:
