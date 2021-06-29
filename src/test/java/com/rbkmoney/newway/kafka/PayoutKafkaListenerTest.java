@@ -11,7 +11,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 
 public class PayoutKafkaListenerTest extends AbstractKafkaTest {
 
-    @org.springframework.beans.factory.annotation.Value("${kafka.topics.payout.id}")
+    @org.springframework.beans.factory.annotation.Value("${kafka.topics.pm-events-payout.id}")
     public String topic;
 
     @MockBean
