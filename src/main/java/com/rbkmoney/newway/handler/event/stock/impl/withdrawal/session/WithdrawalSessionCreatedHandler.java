@@ -11,6 +11,7 @@ import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
 import com.rbkmoney.geck.filter.rule.PathConditionRule;
 import com.rbkmoney.machinegun.eventsink.MachineEvent;
+import com.rbkmoney.mamsel.PaymentSystemUtil;
 import com.rbkmoney.newway.dao.withdrawal.session.iface.WithdrawalSessionDao;
 import com.rbkmoney.newway.domain.enums.BankCardPaymentSystem;
 import com.rbkmoney.newway.domain.enums.DestinationResourceType;
@@ -65,7 +66,7 @@ public class WithdrawalSessionCreatedHandler implements WithdrawalSessionHandler
             withdrawalSession.setDestinationCardMaskedPan(bankCard.getMaskedPan());
             if (bankCard.isSetPaymentSystem()) {
                 withdrawalSession.setDestinationCardPaymentSystem(
-                        BankCardPaymentSystem.valueOf(bankCard.getPaymentSystem().name()));
+                        BankCardPaymentSystem.valueOf(PaymentSystemUtil.getFistfulPaymentSystemName(bankCard)));
             }
             withdrawalSession.setResourceBankCardBankName(bankCard.getBankName());
             if (bankCard.isSetIssuerCountry()) {
@@ -81,6 +82,13 @@ public class WithdrawalSessionCreatedHandler implements WithdrawalSessionHandler
             withdrawalSession.setResourceCryptoWalletType(cryptoWallet.getCurrency().toString());
             if (cryptoWallet.isSetData()) {
                 withdrawalSession.setResourceCryptoWalletData(cryptoWallet.getData().getSetField().getFieldName());
+            }
+        } else if (resource.isSetDigitalWallet()) {
+            ResourceDigitalWallet resourceDigitalWallet = resource.getDigitalWallet();
+            DigitalWallet digitalWallet = resourceDigitalWallet.getDigitalWallet();
+            withdrawalSession.setResourceDigitalWalletId(digitalWallet.getId());
+            if (digitalWallet.isSetData()) {
+                withdrawalSession.setResourceDigitalWalletData(digitalWallet.getData().getSetField().getFieldName());
             }
         }
 
