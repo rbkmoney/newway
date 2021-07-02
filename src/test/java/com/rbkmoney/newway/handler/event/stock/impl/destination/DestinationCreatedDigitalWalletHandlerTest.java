@@ -39,7 +39,10 @@ public class DestinationCreatedDigitalWalletHandlerTest extends AbstractAppDaoTe
 
         destinationCreatedHandler.handle(
                 DestinationHandlerTestUtils.createCreated(fistfulDestination),
-                DestinationHandlerTestUtils.createCreatedMachineEvent(destination.getDestinationId(), fistfulDestination));
+                DestinationHandlerTestUtils.createCreatedMachineEvent(
+                        destination.getDestinationId(),
+                        fistfulDestination
+                ));
 
         Destination destinationResult = jdbcTemplate.queryForObject(sqlStatement,
                 new RecordRowMapper<>(DESTINATION, Destination.class));

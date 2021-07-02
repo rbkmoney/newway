@@ -38,7 +38,10 @@ public class DestinationCreatedBankCardHandlerTest extends AbstractAppDaoTests {
 
         destinationCreatedHandler.handle(
                 DestinationHandlerTestUtils.createCreated(fistfulDestination),
-                DestinationHandlerTestUtils.createCreatedMachineEvent(destination.getDestinationId(), fistfulDestination));
+                DestinationHandlerTestUtils.createCreatedMachineEvent(
+                        destination.getDestinationId(),
+                        fistfulDestination
+                ));
 
         Destination destinationResult = jdbcTemplate.queryForObject(sqlStatement,
                 new RecordRowMapper<>(DESTINATION, Destination.class));
