@@ -87,6 +87,13 @@ public class DestinationCreatedHandler implements DestinationHandler {
             if (wallet.isSetData()) {
                 destination.setResourceCryptoWalletData(wallet.getData().getSetField().getFieldName());
             }
+        } else if (resource.isSetDigitalWallet()) {
+            ResourceDigitalWallet resourceDigitalWallet = resource.getDigitalWallet();
+            DigitalWallet digitalWallet = resourceDigitalWallet.getDigitalWallet();
+            destination.setResourceDigitalWalletId(digitalWallet.getId());
+            if (digitalWallet.isSetData()) {
+                destination.setResourceDigitalWalletData(digitalWallet.getData().getSetField().getFieldName());
+            }
         }
 
         destinationDao.save(destination).ifPresentOrElse(
