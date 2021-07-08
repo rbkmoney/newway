@@ -29,7 +29,7 @@
         <db.schema>nw</db.schema>
         <local.pg.url>jdbc:postgresql://localhost:5432/newway</local.pg.url>
         <local.pg.port>5432</local.pg.port>
-        <fistful-proto.version>1.106-ebe76ef</fistful-proto.version>
+        <fistful-proto.version>1.128-d331fce</fistful-proto.version>
         <sink-common-lib.version>0.0.4</sink-common-lib.version>
     </properties>
 
@@ -174,6 +174,7 @@
         <dependency>
             <groupId>com.rbkmoney</groupId>
             <artifactId>mamsel</artifactId>
+            <version>0.1.2</version>
         </dependency>
 
         <!-- Test -->
