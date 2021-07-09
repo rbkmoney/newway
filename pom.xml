@@ -114,6 +114,11 @@
         </dependency>
         <dependency>
             <groupId>com.rbkmoney</groupId>
+            <artifactId>payout-manager-proto</artifactId>
+            <version>1.6-34677e3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rbkmoney</groupId>
             <artifactId>eventstock-client-damsel</artifactId>
             <version>1.2.10</version>
         </dependency>

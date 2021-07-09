@@ -1,7 +1,7 @@
 package com.rbkmoney.newway.listener;
 
-import com.rbkmoney.damsel.payout_processing.Event;
 import com.rbkmoney.newway.service.PayoutService;
+import com.rbkmoney.payout.manager.Event;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -17,7 +17,7 @@ public class PayoutKafkaListener {
 
     private final PayoutService payoutService;
 
-    @KafkaListener(topics = "${kafka.topics.payout.id}", containerFactory = "payoutContainerFactory")
+    @KafkaListener(topics = "${kafka.topics.pm-events-payout.id}", containerFactory = "payoutContainerFactory")
     public void handle(List<ConsumerRecord<String, Event>> messages, Acknowledgment ack) {
         log.info("Got machineEvent batch with size: {}", messages.size());
         payoutService.handleEvents(messages.stream()

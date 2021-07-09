@@ -1,9 +1,8 @@
 package com.rbkmoney.newway.service;
 
-import com.rbkmoney.damsel.payout_processing.Event;
-import com.rbkmoney.damsel.payout_processing.EventPayload;
-import com.rbkmoney.damsel.payout_processing.PayoutChange;
 import com.rbkmoney.newway.handler.event.stock.impl.payout.PayoutHandler;
+import com.rbkmoney.payout.manager.Event;
+import com.rbkmoney.payout.manager.PayoutChange;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,16 +24,9 @@ public class PayoutService {
     }
 
     private void handleIfAccept(Event event) {
-        if (event.isSetPayload()) {
-            EventPayload eventPayload = event.getPayload();
-            for (int i = 0; i < eventPayload.getPayoutChanges().size(); i++) {
-                PayoutChange change = eventPayload.getPayoutChanges().get(i);
-                Integer changeId = i;
-                payoutHandlers.stream()
-                        .filter(handler -> handler.accept(change))
-                        .forEach(handler -> handler.handle(change, event, changeId));
-            }
-        }
+        PayoutChange change = event.getPayoutChange();
+        payoutHandlers.stream()
+                .filter(handler -> handler.accept(change))
+                .forEach(handler -> handler.handle(change, event));
     }
-
 }
