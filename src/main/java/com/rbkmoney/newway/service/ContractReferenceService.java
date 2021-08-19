@@ -20,19 +20,28 @@ public class ContractReferenceService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void updateContractReference(Long contractSourceId, Long contractId) {
-        List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);
-        adjustments.forEach(a -> {
-            a.setId(null);
-            a.setCntrctId(contractId);
-        });
-        contractAdjustmentDao.save(adjustments);
+        updateAdjustments(contractSourceId, contractId);
+        updatePayoutTools(contractSourceId, contractId);
+    }
 
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void updatePayoutTools(Long contractSourceId, Long contractId) {
         List<PayoutTool> payoutTools = payoutToolDao.getByCntrctId(contractSourceId);
         payoutTools.forEach(pt -> {
             pt.setId(null);
             pt.setCntrctId(contractId);
         });
         payoutToolDao.save(payoutTools);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void updateAdjustments(Long contractSourceId, Long contractId) {
+        List<ContractAdjustment> adjustments = contractAdjustmentDao.getByCntrctId(contractSourceId);
+        adjustments.forEach(a -> {
+            a.setId(null);
+            a.setCntrctId(contractId);
+        });
+        contractAdjustmentDao.save(adjustments);
     }
 
 }
