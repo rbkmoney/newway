@@ -7,6 +7,7 @@ import com.rbkmoney.newway.domain.enums.RepresentativeDocument;
 import com.rbkmoney.newway.domain.tables.pojos.ContractAdjustment;
 import com.rbkmoney.newway.domain.tables.pojos.PayoutTool;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,26 +39,41 @@ public class ContractUtil {
                 .collect(Collectors.toList());
     }
 
-    public static PayoutTool convertPayoutTool(com.rbkmoney.damsel.domain.PayoutTool pt, long cntrctId) {
+    public static PayoutTool buildPayoutTool(long cntrctId,
+                                             String payoutToolId,
+                                             LocalDateTime createdAt,
+                                             String currCode,
+                                             com.rbkmoney.damsel.domain.PayoutToolInfo payoutToolInfo) {
         PayoutTool payoutTool = new PayoutTool();
         payoutTool.setCntrctId(cntrctId);
-        payoutTool.setPayoutToolId(pt.getId());
-        payoutTool.setCreatedAt(TypeUtil.stringToLocalDateTime(pt.getCreatedAt()));
-        payoutTool.setCurrencyCode(pt.getCurrency().getSymbolicCode());
+        payoutTool.setPayoutToolId(payoutToolId);
+        payoutTool.setCreatedAt(createdAt);
+        payoutTool.setCurrencyCode(currCode);
+        setPayoutToolInfo(payoutTool, payoutToolInfo);
+        return payoutTool;
+    }
+
+    public static PayoutTool convertPayoutTool(com.rbkmoney.damsel.domain.PayoutTool pt, long cntrctId) {
+        return buildPayoutTool(cntrctId, pt.getId(), TypeUtil.stringToLocalDateTime(pt.getCreatedAt()),
+                pt.getCurrency().getSymbolicCode(), pt.getPayoutToolInfo());
+    }
+
+    public static void setPayoutToolInfo(PayoutTool payoutTool,
+                                         com.rbkmoney.damsel.domain.PayoutToolInfo payoutToolInfoSource) {
         PayoutToolInfo payoutToolInfo =
-                TypeUtil.toEnumField(pt.getPayoutToolInfo().getSetField().getFieldName(), PayoutToolInfo.class);
+                TypeUtil.toEnumField(payoutToolInfoSource.getSetField().getFieldName(), PayoutToolInfo.class);
         if (payoutToolInfo == null) {
-            throw new IllegalArgumentException("Illegal payout tool info: " + pt.getPayoutToolInfo());
+            throw new IllegalArgumentException("Illegal payout tool info: " + payoutToolInfoSource);
         }
         payoutTool.setPayoutToolInfo(payoutToolInfo);
-        if (pt.getPayoutToolInfo().isSetRussianBankAccount()) {
-            RussianBankAccount russianBankAccount = pt.getPayoutToolInfo().getRussianBankAccount();
+        if (payoutToolInfoSource.isSetRussianBankAccount()) {
+            RussianBankAccount russianBankAccount = payoutToolInfoSource.getRussianBankAccount();
             payoutTool.setPayoutToolInfoRussianBankAccount(russianBankAccount.getAccount());
             payoutTool.setPayoutToolInfoRussianBankName(russianBankAccount.getBankName());
             payoutTool.setPayoutToolInfoRussianBankPostAccount(russianBankAccount.getBankPostAccount());
             payoutTool.setPayoutToolInfoRussianBankBik(russianBankAccount.getBankBik());
-        } else if (pt.getPayoutToolInfo().isSetInternationalBankAccount()) {
-            InternationalBankAccount internationalBankAccount = pt.getPayoutToolInfo().getInternationalBankAccount();
+        } else if (payoutToolInfoSource.isSetInternationalBankAccount()) {
+            InternationalBankAccount internationalBankAccount = payoutToolInfoSource.getInternationalBankAccount();
             payoutTool.setPayoutToolInfoInternationalBankNumber(internationalBankAccount.getNumber());
             payoutTool.setPayoutToolInfoInternationalBankAccountHolder(internationalBankAccount.getAccountHolder());
             payoutTool.setPayoutToolInfoInternationalBankIban(internationalBankAccount.getIban());
@@ -96,10 +112,9 @@ public class ContractUtil {
                     );
                 }
             }
-        } else if (pt.getPayoutToolInfo().isSetWalletInfo()) {
-            payoutTool.setPayoutToolInfoWalletInfoWalletId(pt.getPayoutToolInfo().getWalletInfo().getWalletId());
+        } else if (payoutToolInfoSource.isSetWalletInfo()) {
+            payoutTool.setPayoutToolInfoWalletInfoWalletId(payoutToolInfoSource.getWalletInfo().getWalletId());
         }
-        return payoutTool;
     }
 
     public static void fillContractLegalAgreementFields(com.rbkmoney.newway.domain.tables.pojos.Contract contract,
