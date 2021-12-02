@@ -1,9 +1,6 @@
 package com.rbkmoney.newway.mapper.payment;
 
-import com.rbkmoney.damsel.payment_processing.InvoiceChange;
-import com.rbkmoney.damsel.payment_processing.InvoicePaymentCaptureParams;
-import com.rbkmoney.damsel.payment_processing.InvoicePaymentCaptureStarted;
-import com.rbkmoney.damsel.payment_processing.InvoicePaymentChange;
+import com.rbkmoney.damsel.payment_processing.*;
 import com.rbkmoney.geck.filter.Filter;
 import com.rbkmoney.geck.filter.PathConditionFilter;
 import com.rbkmoney.geck.filter.condition.IsNullCondition;
@@ -50,15 +47,15 @@ public class InvoicePaymentCaptureStartedMapper extends AbstractInvoicingPayment
         setUpdateProperties(paymentSource, event.getCreatedAt());
         InvoicePaymentCaptureStarted invoicePaymentCaptureStarted =
                 change.getInvoicePaymentChange().getPayload().getInvoicePaymentCaptureStarted();
-        InvoicePaymentCaptureParams captureParams = invoicePaymentCaptureStarted.getParams();
-        if (captureParams.isSetCash()) {
-            paymentSource.setAmount(captureParams.getCash().getAmount());
-            paymentSource.setCurrencyCode(captureParams.getCash().getCurrency().getSymbolicCode());
+        InvoicePaymentCaptureData data = invoicePaymentCaptureStarted.getData();
+        if (data.isSetCash()) {
+            paymentSource.setAmount(data.getCash().getAmount());
+            paymentSource.setCurrencyCode(data.getCash().getCurrency().getSymbolicCode());
         }
-        paymentSource.setStatusCapturedStartedReason(captureParams.getReason());
-        if (captureParams.isSetCart()) {
+        paymentSource.setStatusCapturedStartedReason(data.getReason());
+        if (data.isSetCart()) {
             String cartsJson = JsonUtil.objectToJsonString(
-                    captureParams.getCart().getLines().stream().map(JsonUtil::thriftBaseToJsonNode)
+                    data.getCart().getLines().stream().map(JsonUtil::thriftBaseToJsonNode)
                             .collect(Collectors.toList()));
             paymentSource.setCaptureStartedParamsCartJson(cartsJson);
         }
