@@ -33,6 +33,6 @@ public class PaymentMethodDaoImpl extends AbstractGenericDao implements DomainOb
     public void updateNotCurrent(String paymentMethodId) throws DaoException {
         Query query = getDslContext().update(PAYMENT_METHOD).set(PAYMENT_METHOD.CURRENT, false)
                 .where(PAYMENT_METHOD.PAYMENT_METHOD_REF_ID.eq(paymentMethodId).and(PAYMENT_METHOD.CURRENT));
-        executeOne(query);
+        execute(query);
     }
 }
