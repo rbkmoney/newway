@@ -186,25 +186,25 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.15.0</version>
+            <version>1.16.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.github.benas</groupId>
             <artifactId>random-beans</artifactId>
-            <version>3.7.0</version>
+            <version>3.9.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.opentable.components</groupId>
             <artifactId>otj-pg-embedded</artifactId>
-            <version>0.12.6</version>
+            <version>0.13.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>kafka</artifactId>
-            <version>1.15.0</version>
+            <version>1.16.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
