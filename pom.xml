@@ -245,7 +245,7 @@
             <plugin>
                 <groupId>com.rbkmoney.maven.plugins</groupId>
                 <artifactId>pg-embedded-plugin</artifactId>
-                <version>1.8-test</version>
+                <version>1.8</version>
                 <configuration>
                     <port>${local.pg.port}</port>
                     <dbName>${db.name}</dbName>
