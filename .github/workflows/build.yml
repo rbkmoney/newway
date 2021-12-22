@@ -23,4 +23,4 @@ jobs:
         uses: ./.github/actions/action-jdk-build
         with:
           github-pat: '${{ secrets.GH_PACKAGES_RO_PAT }}'
-          github-user: 'vulnbe'
+          github-user: 'strug'
