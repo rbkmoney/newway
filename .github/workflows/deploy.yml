@@ -22,7 +22,7 @@ jobs:
         with:
           repository: alfaind/action-jdk-build
           ref: v1.0.17
-          token: '${{ secrets.GITHUB_TOKEN }}'
+          token: '${{ secrets.ACTIONS_FETCH_TOKEN }}'
           path: .github/actions/action-jdk-build
 
       - name: Checkout GitHub Action Deploy Docker Repo
@@ -30,7 +30,7 @@ jobs:
         with:
           repository: alfaind/action-deploy-docker
           ref: v1.0.6
-          token: '${{ secrets.GITHUB_TOKEN }}'
+          token: '${{ secrets.ACTIONS_FETCH_TOKEN }}'
           path: .github/actions/action-deploy-docker
 
       - name: Configure AWS credentials
