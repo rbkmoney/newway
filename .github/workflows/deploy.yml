@@ -22,7 +22,6 @@ jobs:
         with:
           repository: alfaind/action-jdk-build
           ref: v1.0.17
-          token: '${{ secrets.ACTIONS_FETCH_TOKEN }}'
           path: .github/actions/action-jdk-build
 
       - name: Checkout GitHub Action Deploy Docker Repo
@@ -30,25 +29,13 @@ jobs:
         with:
           repository: alfaind/action-deploy-docker
           ref: v1.0.6
-          token: '${{ secrets.ACTIONS_FETCH_TOKEN }}'
           path: .github/actions/action-deploy-docker
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@13d241b293754004c80624b5567555c4a39ffbe3
-        with:
-          aws-access-key-id: ${{ secrets.ECR_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.ECR_SECRET_KEYS }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@aaf69d68aa3fb14c1d5a6be9ac61fe15b48453a2
 
       - name: Run Build Java
         uses: ./.github/actions/action-jdk-build
         with:
           github-pat: '${{ secrets.GH_PACKAGES_RO_PAT }}'
-          github-user: 'vulnbe'
+          github-user: 'strug'
 
       - name: Deploy image
         uses: ./.github/actions/action-deploy-docker
