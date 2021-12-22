@@ -17,7 +17,6 @@ jobs:
         with:
           repository: alfaind/action-jdk-build
           ref: v1.0.17
-          token: '${{ secrets.ACTIONS_FETCH_TOKEN }}'
           path: .github/actions/action-jdk-build
 
       - name: Run Build Java
